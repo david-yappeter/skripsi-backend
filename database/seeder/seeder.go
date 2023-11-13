@@ -2,10 +2,14 @@ package seeder
 
 import (
 	"fmt"
+	"myapp/model"
 	"myapp/repository"
 )
 
-var Seeders = map[string]func(repositoryManager repository.RepositoryManager){}
+var Seeders = map[string]func(repositoryManager repository.RepositoryManager){
+	model.RoleTableName: RoleSeeder,
+	model.UserTableName: UserSeeder,
+}
 
 func Seed(repositoryManager repository.RepositoryManager, tableName string) {
 	if seed, exist := Seeders[tableName]; exist {
@@ -16,7 +20,10 @@ func Seed(repositoryManager repository.RepositoryManager, tableName string) {
 }
 
 func SeedAll(repositoryManager repository.RepositoryManager) {
-	seedOrders := []string{}
+	seedOrders := []string{
+		model.RoleTableName,
+		model.UserTableName,
+	}
 
 	for _, tableName := range seedOrders {
 		seed, ok := Seeders[tableName]

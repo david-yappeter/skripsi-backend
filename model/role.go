@@ -8,9 +8,8 @@ const RoleTableName = "roles"
 
 type Role struct {
 	Id          string         `db:"id"`
-	Title       data_type.Role `db:"title"`
-	Description string         `db:"description"`
-	IsActive    bool           `db:"is_active"`
+	Name        data_type.Role `db:"name"`
+	Description *string        `db:"description"`
 	Timestamp
 
 	// system
@@ -28,16 +27,15 @@ func (m *Role) TableIds() []string {
 func (m *Role) ToMap() map[string]interface{} {
 	return map[string]interface{}{
 		"id":          m.Id,
-		"title":       m.Title,
+		"name":        m.Name,
 		"description": m.Description,
-		"is_active":   m.IsActive,
 		"created_at":  m.CreatedAt,
 		"updated_at":  m.UpdatedAt,
 	}
 }
 
 func (r Role) RoleType() data_type.RoleType {
-	return r.Title.RoleType()
+	return r.Name.RoleType()
 }
 
 type RoleQueryOption struct {

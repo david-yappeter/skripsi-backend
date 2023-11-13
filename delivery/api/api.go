@@ -208,7 +208,7 @@ func registerRoutes(router gin.IRouter, useCaseManager use_case.UseCaseManager) 
 		)
 	}
 
-	// RegisterApi()
+	RegisterAuthApi(router, useCaseManager)
 }
 
 func NewRouter(container *manager.Container) *gin.Engine {

@@ -12,7 +12,7 @@ import (
 
 type RoleRepository interface {
 	// create
-	InsertMany(ctx context.Context, roles []model.Role, options ...data_type.RepositoryOption) error
+	InsertMany(ctx context.Context, roles []model.Role) error
 
 	// read
 	Count(ctx context.Context, options ...model.RoleQueryOption) (int, error)
@@ -76,7 +76,7 @@ func (r roleRepository) prepareQuery(option model.RoleQueryOption) squirrel.Sele
 	return stmt
 }
 
-func (r *roleRepository) InsertMany(ctx context.Context, roles []model.Role, options ...data_type.RepositoryOption) error {
+func (r *roleRepository) InsertMany(ctx context.Context, roles []model.Role) error {
 	arr := []model.BaseModel{}
 	for i := range roles {
 		arr = append(arr, &roles[i])

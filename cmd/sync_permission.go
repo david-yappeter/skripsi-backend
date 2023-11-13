@@ -157,7 +157,7 @@ func syncRolePermissions(ctx context.Context, repositoryManager repository.Repos
 		}
 
 		newPermissions := []data_type.Permission{}
-		for _, permissionEnum := range role.Title.Permissions() {
+		for _, permissionEnum := range role.Name.Permissions() {
 			if _, exist := existingRolePermissionMap[permissionEnum]; exist {
 				// keep existing permission by removing it from map
 				delete(existingRolePermissionMap, permissionEnum)

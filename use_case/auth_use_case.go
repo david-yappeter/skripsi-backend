@@ -141,7 +141,7 @@ func (u *authUseCase) LoginUsername(ctx context.Context, request dto_request.Aut
 	user, err := u.repositoryManager.UserRepository().GetByUsernameAndIsActive(ctx, request.Username, true)
 	panicIfErr(err, constant.ErrNoData)
 	if user == nil {
-		panic(dto_response.NewForbiddenErrorResponse("Sorry, your account not registered in our system"))
+		panic(dto_response.NewForbiddenErrorResponse("AUTH.ACCOUNT_NOT_REGISTERED"))
 	}
 
 	u.mustValidateComparePassword(user.Password, request.Password)

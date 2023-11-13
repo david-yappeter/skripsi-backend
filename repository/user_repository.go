@@ -133,7 +133,7 @@ func (r *userRepository) GetByUsernameAndIsActive(ctx context.Context, username 
 	stmt := stmtBuilder.Select("*").
 		From(model.UserTableName).
 		Where(squirrel.ILike{"username": username}).
-		Where(squirrel.ILike{"is_active": isActive}).
+		Where(squirrel.Eq{"is_active": isActive}).
 		Limit(1)
 
 	return r.get(ctx, stmt)
@@ -151,7 +151,7 @@ func (r *userRepository) GetByIdAndIsActive(ctx context.Context, id string, isAc
 	stmt := stmtBuilder.Select("*").
 		From(model.UserTableName).
 		Where(squirrel.ILike{"id": id}).
-		Where(squirrel.ILike{"is_active": isActive}).
+		Where(squirrel.Eq{"is_active": isActive}).
 		Limit(1)
 
 	return r.get(ctx, stmt)
