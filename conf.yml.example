@@ -1,0 +1,26 @@
+app_name: Skripsi
+environment: development
+debug: true
+log_channel:
+  - stdout
+  - telegram
+timezone: Asia/Jakarta
+port: 8080
+uri: http://localhost:8080
+filesystem: local
+pdf_generator_url: http://localhost:3001/forms/chromium
+cors_allowed_origins:
+  - http://localhost:3000
+postgres:
+  host: postgres
+  port: 5432
+  username: postgres
+  password: secret
+  database: skripsi
+jwt:
+  private_key_file_path: ./storage/jwt/private.key
+  public_key_file_path: ./storage/jwt/public.key
+telegram:
+  token:
+  chat_id:
+

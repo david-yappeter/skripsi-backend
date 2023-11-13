@@ -1,0 +1,100 @@
+<%: func MedicalPrescriptionHTML(param MedicalPrescriptionParam, buffer *bytes.Buffer) %>
+<%~"base.html" %>
+<%@ body { %>
+  <%+ "base_header.html" %>
+
+  <main class="main">
+    <table class="table table--full gy-2 table--align-top table--fixed mb-2">
+      <thead>
+        <tr>
+          <th style="width: 100px">R/</th>
+          <th>
+            Nama Obat
+            <div class="is-muted">Medicine Name</div>
+          </th>
+          <th style="width: 100px">
+            Jumlah
+            <div class="is-muted">Qty</div>
+          </th>
+          <th>
+            Satuan
+            <div class="is-muted">Unit</div>
+          </th>
+          <th class="table-col-35">
+            Dosis
+            <div class="is-muted">Dosage</div>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% for i, item := range param.Items { %>
+          <tr>
+            <td class="overflow-wrap-anywhere"><%=i i + 1 %></td>
+            <td class="overflow-wrap-anywhere">
+              <%= item.Name %> <br />
+              Ket: <%= item.Categories %>
+            </td>
+            <td class="overflow-wrap-anywhere"><%=f item.Qty %></td>
+            <td class="overflow-wrap-anywhere"><%= item.Unit %></td>
+            <td class="overflow-wrap-anywhere">
+              <% if item.DoseIndonesia != "" { %>
+                <%= item.DoseIndonesia %> <br />
+                <span class="fs-sm is-muted"><%= item.DoseEnglish %></span> <br />
+              <% } %>
+
+              <% if item.TimeInstructionIndonesia != "" { %>
+                <%= item.TimeInstructionIndonesia %> <br />
+                <span class="fs-sm is-muted"><%= item.TimeInstructionEnglish %></span> <br />
+              <% } %>
+
+              <% if item.MealInstructionIndonesia != "" { %>
+                (<%= item.MealInstructionIndonesia %>) <br />
+                <span class="fs-sm is-muted">(<%= item.MealInstructionEnglish %>)</span>
+              <% } %>      
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+
+    <div class="container">
+      <div class="item-title">
+        <span class="font-bold">Saran</span>
+        <span class="fs-sm is-muted">/</span>
+        <span class="fs-sm is-muted">Advice Given</span>
+      </div>
+
+      <div class="item-title">
+        <%== param.Advice %> 
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="signature">
+        <div class="signature__container">
+          <div class="signature__title">
+            Apoteker
+            <div class="is-muted">Pharmacist</div>
+          </div>
+
+          <div class="signature__box">
+            <div class="signature__name"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# import base_qr_code.html here %>
+    <div class="container advert__container">
+      <div class="advert">
+        <div class="advert__policy">
+          Ini adalah salinan resep, obat tidak dapat ditebus dengan resep ini. 
+          <div class="is-muted">This is a prescription copy, medicine cannot be redeemed with this prescription.</div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <%+ "base_footer.html" %>
+<% } %>

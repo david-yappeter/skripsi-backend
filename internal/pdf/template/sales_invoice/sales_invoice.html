@@ -1,0 +1,131 @@
+<%: func SalesInvoiceHTML(param SalesInvoiceParam, buffer *bytes.Buffer) %>
+<%~"base.html" %> 
+<%@ body { %> 
+  <%+ "base_header.html" %>
+
+  <main class="main">
+    <table class="table products">
+      <thead>
+        <tr>
+          <th>
+            Kode Barang
+            <div class="is-muted">Item Code</div>
+          </th>
+          <th>
+            Deskripsi
+            <div class="is-muted">Description</div>
+          </th>
+          <th class="table__item--number">
+            Jumlah
+            <div class="is-muted">Qty</div>
+          </th>
+          <th class="table__item--number">
+            Harga
+            <div class="is-muted">Amount (Rp)</div>
+          </th>
+        </tr>
+      </thead>
+
+      <% for _, category := range param.Categories { %>
+        <% if len(param.ItemsMappedByCategory[category]) > 0 { %>
+        <tbody class="table__item-group">
+          <tr>
+            <td></td>
+            <td class="table__item--title" colspan="3"><%= category %></td>
+          </tr>
+
+          <% for _, item := range param.ItemsMappedByCategory[category] { %>
+            <tr>
+              <td><%= item.Code %></td>
+              <td><%= item.Name %></td>
+              <td class="table__item--number"><%=f item.Qty %></td>
+              <td class="table__item--number"><%= item.SubTotal %></td>
+            </tr>
+          <% } %>
+        </tbody>
+        <% } %>
+      <% } %>
+
+      <tfoot>
+        <tr>
+          <td colspan="4">
+            <div class="products__summary">
+              <div class="products__summary-container">
+                <div class="products__nominal">
+                  <%= param.TotalSpellingIndonesia %>
+                  <div class="is-muted">
+                    <%= param.TotalSpellingEnglish %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="products__summary-container">
+                <div class="products__total-container">
+                  <div class="products__total">
+                    <div class="products__total-text">TOTAL*</div>
+                    <div class="products__total-text">:</div>
+                    <div class="products__total-text"><%= param.Total %></div>
+                  </div>
+
+                  <% if param.TotalPaidByInsurance != "" { %>
+                  <div class="products__total">
+                    <div class="products__total-text">PAID BY INSURANCE</div>
+                    <div class="products__total-text">:</div>
+                    <div class="products__total-text"><%= param.TotalPaidByInsurance %></div>
+                  </div>
+                  <% } %>
+
+                  <% if param.PaidBy != "" && param.TotalPaidBy != "" { %>
+                  <div class="products__total">
+                    <div class="products__total-text">PAID BY <%= param.PaidBy %></div>
+                    <div class="products__total-text">:</div>
+                    <div class="products__total-text"><%= param.TotalPaidBy %></div>
+                  </div>
+                  <% } %>
+
+                  <% if param.RequireRenderTax { %>
+                    <div class="products__tax">
+                      *Harga sudah termasuk ppn
+                      <div class="is-muted" style="font-style: italic;">*All prices are inclusive of tax</div>
+                    </div>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="container">
+      <div class="signature">
+        <div class="signature__container">
+          <div class="signature__title">
+            Kasir
+            <div class="is-muted">Cashier</div>
+          </div>
+
+          <div class="signature__box">
+            <div class="signature__name"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# import base_qr_code.html here %>
+    <div class="container advert__container">
+      <div class="advert">
+        <div class="advert__policy">
+          Invoice ini berlaku sebagai kwitansi. Barang yang sudah dibeli tidak dapat dikembalikan. 
+          <div class="is-muted">This invoice is valid as a receipt. Items that have been purchased cannot be returned.</div>
+        </div>
+
+        <div class="advert__policy">
+          NPWP : <%= param.CompanyTaxNumber %>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <%+ "base_footer.html" %> 
+<% } %>

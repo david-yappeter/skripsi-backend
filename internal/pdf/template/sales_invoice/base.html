@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GWS Invoice</title>
+
+
+    <!-- CSS -->
+    <style>
+      .header__invoice-section,
+      .header__title {
+        margin-bottom: 20px;
+      }
+      .table thead,
+      .table thead th {
+        background-color: var(--color-gray-5);
+        background-color: var(--color-gray-5);
+      }
+      :root {
+        --color-black: #24272b;
+        --color-gray-1: #5c6066;
+        --color-gray-2: #7c7d80;
+        --color-gray-3: #d6d8dc;
+        --color-gray-5: #f5f5f5;
+        --gutter-1: 24px;
+        --gutter-2: 20px;
+        --font-weight-bolder: 600;
+        --font-weight-normal: 400;
+        --font-size-xs: 8px;
+        --font-size-sm: 10px;
+        --font-size-base: 12px;
+        --font-size-lg: 18px;
+        --gap-1: 3px;
+        --gap-2: 5px;
+        --gap-3: 10px;
+      }
+      .is-muted,
+      .table tbody.table__item-group {
+        color: var(--color-gray-1);
+      }
+      * {
+        box-sizing: border-box;
+        font-family: "Gotham Book", 'Comic Sans MS';
+        font-style: normal;
+      }
+      @page {
+        size: A4;
+        orientation: portrait;
+        margin: 0;
+        margin-top: 16.5rem;
+        margin-bottom: 4rem;
+        @bottom-right {
+          content: "Page " counter(page) " of " counter(pages);
+          color: var(--color-gray-1);
+          margin-right: calc(var(--gutter-1) * 2);
+        }
+      }
+      body {
+        margin: 0;
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-normal);
+        color: var(--color-black);
+      }
+      .header {
+        width: 100%;
+        position: fixed;
+        top: 0;
+      }
+      .header__container {
+        padding-top: var(--gutter-1);
+        padding-bottom: var(--gutter-1);
+      }
+      .header__logo {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 60px;
+        height: auto;
+      }
+      .header__title {
+        font-size: var(--font-size-lg);
+        line-height: 23.2px;
+      }
+      .products__nominal .is-muted,
+      .products__total {
+        line-height: 14.5px;
+      }
+      .header__title .is-muted {
+        font-size: calc(var(--font-size-lg) - 2px);
+      }
+      .header__invoice,
+      .products__summary,
+      .signature {
+        display: flex;
+      }
+      .header__invoice-container {
+        width: 50%;
+      }
+      .header__invoice-text {
+        font-size: var(--font-size-base);
+        margin-bottom: 10px;
+      }
+      .advert__policy,
+      .header__invoice-text .is-muted,
+      .header__invoice-text__title--small,
+      .products__nominal .is-muted,
+      .products__tax,
+      .table thead th .is-muted {
+        font-size: var(--font-size-sm);
+      }
+      .header__invoice-text--inline {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--gap-1);
+        margin-bottom: 8px;
+      }
+      .header__invoice-text__title {
+        display: flex;
+        align-items: flex-end;
+        gap: var(--gap-2);
+        font-weight: var(--font-weight-bolder);
+        margin-bottom: var(--gap-1);
+      }
+      .header__invoice-text--inline .header__invoice-text__title {
+        width: 200px;
+        margin-bottom: 0;
+      }
+      .header__invoice-text__separator,
+      .header__invoice-text__value {
+        font-weight: var(--font-weight-normal);
+      }
+      .main {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      .mb-2,
+      .products {
+        margin-bottom: var(--gutter-2);
+      }
+      .products__summary-container {
+        display: flex;
+        width: 50%;
+      }
+      .products__nominal {
+        margin-top: auto;
+      }
+      .products__total {
+        display: flex;
+        gap: var(--gap-3);
+      }
+      .products__total-text:first-child {
+        flex-grow: 1;
+      }
+      .products__total-container {
+        margin-left: auto;
+      }
+      .products__tax {
+        margin-top: var(--gap-2);
+        font-style: italic;
+        font-family: 'Gotham Book', 'Comic Sans MS';
+      }
+      .products__tax .is-muted {
+        font-size: var(--font-size-xs);
+      }
+      .signature__container {
+        margin-left: auto;
+        width: 150px;
+      }
+      .footer__company,
+      .signature__title {
+        text-align: center;
+      }
+      .signature__title .is-muted {
+        margin-top: var(--gap-1);
+        font-size: var(--font-size-sm);
+      }
+      .signature__box {
+        height: 70px;
+        width: 100%;
+        display: flex;
+        align-items: flex-end;
+      }
+      .signature__name {
+        width: 100%;
+        font-size: var(--font-size-sm);
+        position: relative;
+        text-align: center;
+        padding-bottom: 2px;
+        border-bottom: 1px solid var(--color-gray-2);
+      }
+      .table,
+      .table thead th {
+        border-bottom: 1px solid var(--color-gray-3);
+      }
+      .advert {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+      }
+      .advert__container {
+        margin-top: auto;
+        margin-bottom: 30px;
+      }
+      .advert__barcode {
+        width: 50px;
+        height: 50px;
+      }
+      .advert__policy .is-muted {
+        font-size: var(--font-size-xs);
+      }
+      .footer {
+        position: fixed;
+        bottom: 0;
+        left: 25%;
+        right: 25%;
+        width: 50%;
+        padding: 16px;
+      }
+      .container,
+      .table tr td:first-child,
+      .table tr th:first-child {
+        padding-left: calc(var(--gutter-1) * 2);
+      }
+      .container,
+      .table tr td:last-child,
+      .table tr th:last-child {
+        padding-right: calc(var(--gutter-1) * 2);
+      }
+      .footer__company--name {
+        text-align: center;
+        font-weight: var(--font-weight-bolder);
+      }
+      .footer__company--info,
+      .is-muted,
+      .table thead th {
+        font-weight: var(--font-weight-normal);
+      }
+      .footer__company--info {
+        text-align: center;
+        font-size: var(--font-size-sm);
+      }
+      .footer__page-counter {
+        text-align: end;
+        font-size: calc(var(--font-size-base) - 1px);
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        margin: 0;
+        padding: 0;
+      }
+      .mb-1 {
+        margin-bottom: var(--gutter-1);
+      }
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        border-top: 1px solid var(--color-gray-3);
+      }
+      .table thead {
+        text-align: left;
+        display: table-header-group;
+      }
+      .table thead th {
+        line-height: 1rem;
+        padding: 7px 0;
+      }
+      .table tbody tr:first-child td,
+      .table tfoot td {
+        padding-top: var(--gap-2);
+      }
+      .table tbody td {
+        line-height: 1.1rem;
+      }
+      .table tbody tr:last-child td {
+        padding-bottom: var(--gap-2);
+      }
+      .table tfoot td {
+        padding-bottom: var(--gutter-2);
+      }
+      .table__item--number {
+        text-align: right;
+      }
+      .table__item--title {
+        font-weight: var(--font-weight-bolder);
+        color: var(--color-black) !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <%@ body { %> <% } %>
+
+    <script src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
+
+    <script>
+      class RepeatTableHeadersHandler extends Paged.Handler {
+        constructor(chunker, polisher, caller) {
+          super(chunker, polisher, caller);
+          this.splitTablesRefs = [];
+        }
+
+        afterPageLayout(pageElement, page, breakToken, chunker) {
+          this.chunker = chunker;
+          this.splitTablesRefs = [];
+
+          if (breakToken) {
+            const node = breakToken.node;
+            const tables = this.findAllAncestors(node, "table");
+            if (node.tagName === "TABLE") tables.push(node);
+
+            if (tables.length > 0) {
+              this.splitTablesRefs = tables.map((t) => t.dataset.ref);
+
+              let thead =
+                node.tagName === "THEAD"
+                  ? node
+                  : this.findFirstAncestor(node, "thead");
+              if (thead) {
+                let lastTheadNode = thead.hasChildNodes()
+                  ? thead.lastChild
+                  : thead;
+                breakToken.node = this.nodeAfter(lastTheadNode, chunker.source);
+              }
+
+              this.hideEmptyTables(pageElement, node);
+            }
+          }
+        }
+
+        hideEmptyTables(pageElement, breakTokenNode) {
+          this.splitTablesRefs.forEach((ref) => {
+            let table = pageElement.querySelector("[data-ref='" + ref + "']");
+            if (table) {
+              let sourceBody = table.querySelector("tbody > tr");
+              if (
+                !sourceBody ||
+                this.refEquals(sourceBody.firstElementChild, breakTokenNode)
+              ) {
+                table.style.visibility = "hidden";
+                table.style.position = "absolute";
+                let lineSpacer = table.nextSibling;
+                if (lineSpacer) {
+                  lineSpacer.style.visibility = "hidden";
+                  lineSpacer.style.position = "absolute";
+                }
+              }
+            }
+          });
+        }
+
+        refEquals(a, b) {
+          return (
+            a && a.dataset && b && b.dataset && a.dataset.ref === b.dataset.ref
+          );
+        }
+
+        findFirstAncestor(element, selector) {
+          while (element.parentNode && element.parentNode.nodeType === 1) {
+            if (element.parentNode.matches(selector)) return element.parentNode;
+            element = element.parentNode;
+          }
+          return null;
+        }
+
+        findAllAncestors(element, selector) {
+          const ancestors = [];
+          while (element.parentNode && element.parentNode.nodeType === 1) {
+            if (element.parentNode.matches(selector))
+              ancestors.unshift(element.parentNode);
+            element = element.parentNode;
+          }
+          return ancestors;
+        }
+
+        layout(rendered, layout) {
+          this.splitTablesRefs.forEach((ref) => {
+            const renderedTable = rendered.querySelector(
+              "[data-ref='" + ref + "']"
+            );
+            if (renderedTable) {
+              if (!renderedTable.getAttribute("repeated-headers")) {
+                const sourceTable = this.chunker.source.querySelector(
+                  "[data-ref='" + ref + "']"
+                );
+                this.repeatColgroup(sourceTable, renderedTable);
+                this.repeatTHead(sourceTable, renderedTable);
+                renderedTable.setAttribute("repeated-headers", true);
+              }
+            }
+          });
+        }
+
+        repeatColgroup(sourceTable, renderedTable) {
+          let colgroup = sourceTable.querySelectorAll("colgroup");
+          let firstChild = renderedTable.firstChild;
+          colgroup.forEach((colgroup) => {
+            let clonedColgroup = colgroup.cloneNode(true);
+            renderedTable.insertBefore(clonedColgroup, firstChild);
+          });
+        }
+
+        repeatTHead(sourceTable, renderedTable) {
+          let thead = sourceTable.querySelector("thead");
+          if (thead) {
+            let clonedThead = thead.cloneNode(true);
+            renderedTable.insertBefore(clonedThead, renderedTable.firstChild);
+          }
+        }
+
+        nodeAfter(node, limiter) {
+          if (limiter && node === limiter) return;
+          let significantNode = this.nextSignificantNode(node);
+          if (significantNode) return significantNode;
+          if (node.parentNode) {
+            while ((node = node.parentNode)) {
+              if (limiter && node === limiter) return;
+              significantNode = this.nextSignificantNode(node);
+              if (significantNode) return significantNode;
+            }
+          }
+        }
+
+        nextSignificantNode(sib) {
+          while ((sib = sib.nextSibling)) {
+            if (!this.isIgnorable(sib)) return sib;
+          }
+          return null;
+        }
+
+        isIgnorable(node) {
+          return (
+            node.nodeType === 8 ||
+            (node.nodeType === 3 && this.isAllWhitespace(node))
+          );
+        }
+
+        isAllWhitespace(node) {
+          return !/[^\t\n\r ]/.test(node.textContent);
+        }
+      }
+
+      Paged.registerHandlers(RepeatTableHeadersHandler);
+    </script>
+  </body>
+</html>

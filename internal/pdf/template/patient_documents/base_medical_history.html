@@ -1,0 +1,59 @@
+<div class="container mb-2">
+  <div class="item-title mb-4">
+    <h3>Riwayat Kesehatan</h3>
+    <span class="fs-regular is-muted">/</span>
+    <span class="fs-regular is-muted">Medical History</span>
+  </div>
+
+  <div class="row">
+    <div class="col-6">
+      <div class="item-title">
+        <p>Alergi</p>
+        <span class="fs-sm is-muted">/</span>
+        <span class="fs-sm is-muted">Alergy</span>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="answer-box"><%= param.Allergies %></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-6">
+      <div class="item-title">
+        <p>Penyakit Bawaan</p>
+        <span class="fs-sm is-muted">/</span>
+        <span class="fs-sm is-muted">Congenital Disease</span>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="answer-box"><%= param.CongenitalDiseases %></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-6">
+      <div class="item-title">
+        <p>Riwayat Operasi (3 bulan terakhir)</p>
+        <span class="fs-sm is-muted">/</span>
+        <span class="fs-sm is-muted">Surgery History (last 3 months)</span>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="answer-box"><%= param.SurgeryHistories %></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-6">
+      <div class="item-title">
+        <p>Riwayat Pengobatan Rutin</p>
+        <span class="fs-sm is-muted">/</span>
+        <span class="fs-sm is-muted">Medication History</span>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="answer-box"><%= param.MedicationHistories %></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,141 @@
+<%: func MedicalCertificateHTML(param MedicalCertificateParam, buffer *bytes.Buffer) %> 
+<%~ "base.html" %> 
+<%@ body { %>
+  <%+ "base_header.html" %>
+
+  <main class="main">
+    <%+ "base_patient_info.html" %>
+
+    <div class="container mb-2">
+      <div class="item-title">
+        <h3>Catatan Dokter</h3>
+        <span class="fs-regular is-muted">/</span>
+        <span class="fs-regular is-muted">Doctor's Note</span>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="item-title">
+        <span>Kami informasikan bahwa pasien di atas diagnosa
+          <span class="fs-sm is-muted">/</span>
+          <span class="fs-sm is-muted">(This is to state that the above mentioned patient is diagnosed)</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="container mb-2 w-100">
+      <% if len(param.Diagnoses) > 0 { %>
+        <% for _, diagnose := range param.Diagnoses { %>
+          <ul>
+            <li><%= diagnose %></li>
+          </ul>
+        <% } %>
+      <% } else {%>
+        <div class="general-answer-box"></div>
+      <% } %>
+    </div>
+
+    <div class="container mb-2 w-100">
+      <div class="item-title">
+        <span>Berdasarkan keadaan tersebut, kami memberikan rekomendasi istirahat
+          kepada pasien selama
+          <span class="fs-sm is-muted">(This patient is recommended to rest for)</span>
+        </span>
+      </div>
+
+      <% if param.Duration != "" { %> 
+          <span
+              style="height: 20px; width: 18px"
+          ><%= param.Duration %></span>
+      <% } else {%>
+          <span
+              class="border-2 border-bottom"
+              style="height: 20px; width: 75px"
+          ></span>
+      <% } %>(
+      
+      <% if param.DurationSpelling != "" { %> 
+          <span
+              class="text-center"
+              style="height: 20px; width: 120px"
+          ><%= param.DurationSpelling %></span>
+      <% } else { %>
+          <span
+              class="border-2 border-bottom"
+              style="height: 20px; width: 120px"
+          ></span>
+      <% } %>
+      ) hari <span class="text-muted">(days)</span>, dari tanggal <span class="text-muted">(from)</span>
+      
+      <% if param.RestStartedAt != "" { %>
+          <%= param.RestStartedAt %>
+      <% } else {%>
+          <div
+              class="border-2 border-bottom"
+              style="height: 20px; width: 35px"
+          ></div>
+          &nbsp;/ &nbsp;
+          <div
+              class="border-2 border-bottom"
+              style="height: 20px; width: 35px"
+          ></div>
+          &nbsp;/ &nbsp;
+          <div
+              class="border-2 border-bottom"
+              style="height: 20px; width: 60px"
+          ></div>
+      <% } %>
+       hingga  <span class="text-muted">(to)</span> 
+      <% if param.RestEndedAt != "" { %>
+          <%= param.RestEndedAt %>
+      <% } else {%>
+          <div
+              class="border-2 border-bottom"
+              style="height: 20px; width: 35px"
+          ></div>
+          &nbsp;/ &nbsp;
+          <div
+              class="border-2 border-bottom"
+              style="height: 20px; width: 35px"
+          ></div>
+          &nbsp;/ &nbsp;
+          <div
+              class="border-2 border-bottom"
+              style="height: 20px; width: 60px"
+          ></div>
+      <% } %>
+    </div>
+
+    <div class="container mb-2">
+      <div class="item-title mb-4">
+        <span>Demikian Informasi dari kami, semoga dapat menjadi bahan
+          pertimbangan
+          <span class="fs-sm is-muted">/</span>
+          <span class="fs-sm is-muted">Appreciate that this recommendation shall be taken into
+            consideration.</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="signature">
+        <div class="signature__container">
+          <div class="signature__title">
+            Dokter Pemeriksa
+            <div class="is-muted">Examining Doctor</div>
+          </div>
+
+          <div class="signature__box">
+            <div class="signature__name"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# import base_qr_code.html here %>
+  </main>
+
+  <%+ "base_footer.html" %>
+
+  
+<% } %>

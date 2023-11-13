@@ -1,0 +1,102 @@
+<%: func MedicalSummaryHTML(param MedicalSummaryParam, buffer *bytes.Buffer) %>
+<%~ "base.html" %>
+<%@ body { %>
+  <%+ "base_header.html" %> 
+
+  <main class="main">
+    <%+ "base_patient_info.html" %>
+
+    <%+ "base_guardian_info.html" %>
+
+    <%+ "base_medical_history.html" %>
+  </main>
+
+  <main class="main">
+    <div class="container mb-2">
+      <div class="item-title mb-4">
+        <h3>Riwayat Vaksinasi</h3>
+        <span class="fs-regular is-muted">/</span>
+        <span class="fs-regular is-muted">Vaccination History</span>
+      </div>
+
+      <table
+        class="table gx-3 gy-3 table--fixed table--align-top table--full-border table-vaccination-history"
+      >
+        <thead>
+          <tr>
+            <th style="width: 135px">
+              Tanggal Vaksin
+              <div class="is-muted">Vaccine Date</div>
+            </th>
+            <th>
+              Nama Vaksin
+              <div class="is-muted">Vaccine Name</div>
+            </th>
+            <th>
+              Catatan
+              <div class="is-muted">Note</div>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% for _, v := range param.Vaccinations { %>
+            <tr>
+              <td><%= v.Date %></td>
+              <td><%= v.VaccineName %></td>
+              <td><%= v.Note %></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="container mb-2">
+      <div class="item-title mb-4">
+        <h3>Hasil Pemeriksaan Kesehatan</h3>
+        <span class="fs-regular is-muted">/</span>
+        <span class="fs-regular is-muted">Health Examination Result</span>
+      </div>
+
+      <table
+        class="table gx-3 gy-3 table--fixed table--align-top table--full-border table-health-examination-result"
+      >
+        <thead>
+          <tr>
+            <th style="width: 135px">
+              Tanggal
+              <div class="is-muted">Date</div>
+            </th>
+            <th>
+              Catatan Pemeriksaan
+              <div class="is-muted">Examination Note</div>
+            </th>
+            <th>
+              Diagnosa
+              <div class="is-muted">Diagnosis</div>
+            </th>
+            <th>
+              Terapi dan Instruksi
+              <div class="is-muted">Therapy and Instruction</div>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% for _, v := range param.Examinations { %>
+            <tr>
+              <td><%= v.Date %></td>
+              <td class="overflow-wrap-anywhere"><%= v.Note %></td>
+              <td class="overflow-wrap-anywhere"><%= v.Diagnoses %></td>
+              <td class="overflow-wrap-anywhere"><%== v.TherapyAndInstructions %></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <%# import base_qr_code.html here %>
+  </main>
+
+  <%+ "base_footer.html" %>
+<% } %>
