@@ -208,6 +208,8 @@ func registerRoutes(router gin.IRouter, useCaseManager use_case.UseCaseManager) 
 		)
 	}
 
+	RegisterAdminUserApi(router, useCaseManager)
+
 	RegisterAuthApi(router, useCaseManager)
 }
 

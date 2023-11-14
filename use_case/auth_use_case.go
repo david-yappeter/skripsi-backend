@@ -23,7 +23,6 @@ type AuthUseCase interface {
 	// create
 	GenerateJWT(ctx context.Context, userId string) (*jwtInternal.Token, error)
 	LoginUsername(ctx context.Context, request dto_request.AuthUsernameLoginRequest) model.Token
-	RegisterUsername(ctx context.Context, request dto_request.AuthUsernameRegisterRequest) model.Token
 
 	// update
 	Logout(ctx context.Context)
@@ -48,12 +47,6 @@ func NewAuthUseCase(
 	}
 }
 
-func (u *authUseCase) mustGetHashedPassword(originalPassword string) string {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(originalPassword), bcrypt.DefaultCost)
-	panicIfErr(err)
-	return string(hashedPassword)
-}
-
 func (u *authUseCase) mustValidateComparePassword(hashedPassword string, originalPassword string) {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(originalPassword))
 	if err != nil {
@@ -61,15 +54,6 @@ func (u *authUseCase) mustValidateComparePassword(hashedPassword string, origina
 			panic(dto_response.NewBadRequestErrorResponse("AUTH.WRONG_PASSWORD"))
 		}
 		panic(err)
-	}
-}
-
-func (u *authUseCase) mustValidateUsernameUnique(ctx context.Context, username string) {
-	isExist, err := u.repositoryManager.UserRepository().IsExistByUsername(ctx, username)
-	panicIfErr(err)
-
-	if isExist {
-		panic(dto_response.NewBadRequestErrorResponse("AUTH.UNIQUE_USERNAME"))
 	}
 }
 
@@ -145,33 +129,6 @@ func (u *authUseCase) LoginUsername(ctx context.Context, request dto_request.Aut
 	}
 
 	u.mustValidateComparePassword(user.Password, request.Password)
-
-	accessToken, err := u.GenerateJWT(ctx, user.Id)
-	panicIfErr(err)
-
-	return model.Token{
-		AccessToken:          accessToken.AccessToken,
-		AccessTokenExpiredAt: data_type.NewDateTime(accessToken.ExpiredAt),
-		TokenType:            accessToken.TokenType,
-	}
-}
-
-func (u *authUseCase) RegisterUsername(ctx context.Context, request dto_request.AuthUsernameRegisterRequest) model.Token {
-	u.mustValidateUsernameUnique(ctx, request.Username)
-
-	hashedPassword := u.mustGetHashedPassword(request.Password)
-
-	user := model.User{
-		Id:       util.NewUuid(),
-		Username: request.Username,
-		Name:     request.Name,
-		Password: hashedPassword,
-		IsActive: request.IsActive,
-	}
-
-	panicIfErr(
-		u.repositoryManager.UserRepository().Insert(ctx, &user),
-	)
 
 	accessToken, err := u.GenerateJWT(ctx, user.Id)
 	panicIfErr(err)

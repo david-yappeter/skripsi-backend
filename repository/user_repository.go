@@ -21,9 +21,14 @@ type UserRepository interface {
 	Fetch(ctx context.Context, options ...model.UserQueryOption) ([]model.User, error)
 	GetByUsername(ctx context.Context, username string) (*model.User, error)
 	GetByUsernameAndIsActive(ctx context.Context, username string, isActive bool) (*model.User, error)
-	GetById(ctx context.Context, id string) (*model.User, error)
+	Get(ctx context.Context, id string) (*model.User, error)
 	GetByIdAndIsActive(ctx context.Context, id string, isActive bool) (*model.User, error)
 	IsExistByUsername(ctx context.Context, username string) (bool, error)
+
+	// update
+	UpdateName(ctx context.Context, user *model.User) error
+	UpdateIsActive(ctx context.Context, user *model.User) error
+	UpdatePassword(ctx context.Context, user *model.User) error
 
 	// delete
 	Truncate(ctx context.Context) error
@@ -139,7 +144,7 @@ func (r *userRepository) GetByUsernameAndIsActive(ctx context.Context, username 
 	return r.get(ctx, stmt)
 }
 
-func (r *userRepository) GetById(ctx context.Context, id string) (*model.User, error) {
+func (r *userRepository) Get(ctx context.Context, id string) (*model.User, error) {
 	stmt := stmtBuilder.Select("*").
 		From(model.UserTableName).
 		Where("id = ?", id)
@@ -166,6 +171,18 @@ func (r *userRepository) IsExistByUsername(ctx context.Context, username string)
 	isExist := user != nil
 
 	return isExist, nil
+}
+
+func (r *userRepository) UpdateName(ctx context.Context, user *model.User) error {
+	return defaultUpdate(r.db, ctx, user, "name", nil)
+}
+
+func (r *userRepository) UpdateIsActive(ctx context.Context, user *model.User) error {
+	return defaultUpdate(r.db, ctx, user, "is_active", nil)
+}
+
+func (r *userRepository) UpdatePassword(ctx context.Context, user *model.User) error {
+	return defaultUpdate(r.db, ctx, user, "password", nil)
 }
 
 func (r *userRepository) Truncate(ctx context.Context) error {

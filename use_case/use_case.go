@@ -6,6 +6,8 @@ import (
 	"myapp/delivery/dto_response"
 	"myapp/internal/filesystem"
 	validatorInternal "myapp/internal/gin/validator"
+	"myapp/model"
+	"myapp/repository"
 )
 
 const (
@@ -148,4 +150,10 @@ func panicIfRepositoryError(err error, errNoDataValidateMessage string, isValida
 
 		panic(err)
 	}
+}
+
+func mustGetUser(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.User {
+	user, err := repositoryManager.UserRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "User data not found", isValidate)
+	return *user
 }
