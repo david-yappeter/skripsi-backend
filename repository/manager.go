@@ -17,6 +17,7 @@ type RepositoryManager interface {
 	PermissionRepository() PermissionRepository
 	RolePermissionRepository() RolePermissionRepository
 	RoleRepository() RoleRepository
+	UnitRepository() UnitRepository
 	UserAccessTokenRepository() UserAccessTokenRepository
 	UserRepository() UserRepository
 }
@@ -28,6 +29,7 @@ type repositoryManager struct {
 	permissionRepository      PermissionRepository
 	rolePermissionRepository  RolePermissionRepository
 	roleRepository            RoleRepository
+	unitRepository            UnitRepository
 	userAccessTokenRepository UserAccessTokenRepository
 	userRepository            UserRepository
 }
@@ -65,8 +67,13 @@ func (r *repositoryManager) PermissionRepository() PermissionRepository {
 func (r *repositoryManager) RolePermissionRepository() RolePermissionRepository {
 	return r.rolePermissionRepository
 }
+
 func (r *repositoryManager) RoleRepository() RoleRepository {
 	return r.roleRepository
+}
+
+func (r *repositoryManager) UnitRepository() UnitRepository {
+	return r.unitRepository
 }
 
 func (r *repositoryManager) UserAccessTokenRepository() UserAccessTokenRepository {
@@ -86,6 +93,10 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 		loggerStack: loggerStack,
 
 		roleRepository: NewRoleRepository(
+			db,
+			loggerStack,
+		),
+		unitRepository: NewUnitRepository(
 			db,
 			loggerStack,
 		),

@@ -157,3 +157,9 @@ func mustGetUser(ctx context.Context, repositoryManager repository.RepositoryMan
 	panicIfRepositoryError(err, "User data not found", isValidate)
 	return *user
 }
+
+func mustGetUnit(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.Unit {
+	unit, err := repositoryManager.UnitRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "Unit data not found", isValidate)
+	return *unit
+}
