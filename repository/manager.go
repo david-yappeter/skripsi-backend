@@ -15,6 +15,7 @@ type RepositoryManager interface {
 	) error
 
 	PermissionRepository() PermissionRepository
+	ProductRepository() ProductRepository
 	RolePermissionRepository() RolePermissionRepository
 	RoleRepository() RoleRepository
 	UnitRepository() UnitRepository
@@ -27,6 +28,7 @@ type repositoryManager struct {
 	loggerStack infrastructure.LoggerStack
 
 	permissionRepository      PermissionRepository
+	productRepository         ProductRepository
 	rolePermissionRepository  RolePermissionRepository
 	roleRepository            RoleRepository
 	unitRepository            UnitRepository
@@ -64,6 +66,10 @@ func (r *repositoryManager) PermissionRepository() PermissionRepository {
 	return r.permissionRepository
 }
 
+func (r *repositoryManager) ProductRepository() ProductRepository {
+	return r.productRepository
+}
+
 func (r *repositoryManager) RolePermissionRepository() RolePermissionRepository {
 	return r.rolePermissionRepository
 }
@@ -91,7 +97,18 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 	return &repositoryManager{
 		db:          db,
 		loggerStack: loggerStack,
-
+		permissionRepository: NewPermissionRepository(
+			db,
+			loggerStack,
+		),
+		productRepository: NewProductRepository(
+			db,
+			loggerStack,
+		),
+		rolePermissionRepository: NewRolePermissionRepository(
+			db,
+			loggerStack,
+		),
 		roleRepository: NewRoleRepository(
 			db,
 			loggerStack,

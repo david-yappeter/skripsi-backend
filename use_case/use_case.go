@@ -163,3 +163,9 @@ func mustGetUnit(ctx context.Context, repositoryManager repository.RepositoryMan
 	panicIfRepositoryError(err, "Unit data not found", isValidate)
 	return *unit
 }
+
+func mustGetProduct(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.Product {
+	unit, err := repositoryManager.ProductRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "Product data not found", isValidate)
+	return *unit
+}
