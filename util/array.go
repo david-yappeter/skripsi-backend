@@ -41,3 +41,13 @@ func RemoveStringFromSlice(s []string, r string) []string {
 	}
 	return s
 }
+
+func ConvertArray[K any, T any](arr []K, callback func(K) T) []T {
+	nodes := []T{}
+
+	for _, v := range arr {
+		nodes = append(nodes, callback(v))
+	}
+
+	return nodes
+}

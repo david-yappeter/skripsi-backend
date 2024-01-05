@@ -17,16 +17,16 @@ type AdminUnitFetchRequest struct {
 } // @name AdminUnitFetchRequest
 
 type AdminUnitGetRequest struct {
-	Id string `json:"-" swaggerignore:"true"`
+	UnitId string `json:"-" swaggerignore:"true"`
 } // @name AdminUnitGetRequest
 
 type AdminUnitUpdateRequest struct {
-	Id string `json:"-" swaggerignore:"true"`
+	UnitId string `json:"-" swaggerignore:"true"`
 
 	Name        string  `json:"name" validate:"required,not_empty"`
 	Description *string `json:"description" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name AdminUnitUpdateRequest
 
 type AdminUnitDeleteRequest struct {
-	Id string `json:"-" swaggerignore:"true"`
+	UnitId string `json:"-" swaggerignore:"true"`
 } // @name AdminUnitDeleteRequest

@@ -37,6 +37,10 @@ func (u *unitUseCase) mustValidateNameNotDuplicate(ctx context.Context, name str
 	}
 }
 
+func (u *unitUseCase) mustValidateAllowDeleteUnit(ctx context.Context, unitId string) {
+
+}
+
 func (u *unitUseCase) Create(ctx context.Context, request dto_request.AdminUnitCreateRequest) model.Unit {
 	u.mustValidateNameNotDuplicate(ctx, request.Name)
 
@@ -73,13 +77,13 @@ func (u *unitUseCase) Fetch(ctx context.Context, request dto_request.AdminUnitFe
 }
 
 func (u *unitUseCase) Get(ctx context.Context, request dto_request.AdminUnitGetRequest) model.Unit {
-	unit := mustGetUnit(ctx, u.repositoryManager, request.Id, true)
+	unit := mustGetUnit(ctx, u.repositoryManager, request.UnitId, true)
 
 	return unit
 }
 
 func (u *unitUseCase) Update(ctx context.Context, request dto_request.AdminUnitUpdateRequest) model.Unit {
-	unit := mustGetUnit(ctx, u.repositoryManager, request.Id, true)
+	unit := mustGetUnit(ctx, u.repositoryManager, request.UnitId, true)
 
 	if unit.Name != request.Name {
 		u.mustValidateNameNotDuplicate(ctx, request.Name)
@@ -96,8 +100,13 @@ func (u *unitUseCase) Update(ctx context.Context, request dto_request.AdminUnitU
 }
 
 func (u *unitUseCase) Delete(ctx context.Context, request dto_request.AdminUnitDeleteRequest) {
-	// TODO: Validate usage
-	panic("unimplemented")
+	unit := mustGetUnit(ctx, u.repositoryManager, request.UnitId, true)
+
+	u.mustValidateAllowDeleteUnit(ctx, request.UnitId)
+
+	panicIfErr(
+		u.repositoryManager.UnitRepository().Delete(ctx, &unit),
+	)
 }
 
 func NewUnitUseCase(

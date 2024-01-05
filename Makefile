@@ -38,4 +38,4 @@ test:
 	go clean -testcache && go test -timeout 3h `go list ./... | grep -v tool$$`$(flag) -v > test.out
 
 generate-docs:
-	go run clinic-pilot/tool/swag fmt -d main.go,./delivery/api && go run clinic-pilot/tool/swag init -d ./,./delivery/api --outputTypes json,yaml
+	go run myapp/tool/swag fmt -d main.go,./delivery/api && go run myapp/tool/swag init -d ./,./delivery/api --outputTypes json,yaml

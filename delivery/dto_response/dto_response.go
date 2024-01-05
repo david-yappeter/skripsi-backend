@@ -2,6 +2,7 @@ package dto_response
 
 import (
 	"myapp/constant"
+	"myapp/data_type"
 	"myapp/util"
 	"net/http"
 )
@@ -33,6 +34,11 @@ type PaginationResponse struct {
 	Limit *int        `json:"limit" example:"10"`
 	Nodes interface{} `json:"nodes"`
 } // @name PaginationResponse
+
+type Timestamp struct {
+	CreatedAt data_type.DateTime `json:"created_at"`
+	UpdatedAt data_type.DateTime `json:"updated_at"`
+} // @name Timestamp
 
 func NewPaginationResponse(nodes interface{}, total int, pageP *int, limitP *int) PaginationResponse {
 	page := constant.PaginationDefaultPage

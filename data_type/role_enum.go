@@ -26,10 +26,18 @@ func (r Role) Permissions() []Permission {
 
 func GetRoleSuperAdminPermissions() []Permission {
 	return []Permission{
+		// admin user
 		PermissionAdminUserCreate,
 		PermissionAdminUserUpdate,
 		PermissionAdminUserUpdatePassword,
 		PermissionAdminUserUpdateActive,
 		PermissionAdminUserUpdateInActive,
+
+		// admin unit
+		PermissionAdminUnitCreate,
+		PermissionAdminUnitFetch,
+		PermissionAdminUnitGet,
+		PermissionAdminUnitUpdate,
+		PermissionAdminUnitDelete,
 	}
 }
