@@ -5,6 +5,7 @@ type Role int // @name RoleEnum
 
 const (
 	RoleSuperAdmin Role = iota + 1 // Super Admin
+	RoleInventory                  // Inventory
 )
 
 var roleTypeByRole = map[Role]RoleType{
@@ -19,6 +20,8 @@ func (r Role) Permissions() []Permission {
 	switch r {
 	case RoleSuperAdmin:
 		return GetRoleSuperAdminPermissions()
+	case RoleInventory:
+		return GetRoleInventoryPermissions()
 	}
 
 	return []Permission{}
@@ -39,5 +42,23 @@ func GetRoleSuperAdminPermissions() []Permission {
 		PermissionAdminUnitGet,
 		PermissionAdminUnitUpdate,
 		PermissionAdminUnitDelete,
+
+		// admin supplier type
+		PermissionAdminSupplierTypeCreate,
+		PermissionAdminSupplierTypeFetch,
+		PermissionAdminSupplierTypeGet,
+		PermissionAdminSupplierTypeUpdate,
+		PermissionAdminSupplierTypeDelete,
+	}
+}
+
+func GetRoleInventoryPermissions() []Permission {
+	return []Permission{
+		// supplier type
+		PermissionSupplierTypeCreate,
+		PermissionSupplierTypeFetch,
+		PermissionSupplierTypeGet,
+		PermissionSupplierTypeUpdate,
+		PermissionSupplierTypeDelete,
 	}
 }

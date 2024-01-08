@@ -14,18 +14,21 @@ func _() {
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
 	_ = x[RoleSuperAdmin-1]
+	_ = x[RoleInventory-2]
 }
 
-const _Role_nameReadable = "Super Admin"
+const _Role_nameReadable = "Super Admin, Inventory"
 
-const _Role_name = "Super Admin"
+const _Role_name = "Super AdminInventory"
 
-var _Role_index = [...]uint8{0, 11}
+var _Role_index = [...]uint8{0, 11, 20}
 
 func (i *Role) determine(s string) {
 	switch s {
 	case "Super Admin":
 		*i = RoleSuperAdmin
+	case "Inventory":
+		*i = RoleInventory
 	default:
 		*i = 0
 	}
@@ -95,11 +98,13 @@ func RoleP(v Role) *Role {
 func ListRole() []Role {
 	return []Role{
 		RoleSuperAdmin,
+		RoleInventory,
 	}
 }
 
 func ListRoleString() []string {
 	return []string{
 		RoleSuperAdmin.String(),
+		RoleInventory.String(),
 	}
 }

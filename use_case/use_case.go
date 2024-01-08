@@ -165,7 +165,13 @@ func mustGetUnit(ctx context.Context, repositoryManager repository.RepositoryMan
 }
 
 func mustGetProduct(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.Product {
-	unit, err := repositoryManager.ProductRepository().Get(ctx, id)
+	product, err := repositoryManager.ProductRepository().Get(ctx, id)
 	panicIfRepositoryError(err, "Product data not found", isValidate)
-	return *unit
+	return *product
+}
+
+func mustGetSupplierType(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.SupplierType {
+	supplierType, err := repositoryManager.SupplierTypeRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "Supplier type data not found", isValidate)
+	return *supplierType
 }

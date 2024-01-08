@@ -17,4 +17,18 @@ const (
 	PermissionAdminUnitGet    // ADMIN_UNIT_GET
 	PermissionAdminUnitUpdate // ADMIN_UNIT_UPDATE
 	PermissionAdminUnitDelete // ADMIN_UNIT_DELETE
+
+	// admin supplier type
+	PermissionAdminSupplierTypeCreate // ADMIN_SUPPLIER_TYPE_CREATE
+	PermissionAdminSupplierTypeFetch  // ADMIN_SUPPLIER_TYPE_FETCH
+	PermissionAdminSupplierTypeGet    // ADMIN_SUPPLIER_TYPE_GET
+	PermissionAdminSupplierTypeUpdate // ADMIN_SUPPLIER_TYPE_UPDATE
+	PermissionAdminSupplierTypeDelete // ADMIN_SUPPLIER_TYPE_DELETE
+
+	// supplier type
+	PermissionSupplierTypeCreate // SUPPLIER_TYPE_CREATE
+	PermissionSupplierTypeFetch  // SUPPLIER_TYPE_FETCH
+	PermissionSupplierTypeGet    // SUPPLIER_TYPE_GET
+	PermissionSupplierTypeUpdate // SUPPLIER_TYPE_UPDATE
+	PermissionSupplierTypeDelete // SUPPLIER_TYPE_DELETE
 )

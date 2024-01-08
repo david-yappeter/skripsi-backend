@@ -11,26 +11,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UnitApi struct {
+type AdminUnitApi struct {
 	api
 	unitUseCase use_case.UnitUseCase
 }
 
 //	@Router		/admin/units [post]
 //	@Summary	Create
-//	@tags		Units
+//	@tags		Admin Units
 //	@Accept		json
 //	@Param		dto_request.AdminUnitCreateRequest	body	dto_request.AdminUnitCreateRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{unit=dto_response.UnitResponse}}
-func (a *UnitApi) Create() gin.HandlerFunc {
+func (a *AdminUnitApi) Create() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionAdminUnitCreate),
 		func(ctx apiContext) {
 			var request dto_request.AdminUnitCreateRequest
 			ctx.mustBind(&request)
 
-			unit := a.unitUseCase.Create(ctx.context(), request)
+			unit := a.unitUseCase.AdminCreate(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -46,19 +46,19 @@ func (a *UnitApi) Create() gin.HandlerFunc {
 
 //	@Router		/admin/units/filter [post]
 //	@Summary	Filter
-//	@tags		Units
+//	@tags		Admin Units
 //	@Accept		json
 //	@Param		dto_request.AdminUnitFetchRequest	body	dto_request.AdminUnitFetchRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{units=[]dto_response.UnitResponse}}
-func (a *UnitApi) Fetch() gin.HandlerFunc {
+func (a *AdminUnitApi) Fetch() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionAdminUnitCreate),
 		func(ctx apiContext) {
 			var request dto_request.AdminUnitFetchRequest
 			ctx.mustBind(&request)
 
-			units, total := a.unitUseCase.Fetch(ctx.context(), request)
+			units, total := a.unitUseCase.AdminFetch(ctx.context(), request)
 
 			nodes := util.ConvertArray(units, dto_response.NewUnitResponse)
 
@@ -79,11 +79,11 @@ func (a *UnitApi) Fetch() gin.HandlerFunc {
 
 //	@Router		/admin/units/{id} [get]
 //	@Summary	Update
-//	@tags		Units
+//	@tags		Admin Units
 //	@Param		id	path	string	true	"Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{unit=dto_response.UnitResponse}}
-func (a *UnitApi) Get() gin.HandlerFunc {
+func (a *AdminUnitApi) Get() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionAdminUnitGet),
 		func(ctx apiContext) {
@@ -93,7 +93,7 @@ func (a *UnitApi) Get() gin.HandlerFunc {
 
 			request.UnitId = id
 
-			unit := a.unitUseCase.Get(ctx.context(), request)
+			unit := a.unitUseCase.AdminGet(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -109,13 +109,13 @@ func (a *UnitApi) Get() gin.HandlerFunc {
 
 //	@Router		/admin/units/{id} [put]
 //	@Summary	Update
-//	@tags		Units
+//	@tags		Admin Units
 //	@Accept		json
 //	@Param		id									path	string								true	"Id"
 //	@Param		dto_request.AdminUnitUpdateRequest	body	dto_request.AdminUnitUpdateRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{unit=dto_response.UnitResponse}}
-func (a *UnitApi) Update() gin.HandlerFunc {
+func (a *AdminUnitApi) Update() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionAdminUnitUpdate),
 		func(ctx apiContext) {
@@ -125,7 +125,7 @@ func (a *UnitApi) Update() gin.HandlerFunc {
 
 			request.UnitId = id
 
-			unit := a.unitUseCase.Update(ctx.context(), request)
+			unit := a.unitUseCase.AdminUpdate(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -141,12 +141,12 @@ func (a *UnitApi) Update() gin.HandlerFunc {
 
 //	@Router		/admin/units/{id} [delete]
 //	@Summary	Update Password
-//	@tags		Units
+//	@tags		Admin Units
 //	@Accept		json
 //	@Param		id	path	string	true	"Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.SuccessResponse
-func (a *UnitApi) Delete() gin.HandlerFunc {
+func (a *AdminUnitApi) Delete() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionAdminUnitDelete),
 		func(ctx apiContext) {
@@ -155,7 +155,7 @@ func (a *UnitApi) Delete() gin.HandlerFunc {
 			ctx.mustBind(&request)
 			request.UnitId = id
 
-			a.unitUseCase.Delete(ctx.context(), request)
+			a.unitUseCase.AdminDelete(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -168,7 +168,7 @@ func (a *UnitApi) Delete() gin.HandlerFunc {
 }
 
 func RegisterAdminUnitApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
-	api := UnitApi{
+	api := AdminUnitApi{
 		api:         newApi(useCaseManager),
 		unitUseCase: useCaseManager.UnitUseCase(),
 	}

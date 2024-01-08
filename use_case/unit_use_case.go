@@ -11,17 +11,17 @@ import (
 
 type UnitUseCase interface {
 	// admin create
-	Create(ctx context.Context, request dto_request.AdminUnitCreateRequest) model.Unit
+	AdminCreate(ctx context.Context, request dto_request.AdminUnitCreateRequest) model.Unit
 
 	// admin read
-	Fetch(ctx context.Context, request dto_request.AdminUnitFetchRequest) ([]model.Unit, int)
-	Get(ctx context.Context, request dto_request.AdminUnitGetRequest) model.Unit
+	AdminFetch(ctx context.Context, request dto_request.AdminUnitFetchRequest) ([]model.Unit, int)
+	AdminGet(ctx context.Context, request dto_request.AdminUnitGetRequest) model.Unit
 
 	// admin update
-	Update(ctx context.Context, request dto_request.AdminUnitUpdateRequest) model.Unit
+	AdminUpdate(ctx context.Context, request dto_request.AdminUnitUpdateRequest) model.Unit
 
 	// admin delete
-	Delete(ctx context.Context, request dto_request.AdminUnitDeleteRequest)
+	AdminDelete(ctx context.Context, request dto_request.AdminUnitDeleteRequest)
 }
 
 type unitUseCase struct {
@@ -41,7 +41,7 @@ func (u *unitUseCase) mustValidateAllowDeleteUnit(ctx context.Context, unitId st
 
 }
 
-func (u *unitUseCase) Create(ctx context.Context, request dto_request.AdminUnitCreateRequest) model.Unit {
+func (u *unitUseCase) AdminCreate(ctx context.Context, request dto_request.AdminUnitCreateRequest) model.Unit {
 	u.mustValidateNameNotDuplicate(ctx, request.Name)
 
 	unit := model.Unit{
@@ -57,7 +57,7 @@ func (u *unitUseCase) Create(ctx context.Context, request dto_request.AdminUnitC
 	return unit
 }
 
-func (u *unitUseCase) Fetch(ctx context.Context, request dto_request.AdminUnitFetchRequest) ([]model.Unit, int) {
+func (u *unitUseCase) AdminFetch(ctx context.Context, request dto_request.AdminUnitFetchRequest) ([]model.Unit, int) {
 	queryOption := model.UnitQueryOption{
 		QueryOption: model.NewQueryOptionWithPagination(
 			request.Page,
@@ -76,13 +76,13 @@ func (u *unitUseCase) Fetch(ctx context.Context, request dto_request.AdminUnitFe
 	return units, total
 }
 
-func (u *unitUseCase) Get(ctx context.Context, request dto_request.AdminUnitGetRequest) model.Unit {
+func (u *unitUseCase) AdminGet(ctx context.Context, request dto_request.AdminUnitGetRequest) model.Unit {
 	unit := mustGetUnit(ctx, u.repositoryManager, request.UnitId, true)
 
 	return unit
 }
 
-func (u *unitUseCase) Update(ctx context.Context, request dto_request.AdminUnitUpdateRequest) model.Unit {
+func (u *unitUseCase) AdminUpdate(ctx context.Context, request dto_request.AdminUnitUpdateRequest) model.Unit {
 	unit := mustGetUnit(ctx, u.repositoryManager, request.UnitId, true)
 
 	if unit.Name != request.Name {
@@ -99,7 +99,7 @@ func (u *unitUseCase) Update(ctx context.Context, request dto_request.AdminUnitU
 	return unit
 }
 
-func (u *unitUseCase) Delete(ctx context.Context, request dto_request.AdminUnitDeleteRequest) {
+func (u *unitUseCase) AdminDelete(ctx context.Context, request dto_request.AdminUnitDeleteRequest) {
 	unit := mustGetUnit(ctx, u.repositoryManager, request.UnitId, true)
 
 	u.mustValidateAllowDeleteUnit(ctx, request.UnitId)

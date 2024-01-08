@@ -13,13 +13,13 @@ import (
 
 type UserUseCase interface {
 	// admin create
-	Create(ctx context.Context, request dto_request.AdminUserCreateRequest) model.User
+	AdminCreate(ctx context.Context, request dto_request.AdminUserCreateRequest) model.User
 
 	// admin update
-	Update(ctx context.Context, request dto_request.AdminUserUpdateRequest) model.User
-	UpdatePassword(ctx context.Context, request dto_request.AdminUserUpdatePasswordRequest) model.User
-	UpdateActive(ctx context.Context, request dto_request.AdminUserUpdateActiveRequest) model.User
-	UpdateInActive(ctx context.Context, request dto_request.AdminUserUpdateInActiveRequest) model.User
+	AdminUpdate(ctx context.Context, request dto_request.AdminUserUpdateRequest) model.User
+	AdminUpdatePassword(ctx context.Context, request dto_request.AdminUserUpdatePasswordRequest) model.User
+	AdminUpdateActive(ctx context.Context, request dto_request.AdminUserUpdateActiveRequest) model.User
+	AdminUpdateInActive(ctx context.Context, request dto_request.AdminUserUpdateInActiveRequest) model.User
 }
 
 type userUseCase struct {
@@ -49,7 +49,7 @@ func (u *userUseCase) mustValidateUsernameUnique(ctx context.Context, username s
 	}
 }
 
-func (u *userUseCase) Create(ctx context.Context, request dto_request.AdminUserCreateRequest) model.User {
+func (u *userUseCase) AdminCreate(ctx context.Context, request dto_request.AdminUserCreateRequest) model.User {
 	u.mustValidateUsernameUnique(ctx, request.Username)
 
 	user := model.User{
@@ -67,7 +67,7 @@ func (u *userUseCase) Create(ctx context.Context, request dto_request.AdminUserC
 	return user
 }
 
-func (u *userUseCase) Update(ctx context.Context, request dto_request.AdminUserUpdateRequest) model.User {
+func (u *userUseCase) AdminUpdate(ctx context.Context, request dto_request.AdminUserUpdateRequest) model.User {
 	user := mustGetUser(ctx, u.repositoryManager, request.Id, false)
 
 	if user.Name != request.Name {
@@ -81,7 +81,7 @@ func (u *userUseCase) Update(ctx context.Context, request dto_request.AdminUserU
 	return user
 }
 
-func (u *userUseCase) UpdatePassword(ctx context.Context, request dto_request.AdminUserUpdatePasswordRequest) model.User {
+func (u *userUseCase) AdminUpdatePassword(ctx context.Context, request dto_request.AdminUserUpdatePasswordRequest) model.User {
 	user := mustGetUser(ctx, u.repositoryManager, request.Id, false)
 
 	user.Password = u.mustGetHashedPassword(request.Password)
@@ -92,7 +92,7 @@ func (u *userUseCase) UpdatePassword(ctx context.Context, request dto_request.Ad
 	return user
 }
 
-func (u *userUseCase) UpdateActive(ctx context.Context, request dto_request.AdminUserUpdateActiveRequest) model.User {
+func (u *userUseCase) AdminUpdateActive(ctx context.Context, request dto_request.AdminUserUpdateActiveRequest) model.User {
 	user := mustGetUser(ctx, u.repositoryManager, request.Id, false)
 
 	if user.IsActive {
@@ -107,7 +107,7 @@ func (u *userUseCase) UpdateActive(ctx context.Context, request dto_request.Admi
 	return user
 }
 
-func (u *userUseCase) UpdateInActive(ctx context.Context, request dto_request.AdminUserUpdateInActiveRequest) model.User {
+func (u *userUseCase) AdminUpdateInActive(ctx context.Context, request dto_request.AdminUserUpdateInActiveRequest) model.User {
 	user := mustGetUser(ctx, u.repositoryManager, request.Id, false)
 
 	if !user.IsActive {

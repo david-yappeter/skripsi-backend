@@ -10,26 +10,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserApi struct {
+type AdminUserApi struct {
 	api
 	userUseCase use_case.UserUseCase
 }
 
 //	@Router		/admin/users [post]
 //	@Summary	Create
-//	@tags		Users
+//	@tags		Admin Users
 //	@Accept		json
 //	@Param		dto_request.AdminUserCreateRequest	body	dto_request.AdminUserCreateRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{user=dto_response.UserResponse}}
-func (a *UserApi) Create() gin.HandlerFunc {
+func (a *AdminUserApi) Create() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionAdminUserCreate),
 		func(ctx apiContext) {
 			var request dto_request.AdminUserCreateRequest
 			ctx.mustBind(&request)
 
-			user := a.userUseCase.Create(ctx.context(), request)
+			user := a.userUseCase.AdminCreate(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -45,12 +45,12 @@ func (a *UserApi) Create() gin.HandlerFunc {
 
 //	@Router		/admin/users/{id} [put]
 //	@Summary	Update
-//	@tags		Users
+//	@tags		Admin Users
 //	@Accept		json
 //	@Param		dto_request.AdminUserUpdateRequest	body	dto_request.AdminUserUpdateRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{user=dto_response.UserResponse}}
-func (a *UserApi) Update() gin.HandlerFunc {
+func (a *AdminUserApi) Update() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionAdminUserUpdate),
 		func(ctx apiContext) {
@@ -59,7 +59,7 @@ func (a *UserApi) Update() gin.HandlerFunc {
 			ctx.mustBind(&request)
 			request.Id = id
 
-			user := a.userUseCase.Update(ctx.context(), request)
+			user := a.userUseCase.AdminUpdate(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -75,12 +75,12 @@ func (a *UserApi) Update() gin.HandlerFunc {
 
 //	@Router		/admin/users/{id}/password [patch]
 //	@Summary	Update Password
-//	@tags		Users
+//	@tags		Admin Users
 //	@Accept		json
 //	@Param		dto_request.AdminUserUpdatePasswordRequest	body	dto_request.AdminUserUpdatePasswordRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{user=dto_response.UserResponse}}
-func (a *UserApi) UpdatePassword() gin.HandlerFunc {
+func (a *AdminUserApi) UpdatePassword() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionAdminUserUpdatePassword),
 		func(ctx apiContext) {
@@ -89,7 +89,7 @@ func (a *UserApi) UpdatePassword() gin.HandlerFunc {
 			ctx.mustBind(&request)
 			request.Id = id
 
-			user := a.userUseCase.UpdatePassword(ctx.context(), request)
+			user := a.userUseCase.AdminUpdatePassword(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -105,12 +105,12 @@ func (a *UserApi) UpdatePassword() gin.HandlerFunc {
 
 //	@Router		/admin/users/{id}/active [patch]
 //	@Summary	Update Active
-//	@tags		Users
+//	@tags		Admin Users
 //	@Accept		json
 //	@Param		dto_request.AdminUserUpdateActiveRequest	body	dto_request.AdminUserUpdateActiveRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{user=dto_response.UserResponse}}
-func (a *UserApi) UpdateActive() gin.HandlerFunc {
+func (a *AdminUserApi) UpdateActive() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionAdminUserUpdateActive),
 		func(ctx apiContext) {
@@ -118,7 +118,7 @@ func (a *UserApi) UpdateActive() gin.HandlerFunc {
 			var request dto_request.AdminUserUpdateActiveRequest
 			request.Id = id
 
-			user := a.userUseCase.UpdateActive(ctx.context(), request)
+			user := a.userUseCase.AdminUpdateActive(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -134,12 +134,12 @@ func (a *UserApi) UpdateActive() gin.HandlerFunc {
 
 //	@Router		/admin/users/{id}/inactive [patch]
 //	@Summary	Update InActive
-//	@tags		Users
+//	@tags		Admin Users
 //	@Accept		json
 //	@Param		dto_request.AdminUserUpdateInActiveRequest	body	dto_request.AdminUserUpdateInActiveRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{user=dto_response.UserResponse}}
-func (a *UserApi) UpdateInActive() gin.HandlerFunc {
+func (a *AdminUserApi) UpdateInActive() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionAdminUserUpdateInActive),
 		func(ctx apiContext) {
@@ -147,7 +147,7 @@ func (a *UserApi) UpdateInActive() gin.HandlerFunc {
 			var request dto_request.AdminUserUpdateInActiveRequest
 			request.Id = id
 
-			user := a.userUseCase.UpdateInActive(ctx.context(), request)
+			user := a.userUseCase.AdminUpdateInActive(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -162,7 +162,7 @@ func (a *UserApi) UpdateInActive() gin.HandlerFunc {
 }
 
 func RegisterAdminUserApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
-	api := UserApi{
+	api := AdminUserApi{
 		api:         newApi(useCaseManager),
 		userUseCase: useCaseManager.UserUseCase(),
 	}

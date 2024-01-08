@@ -11,16 +11,18 @@ type UseCaseManager interface {
 	AuthUseCase() AuthUseCase
 	PermissionUseCase() PermissionUseCase
 	ProductUseCase() ProductUseCase
+	SupplierTypeUseCase() SupplierTypeUseCase
 	UnitUseCase() UnitUseCase
 	UserUseCase() UserUseCase
 }
 
 type useCaseManager struct {
-	authUseCase       AuthUseCase
-	permissionUseCase PermissionUseCase
-	productUseCase    ProductUseCase
-	unitUseCase       UnitUseCase
-	userUseCase       UserUseCase
+	authUseCase         AuthUseCase
+	permissionUseCase   PermissionUseCase
+	productUseCase      ProductUseCase
+	supplierTypeUseCase SupplierTypeUseCase
+	unitUseCase         UnitUseCase
+	userUseCase         UserUseCase
 }
 
 func (u *useCaseManager) AuthUseCase() AuthUseCase {
@@ -33,6 +35,10 @@ func (u *useCaseManager) PermissionUseCase() PermissionUseCase {
 
 func (u *useCaseManager) ProductUseCase() ProductUseCase {
 	return u.productUseCase
+}
+
+func (u *useCaseManager) SupplierTypeUseCase() SupplierTypeUseCase {
+	return u.supplierTypeUseCase
 }
 
 func (u *useCaseManager) UnitUseCase() UnitUseCase {
@@ -58,6 +64,9 @@ func NewUseCaseManager(
 			repositoryManager,
 		),
 		productUseCase: NewProductUseCase(
+			repositoryManager,
+		),
+		supplierTypeUseCase: NewSupplierTypeUseCase(
 			repositoryManager,
 		),
 		unitUseCase: NewUnitUseCase(
