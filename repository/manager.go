@@ -18,6 +18,8 @@ type RepositoryManager interface {
 	ProductRepository() ProductRepository
 	RolePermissionRepository() RolePermissionRepository
 	RoleRepository() RoleRepository
+	SupplierRepository() SupplierRepository
+	SupplierTypeRepository() SupplierTypeRepository
 	UnitRepository() UnitRepository
 	UserAccessTokenRepository() UserAccessTokenRepository
 	UserRepository() UserRepository
@@ -31,6 +33,8 @@ type repositoryManager struct {
 	productRepository         ProductRepository
 	rolePermissionRepository  RolePermissionRepository
 	roleRepository            RoleRepository
+	supplierRepository        SupplierRepository
+	supplierTypeRepository    SupplierTypeRepository
 	unitRepository            UnitRepository
 	userAccessTokenRepository UserAccessTokenRepository
 	userRepository            UserRepository
@@ -78,6 +82,14 @@ func (r *repositoryManager) RoleRepository() RoleRepository {
 	return r.roleRepository
 }
 
+func (r *repositoryManager) SupplierRepository() SupplierRepository {
+	return r.supplierRepository
+}
+
+func (r *repositoryManager) SupplierTypeRepository() SupplierTypeRepository {
+	return r.supplierTypeRepository
+}
+
 func (r *repositoryManager) UnitRepository() UnitRepository {
 	return r.unitRepository
 }
@@ -110,6 +122,14 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		roleRepository: NewRoleRepository(
+			db,
+			loggerStack,
+		),
+		supplierRepository: NewSupplierRepository(
+			db,
+			loggerStack,
+		),
+		supplierTypeRepository: NewSupplierTypeRepository(
 			db,
 			loggerStack,
 		),
