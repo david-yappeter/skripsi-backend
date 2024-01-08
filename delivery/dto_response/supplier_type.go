@@ -19,3 +19,9 @@ func NewSupplierTypeResponse(supplierType model.SupplierType) SupplierTypeRespon
 
 	return r
 }
+
+func NewSupplierTypeResponseP(supplierType model.SupplierType) *SupplierTypeResponse {
+	r := NewSupplierTypeResponse(supplierType)
+
+	return &r
+}

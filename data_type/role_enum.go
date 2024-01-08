@@ -43,6 +43,13 @@ func GetRoleSuperAdminPermissions() []Permission {
 		PermissionAdminUnitUpdate,
 		PermissionAdminUnitDelete,
 
+		// admin supplier
+		PermissionAdminSupplierCreate,
+		PermissionAdminSupplierFetch,
+		PermissionAdminSupplierGet,
+		PermissionAdminSupplierUpdate,
+		PermissionAdminSupplierDelete,
+
 		// admin supplier type
 		PermissionAdminSupplierTypeCreate,
 		PermissionAdminSupplierTypeFetch,

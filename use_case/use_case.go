@@ -145,7 +145,7 @@ func panicIfRepositoryError(err error, errNoDataValidateMessage string, isValida
 				panic(dto_response.NewBadRequestErrorResponse(errNoDataValidateMessage))
 			}
 
-			panic(dto_response.NewNotFoundErrorResponse("Data not found"))
+			panic(dto_response.NewNotFoundErrorResponse("DATA_NOT_FOUND"))
 		}
 
 		panic(err)
@@ -154,24 +154,30 @@ func panicIfRepositoryError(err error, errNoDataValidateMessage string, isValida
 
 func mustGetUser(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.User {
 	user, err := repositoryManager.UserRepository().Get(ctx, id)
-	panicIfRepositoryError(err, "User data not found", isValidate)
+	panicIfRepositoryError(err, "USER.NOT_FOUND", isValidate)
 	return *user
 }
 
 func mustGetUnit(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.Unit {
 	unit, err := repositoryManager.UnitRepository().Get(ctx, id)
-	panicIfRepositoryError(err, "Unit data not found", isValidate)
+	panicIfRepositoryError(err, "UNIT.NOT_FOUND", isValidate)
 	return *unit
 }
 
 func mustGetProduct(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.Product {
 	product, err := repositoryManager.ProductRepository().Get(ctx, id)
-	panicIfRepositoryError(err, "Product data not found", isValidate)
+	panicIfRepositoryError(err, "PRODUCT.NOT_FOUND", isValidate)
 	return *product
 }
 
 func mustGetSupplierType(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.SupplierType {
 	supplierType, err := repositoryManager.SupplierTypeRepository().Get(ctx, id)
-	panicIfRepositoryError(err, "Supplier type data not found", isValidate)
+	panicIfRepositoryError(err, "SUPPLIER_TYPE.NOT_FOUND", isValidate)
 	return *supplierType
+}
+
+func mustGetSupplier(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.Supplier {
+	supplier, err := repositoryManager.SupplierRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "SUPPLIER.NOT_FOUND", isValidate)
+	return *supplier
 }

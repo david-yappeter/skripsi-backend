@@ -51,3 +51,11 @@ func ConvertArray[K any, T any](arr []K, callback func(K) T) []T {
 
 	return nodes
 }
+
+func AppendIfNotNil[T any](arr []T, v *T) []T {
+	if v != nil {
+		return append(arr, *v)
+	}
+
+	return arr
+}

@@ -46,12 +46,17 @@ func (u *supplierTypeUseCase) mustValidateNameNotDuplicate(ctx context.Context, 
 	panicIfErr(err)
 
 	if isExist {
-		panic(dto_response.NewBadRequestErrorResponse("Supplier Type name already exist"))
+		panic(dto_response.NewBadRequestErrorResponse("SUPPLIER_TYPE.NAME.ALREADY_EXIST"))
 	}
 }
 
 func (u *supplierTypeUseCase) mustValidateAllowDeleteSupplierType(ctx context.Context, supplierTypeId string) {
+	isExist, err := u.repositoryManager.SupplierRepository().IsExistBySupplierTypeId(ctx, supplierTypeId)
+	panicIfErr(err)
 
+	if isExist {
+		panic(dto_response.NewBadRequestErrorResponse("SUPPLIER_TYPE.IN_USED_BY.SUPPLIER"))
+	}
 }
 
 func (u *supplierTypeUseCase) AdminCreate(ctx context.Context, request dto_request.AdminSupplierTypeCreateRequest) model.SupplierType {

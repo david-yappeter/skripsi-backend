@@ -20,6 +20,7 @@ type SupplierRepository interface {
 	Fetch(ctx context.Context, options ...model.SupplierQueryOption) ([]model.Supplier, error)
 	Get(ctx context.Context, id string) (*model.Supplier, error)
 	IsExistByCode(ctx context.Context, code string) (bool, error)
+	IsExistBySupplierTypeId(ctx context.Context, supplierTypeId string) (bool, error)
 
 	// update
 	Update(ctx context.Context, supplier *model.Supplier) error
@@ -75,6 +76,12 @@ func (r *supplierRepository) prepareQuery(option model.SupplierQueryOption) squi
 			squirrel.Or{
 				squirrel.ILike{"u.name": phrase},
 			},
+		)
+	}
+
+	if option.IsActive != nil {
+		stmt = stmt.Where(
+			squirrel.Eq{"is_active": option.IsActive},
 		)
 	}
 
@@ -140,6 +147,17 @@ func (r *supplierRepository) IsExistByCode(ctx context.Context, code string) (bo
 		stmtBuilder.Select("*").
 			From(model.SupplierTableName).
 			Where(squirrel.Eq{"code": code}).
+			Prefix("EXISTS (").Suffix(")"),
+	)
+
+	return isExist(r.db, ctx, stmt)
+}
+
+func (r *supplierRepository) IsExistBySupplierTypeId(ctx context.Context, supplierTypeId string) (bool, error) {
+	stmt := stmtBuilder.Select().Column(
+		stmtBuilder.Select("*").
+			From(model.SupplierTableName).
+			Where(squirrel.Eq{"supplier_type_id": supplierTypeId}).
 			Prefix("EXISTS (").Suffix(")"),
 	)
 

@@ -9,6 +9,7 @@ func init() {
 				supplier_type_id char(36) NOT NULL,
 				code varchar(255) NOT NULL,
 				name varchar(255) NULL,
+				is_active bool NOT NULL,
 				address text NOT NULL,
 				phone varchar(20) NOT NULL,
 				email varchar(255) NULL,

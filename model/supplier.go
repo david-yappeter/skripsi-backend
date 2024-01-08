@@ -7,12 +7,15 @@ type Supplier struct {
 	SupplierTypeId string  `db:"supplier_type_id"`
 	Code           string  `db:"code"`
 	Name           string  `db:"name"`
+	IsActive       bool    `db:"is_active"`
 	Address        string  `db:"address"`
 	Phone          string  `db:"phone"`
 	Email          *string `db:"email"`
 	Description    *string `db:"description"`
 
 	Timestamp
+
+	SupplierType *SupplierType `db:"-"`
 }
 
 func (m *Supplier) TableName() string {
@@ -29,6 +32,7 @@ func (m *Supplier) ToMap() map[string]interface{} {
 		"supplier_type_id": m.SupplierTypeId,
 		"code":             m.Code,
 		"name":             m.Name,
+		"is_active":        m.IsActive,
 		"address":          m.Address,
 		"phone":            m.Phone,
 		"email":            m.Email,
@@ -41,6 +45,7 @@ func (m *Supplier) ToMap() map[string]interface{} {
 type SupplierQueryOption struct {
 	QueryOption
 
+	IsActive        *bool
 	SupplierTypeIds []string
 	Phrase          *string
 }

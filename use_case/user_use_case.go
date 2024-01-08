@@ -96,7 +96,7 @@ func (u *userUseCase) AdminUpdateActive(ctx context.Context, request dto_request
 	user := mustGetUser(ctx, u.repositoryManager, request.Id, false)
 
 	if user.IsActive {
-		panic(dto_response.NewBadRequestErrorResponse("User already active"))
+		panic(dto_response.NewBadRequestErrorResponse("USER.ALREADY_ACTIVE"))
 	}
 
 	user.IsActive = true
@@ -111,7 +111,7 @@ func (u *userUseCase) AdminUpdateInActive(ctx context.Context, request dto_reque
 	user := mustGetUser(ctx, u.repositoryManager, request.Id, false)
 
 	if !user.IsActive {
-		panic(dto_response.NewBadRequestErrorResponse("User already InActive"))
+		panic(dto_response.NewBadRequestErrorResponse("USER.ALREADY.INACTIVE"))
 	}
 
 	user.IsActive = false

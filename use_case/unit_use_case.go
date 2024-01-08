@@ -33,7 +33,7 @@ func (u *unitUseCase) mustValidateNameNotDuplicate(ctx context.Context, name str
 	panicIfErr(err)
 
 	if isExist {
-		panic(dto_response.NewBadRequestErrorResponse("Unit name already exist"))
+		panic(dto_response.NewBadRequestErrorResponse("UNIT.NAME.ALREADY_EXIST"))
 	}
 }
 

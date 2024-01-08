@@ -18,6 +18,13 @@ const (
 	PermissionAdminUnitUpdate // ADMIN_UNIT_UPDATE
 	PermissionAdminUnitDelete // ADMIN_UNIT_DELETE
 
+	// admin supplier
+	PermissionAdminSupplierCreate // ADMIN_SUPPLIER_CREATE
+	PermissionAdminSupplierFetch  // ADMIN_SUPPLIER_FETCH
+	PermissionAdminSupplierGet    // ADMIN_SUPPLIER_GET
+	PermissionAdminSupplierUpdate // ADMIN_SUPPLIER_UPDATE
+	PermissionAdminSupplierDelete // ADMIN_SUPPLIER_DELETE
+
 	// admin supplier type
 	PermissionAdminSupplierTypeCreate // ADMIN_SUPPLIER_TYPE_CREATE
 	PermissionAdminSupplierTypeFetch  // ADMIN_SUPPLIER_TYPE_FETCH

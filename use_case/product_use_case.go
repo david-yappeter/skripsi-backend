@@ -33,7 +33,7 @@ func (u *productUseCase) mustValidateNameNotDuplicate(ctx context.Context, name 
 	panicIfErr(err)
 
 	if isExist {
-		panic(dto_response.NewBadRequestErrorResponse("Product name already exist"))
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT.NAME.ALREADY_EXIST"))
 	}
 }
 
@@ -92,7 +92,7 @@ func (u *productUseCase) Update(ctx context.Context, request dto_request.AdminPr
 	}
 
 	if request.IsActive && request.Price == nil {
-		panic(dto_response.NewBadRequestErrorResponse("Active product must have a price"))
+		panic(dto_response.NewBadRequestErrorResponse("ACTIVE_PRODUCT.MUST_HAVE_PRICE"))
 	}
 
 	product.Name = request.Name
