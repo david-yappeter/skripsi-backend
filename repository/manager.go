@@ -14,6 +14,7 @@ type RepositoryManager interface {
 		fn func(tx infrastructure.DBTX, loggerStack infrastructure.LoggerStack) error,
 	) error
 
+	CustomerRepository() CustomerRepository
 	PermissionRepository() PermissionRepository
 	ProductRepository() ProductRepository
 	RolePermissionRepository() RolePermissionRepository
@@ -29,6 +30,7 @@ type repositoryManager struct {
 	db          *sqlx.DB
 	loggerStack infrastructure.LoggerStack
 
+	customerRepository        CustomerRepository
 	permissionRepository      PermissionRepository
 	productRepository         ProductRepository
 	rolePermissionRepository  RolePermissionRepository
@@ -64,6 +66,10 @@ func (r *repositoryManager) Transaction(
 	}
 
 	return translateSqlError(tx.Commit())
+}
+
+func (r *repositoryManager) CustomerRepository() CustomerRepository {
+	return r.customerRepository
 }
 
 func (r *repositoryManager) PermissionRepository() PermissionRepository {
@@ -109,6 +115,11 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 	return &repositoryManager{
 		db:          db,
 		loggerStack: loggerStack,
+
+		customerRepository: NewCustomerRepository(
+			db,
+			loggerStack,
+		),
 		permissionRepository: NewPermissionRepository(
 			db,
 			loggerStack,
