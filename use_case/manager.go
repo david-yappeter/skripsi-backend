@@ -9,6 +9,7 @@ import (
 
 type UseCaseManager interface {
 	AuthUseCase() AuthUseCase
+	CustomerUseCase() CustomerUseCase
 	PermissionUseCase() PermissionUseCase
 	ProductUseCase() ProductUseCase
 	SupplierTypeUseCase() SupplierTypeUseCase
@@ -19,6 +20,7 @@ type UseCaseManager interface {
 
 type useCaseManager struct {
 	authUseCase         AuthUseCase
+	customerUseCase     CustomerUseCase
 	permissionUseCase   PermissionUseCase
 	productUseCase      ProductUseCase
 	supplierTypeUseCase SupplierTypeUseCase
@@ -29,6 +31,10 @@ type useCaseManager struct {
 
 func (u *useCaseManager) AuthUseCase() AuthUseCase {
 	return u.authUseCase
+}
+
+func (u *useCaseManager) CustomerUseCase() CustomerUseCase {
+	return u.customerUseCase
 }
 
 func (u *useCaseManager) PermissionUseCase() PermissionUseCase {
@@ -65,6 +71,9 @@ func NewUseCaseManager(
 		authUseCase: NewAuthUseCase(
 			repositoryManager,
 			jwt,
+		),
+		customerUseCase: NewCustomerUseCase(
+			repositoryManager,
 		),
 		permissionUseCase: NewPermissionUseCase(
 			repositoryManager,

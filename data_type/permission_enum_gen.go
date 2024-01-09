@@ -33,18 +33,23 @@ func _() {
 	_ = x[PermissionAdminSupplierTypeGet-18]
 	_ = x[PermissionAdminSupplierTypeUpdate-19]
 	_ = x[PermissionAdminSupplierTypeDelete-20]
-	_ = x[PermissionSupplierTypeCreate-21]
-	_ = x[PermissionSupplierTypeFetch-22]
-	_ = x[PermissionSupplierTypeGet-23]
-	_ = x[PermissionSupplierTypeUpdate-24]
-	_ = x[PermissionSupplierTypeDelete-25]
+	_ = x[PermissionCustomerCreate-21]
+	_ = x[PermissionCustomerFetch-22]
+	_ = x[PermissionCustomerGet-23]
+	_ = x[PermissionCustomerUpdate-24]
+	_ = x[PermissionCustomerDelete-25]
+	_ = x[PermissionSupplierTypeCreate-26]
+	_ = x[PermissionSupplierTypeFetch-27]
+	_ = x[PermissionSupplierTypeGet-28]
+	_ = x[PermissionSupplierTypeUpdate-29]
+	_ = x[PermissionSupplierTypeDelete-30]
 }
 
-const _Permission_nameReadable = "ADMIN_USER_CREATE, ADMIN_USER_UPDATE, ADMIN_USER_UPDATE_PASSWORD, ADMIN_USER_UPDATE_ACTIVE, ADMIN_USER_UPDATE_INACTIVE, ADMIN_UNIT_CREATE, ADMIN_UNIT_FETCH, ADMIN_UNIT_GET, ADMIN_UNIT_UPDATE, ADMIN_UNIT_DELETE, ADMIN_SUPPLIER_CREATE, ADMIN_SUPPLIER_FETCH, ADMIN_SUPPLIER_GET, ADMIN_SUPPLIER_UPDATE, ADMIN_SUPPLIER_DELETE, ADMIN_SUPPLIER_TYPE_CREATE, ADMIN_SUPPLIER_TYPE_FETCH, ADMIN_SUPPLIER_TYPE_GET, ADMIN_SUPPLIER_TYPE_UPDATE, ADMIN_SUPPLIER_TYPE_DELETE, SUPPLIER_TYPE_CREATE, SUPPLIER_TYPE_FETCH, SUPPLIER_TYPE_GET, SUPPLIER_TYPE_UPDATE, SUPPLIER_TYPE_DELETE"
+const _Permission_nameReadable = "ADMIN_USER_CREATE, ADMIN_USER_UPDATE, ADMIN_USER_UPDATE_PASSWORD, ADMIN_USER_UPDATE_ACTIVE, ADMIN_USER_UPDATE_INACTIVE, ADMIN_UNIT_CREATE, ADMIN_UNIT_FETCH, ADMIN_UNIT_GET, ADMIN_UNIT_UPDATE, ADMIN_UNIT_DELETE, ADMIN_SUPPLIER_CREATE, ADMIN_SUPPLIER_FETCH, ADMIN_SUPPLIER_GET, ADMIN_SUPPLIER_UPDATE, ADMIN_SUPPLIER_DELETE, ADMIN_SUPPLIER_TYPE_CREATE, ADMIN_SUPPLIER_TYPE_FETCH, ADMIN_SUPPLIER_TYPE_GET, ADMIN_SUPPLIER_TYPE_UPDATE, ADMIN_SUPPLIER_TYPE_DELETE, CUSTOMER_CREATE, CUSTOMER_FETCH, CUSTOMER_GET, CUSTOMER_UPDATE, CUSTOMER_DELETE, SUPPLIER_TYPE_CREATE, SUPPLIER_TYPE_FETCH, SUPPLIER_TYPE_GET, SUPPLIER_TYPE_UPDATE, SUPPLIER_TYPE_DELETE"
 
-const _Permission_name = "ADMIN_USER_CREATEADMIN_USER_UPDATEADMIN_USER_UPDATE_PASSWORDADMIN_USER_UPDATE_ACTIVEADMIN_USER_UPDATE_INACTIVEADMIN_UNIT_CREATEADMIN_UNIT_FETCHADMIN_UNIT_GETADMIN_UNIT_UPDATEADMIN_UNIT_DELETEADMIN_SUPPLIER_CREATEADMIN_SUPPLIER_FETCHADMIN_SUPPLIER_GETADMIN_SUPPLIER_UPDATEADMIN_SUPPLIER_DELETEADMIN_SUPPLIER_TYPE_CREATEADMIN_SUPPLIER_TYPE_FETCHADMIN_SUPPLIER_TYPE_GETADMIN_SUPPLIER_TYPE_UPDATEADMIN_SUPPLIER_TYPE_DELETESUPPLIER_TYPE_CREATESUPPLIER_TYPE_FETCHSUPPLIER_TYPE_GETSUPPLIER_TYPE_UPDATESUPPLIER_TYPE_DELETE"
+const _Permission_name = "ADMIN_USER_CREATEADMIN_USER_UPDATEADMIN_USER_UPDATE_PASSWORDADMIN_USER_UPDATE_ACTIVEADMIN_USER_UPDATE_INACTIVEADMIN_UNIT_CREATEADMIN_UNIT_FETCHADMIN_UNIT_GETADMIN_UNIT_UPDATEADMIN_UNIT_DELETEADMIN_SUPPLIER_CREATEADMIN_SUPPLIER_FETCHADMIN_SUPPLIER_GETADMIN_SUPPLIER_UPDATEADMIN_SUPPLIER_DELETEADMIN_SUPPLIER_TYPE_CREATEADMIN_SUPPLIER_TYPE_FETCHADMIN_SUPPLIER_TYPE_GETADMIN_SUPPLIER_TYPE_UPDATEADMIN_SUPPLIER_TYPE_DELETECUSTOMER_CREATECUSTOMER_FETCHCUSTOMER_GETCUSTOMER_UPDATECUSTOMER_DELETESUPPLIER_TYPE_CREATESUPPLIER_TYPE_FETCHSUPPLIER_TYPE_GETSUPPLIER_TYPE_UPDATESUPPLIER_TYPE_DELETE"
 
-var _Permission_index = [...]uint16{0, 17, 34, 60, 84, 110, 127, 143, 157, 174, 191, 212, 232, 250, 271, 292, 318, 343, 366, 392, 418, 438, 457, 474, 494, 514}
+var _Permission_index = [...]uint16{0, 17, 34, 60, 84, 110, 127, 143, 157, 174, 191, 212, 232, 250, 271, 292, 318, 343, 366, 392, 418, 433, 447, 459, 474, 489, 509, 528, 545, 565, 585}
 
 func (i *Permission) determine(s string) {
 	switch s {
@@ -88,6 +93,16 @@ func (i *Permission) determine(s string) {
 		*i = PermissionAdminSupplierTypeUpdate
 	case "ADMIN_SUPPLIER_TYPE_DELETE":
 		*i = PermissionAdminSupplierTypeDelete
+	case "CUSTOMER_CREATE":
+		*i = PermissionCustomerCreate
+	case "CUSTOMER_FETCH":
+		*i = PermissionCustomerFetch
+	case "CUSTOMER_GET":
+		*i = PermissionCustomerGet
+	case "CUSTOMER_UPDATE":
+		*i = PermissionCustomerUpdate
+	case "CUSTOMER_DELETE":
+		*i = PermissionCustomerDelete
 	case "SUPPLIER_TYPE_CREATE":
 		*i = PermissionSupplierTypeCreate
 	case "SUPPLIER_TYPE_FETCH":
@@ -186,6 +201,11 @@ func ListPermission() []Permission {
 		PermissionAdminSupplierTypeGet,
 		PermissionAdminSupplierTypeUpdate,
 		PermissionAdminSupplierTypeDelete,
+		PermissionCustomerCreate,
+		PermissionCustomerFetch,
+		PermissionCustomerGet,
+		PermissionCustomerUpdate,
+		PermissionCustomerDelete,
 		PermissionSupplierTypeCreate,
 		PermissionSupplierTypeFetch,
 		PermissionSupplierTypeGet,
@@ -216,6 +236,11 @@ func ListPermissionString() []string {
 		PermissionAdminSupplierTypeGet.String(),
 		PermissionAdminSupplierTypeUpdate.String(),
 		PermissionAdminSupplierTypeDelete.String(),
+		PermissionCustomerCreate.String(),
+		PermissionCustomerFetch.String(),
+		PermissionCustomerGet.String(),
+		PermissionCustomerUpdate.String(),
+		PermissionCustomerDelete.String(),
 		PermissionSupplierTypeCreate.String(),
 		PermissionSupplierTypeFetch.String(),
 		PermissionSupplierTypeGet.String(),

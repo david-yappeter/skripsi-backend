@@ -181,3 +181,9 @@ func mustGetSupplier(ctx context.Context, repositoryManager repository.Repositor
 	panicIfRepositoryError(err, "SUPPLIER.NOT_FOUND", isValidate)
 	return *supplier
 }
+
+func mustGetCustomer(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.Customer {
+	customer, err := repositoryManager.CustomerRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "CUSTOMER.NOT_FOUND", isValidate)
+	return *customer
+}

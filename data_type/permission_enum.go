@@ -32,6 +32,13 @@ const (
 	PermissionAdminSupplierTypeUpdate // ADMIN_SUPPLIER_TYPE_UPDATE
 	PermissionAdminSupplierTypeDelete // ADMIN_SUPPLIER_TYPE_DELETE
 
+	// customer
+	PermissionCustomerCreate // CUSTOMER_CREATE
+	PermissionCustomerFetch  // CUSTOMER_FETCH
+	PermissionCustomerGet    // CUSTOMER_GET
+	PermissionCustomerUpdate // CUSTOMER_UPDATE
+	PermissionCustomerDelete // CUSTOMER_DELETE
+
 	// supplier type
 	PermissionSupplierTypeCreate // SUPPLIER_TYPE_CREATE
 	PermissionSupplierTypeFetch  // SUPPLIER_TYPE_FETCH
