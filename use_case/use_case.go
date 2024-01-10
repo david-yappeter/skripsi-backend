@@ -187,3 +187,21 @@ func mustGetCustomer(ctx context.Context, repositoryManager repository.Repositor
 	panicIfRepositoryError(err, "CUSTOMER.NOT_FOUND", isValidate)
 	return *customer
 }
+
+func mustGetProductUnit(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.ProductUnit {
+	productUnit, err := repositoryManager.ProductUnitRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "PRODUCT_UNIT.NOT_FOUND", isValidate)
+	return *productUnit
+}
+
+func mustGetProductUnitByProductIdAndUnitId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string, unitId string, isValidate bool) model.ProductUnit {
+	productUnit, err := repositoryManager.ProductUnitRepository().GetByProductIdAndUnitId(ctx, productId, unitId)
+	panicIfRepositoryError(err, "PRODUCT_UNIT.NOT_FOUND", isValidate)
+	return *productUnit
+}
+
+func mustGetFile(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.File {
+	file, err := repositoryManager.FileRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "FILE.NOT_FOUND", isValidate)
+	return *file
+}

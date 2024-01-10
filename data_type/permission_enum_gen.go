@@ -33,23 +33,28 @@ func _() {
 	_ = x[PermissionAdminSupplierTypeGet-18]
 	_ = x[PermissionAdminSupplierTypeUpdate-19]
 	_ = x[PermissionAdminSupplierTypeDelete-20]
-	_ = x[PermissionCustomerCreate-21]
-	_ = x[PermissionCustomerFetch-22]
-	_ = x[PermissionCustomerGet-23]
-	_ = x[PermissionCustomerUpdate-24]
-	_ = x[PermissionCustomerDelete-25]
-	_ = x[PermissionSupplierTypeCreate-26]
-	_ = x[PermissionSupplierTypeFetch-27]
-	_ = x[PermissionSupplierTypeGet-28]
-	_ = x[PermissionSupplierTypeUpdate-29]
-	_ = x[PermissionSupplierTypeDelete-30]
+	_ = x[PermissionAdminProductUnitCreate-21]
+	_ = x[PermissionAdminProductUnitUpload-22]
+	_ = x[PermissionAdminProductUnitGet-23]
+	_ = x[PermissionAdminProductUnitUpdate-24]
+	_ = x[PermissionAdminProductUnitDelete-25]
+	_ = x[PermissionCustomerCreate-26]
+	_ = x[PermissionCustomerFetch-27]
+	_ = x[PermissionCustomerGet-28]
+	_ = x[PermissionCustomerUpdate-29]
+	_ = x[PermissionCustomerDelete-30]
+	_ = x[PermissionSupplierTypeCreate-31]
+	_ = x[PermissionSupplierTypeFetch-32]
+	_ = x[PermissionSupplierTypeGet-33]
+	_ = x[PermissionSupplierTypeUpdate-34]
+	_ = x[PermissionSupplierTypeDelete-35]
 }
 
-const _Permission_nameReadable = "ADMIN_USER_CREATE, ADMIN_USER_UPDATE, ADMIN_USER_UPDATE_PASSWORD, ADMIN_USER_UPDATE_ACTIVE, ADMIN_USER_UPDATE_INACTIVE, ADMIN_UNIT_CREATE, ADMIN_UNIT_FETCH, ADMIN_UNIT_GET, ADMIN_UNIT_UPDATE, ADMIN_UNIT_DELETE, ADMIN_SUPPLIER_CREATE, ADMIN_SUPPLIER_FETCH, ADMIN_SUPPLIER_GET, ADMIN_SUPPLIER_UPDATE, ADMIN_SUPPLIER_DELETE, ADMIN_SUPPLIER_TYPE_CREATE, ADMIN_SUPPLIER_TYPE_FETCH, ADMIN_SUPPLIER_TYPE_GET, ADMIN_SUPPLIER_TYPE_UPDATE, ADMIN_SUPPLIER_TYPE_DELETE, CUSTOMER_CREATE, CUSTOMER_FETCH, CUSTOMER_GET, CUSTOMER_UPDATE, CUSTOMER_DELETE, SUPPLIER_TYPE_CREATE, SUPPLIER_TYPE_FETCH, SUPPLIER_TYPE_GET, SUPPLIER_TYPE_UPDATE, SUPPLIER_TYPE_DELETE"
+const _Permission_nameReadable = "ADMIN_USER_CREATE, ADMIN_USER_UPDATE, ADMIN_USER_UPDATE_PASSWORD, ADMIN_USER_UPDATE_ACTIVE, ADMIN_USER_UPDATE_INACTIVE, ADMIN_UNIT_CREATE, ADMIN_UNIT_FETCH, ADMIN_UNIT_GET, ADMIN_UNIT_UPDATE, ADMIN_UNIT_DELETE, ADMIN_SUPPLIER_CREATE, ADMIN_SUPPLIER_FETCH, ADMIN_SUPPLIER_GET, ADMIN_SUPPLIER_UPDATE, ADMIN_SUPPLIER_DELETE, ADMIN_SUPPLIER_TYPE_CREATE, ADMIN_SUPPLIER_TYPE_FETCH, ADMIN_SUPPLIER_TYPE_GET, ADMIN_SUPPLIER_TYPE_UPDATE, ADMIN_SUPPLIER_TYPE_DELETE, PRODUCT_ADMIN_UNIT_CREATE, PRODUCT_ADMIN_UNIT_UPLOAD, PRODUCT_ADMIN_UNIT_GET, PRODUCT_ADMIN_UNIT_UPDATE, PRODUCT_ADMIN_UNIT_DELETE, CUSTOMER_CREATE, CUSTOMER_FETCH, CUSTOMER_GET, CUSTOMER_UPDATE, CUSTOMER_DELETE, SUPPLIER_TYPE_CREATE, SUPPLIER_TYPE_FETCH, SUPPLIER_TYPE_GET, SUPPLIER_TYPE_UPDATE, SUPPLIER_TYPE_DELETE"
 
-const _Permission_name = "ADMIN_USER_CREATEADMIN_USER_UPDATEADMIN_USER_UPDATE_PASSWORDADMIN_USER_UPDATE_ACTIVEADMIN_USER_UPDATE_INACTIVEADMIN_UNIT_CREATEADMIN_UNIT_FETCHADMIN_UNIT_GETADMIN_UNIT_UPDATEADMIN_UNIT_DELETEADMIN_SUPPLIER_CREATEADMIN_SUPPLIER_FETCHADMIN_SUPPLIER_GETADMIN_SUPPLIER_UPDATEADMIN_SUPPLIER_DELETEADMIN_SUPPLIER_TYPE_CREATEADMIN_SUPPLIER_TYPE_FETCHADMIN_SUPPLIER_TYPE_GETADMIN_SUPPLIER_TYPE_UPDATEADMIN_SUPPLIER_TYPE_DELETECUSTOMER_CREATECUSTOMER_FETCHCUSTOMER_GETCUSTOMER_UPDATECUSTOMER_DELETESUPPLIER_TYPE_CREATESUPPLIER_TYPE_FETCHSUPPLIER_TYPE_GETSUPPLIER_TYPE_UPDATESUPPLIER_TYPE_DELETE"
+const _Permission_name = "ADMIN_USER_CREATEADMIN_USER_UPDATEADMIN_USER_UPDATE_PASSWORDADMIN_USER_UPDATE_ACTIVEADMIN_USER_UPDATE_INACTIVEADMIN_UNIT_CREATEADMIN_UNIT_FETCHADMIN_UNIT_GETADMIN_UNIT_UPDATEADMIN_UNIT_DELETEADMIN_SUPPLIER_CREATEADMIN_SUPPLIER_FETCHADMIN_SUPPLIER_GETADMIN_SUPPLIER_UPDATEADMIN_SUPPLIER_DELETEADMIN_SUPPLIER_TYPE_CREATEADMIN_SUPPLIER_TYPE_FETCHADMIN_SUPPLIER_TYPE_GETADMIN_SUPPLIER_TYPE_UPDATEADMIN_SUPPLIER_TYPE_DELETEPRODUCT_ADMIN_UNIT_CREATEPRODUCT_ADMIN_UNIT_UPLOADPRODUCT_ADMIN_UNIT_GETPRODUCT_ADMIN_UNIT_UPDATEPRODUCT_ADMIN_UNIT_DELETECUSTOMER_CREATECUSTOMER_FETCHCUSTOMER_GETCUSTOMER_UPDATECUSTOMER_DELETESUPPLIER_TYPE_CREATESUPPLIER_TYPE_FETCHSUPPLIER_TYPE_GETSUPPLIER_TYPE_UPDATESUPPLIER_TYPE_DELETE"
 
-var _Permission_index = [...]uint16{0, 17, 34, 60, 84, 110, 127, 143, 157, 174, 191, 212, 232, 250, 271, 292, 318, 343, 366, 392, 418, 433, 447, 459, 474, 489, 509, 528, 545, 565, 585}
+var _Permission_index = [...]uint16{0, 17, 34, 60, 84, 110, 127, 143, 157, 174, 191, 212, 232, 250, 271, 292, 318, 343, 366, 392, 418, 443, 468, 490, 515, 540, 555, 569, 581, 596, 611, 631, 650, 667, 687, 707}
 
 func (i *Permission) determine(s string) {
 	switch s {
@@ -93,6 +98,16 @@ func (i *Permission) determine(s string) {
 		*i = PermissionAdminSupplierTypeUpdate
 	case "ADMIN_SUPPLIER_TYPE_DELETE":
 		*i = PermissionAdminSupplierTypeDelete
+	case "PRODUCT_ADMIN_UNIT_CREATE":
+		*i = PermissionAdminProductUnitCreate
+	case "PRODUCT_ADMIN_UNIT_UPLOAD":
+		*i = PermissionAdminProductUnitUpload
+	case "PRODUCT_ADMIN_UNIT_GET":
+		*i = PermissionAdminProductUnitGet
+	case "PRODUCT_ADMIN_UNIT_UPDATE":
+		*i = PermissionAdminProductUnitUpdate
+	case "PRODUCT_ADMIN_UNIT_DELETE":
+		*i = PermissionAdminProductUnitDelete
 	case "CUSTOMER_CREATE":
 		*i = PermissionCustomerCreate
 	case "CUSTOMER_FETCH":
@@ -201,6 +216,11 @@ func ListPermission() []Permission {
 		PermissionAdminSupplierTypeGet,
 		PermissionAdminSupplierTypeUpdate,
 		PermissionAdminSupplierTypeDelete,
+		PermissionAdminProductUnitCreate,
+		PermissionAdminProductUnitUpload,
+		PermissionAdminProductUnitGet,
+		PermissionAdminProductUnitUpdate,
+		PermissionAdminProductUnitDelete,
 		PermissionCustomerCreate,
 		PermissionCustomerFetch,
 		PermissionCustomerGet,
@@ -236,6 +256,11 @@ func ListPermissionString() []string {
 		PermissionAdminSupplierTypeGet.String(),
 		PermissionAdminSupplierTypeUpdate.String(),
 		PermissionAdminSupplierTypeDelete.String(),
+		PermissionAdminProductUnitCreate.String(),
+		PermissionAdminProductUnitUpload.String(),
+		PermissionAdminProductUnitGet.String(),
+		PermissionAdminProductUnitUpdate.String(),
+		PermissionAdminProductUnitDelete.String(),
 		PermissionCustomerCreate.String(),
 		PermissionCustomerFetch.String(),
 		PermissionCustomerGet.String(),

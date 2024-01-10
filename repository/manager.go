@@ -18,6 +18,7 @@ type RepositoryManager interface {
 	FileRepository() FileRepository
 	PermissionRepository() PermissionRepository
 	ProductRepository() ProductRepository
+	ProductUnitRepository() ProductUnitRepository
 	RolePermissionRepository() RolePermissionRepository
 	RoleRepository() RoleRepository
 	SupplierRepository() SupplierRepository
@@ -35,6 +36,7 @@ type repositoryManager struct {
 	fileRepository            FileRepository
 	permissionRepository      PermissionRepository
 	productRepository         ProductRepository
+	productUnitRepository     ProductUnitRepository
 	rolePermissionRepository  RolePermissionRepository
 	roleRepository            RoleRepository
 	supplierRepository        SupplierRepository
@@ -86,6 +88,10 @@ func (r *repositoryManager) ProductRepository() ProductRepository {
 	return r.productRepository
 }
 
+func (r *repositoryManager) ProductUnitRepository() ProductUnitRepository {
+	return r.productUnitRepository
+}
+
 func (r *repositoryManager) RolePermissionRepository() RolePermissionRepository {
 	return r.rolePermissionRepository
 }
@@ -135,6 +141,10 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		productRepository: NewProductRepository(
+			db,
+			loggerStack,
+		),
+		productUnitRepository: NewProductUnitRepository(
 			db,
 			loggerStack,
 		),

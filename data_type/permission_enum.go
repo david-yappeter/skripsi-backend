@@ -32,6 +32,13 @@ const (
 	PermissionAdminSupplierTypeUpdate // ADMIN_SUPPLIER_TYPE_UPDATE
 	PermissionAdminSupplierTypeDelete // ADMIN_SUPPLIER_TYPE_DELETE
 
+	// admin product unit
+	PermissionAdminProductUnitCreate // PRODUCT_ADMIN_UNIT_CREATE
+	PermissionAdminProductUnitUpload // PRODUCT_ADMIN_UNIT_UPLOAD
+	PermissionAdminProductUnitGet    // PRODUCT_ADMIN_UNIT_GET
+	PermissionAdminProductUnitUpdate // PRODUCT_ADMIN_UNIT_UPDATE
+	PermissionAdminProductUnitDelete // PRODUCT_ADMIN_UNIT_DELETE
+
 	// customer
 	PermissionCustomerCreate // CUSTOMER_CREATE
 	PermissionCustomerFetch  // CUSTOMER_FETCH
