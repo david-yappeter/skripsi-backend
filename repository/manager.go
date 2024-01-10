@@ -15,6 +15,7 @@ type RepositoryManager interface {
 	) error
 
 	CustomerRepository() CustomerRepository
+	FileRepository() FileRepository
 	PermissionRepository() PermissionRepository
 	ProductRepository() ProductRepository
 	RolePermissionRepository() RolePermissionRepository
@@ -31,6 +32,7 @@ type repositoryManager struct {
 	loggerStack infrastructure.LoggerStack
 
 	customerRepository        CustomerRepository
+	fileRepository            FileRepository
 	permissionRepository      PermissionRepository
 	productRepository         ProductRepository
 	rolePermissionRepository  RolePermissionRepository
@@ -70,6 +72,10 @@ func (r *repositoryManager) Transaction(
 
 func (r *repositoryManager) CustomerRepository() CustomerRepository {
 	return r.customerRepository
+}
+
+func (r *repositoryManager) FileRepository() FileRepository {
+	return r.fileRepository
 }
 
 func (r *repositoryManager) PermissionRepository() PermissionRepository {
@@ -117,6 +123,10 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 		loggerStack: loggerStack,
 
 		customerRepository: NewCustomerRepository(
+			db,
+			loggerStack,
+		),
+		fileRepository: NewFileRepository(
 			db,
 			loggerStack,
 		),
