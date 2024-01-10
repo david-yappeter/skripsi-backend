@@ -157,6 +157,9 @@ func (u *productUnitUseCase) AdminGet(ctx context.Context, request dto_request.A
 func (u *productUnitUseCase) AdminUpdate(ctx context.Context, request dto_request.AdminProductUnitUpdateRequest) model.ProductUnit {
 	productUnit := mustGetProductUnit(ctx, u.repositoryManager, request.ProductUnitId, true)
 
+	productUnit.ProductId = request.ProductId
+	productUnit.UnitId = request.UnitId
+
 	panicIfErr(
 		u.repositoryManager.ProductUnitRepository().Update(ctx, &productUnit),
 	)
