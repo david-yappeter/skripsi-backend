@@ -14,6 +14,7 @@ type RepositoryManager interface {
 		fn func(tx infrastructure.DBTX, loggerStack infrastructure.LoggerStack) error,
 	) error
 
+	BalanceRepository() BalanceRepository
 	CustomerRepository() CustomerRepository
 	FileRepository() FileRepository
 	PermissionRepository() PermissionRepository
@@ -32,6 +33,7 @@ type repositoryManager struct {
 	db          *sqlx.DB
 	loggerStack infrastructure.LoggerStack
 
+	balanceRepository         BalanceRepository
 	customerRepository        CustomerRepository
 	fileRepository            FileRepository
 	permissionRepository      PermissionRepository
@@ -70,6 +72,10 @@ func (r *repositoryManager) Transaction(
 	}
 
 	return translateSqlError(tx.Commit())
+}
+
+func (r *repositoryManager) BalanceRepository() BalanceRepository {
+	return r.balanceRepository
 }
 
 func (r *repositoryManager) CustomerRepository() CustomerRepository {
@@ -128,6 +134,10 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 		db:          db,
 		loggerStack: loggerStack,
 
+		balanceRepository: NewBalanceRepository(
+			db,
+			loggerStack,
+		),
 		customerRepository: NewCustomerRepository(
 			db,
 			loggerStack,
