@@ -74,10 +74,10 @@ func syncPermissions(ctx context.Context, repositoryManager repository.Repositor
 	newPermissions := []model.Permission{}
 	for _, permissionEnum := range data_type.ListPermission() {
 		if existingPermission, exist := existingPermissionMap[permissionEnum]; exist {
-			if existingPermission.Type == permissionEnum.PermissionType() {
-				// keep existing permission
-				continue
-			}
+			// if existingPermission.Type == permissionEnum.PermissionType() {
+			// 	// keep existing permission
+			// 	continue
+			// }
 
 			// delete old permission before create new permission
 			toBeDeletedPermissionArr = append(toBeDeletedPermissionArr, existingPermission)
@@ -90,7 +90,7 @@ func syncPermissions(ctx context.Context, repositoryManager repository.Repositor
 				Title:       permissionEnum,
 				Description: strings.ToTitle(strings.ToLower(strings.Join(strings.Split(permissionEnum.String(), "_"), " "))),
 				IsActive:    true,
-				Type:        permissionEnum.PermissionType(),
+				// Type:        permissionEnum.PermissionType(),
 			},
 		)
 	}
@@ -176,7 +176,7 @@ func syncRolePermissions(ctx context.Context, repositoryManager repository.Repos
 		}
 
 		if len(newPermissions) > 0 {
-			permissions, err := permissionRepository.FetchByNames(ctx, newPermissions)
+			permissions, err := permissionRepository.FetchByTitles(ctx, newPermissions)
 			if err != nil {
 				panic(err)
 			}

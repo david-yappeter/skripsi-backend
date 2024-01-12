@@ -19,8 +19,8 @@ type PermissionRepository interface {
 	Fetch(ctx context.Context) ([]model.Permission, error)
 	FetchByIds(ctx context.Context, ids []string) ([]model.Permission, error)
 	FetchByRoleIds(ctx context.Context, roleIds []string) ([]model.Permission, error)
-	FetchByNames(ctx context.Context, names []data_type.Permission) ([]model.Permission, error)
-	GetByName(ctx context.Context, name data_type.Permission) (*model.Permission, error)
+	FetchByTitles(ctx context.Context, titles []data_type.Permission) ([]model.Permission, error)
+	GetByTitle(ctx context.Context, title data_type.Permission) (*model.Permission, error)
 	IsExistByUserIdAndPermissionTypes(ctx context.Context, userId string, permissionTypeEnums []data_type.PermissionType) (bool, error)
 
 	// delete
@@ -113,22 +113,22 @@ func (r *permissionRepository) FetchByRoleIds(ctx context.Context, roleIds []str
 	return r.fetch(ctx, stmt)
 }
 
-func (r *permissionRepository) FetchByNames(ctx context.Context, names []data_type.Permission) ([]model.Permission, error) {
-	if len(names) == 0 {
+func (r *permissionRepository) FetchByTitles(ctx context.Context, titles []data_type.Permission) ([]model.Permission, error) {
+	if len(titles) == 0 {
 		return []model.Permission{}, nil
 	}
 
 	stmt := stmtBuilder.Select("*").
 		From(model.PermissionTableName).
-		Where(squirrel.Eq{"name": names})
+		Where(squirrel.Eq{"title": titles})
 
 	return r.fetch(ctx, stmt)
 }
 
-func (r *permissionRepository) GetByName(ctx context.Context, name data_type.Permission) (*model.Permission, error) {
+func (r *permissionRepository) GetByTitle(ctx context.Context, title data_type.Permission) (*model.Permission, error) {
 	stmt := stmtBuilder.Select("*").
 		From(model.PermissionTableName).
-		Where(squirrel.Eq{"name": name})
+		Where(squirrel.Eq{"title": title})
 
 	return r.get(ctx, stmt)
 }

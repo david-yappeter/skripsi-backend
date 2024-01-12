@@ -32,7 +32,7 @@ func (u *permissionUseCase) Authorize(
 ) {
 	authenticatedUser := model.MustGetUserCtx(ctx)
 
-	permission, err := u.repositoryManager.PermissionRepository().GetByName(ctx, permissionEnum)
+	permission, err := u.repositoryManager.PermissionRepository().GetByTitle(ctx, permissionEnum)
 	if err != nil {
 		panic(err)
 	}

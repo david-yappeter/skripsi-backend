@@ -27,6 +27,7 @@ type RepositoryManager interface {
 	UnitRepository() UnitRepository
 	UserAccessTokenRepository() UserAccessTokenRepository
 	UserRepository() UserRepository
+	UserRoleRepository() UserRoleRepository
 }
 
 type repositoryManager struct {
@@ -46,6 +47,7 @@ type repositoryManager struct {
 	unitRepository            UnitRepository
 	userAccessTokenRepository UserAccessTokenRepository
 	userRepository            UserRepository
+	userRoleRepository        UserRoleRepository
 }
 
 func (r *repositoryManager) Transaction(
@@ -125,6 +127,9 @@ func (r *repositoryManager) UserAccessTokenRepository() UserAccessTokenRepositor
 func (r *repositoryManager) UserRepository() UserRepository {
 	return r.userRepository
 }
+func (r *repositoryManager) UserRoleRepository() UserRoleRepository {
+	return r.userRoleRepository
+}
 
 func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureManager) RepositoryManager {
 	db := infrastructureManager.GetDB()
@@ -183,6 +188,10 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		userRepository: NewUserRepository(
+			db,
+			loggerStack,
+		),
+		userRoleRepository: NewUserRoleRepository(
 			db,
 			loggerStack,
 		),
