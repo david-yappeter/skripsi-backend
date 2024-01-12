@@ -50,7 +50,7 @@ func (a *AdminUnitApi) Create() gin.HandlerFunc {
 //	@Accept		json
 //	@Param		dto_request.AdminUnitFetchRequest	body	dto_request.AdminUnitFetchRequest	true	"Body Request"
 //	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{units=[]dto_response.UnitResponse}}
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.UnitResponse}}
 func (a *AdminUnitApi) Fetch() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionAdminUnitCreate),

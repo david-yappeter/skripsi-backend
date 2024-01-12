@@ -4,12 +4,19 @@ package data_type
 type Permission int // @name PermissionEnum
 
 const (
+	// admin balance
+	PermissionAdminBalanceCreate Permission = iota + 1 // ADMIN_BALANCE_CREATE
+	PermissionAdminBalanceFetch                        // ADMIN_BALANCE_FETCH
+	PermissionAdminBalanceGet                          // ADMIN_BALANCE_GET
+	PermissionAdminBalanceUpdate                       // ADMIN_BALANCE_UPDATE
+	PermissionAdminBalanceDelete                       // ADMIN_BALANCE_DELETE
+
 	// admin user
-	PermissionAdminUserCreate         Permission = iota + 1 // ADMIN_USER_CREATE
-	PermissionAdminUserUpdate                               // ADMIN_USER_UPDATE
-	PermissionAdminUserUpdatePassword                       // ADMIN_USER_UPDATE_PASSWORD
-	PermissionAdminUserUpdateActive                         // ADMIN_USER_UPDATE_ACTIVE
-	PermissionAdminUserUpdateInActive                       // ADMIN_USER_UPDATE_INACTIVE
+	PermissionAdminUserCreate         // ADMIN_USER_CREATE
+	PermissionAdminUserUpdate         // ADMIN_USER_UPDATE
+	PermissionAdminUserUpdatePassword // ADMIN_USER_UPDATE_PASSWORD
+	PermissionAdminUserUpdateActive   // ADMIN_USER_UPDATE_ACTIVE
+	PermissionAdminUserUpdateInActive // ADMIN_USER_UPDATE_INACTIVE
 
 	// admin unit
 	PermissionAdminUnitCreate // ADMIN_UNIT_CREATE

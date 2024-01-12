@@ -29,6 +29,13 @@ func (r Role) Permissions() []Permission {
 
 func GetRoleSuperAdminPermissions() []Permission {
 	return []Permission{
+		// admin balance
+		PermissionAdminBalanceCreate,
+		PermissionAdminBalanceFetch,
+		PermissionAdminBalanceGet,
+		PermissionAdminBalanceUpdate,
+		PermissionAdminBalanceDelete,
+
 		// admin user
 		PermissionAdminUserCreate,
 		PermissionAdminUserUpdate,

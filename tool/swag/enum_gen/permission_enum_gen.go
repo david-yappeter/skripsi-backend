@@ -11,6 +11,11 @@ func init() {
 		SchemaProps: spec.SchemaProps{
 			Type: []string{"string"},
 			Enum: []interface{}{
+				"ADMIN_BALANCE_CREATE",
+				"ADMIN_BALANCE_FETCH",
+				"ADMIN_BALANCE_GET",
+				"ADMIN_BALANCE_UPDATE",
+				"ADMIN_BALANCE_DELETE",
 				"ADMIN_USER_CREATE",
 				"ADMIN_USER_UPDATE",
 				"ADMIN_USER_UPDATE_PASSWORD",

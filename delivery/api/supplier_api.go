@@ -50,7 +50,7 @@ func (a *SupplierApi) Create() gin.HandlerFunc {
 //	@Accept		json
 //	@Param		dto_request.SupplierFetchRequest	body	dto_request.SupplierFetchRequest	true	"Body Request"
 //	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{suppliers=[]dto_response.SupplierResponse}}
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.SupplierResponse}}
 func (a *SupplierApi) Fetch() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionSupplierCreate),
