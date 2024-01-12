@@ -205,3 +205,9 @@ func mustGetFile(ctx context.Context, repositoryManager repository.RepositoryMan
 	panicIfRepositoryError(err, "FILE.NOT_FOUND", isValidate)
 	return *file
 }
+
+func mustGetBalance(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.Balance {
+	balance, err := repositoryManager.BalanceRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "BALANCE.NOT_FOUND", isValidate)
+	return *balance
+}
