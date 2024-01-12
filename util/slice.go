@@ -21,3 +21,12 @@ func ContainsAll(a []string, b []string) bool {
 	}
 	return true
 }
+
+func SliceValueToSlicePointer[T any](sliceValue []T) []*T {
+	slicePointer := []*T{}
+	for i := range sliceValue {
+		slicePointer = append(slicePointer, &sliceValue[i])
+	}
+
+	return slicePointer
+}

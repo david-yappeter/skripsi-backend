@@ -216,6 +216,7 @@ func registerRoutes(router gin.IRouter, useCaseManager use_case.UseCaseManager) 
 
 	RegisterCustomerApi(router, useCaseManager)
 	RegisterSupplierTypeApi(router, useCaseManager)
+	RegisterSupplierApi(router, useCaseManager)
 
 	RegisterAuthApi(router, useCaseManager)
 }
