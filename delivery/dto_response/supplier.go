@@ -38,3 +38,8 @@ func NewSupplierResponse(supplier model.Supplier) SupplierResponse {
 
 	return r
 }
+
+func NewSupplierResponseP(supplier model.Supplier) *SupplierResponse {
+	r := NewSupplierResponse(supplier)
+	return &r
+}

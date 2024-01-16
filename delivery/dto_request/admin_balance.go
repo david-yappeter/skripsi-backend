@@ -8,7 +8,7 @@ type AdminBalanceCreateRequest struct {
 } // @name AdminBalanceCreateRequest
 
 type AdminBalanceFetchSorts []struct {
-	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
+	Field     string `json:"field" validate:"required,oneof=account_number account_name bank_name name created_at updated_at" example:"name"`
 	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
 } // @name AdminBalanceFetchSorts
 
