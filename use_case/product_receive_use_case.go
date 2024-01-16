@@ -19,6 +19,7 @@ type ProductReceiveUseCase interface {
 	// create
 	Create(ctx context.Context, request dto_request.ProductReceiveCreateRequest) model.ProductReceive
 	AddItem(ctx context.Context, request dto_request.ProductReceiveAddItemRequest) model.ProductReceive
+	Upload(ctx context.Context, request dto_request.ProductReceiveUploadRequest) model.ProductReceive
 
 	// read
 	Fetch(ctx context.Context, request dto_request.ProductReceiveFetchRequest) ([]model.ProductReceive, int)
@@ -103,6 +104,14 @@ func (u *productReceiveUseCase) AddItem(ctx context.Context, request dto_request
 
 			return nil
 		}),
+	)
+
+	return productReceive
+}
+
+func (u *productReceiveUseCase) Upload(ctx context.Context, request dto_request.ProductReceiveUploadRequest) model.ProductReceive {
+	var (
+		productReceive = mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, false)
 	)
 
 	return productReceive

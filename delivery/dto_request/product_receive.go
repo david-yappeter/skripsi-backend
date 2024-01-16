@@ -1,6 +1,9 @@
 package dto_request
 
-import "myapp/data_type"
+import (
+	"mime/multipart"
+	"myapp/data_type"
+)
 
 type ProductReceiveCreateRequest struct {
 	SupplierId string         `json:"supplier_id" validate:"required,not_empty,uuid"`
@@ -14,6 +17,12 @@ type ProductReceiveAddItemRequest struct {
 
 	ProductReceiveId string `json:"-" swaggerignore:"true"`
 } // @name ProductReceiveAddItemRequest
+
+type ProductReceiveUploadRequest struct {
+	File *multipart.FileHeader `json:"file" validate:"required"`
+
+	ProductReceiveId string `json:"-" swaggerignore:"true"`
+} // @name ProductReceiveUploadRequest
 
 type ProductReceiveFetchSorts []struct {
 	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
