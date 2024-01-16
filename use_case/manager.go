@@ -13,6 +13,7 @@ type UseCaseManager interface {
 	CustomerUseCase() CustomerUseCase
 	PermissionUseCase() PermissionUseCase
 	ProductUseCase() ProductUseCase
+	ProductReceiveUseCase() ProductReceiveUseCase
 	ProductUnitUseCase() ProductUnitUseCase
 	SupplierTypeUseCase() SupplierTypeUseCase
 	SupplierUseCase() SupplierUseCase
@@ -21,16 +22,17 @@ type UseCaseManager interface {
 }
 
 type useCaseManager struct {
-	authUseCase         AuthUseCase
-	balanceUseCase      BalanceUseCase
-	customerUseCase     CustomerUseCase
-	permissionUseCase   PermissionUseCase
-	productUseCase      ProductUseCase
-	productUnitUseCase  ProductUnitUseCase
-	supplierTypeUseCase SupplierTypeUseCase
-	supplierUseCase     SupplierUseCase
-	unitUseCase         UnitUseCase
-	userUseCase         UserUseCase
+	authUseCase           AuthUseCase
+	balanceUseCase        BalanceUseCase
+	customerUseCase       CustomerUseCase
+	permissionUseCase     PermissionUseCase
+	productUseCase        ProductUseCase
+	productReceiveUseCase ProductReceiveUseCase
+	productUnitUseCase    ProductUnitUseCase
+	supplierTypeUseCase   SupplierTypeUseCase
+	supplierUseCase       SupplierUseCase
+	unitUseCase           UnitUseCase
+	userUseCase           UserUseCase
 }
 
 func (u *useCaseManager) AuthUseCase() AuthUseCase {
@@ -51,6 +53,10 @@ func (u *useCaseManager) PermissionUseCase() PermissionUseCase {
 
 func (u *useCaseManager) ProductUseCase() ProductUseCase {
 	return u.productUseCase
+}
+
+func (u *useCaseManager) ProductReceiveUseCase() ProductReceiveUseCase {
+	return u.productReceiveUseCase
 }
 
 func (u *useCaseManager) ProductUnitUseCase() ProductUnitUseCase {
@@ -94,6 +100,9 @@ func NewUseCaseManager(
 			repositoryManager,
 		),
 		productUseCase: NewProductUseCase(
+			repositoryManager,
+		),
+		productReceiveUseCase: NewProductReceiveUseCase(
 			repositoryManager,
 		),
 		productUnitUseCase: NewProductUnitUseCase(

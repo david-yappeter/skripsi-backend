@@ -211,3 +211,9 @@ func mustGetBalance(ctx context.Context, repositoryManager repository.Repository
 	panicIfRepositoryError(err, "BALANCE.NOT_FOUND", isValidate)
 	return *balance
 }
+
+func mustGetProductReceive(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.ProductReceive {
+	productReceive, err := repositoryManager.ProductReceiveRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "PRODUCT_RECEIVE.NOT_FOUND", isValidate)
+	return *productReceive
+}
