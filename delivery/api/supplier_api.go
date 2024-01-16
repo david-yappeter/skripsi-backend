@@ -111,7 +111,7 @@ func (a *SupplierApi) Get() gin.HandlerFunc {
 //	@Summary	Update
 //	@tags		Suppliers
 //	@Accept		json
-//	@Param		id										path	string									true	"Id"
+//	@Param		id									path	string								true	"Id"
 //	@Param		dto_request.SupplierUpdateRequest	body	dto_request.SupplierUpdateRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{supplier=dto_response.SupplierResponse}}

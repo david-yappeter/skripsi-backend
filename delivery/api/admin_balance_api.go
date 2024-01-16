@@ -111,7 +111,7 @@ func (a *AdminBalanceApi) Get() gin.HandlerFunc {
 //	@Summary	Update
 //	@tags		Admin Balances
 //	@Accept		json
-//	@Param		id									path	string								true	"Id"
+//	@Param		id										path	string									true	"Id"
 //	@Param		dto_request.AdminBalanceUpdateRequest	body	dto_request.AdminBalanceUpdateRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{balance=dto_response.BalanceResponse}}

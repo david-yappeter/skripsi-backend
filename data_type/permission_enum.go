@@ -53,6 +53,13 @@ const (
 	PermissionCustomerUpdate // CUSTOMER_UPDATE
 	PermissionCustomerDelete // CUSTOMER_DELETE
 
+	// product receive
+	PermissionProductReceiveCreate  // PRODUCT_RECEIVE_CREATE
+	PermissionProductReceiveAddItem // PRODUCT_RECEIVE_ITEM
+	PermissionProductReceiveFetch   // PRODUCT_RECEIVE_FETCH
+	PermissionProductReceiveGet     // PRODUCT_RECEIVE_GET
+	PermissionProductReceiveDelete  // PRODUCT_RECEIVE_DELETE
+
 	// supplier
 	PermissionSupplierCreate // SUPPLIER_CREATE
 	PermissionSupplierFetch  // SUPPLIER_FETCH
