@@ -18,6 +18,8 @@ type RepositoryManager interface {
 	CustomerRepository() CustomerRepository
 	FileRepository() FileRepository
 	PermissionRepository() PermissionRepository
+	ProductReceiveRepository() ProductReceiveRepository
+	ProductReceiveItemRepository() ProductReceiveItemRepository
 	ProductRepository() ProductRepository
 	ProductUnitRepository() ProductUnitRepository
 	RolePermissionRepository() RolePermissionRepository
@@ -34,20 +36,22 @@ type repositoryManager struct {
 	db          *sqlx.DB
 	loggerStack infrastructure.LoggerStack
 
-	balanceRepository         BalanceRepository
-	customerRepository        CustomerRepository
-	fileRepository            FileRepository
-	permissionRepository      PermissionRepository
-	productRepository         ProductRepository
-	productUnitRepository     ProductUnitRepository
-	rolePermissionRepository  RolePermissionRepository
-	roleRepository            RoleRepository
-	supplierRepository        SupplierRepository
-	supplierTypeRepository    SupplierTypeRepository
-	unitRepository            UnitRepository
-	userAccessTokenRepository UserAccessTokenRepository
-	userRepository            UserRepository
-	userRoleRepository        UserRoleRepository
+	balanceRepository            BalanceRepository
+	customerRepository           CustomerRepository
+	fileRepository               FileRepository
+	permissionRepository         PermissionRepository
+	productReceiveRepository     ProductReceiveRepository
+	productReceiveItemRepository ProductReceiveItemRepository
+	productRepository            ProductRepository
+	productUnitRepository        ProductUnitRepository
+	rolePermissionRepository     RolePermissionRepository
+	roleRepository               RoleRepository
+	supplierRepository           SupplierRepository
+	supplierTypeRepository       SupplierTypeRepository
+	unitRepository               UnitRepository
+	userAccessTokenRepository    UserAccessTokenRepository
+	userRepository               UserRepository
+	userRoleRepository           UserRoleRepository
 }
 
 func (r *repositoryManager) Transaction(
@@ -90,6 +94,14 @@ func (r *repositoryManager) FileRepository() FileRepository {
 
 func (r *repositoryManager) PermissionRepository() PermissionRepository {
 	return r.permissionRepository
+}
+
+func (r *repositoryManager) ProductReceiveRepository() ProductReceiveRepository {
+	return r.productReceiveRepository
+}
+
+func (r *repositoryManager) ProductReceiveItemRepository() ProductReceiveItemRepository {
+	return r.productReceiveItemRepository
 }
 
 func (r *repositoryManager) ProductRepository() ProductRepository {
@@ -152,6 +164,14 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		permissionRepository: NewPermissionRepository(
+			db,
+			loggerStack,
+		),
+		productReceiveRepository: NewProductReceiveRepository(
+			db,
+			loggerStack,
+		),
+		productReceiveItemRepository: NewProductReceiveItemRepository(
 			db,
 			loggerStack,
 		),
