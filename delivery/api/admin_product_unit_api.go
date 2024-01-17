@@ -15,6 +15,8 @@ type AdminProductUnitApi struct {
 	productUnitUseCase use_case.ProductUnitUseCase
 }
 
+// API:
+//
 //	@Router		/admin/product-units [post]
 //	@Summary	Create
 //	@tags		Admin Product Units
@@ -43,6 +45,8 @@ func (a *AdminProductUnitApi) Create() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/admin/product-units/upload [post]
 //	@Summary	Upload
 //	@tags		Admin Product Units
@@ -71,6 +75,8 @@ func (a *AdminProductUnitApi) Upload() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/admin/product-units/{id} [put]
 //	@Summary	Update
 //	@tags		Admin Product Units
@@ -102,6 +108,8 @@ func (a *AdminProductUnitApi) Update() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/admin/product-units/{id} [delete]
 //	@Summary	Delete
 //	@tags		Admin Product Units

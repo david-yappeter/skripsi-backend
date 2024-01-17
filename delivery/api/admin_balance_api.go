@@ -16,6 +16,8 @@ type AdminBalanceApi struct {
 	balanceUseCase use_case.BalanceUseCase
 }
 
+// API:
+//
 //	@Router		/admin/balances [post]
 //	@Summary	Create
 //	@tags		Admin Balances
@@ -78,7 +80,7 @@ func (a *AdminBalanceApi) Fetch() gin.HandlerFunc {
 }
 
 //	@Router		/admin/balances/{id} [get]
-//	@Summary	Update
+//	@Summary	Get
 //	@tags		Admin Balances
 //	@Param		id	path	string	true	"Id"
 //	@Produce	json
@@ -140,7 +142,7 @@ func (a *AdminBalanceApi) Update() gin.HandlerFunc {
 }
 
 //	@Router		/admin/balances/{id} [delete]
-//	@Summary	Update Password
+//	@Summary	Delete
 //	@tags		Admin Balances
 //	@Accept		json
 //	@Param		id	path	string	true	"Id"

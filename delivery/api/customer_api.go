@@ -16,6 +16,8 @@ type CustomerApi struct {
 	customerUseCase use_case.CustomerUseCase
 }
 
+// API:
+//
 //	@Router		/customers [post]
 //	@Summary	Create
 //	@tags		Customers
@@ -44,6 +46,8 @@ func (a *CustomerApi) Create() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/customers/filter [post]
 //	@Summary	Filter
 //	@tags		Customers
@@ -77,8 +81,10 @@ func (a *CustomerApi) Fetch() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/customers/{id} [get]
-//	@Summary	Update
+//	@Summary	Get
 //	@tags		Customers
 //	@Param		id	path	string	true	"Id"
 //	@Produce	json
@@ -107,6 +113,8 @@ func (a *CustomerApi) Get() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/customers/{id} [put]
 //	@Summary	Update
 //	@tags		Customers
@@ -139,8 +147,10 @@ func (a *CustomerApi) Update() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/customers/{id} [delete]
-//	@Summary	Update Password
+//	@Summary	Delete
 //	@tags		Customers
 //	@Accept		json
 //	@Param		id	path	string	true	"Id"

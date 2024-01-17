@@ -14,6 +14,8 @@ type AuthApi struct {
 	authUseCase use_case.AuthUseCase
 }
 
+// API:
+//
 //	@Router		/auth/login [post]
 //	@Summary	Username Login
 //	@tags		Auth
@@ -39,6 +41,8 @@ func (a *AuthApi) LoginUsername() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/auth/logout [post]
 //	@Summary	Logout
 //	@tags		Auth

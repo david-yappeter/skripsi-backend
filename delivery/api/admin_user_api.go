@@ -15,6 +15,8 @@ type AdminUserApi struct {
 	userUseCase use_case.UserUseCase
 }
 
+// API:
+//
 //	@Router		/admin/users [post]
 //	@Summary	Create
 //	@tags		Admin Users
@@ -43,6 +45,8 @@ func (a *AdminUserApi) Create() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/admin/users/{id} [put]
 //	@Summary	Update
 //	@tags		Admin Users
@@ -73,8 +77,10 @@ func (a *AdminUserApi) Update() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/admin/users/{id}/password [patch]
-//	@Summary	Update Password
+//	@Summary	Change Password
 //	@tags		Admin Users
 //	@Accept		json
 //	@Param		dto_request.AdminUserUpdatePasswordRequest	body	dto_request.AdminUserUpdatePasswordRequest	true	"Body Request"
@@ -103,6 +109,8 @@ func (a *AdminUserApi) UpdatePassword() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/admin/users/{id}/active [patch]
 //	@Summary	Update Active
 //	@tags		Admin Users
@@ -132,6 +140,8 @@ func (a *AdminUserApi) UpdateActive() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/admin/users/{id}/inactive [patch]
 //	@Summary	Update InActive
 //	@tags		Admin Users

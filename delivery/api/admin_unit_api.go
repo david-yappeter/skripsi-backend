@@ -16,6 +16,8 @@ type AdminUnitApi struct {
 	unitUseCase use_case.UnitUseCase
 }
 
+// API:
+//
 //	@Router		/admin/units [post]
 //	@Summary	Create
 //	@tags		Admin Units
@@ -44,6 +46,8 @@ func (a *AdminUnitApi) Create() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/admin/units/filter [post]
 //	@Summary	Filter
 //	@tags		Admin Units
@@ -77,8 +81,10 @@ func (a *AdminUnitApi) Fetch() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/admin/units/{id} [get]
-//	@Summary	Update
+//	@Summary	Get
 //	@tags		Admin Units
 //	@Param		id	path	string	true	"Id"
 //	@Produce	json
@@ -107,6 +113,8 @@ func (a *AdminUnitApi) Get() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/admin/units/{id} [put]
 //	@Summary	Update
 //	@tags		Admin Units
@@ -139,8 +147,10 @@ func (a *AdminUnitApi) Update() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/admin/units/{id} [delete]
-//	@Summary	Update Password
+//	@Summary	Delete
 //	@tags		Admin Units
 //	@Accept		json
 //	@Param		id	path	string	true	"Id"

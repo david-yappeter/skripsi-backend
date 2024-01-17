@@ -16,6 +16,8 @@ type SupplierApi struct {
 	supplierUseCase use_case.SupplierUseCase
 }
 
+// API:
+//
 //	@Router		/suppliers [post]
 //	@Summary	Create
 //	@tags		Suppliers
@@ -44,6 +46,8 @@ func (a *SupplierApi) Create() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/suppliers/filter [post]
 //	@Summary	Filter
 //	@tags		Suppliers
@@ -77,8 +81,10 @@ func (a *SupplierApi) Fetch() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/suppliers/{id} [get]
-//	@Summary	Update
+//	@Summary	Get
 //	@tags		Suppliers
 //	@Param		id	path	string	true	"Id"
 //	@Produce	json
@@ -107,6 +113,8 @@ func (a *SupplierApi) Get() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/suppliers/{id} [put]
 //	@Summary	Update
 //	@tags		Suppliers
@@ -139,8 +147,10 @@ func (a *SupplierApi) Update() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/suppliers/{id} [delete]
-//	@Summary	Update Password
+//	@Summary	Delete
 //	@tags		Suppliers
 //	@Accept		json
 //	@Param		id	path	string	true	"Id"

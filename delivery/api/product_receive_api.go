@@ -16,6 +16,8 @@ type ProductReceiveApi struct {
 	productReceiveUseCase use_case.ProductReceiveUseCase
 }
 
+// API:
+//
 //	@Router		/product-receives [post]
 //	@Summary	Create
 //	@tags		Product Receives
@@ -44,6 +46,8 @@ func (a *ProductReceiveApi) Create() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/product-receives/upload [post]
 //	@Summary	Upload
 //	@tags		Product Receives
@@ -72,6 +76,8 @@ func (a *ProductReceiveApi) Upload() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/product-receives/{id}/items [post]
 //	@Summary	Add Item
 //	@tags		Product Receives
@@ -103,6 +109,8 @@ func (a *ProductReceiveApi) AddItem() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/product-receives/{id}/images [post]
 //	@Summary	Add Image
 //	@tags		Product Receives
@@ -134,6 +142,8 @@ func (a *ProductReceiveApi) AddImage() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/product-receives/filter [post]
 //	@Summary	Filter
 //	@tags		Product Receives
@@ -167,8 +177,10 @@ func (a *ProductReceiveApi) Fetch() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/product-receives/{id} [get]
-//	@Summary	Update
+//	@Summary	Get
 //	@tags		Product Receives
 //	@Param		id	path	string	true	"Id"
 //	@Produce	json
@@ -197,8 +209,10 @@ func (a *ProductReceiveApi) Get() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/product-receives/{id} [delete]
-//	@Summary	Update Password
+//	@Summary	Delete
 //	@tags		Product Receives
 //	@Accept		json
 //	@Param		id	path	string	true	"Id"
@@ -225,6 +239,8 @@ func (a *ProductReceiveApi) Delete() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/product-receives/{id}/items/{product_unit_id} [delete]
 //	@Summary	Delete Item
 //	@tags		Product Receives
@@ -259,6 +275,8 @@ func (a *ProductReceiveApi) DeleteItem() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
 //	@Router		/product-receives/{id}/images/{file_id} [post]
 //	@Summary	Delete File
 //	@tags		Product Receives
