@@ -6,6 +6,8 @@ type Role int // @name RoleEnum
 const (
 	RoleSuperAdmin Role = iota + 1 // Super Admin
 	RoleInventory                  // Inventory
+	RoleCashier                    // Cashier
+	RoleDriver                     // Driver
 )
 
 var roleTypeByRole = map[Role]RoleType{
@@ -22,6 +24,10 @@ func (r Role) Permissions() []Permission {
 		return GetRoleSuperAdminPermissions()
 	case RoleInventory:
 		return GetRoleInventoryPermissions()
+	case RoleCashier:
+		return GetRoleCashier()
+	case RoleDriver:
+		return GetRoleDriver()
 	}
 
 	return []Permission{}
@@ -75,11 +81,44 @@ func GetRoleSuperAdminPermissions() []Permission {
 
 func GetRoleInventoryPermissions() []Permission {
 	return []Permission{
+		// customer
+		PermissionCustomerCreate,
+		PermissionCustomerFetch,
+		PermissionCustomerGet,
+		PermissionCustomerUpdate,
+		PermissionCustomerDelete,
+
+		// product receive
+		PermissionProductReceiveCreate,
+		PermissionProductReceiveUpload,
+		PermissionProductReceiveAddItem,
+		PermissionProductReceiveAddImage,
+		PermissionProductReceiveFetch,
+		PermissionProductReceiveGet,
+		PermissionProductReceiveDelete,
+		PermissionProductReceiveDeleteItem,
+		PermissionProductReceiveDeleteImage,
+
 		// supplier type
 		PermissionSupplierTypeCreate,
 		PermissionSupplierTypeFetch,
 		PermissionSupplierTypeGet,
 		PermissionSupplierTypeUpdate,
 		PermissionSupplierTypeDelete,
+
+		// supplier
+		PermissionSupplierCreate,
+		PermissionSupplierFetch,
+		PermissionSupplierGet,
+		PermissionSupplierUpdate,
+		PermissionSupplierDelete,
 	}
+}
+
+func GetRoleCashier() []Permission {
+	return []Permission{}
+}
+
+func GetRoleDriver() []Permission {
+	return []Permission{}
 }

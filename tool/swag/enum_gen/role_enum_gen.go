@@ -13,6 +13,8 @@ func init() {
 			Enum: []interface{}{
 				"Super Admin",
 				"Inventory",
+				"Cashier",
+				"Driver",
 			},
 		},
 	}

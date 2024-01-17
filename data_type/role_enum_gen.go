@@ -15,13 +15,15 @@ func _() {
 	var x [1]struct{}
 	_ = x[RoleSuperAdmin-1]
 	_ = x[RoleInventory-2]
+	_ = x[RoleCashier-3]
+	_ = x[RoleDriver-4]
 }
 
-const _Role_nameReadable = "Super Admin, Inventory"
+const _Role_nameReadable = "Super Admin, Inventory, Cashier, Driver"
 
-const _Role_name = "Super AdminInventory"
+const _Role_name = "Super AdminInventoryCashierDriver"
 
-var _Role_index = [...]uint8{0, 11, 20}
+var _Role_index = [...]uint8{0, 11, 20, 27, 33}
 
 func (i *Role) determine(s string) {
 	switch s {
@@ -29,6 +31,10 @@ func (i *Role) determine(s string) {
 		*i = RoleSuperAdmin
 	case "Inventory":
 		*i = RoleInventory
+	case "Cashier":
+		*i = RoleCashier
+	case "Driver":
+		*i = RoleDriver
 	default:
 		*i = 0
 	}
@@ -99,6 +105,8 @@ func ListRole() []Role {
 	return []Role{
 		RoleSuperAdmin,
 		RoleInventory,
+		RoleCashier,
+		RoleDriver,
 	}
 }
 
@@ -106,5 +114,7 @@ func ListRoleString() []string {
 	return []string{
 		RoleSuperAdmin.String(),
 		RoleInventory.String(),
+		RoleCashier.String(),
+		RoleDriver.String(),
 	}
 }
