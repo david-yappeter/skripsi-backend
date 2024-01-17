@@ -8,7 +8,7 @@ COPY go.sum ./
 RUN go mod download
 
 COPY . .
-RUN go build -tags tools -o /project/capstone/build/capstone-tools .
+RUN go build -tags tools,devtools -o /project/capstone/build/capstone-tools .
 
 FROM alpine:latest
 
