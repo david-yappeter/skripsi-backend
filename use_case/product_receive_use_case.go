@@ -39,6 +39,8 @@ type ProductReceiveUseCase interface {
 
 	// delete
 	Delete(ctx context.Context, request dto_request.ProductReceiveDeleteRequest)
+	DeleteImage(ctx context.Context, request dto_request.ProductReceiveDeleteImageRequest) model.ProductReceive
+	DeleteItem(ctx context.Context, request dto_request.ProductReceiveDeleteItemRequest) model.ProductReceive
 }
 
 type productReceiveUseCase struct {
@@ -66,10 +68,6 @@ func NewProductReceiveUseCase(
 		mainFilesystem: mainFilesystem,
 		tmpFilesystem:  tmpFilesystem,
 	}
-}
-
-func (u *productReceiveUseCase) mustValidateAllowDeleteProductReceive(ctx context.Context, productReceiveId string) {
-
 }
 
 func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context, productReceives []*model.ProductReceive, option productReceivesLoaderParams) {
@@ -254,15 +252,84 @@ func (u *productReceiveUseCase) MarkCompleted(ctx context.Context, request dto_r
 		u.repositoryManager.ProductReceiveRepository().Update(ctx, &productReceive),
 	)
 
+	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
+		productReceiveItems:  true,
+		productReceiveImages: true,
+	})
+
 	return productReceive
 }
 
 func (u *productReceiveUseCase) Delete(ctx context.Context, request dto_request.ProductReceiveDeleteRequest) {
 	productReceive := mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, true)
 
-	u.mustValidateAllowDeleteProductReceive(ctx, request.ProductReceiveId)
+	panicIfErr(
+		u.repositoryManager.Transaction(ctx, func(tx infrastructure.DBTX, loggerStack infrastructure.LoggerStack) error {
+			productReceiveRepository := repository.NewProductReceiveRepository(tx, loggerStack)
+			productReceiveItemRepository := repository.NewProductReceiveItemRepository(tx, loggerStack)
+			productReceiveImageRepository := repository.NewProductReceiveImageRepository(tx, loggerStack)
+
+			if err := productReceiveItemRepository.DeleteManyByProductReceiveId(ctx, productReceive.Id); err != nil {
+				return err
+			}
+
+			if err := productReceiveImageRepository.DeleteManyByProductReceiveId(ctx, productReceive.Id); err != nil {
+				return err
+			}
+
+			if err := productReceiveRepository.Delete(ctx, &productReceive); err != nil {
+				return err
+			}
+
+			return nil
+		}),
+	)
+}
+
+func (u *productReceiveUseCase) DeleteImage(ctx context.Context, request dto_request.ProductReceiveDeleteImageRequest) model.ProductReceive {
+	productReceive := mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, true)
+
+	if productReceive.Status != data_type.ProductReceiveStatusPending {
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.STATUS.MUST_BE_PENDING"))
+	}
+
+	file := mustGetFile(ctx, u.repositoryManager, request.FileId, true)
+	productReceiveImage := mustGetProductReceiveImageByProductReceiveIdAndFileId(ctx, u.repositoryManager, request.ProductReceiveId, request.FileId, true)
 
 	panicIfErr(
-		u.repositoryManager.ProductReceiveRepository().Delete(ctx, &productReceive),
+		u.repositoryManager.ProductReceiveImageRepository().Delete(ctx, &productReceiveImage),
 	)
+
+	panicIfErr(u.mainFilesystem.Delete(file.Path))
+
+	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
+		productReceiveItems:  true,
+		productReceiveImages: true,
+	})
+
+	return productReceive
+}
+
+func (u *productReceiveUseCase) DeleteItem(ctx context.Context, request dto_request.ProductReceiveDeleteItemRequest) model.ProductReceive {
+	productReceive := mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, true)
+
+	if productReceive.Status != data_type.ProductReceiveStatusPending {
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.STATUS.MUST_BE_PENDING"))
+	}
+
+	productUnit := mustGetFile(ctx, u.repositoryManager, request.ProductUnitId, true)
+	productReceiveItem := mustGetProductReceiveItemByProductReceiveIdAndProductUnitId(ctx, u.repositoryManager, request.ProductReceiveId, request.ProductUnitId, true)
+
+	panicIfErr(
+		u.repositoryManager.ProductReceiveItemRepository().Delete(ctx, &productReceiveItem),
+	)
+
+	panicIfErr(u.mainFilesystem.Delete(productUnit.Path))
+
+	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
+		productReceiveItems:  true,
+		productReceiveImages: true,
+	})
+
+	return productReceive
 }

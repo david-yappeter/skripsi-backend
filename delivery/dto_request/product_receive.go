@@ -52,3 +52,13 @@ type ProductReceiveMarkCompletedRequest struct {
 type ProductReceiveDeleteRequest struct {
 	ProductReceiveId string `json:"-" swaggerignore:"true"`
 } // @name ProductReceiveDeleteRequest
+
+type ProductReceiveDeleteImageRequest struct {
+	ProductReceiveId string `json:"-" swaggerignore:"true"`
+	FileId           string `json:"-" swaggerignore:"true"`
+} // @name ProductReceiveDeleteImageRequest
+
+type ProductReceiveDeleteItemRequest struct {
+	ProductReceiveId string `json:"-" swaggerignore:"true"`
+	ProductUnitId    string `json:"-" swaggerignore:"true"`
+} // @name ProductReceiveDeleteItemRequest

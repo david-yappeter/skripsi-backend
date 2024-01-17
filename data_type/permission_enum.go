@@ -54,11 +54,15 @@ const (
 	PermissionCustomerDelete // CUSTOMER_DELETE
 
 	// product receive
-	PermissionProductReceiveCreate  // PRODUCT_RECEIVE_CREATE
-	PermissionProductReceiveAddItem // PRODUCT_RECEIVE_ITEM
-	PermissionProductReceiveFetch   // PRODUCT_RECEIVE_FETCH
-	PermissionProductReceiveGet     // PRODUCT_RECEIVE_GET
-	PermissionProductReceiveDelete  // PRODUCT_RECEIVE_DELETE
+	PermissionProductReceiveCreate      // PRODUCT_RECEIVE_CREATE
+	PermissionProductReceiveUpload      // PRODUCT_RECEIVE_UPLOAD
+	PermissionProductReceiveAddItem     // PRODUCT_RECEIVE_ADD_ITEM
+	PermissionProductReceiveAddImage    // PRODUCT_RECEIVE_ADD_IMAGE
+	PermissionProductReceiveFetch       // PRODUCT_RECEIVE_FETCH
+	PermissionProductReceiveGet         // PRODUCT_RECEIVE_GET
+	PermissionProductReceiveDelete      // PRODUCT_RECEIVE_DELETE
+	PermissionProductReceiveDeleteItem  // PRODUCT_RECEIVE_DELETE_ITEM
+	PermissionProductReceiveDeleteImage // PRODUCT_RECEIVE_DELETE_IMAGE
 
 	// supplier
 	PermissionSupplierCreate // SUPPLIER_CREATE

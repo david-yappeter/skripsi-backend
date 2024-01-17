@@ -17,12 +17,14 @@ type ProductReceiveItemRepository interface {
 	// read
 	FetchByProductReceiveIds(ctx context.Context, productReceiveIds []string) ([]model.ProductReceiveItem, error)
 	Get(ctx context.Context, id string) (*model.ProductReceiveItem, error)
+	GetByProductReceiveIdAndProductUnitId(ctx context.Context, productReceiveId string, productUnitId string) (*model.ProductReceiveItem, error)
 
 	// update
 	Update(ctx context.Context, productReceiveItem *model.ProductReceiveItem) error
 
 	// delete
 	Delete(ctx context.Context, productReceiveItem *model.ProductReceiveItem) error
+	DeleteManyByProductReceiveId(ctx context.Context, productReceiveId string) error
 	Truncate(ctx context.Context) error
 }
 
@@ -88,12 +90,28 @@ func (r *productReceiveItemRepository) Get(ctx context.Context, id string) (*mod
 	return r.get(ctx, stmt)
 }
 
+func (r *productReceiveItemRepository) GetByProductReceiveIdAndProductUnitId(ctx context.Context, productReceiveId string, productUnitId string) (*model.ProductReceiveItem, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.ProductReceiveItemTableName).
+		Where(squirrel.Eq{"product_receive_id": productReceiveId}).
+		Where(squirrel.Eq{"product_unit_id": productUnitId})
+
+	return r.get(ctx, stmt)
+}
+
 func (r *productReceiveItemRepository) Update(ctx context.Context, productReceiveItem *model.ProductReceiveItem) error {
 	return defaultUpdate(r.db, ctx, productReceiveItem, "*", nil)
 }
 
 func (r *productReceiveItemRepository) Delete(ctx context.Context, productReceiveItem *model.ProductReceiveItem) error {
 	return defaultDestroy(r.db, r.loggerStack, ctx, productReceiveItem, nil)
+}
+
+func (r *productReceiveItemRepository) DeleteManyByProductReceiveId(ctx context.Context, productReceiveId string) error {
+	whereStmt := squirrel.Eq{
+		"product_receive_id": productReceiveId,
+	}
+	return destroy(r.db, ctx, model.ProductReceiveItemTableName, whereStmt)
 }
 
 func (r *productReceiveItemRepository) Truncate(ctx context.Context) error {
