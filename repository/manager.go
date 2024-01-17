@@ -20,6 +20,7 @@ type RepositoryManager interface {
 	PermissionRepository() PermissionRepository
 	ProductReceiveRepository() ProductReceiveRepository
 	ProductReceiveItemRepository() ProductReceiveItemRepository
+	ProductReceiveImageRepository() ProductReceiveImageRepository
 	ProductRepository() ProductRepository
 	ProductUnitRepository() ProductUnitRepository
 	RolePermissionRepository() RolePermissionRepository
@@ -36,22 +37,23 @@ type repositoryManager struct {
 	db          *sqlx.DB
 	loggerStack infrastructure.LoggerStack
 
-	balanceRepository            BalanceRepository
-	customerRepository           CustomerRepository
-	fileRepository               FileRepository
-	permissionRepository         PermissionRepository
-	productReceiveRepository     ProductReceiveRepository
-	productReceiveItemRepository ProductReceiveItemRepository
-	productRepository            ProductRepository
-	productUnitRepository        ProductUnitRepository
-	rolePermissionRepository     RolePermissionRepository
-	roleRepository               RoleRepository
-	supplierRepository           SupplierRepository
-	supplierTypeRepository       SupplierTypeRepository
-	unitRepository               UnitRepository
-	userAccessTokenRepository    UserAccessTokenRepository
-	userRepository               UserRepository
-	userRoleRepository           UserRoleRepository
+	balanceRepository             BalanceRepository
+	customerRepository            CustomerRepository
+	fileRepository                FileRepository
+	permissionRepository          PermissionRepository
+	productReceiveRepository      ProductReceiveRepository
+	productReceiveItemRepository  ProductReceiveItemRepository
+	productReceiveImageRepository ProductReceiveImageRepository
+	productRepository             ProductRepository
+	productUnitRepository         ProductUnitRepository
+	rolePermissionRepository      RolePermissionRepository
+	roleRepository                RoleRepository
+	supplierRepository            SupplierRepository
+	supplierTypeRepository        SupplierTypeRepository
+	unitRepository                UnitRepository
+	userAccessTokenRepository     UserAccessTokenRepository
+	userRepository                UserRepository
+	userRoleRepository            UserRoleRepository
 }
 
 func (r *repositoryManager) Transaction(
@@ -102,6 +104,10 @@ func (r *repositoryManager) ProductReceiveRepository() ProductReceiveRepository 
 
 func (r *repositoryManager) ProductReceiveItemRepository() ProductReceiveItemRepository {
 	return r.productReceiveItemRepository
+}
+
+func (r *repositoryManager) ProductReceiveImageRepository() ProductReceiveImageRepository {
+	return r.productReceiveImageRepository
 }
 
 func (r *repositoryManager) ProductRepository() ProductRepository {
@@ -172,6 +178,10 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		productReceiveItemRepository: NewProductReceiveItemRepository(
+			db,
+			loggerStack,
+		),
+		productReceiveImageRepository: NewProductReceiveImageRepository(
 			db,
 			loggerStack,
 		),

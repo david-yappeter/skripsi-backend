@@ -14,7 +14,9 @@ type ProductReceive struct {
 	TotalPrice    float64                        `db:"total_price"`
 	Timestamp
 
-	Supplier *Supplier `db:"-"`
+	Supplier             *Supplier             `db:"-"`
+	ProductReceiveItems  []ProductReceiveItem  `db:"-"`
+	ProductReceiveImages []ProductReceiveImage `db:"-"`
 }
 
 func (m *ProductReceive) TableName() string {

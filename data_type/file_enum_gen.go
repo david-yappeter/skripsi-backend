@@ -14,18 +14,21 @@ func _() {
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
 	_ = x[FileTypeProductUnitImage-1]
+	_ = x[FileTypeProductReceiveImage-2]
 }
 
-const _FileType_nameReadable = "PRODUCT_UNIT_IMAGE"
+const _FileType_nameReadable = "PRODUCT_UNIT_IMAGE, PRODUCT_RECEIVE_IMAGE"
 
-const _FileType_name = "PRODUCT_UNIT_IMAGE"
+const _FileType_name = "PRODUCT_UNIT_IMAGEPRODUCT_RECEIVE_IMAGE"
 
-var _FileType_index = [...]uint8{0, 18}
+var _FileType_index = [...]uint8{0, 18, 39}
 
 func (i *FileType) determine(s string) {
 	switch s {
 	case "PRODUCT_UNIT_IMAGE":
 		*i = FileTypeProductUnitImage
+	case "PRODUCT_RECEIVE_IMAGE":
+		*i = FileTypeProductReceiveImage
 	default:
 		*i = 0
 	}
@@ -95,11 +98,13 @@ func FileTypeP(v FileType) *FileType {
 func ListFileType() []FileType {
 	return []FileType{
 		FileTypeProductUnitImage,
+		FileTypeProductReceiveImage,
 	}
 }
 
 func ListFileTypeString() []string {
 	return []string{
 		FileTypeProductUnitImage.String(),
+		FileTypeProductReceiveImage.String(),
 	}
 }

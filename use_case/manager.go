@@ -104,6 +104,8 @@ func NewUseCaseManager(
 		),
 		productReceiveUseCase: NewProductReceiveUseCase(
 			repositoryManager,
+			filesystemManager.Main(),
+			filesystemManager.Tmp(),
 		),
 		productUnitUseCase: NewProductUnitUseCase(
 			repositoryManager,

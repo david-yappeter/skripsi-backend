@@ -12,6 +12,7 @@ func init() {
 			Type: []string{"string"},
 			Enum: []interface{}{
 				"PRODUCT_UNIT_IMAGE",
+				"PRODUCT_RECEIVE_IMAGE",
 			},
 		},
 	}

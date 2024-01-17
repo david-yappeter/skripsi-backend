@@ -18,6 +18,12 @@ type ProductReceiveAddItemRequest struct {
 	ProductReceiveId string `json:"-" swaggerignore:"true"`
 } // @name ProductReceiveAddItemRequest
 
+type ProductReceiveAddImageRequest struct {
+	FilePath string `json:"file_path" validate:"required,not_empty"`
+
+	ProductReceiveId string `json:"-" swaggerignore:"true"`
+} // @name ProductReceiveAddImageRequest
+
 type ProductReceiveUploadRequest struct {
 	File *multipart.FileHeader `json:"file" validate:"required"`
 
@@ -38,6 +44,10 @@ type ProductReceiveFetchRequest struct {
 type ProductReceiveGetRequest struct {
 	ProductReceiveId string `json:"-" swaggerignore:"true"`
 } // @name ProductReceiveGetRequest
+
+type ProductReceiveMarkCompletedRequest struct {
+	ProductReceiveId string `json:"-" swaggerignore:"true"`
+} // @name ProductReceiveMarkCompletedRequest
 
 type ProductReceiveDeleteRequest struct {
 	ProductReceiveId string `json:"-" swaggerignore:"true"`
