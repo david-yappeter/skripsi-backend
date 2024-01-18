@@ -185,8 +185,12 @@ func (a *AdminUserApi) AddRole() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionAdminUserAddRole),
 		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+
 			var request dto_request.AdminUserAddRoleRequest
 			ctx.mustBind(&request)
+
+			request.UserId = id
 
 			user := a.userUseCase.AdminAddRole(ctx.context(), request)
 
@@ -217,8 +221,14 @@ func (a *AdminUserApi) DeleteRole() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionAdminUserDeleteRole),
 		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			roleId := ctx.getUuidParam("role_id")
+
 			var request dto_request.AdminUserDeleteRoleRequest
 			ctx.mustBind(&request)
+
+			request.UserId = id
+			request.RoleId = roleId
 
 			user := a.userUseCase.AdminDeleteRole(ctx.context(), request)
 
