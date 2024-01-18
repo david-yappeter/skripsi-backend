@@ -81,7 +81,7 @@ func (u *userUseCase) mustLoadUsersData(ctx context.Context, users []*model.User
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
 			for i := range users {
-				for j := range users[i].Roles {
+				for j := range users[i].UserRoles {
 					if option.userRoles {
 						group.Go(roleLoader.UserRoleFn(&users[i].UserRoles[j]))
 					}
