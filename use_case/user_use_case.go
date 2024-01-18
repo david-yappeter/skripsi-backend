@@ -31,6 +31,9 @@ type UserUseCase interface {
 
 	// admin delete
 	AdminDeleteRole(ctx context.Context, request dto_request.AdminUserDeleteRoleRequest) model.User
+
+	// read
+	GetMe(ctx context.Context) model.User
 }
 
 type userUseCase struct {
@@ -218,4 +221,14 @@ func (u *userUseCase) AdminDeleteRole(ctx context.Context, request dto_request.A
 	})
 
 	return user
+}
+
+func (u *userUseCase) GetMe(ctx context.Context) model.User {
+	authUser := model.MustGetUserCtx(ctx)
+
+	u.mustLoadUsersData(ctx, []*model.User{&authUser}, userLoaderParams{
+		userRoles: true,
+	})
+
+	return authUser
 }
