@@ -11,22 +11,6 @@ const (
 	PermissionAdminBalanceUpdate                       // ADMIN_BALANCE_UPDATE
 	PermissionAdminBalanceDelete                       // ADMIN_BALANCE_DELETE
 
-	// admin user
-	PermissionAdminUserCreate         // ADMIN_USER_CREATE
-	PermissionAdminUserUpdate         // ADMIN_USER_UPDATE
-	PermissionAdminUserUpdatePassword // ADMIN_USER_UPDATE_PASSWORD
-	PermissionAdminUserUpdateActive   // ADMIN_USER_UPDATE_ACTIVE
-	PermissionAdminUserUpdateInActive // ADMIN_USER_UPDATE_INACTIVE
-	PermissionAdminUserAddRole        // ADMIN_USER_ADD_ROLE
-	PermissionAdminUserDeleteRole     // ADMIN_USER_DELETE_ROLE
-
-	// admin unit
-	PermissionAdminUnitCreate // ADMIN_UNIT_CREATE
-	PermissionAdminUnitFetch  // ADMIN_UNIT_FETCH
-	PermissionAdminUnitGet    // ADMIN_UNIT_GET
-	PermissionAdminUnitUpdate // ADMIN_UNIT_UPDATE
-	PermissionAdminUnitDelete // ADMIN_UNIT_DELETE
-
 	// admin supplier
 	PermissionAdminSupplierCreate // ADMIN_SUPPLIER_CREATE
 	PermissionAdminSupplierFetch  // ADMIN_SUPPLIER_FETCH
@@ -42,11 +26,30 @@ const (
 	PermissionAdminSupplierTypeDelete // ADMIN_SUPPLIER_TYPE_DELETE
 
 	// admin product unit
-	PermissionAdminProductUnitCreate // PRODUCT_ADMIN_UNIT_CREATE
-	PermissionAdminProductUnitUpload // PRODUCT_ADMIN_UNIT_UPLOAD
-	PermissionAdminProductUnitGet    // PRODUCT_ADMIN_UNIT_GET
-	PermissionAdminProductUnitUpdate // PRODUCT_ADMIN_UNIT_UPDATE
-	PermissionAdminProductUnitDelete // PRODUCT_ADMIN_UNIT_DELETE
+	PermissionAdminProductUnitCreate // ADMIN_PRODUCT_UNIT_CREATE
+	PermissionAdminProductUnitUpload // ADMIN_PRODUCT_UNIT_UPLOAD
+	PermissionAdminProductUnitGet    // ADMIN_PRODUCT_UNIT_GET
+	PermissionAdminProductUnitUpdate // ADMIN_PRODUCT_UNIT_UPDATE
+	PermissionAdminProductUnitDelete // ADMIN_PRODUCT_UNIT_DELETE
+
+	// admin role
+	PermissionAdminRoleOptionForUserForm // ADMIN_ROLE_OPTION_FOR_USER_FORM
+
+	// admin user
+	PermissionAdminUserCreate         // ADMIN_USER_CREATE
+	PermissionAdminUserUpdate         // ADMIN_USER_UPDATE
+	PermissionAdminUserUpdatePassword // ADMIN_USER_UPDATE_PASSWORD
+	PermissionAdminUserUpdateActive   // ADMIN_USER_UPDATE_ACTIVE
+	PermissionAdminUserUpdateInActive // ADMIN_USER_UPDATE_INACTIVE
+	PermissionAdminUserAddRole        // ADMIN_USER_ADD_ROLE
+	PermissionAdminUserDeleteRole     // ADMIN_USER_DELETE_ROLE
+
+	// admin unit
+	PermissionAdminUnitCreate // ADMIN_UNIT_CREATE
+	PermissionAdminUnitFetch  // ADMIN_UNIT_FETCH
+	PermissionAdminUnitGet    // ADMIN_UNIT_GET
+	PermissionAdminUnitUpdate // ADMIN_UNIT_UPDATE
+	PermissionAdminUnitDelete // ADMIN_UNIT_DELETE
 
 	// customer
 	PermissionCustomerCreate // CUSTOMER_CREATE

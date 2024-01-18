@@ -212,6 +212,7 @@ func registerRoutes(router gin.IRouter, useCaseManager use_case.UseCaseManager) 
 	RegisterAdminUserApi(router, useCaseManager)
 	RegisterAdminUnitApi(router, useCaseManager)
 	RegisterAdminProductUnitApi(router, useCaseManager)
+	RegisterAdminRoleApi(router, useCaseManager)
 
 	RegisterCustomerApi(router, useCaseManager)
 	RegisterProductReceiveApi(router, useCaseManager)
