@@ -10,7 +10,8 @@ type User struct {
 	IsActive bool   `db:"is_active"`
 	Timestamp
 
-	Roles []Role `db:"-"`
+	Roles     []Role     `db:"-"`
+	UserRoles []UserRole `db:"-"`
 }
 
 func (m *User) TableName() string {

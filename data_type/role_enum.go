@@ -48,6 +48,8 @@ func GetRoleSuperAdminPermissions() []Permission {
 		PermissionAdminUserUpdatePassword,
 		PermissionAdminUserUpdateActive,
 		PermissionAdminUserUpdateInActive,
+		PermissionAdminUserAddRole,
+		PermissionAdminUserDeleteRole,
 
 		// admin unit
 		PermissionAdminUnitCreate,

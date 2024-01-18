@@ -17,6 +17,8 @@ const (
 	PermissionAdminUserUpdatePassword // ADMIN_USER_UPDATE_PASSWORD
 	PermissionAdminUserUpdateActive   // ADMIN_USER_UPDATE_ACTIVE
 	PermissionAdminUserUpdateInActive // ADMIN_USER_UPDATE_INACTIVE
+	PermissionAdminUserAddRole        // ADMIN_USER_ADD_ROLE
+	PermissionAdminUserDeleteRole     // ADMIN_USER_DELETE_ROLE
 
 	// admin unit
 	PermissionAdminUnitCreate // ADMIN_UNIT_CREATE

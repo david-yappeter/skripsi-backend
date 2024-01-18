@@ -7,7 +7,6 @@ type UserRole struct {
 	RoleId string `db:"role_id"`
 	Timestamp
 
-	// system
 	Role *Role `db:"-"`
 }
 

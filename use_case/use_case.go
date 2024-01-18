@@ -158,6 +158,18 @@ func mustGetUser(ctx context.Context, repositoryManager repository.RepositoryMan
 	return *user
 }
 
+func mustGetRole(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.Role {
+	role, err := repositoryManager.RoleRepository().GetById(ctx, id)
+	panicIfRepositoryError(err, "ROLE.NOT_FOUND", isValidate)
+	return *role
+}
+
+func mustGetUserRoleByUserIdAndRoleId(ctx context.Context, repositoryManager repository.RepositoryManager, userId string, roleId string, isValidate bool) model.UserRole {
+	userRole, err := repositoryManager.UserRoleRepository().GetByUserIdAndRoleId(ctx, userId, roleId)
+	panicIfRepositoryError(err, "USER_ROLE.NOT_FOUND", isValidate)
+	return *userRole
+}
+
 func mustGetUnit(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.Unit {
 	unit, err := repositoryManager.UnitRepository().Get(ctx, id)
 	panicIfRepositoryError(err, "UNIT.NOT_FOUND", isValidate)

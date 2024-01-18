@@ -61,7 +61,7 @@ func (a *AdminUserApi) Update() gin.HandlerFunc {
 			id := ctx.getUuidParam("id")
 			var request dto_request.AdminUserUpdateRequest
 			ctx.mustBind(&request)
-			request.Id = id
+			request.UserId = id
 
 			user := a.userUseCase.AdminUpdate(ctx.context(), request)
 
@@ -93,7 +93,7 @@ func (a *AdminUserApi) UpdatePassword() gin.HandlerFunc {
 			id := ctx.getUuidParam("id")
 			var request dto_request.AdminUserUpdatePasswordRequest
 			ctx.mustBind(&request)
-			request.Id = id
+			request.UserId = id
 
 			user := a.userUseCase.AdminUpdatePassword(ctx.context(), request)
 
@@ -124,7 +124,7 @@ func (a *AdminUserApi) UpdateActive() gin.HandlerFunc {
 		func(ctx apiContext) {
 			id := ctx.getUuidParam("id")
 			var request dto_request.AdminUserUpdateActiveRequest
-			request.Id = id
+			request.UserId = id
 
 			user := a.userUseCase.AdminUpdateActive(ctx.context(), request)
 
@@ -155,9 +155,72 @@ func (a *AdminUserApi) UpdateInActive() gin.HandlerFunc {
 		func(ctx apiContext) {
 			id := ctx.getUuidParam("id")
 			var request dto_request.AdminUserUpdateInActiveRequest
-			request.Id = id
+			request.UserId = id
 
 			user := a.userUseCase.AdminUpdateInActive(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"user": dto_response.NewUserResponse(user),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/admin/users/{id}/roles [post]
+//	@Summary	Add Role
+//	@tags		Admin Users
+//	@Accept		json
+//	@Param		id									path	string								true	"Id"
+//	@Param		dto_request.AdminUserAddRoleRequest	body	dto_request.AdminUserAddRoleRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{user=dto_response.UserResponse}}
+func (a *AdminUserApi) AddRole() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionAdminUserAddRole),
+		func(ctx apiContext) {
+			var request dto_request.AdminUserAddRoleRequest
+			ctx.mustBind(&request)
+
+			user := a.userUseCase.AdminAddRole(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"user": dto_response.NewUserResponse(user),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/admin/users/{id}/roles/{role_id} [delete]
+//	@Summary	Delete Role
+//	@tags		Admin Users
+//	@Accept		json
+//	@Param		id										path	string									true	"Id"
+//	@Param		role_id									path	string									true	"Role Id"
+//	@Param		dto_request.AdminUserDeleteRoleRequest	body	dto_request.AdminUserDeleteRoleRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{user=dto_response.UserResponse}}
+func (a *AdminUserApi) DeleteRole() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionAdminUserDeleteRole),
+		func(ctx apiContext) {
+			var request dto_request.AdminUserDeleteRoleRequest
+			ctx.mustBind(&request)
+
+			user := a.userUseCase.AdminDeleteRole(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -183,4 +246,7 @@ func RegisterAdminUserApi(router gin.IRouter, useCaseManager use_case.UseCaseMan
 	adminRouterGroup.PATCH("/:id", api.UpdatePassword())
 	adminRouterGroup.PATCH("/:id/active", api.UpdateActive())
 	adminRouterGroup.PATCH("/:id/inactive", api.UpdateInActive())
+
+	adminRouterGroup.POST("/:id/roles", api.AddRole())
+	adminRouterGroup.DELETE("/:id/roles/:role_id", api.DeleteRole())
 }

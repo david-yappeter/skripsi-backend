@@ -20,10 +20,12 @@ type UserRoleRepository interface {
 	FetchByUserIds(ctx context.Context, ids []string) ([]model.UserRole, error)
 	FetchUserIdsByRoleId(ctx context.Context, roleId string) ([]string, error)
 	FetchUserIdsByRoleIdsAndUserIds(ctx context.Context, roleIds []string, userIds []string) ([]string, error)
+	GetByUserIdAndRoleId(ctx context.Context, userId string, roleId string) (*model.UserRole, error)
 	GetByUserIdAndRoleTitle(ctx context.Context, userId string, roleTitle data_type.Role) (*model.UserRole, error)
 	IsExistByUserIdAndRoleTitles(ctx context.Context, userId string, roleTitles []data_type.Role) (bool, error)
 
 	// delete
+	Delete(ctx context.Context, userRole *model.UserRole) error
 	DeleteManyByUserIdAndRoleIds(ctx context.Context, userId string, roleIds []string) error
 	Truncate(ctx context.Context) error
 }
@@ -140,6 +142,17 @@ func (r *userRoleRepository) GetByUserIdAndRoleTitle(ctx context.Context, userId
 	return r.get(ctx, stmt)
 }
 
+func (r *userRoleRepository) GetByUserIdAndRoleId(ctx context.Context, userId string, roleId string) (*model.UserRole, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.UserRoleTableName).
+		Where(squirrel.Eq{
+			"user_id": userId,
+			"role_id": roleId,
+		})
+
+	return r.get(ctx, stmt)
+}
+
 func (r *userRoleRepository) IsExistByUserIdAndRoleTitles(ctx context.Context, userId string, roleTitles []data_type.Role) (bool, error) {
 	if len(roleTitles) == 0 {
 		return false, nil
@@ -157,6 +170,10 @@ func (r *userRoleRepository) IsExistByUserIdAndRoleTitles(ctx context.Context, u
 	)
 
 	return isExist(r.db, ctx, stmt)
+}
+
+func (r *userRoleRepository) Delete(ctx context.Context, userRole *model.UserRole) error {
+	return defaultDestroy(r.db, r.loggerStack, ctx, userRole, nil)
 }
 
 func (r *userRoleRepository) DeleteManyByUserIdAndRoleIds(ctx context.Context, userId string, roleIds []string) error {

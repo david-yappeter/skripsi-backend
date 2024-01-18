@@ -10,19 +10,31 @@ type AdminUserCreateRequest struct {
 type AdminUserUpdateRequest struct {
 	Name string `json:"name" validate:"required,not_empty,max=255"`
 
-	Id string `json:"-" swaggerignore:"true"`
+	UserId string `json:"-" swaggerignore:"true"`
 } // @name AdminUserUpdateRequest
 
 type AdminUserUpdatePasswordRequest struct {
 	Password string `json:"password" validate:"required,not_empty,max=255"`
 
-	Id string `json:"-" swaggerignore:"true"`
+	UserId string `json:"-" swaggerignore:"true"`
 } // @name AdminUserUpdatePasswordRequest
 
 type AdminUserUpdateActiveRequest struct {
-	Id string `json:"-" swaggerignore:"true"`
+	UserId string `json:"-" swaggerignore:"true"`
 } // @name AdminUserUpdateActiveRequest
 
 type AdminUserUpdateInActiveRequest struct {
-	Id string `json:"-" swaggerignore:"true"`
+	UserId string `json:"-" swaggerignore:"true"`
 } // @name AdminUserUpdateInActiveRequest
+
+type AdminUserAddRoleRequest struct {
+	RoleId string `json:"role_id" validate:"required,not_empty,uuid"`
+
+	UserId string `json:"-" swaggerignore:"true"`
+} // @name AdminUserAddRoleRequest
+
+type AdminUserDeleteRoleRequest struct {
+	RoleId string `json:"role_id" validate:"required,not_empty,uuid"`
+
+	UserId string `json:"-" swaggerignore:"true"`
+} // @name AdminUserDeleteRoleRequest
