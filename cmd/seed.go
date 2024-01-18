@@ -3,6 +3,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"myapp/database/seeder"
 	"myapp/database/seeder/production_seeder"
@@ -45,6 +46,10 @@ func newSeedCommand() *cobra.Command {
 			} else {
 				seeder.SeedAll(repositoryManager)
 			}
+
+			syncPermissions(context.Background(), repositoryManager)
+			syncRolePermissions(context.Background(), repositoryManager)
+			syncClinicTypePermissions(context.Background(), repositoryManager)
 		},
 	}
 

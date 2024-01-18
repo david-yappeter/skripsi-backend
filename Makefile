@@ -30,7 +30,7 @@ seed-production:
 	go run -tags devtools . seed --production $(name)
 
 sync-permission:
-	go run -tags tools . sync-permission
+	go run -tags devtools . sync-permission
 
 # e.g. make test name=FuncTestName
 test: flag := $(if $(name), -run $(name),)

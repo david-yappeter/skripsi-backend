@@ -78,6 +78,9 @@ func GetRoleSuperAdminPermissions() []Permission {
 		PermissionAdminProductUnitGet,
 		PermissionAdminProductUnitUpdate,
 		PermissionAdminProductUnitDelete,
+
+		// admin role
+		PermissionAdminRoleOptionForUserForm,
 	}
 }
 
