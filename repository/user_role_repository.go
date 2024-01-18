@@ -21,8 +21,8 @@ type UserRoleRepository interface {
 	FetchUserIdsByRoleId(ctx context.Context, roleId string) ([]string, error)
 	FetchUserIdsByRoleIdsAndUserIds(ctx context.Context, roleIds []string, userIds []string) ([]string, error)
 	GetByUserIdAndRoleId(ctx context.Context, userId string, roleId string) (*model.UserRole, error)
-	GetByUserIdAndRoleTitle(ctx context.Context, userId string, roleTitle data_type.Role) (*model.UserRole, error)
-	IsExistByUserIdAndRoleTitles(ctx context.Context, userId string, roleTitles []data_type.Role) (bool, error)
+	GetByUserIdAndRoleName(ctx context.Context, userId string, roleName data_type.Role) (*model.UserRole, error)
+	IsExistByUserIdAndRoleNames(ctx context.Context, userId string, roleNames []data_type.Role) (bool, error)
 
 	// delete
 	Delete(ctx context.Context, userRole *model.UserRole) error
@@ -130,18 +130,6 @@ func (r *userRoleRepository) FetchUserIdsByRoleIdsAndUserIds(ctx context.Context
 	return resultUserIds, nil
 }
 
-func (r *userRoleRepository) GetByUserIdAndRoleTitle(ctx context.Context, userId string, roleTitle data_type.Role) (*model.UserRole, error) {
-	stmt := stmtBuilder.Select("ur.*").
-		From(fmt.Sprintf("%s ur", model.UserRoleTableName)).
-		InnerJoin(fmt.Sprintf("%s r ON r.id = ur.role_id", model.RoleTableName)).
-		Where(squirrel.And{
-			squirrel.Eq{"ur.user_id": userId},
-			squirrel.Eq{"r.title": roleTitle},
-		})
-
-	return r.get(ctx, stmt)
-}
-
 func (r *userRoleRepository) GetByUserIdAndRoleId(ctx context.Context, userId string, roleId string) (*model.UserRole, error) {
 	stmt := stmtBuilder.Select("*").
 		From(model.UserRoleTableName).
@@ -153,8 +141,20 @@ func (r *userRoleRepository) GetByUserIdAndRoleId(ctx context.Context, userId st
 	return r.get(ctx, stmt)
 }
 
-func (r *userRoleRepository) IsExistByUserIdAndRoleTitles(ctx context.Context, userId string, roleTitles []data_type.Role) (bool, error) {
-	if len(roleTitles) == 0 {
+func (r *userRoleRepository) GetByUserIdAndRoleName(ctx context.Context, userId string, roleNames data_type.Role) (*model.UserRole, error) {
+	stmt := stmtBuilder.Select("ur.*").
+		From(fmt.Sprintf("%s ur", model.UserRoleTableName)).
+		InnerJoin(fmt.Sprintf("%s r ON r.id = ur.role_id", model.RoleTableName)).
+		Where(squirrel.And{
+			squirrel.Eq{"ur.user_id": userId},
+			squirrel.Eq{"r.name": roleNames},
+		})
+
+	return r.get(ctx, stmt)
+}
+
+func (r *userRoleRepository) IsExistByUserIdAndRoleNames(ctx context.Context, userId string, roleNames []data_type.Role) (bool, error) {
+	if len(roleNames) == 0 {
 		return false, nil
 	}
 
@@ -164,7 +164,7 @@ func (r *userRoleRepository) IsExistByUserIdAndRoleTitles(ctx context.Context, u
 			InnerJoin(fmt.Sprintf("%s r ON r.id = ur.role_id", model.RoleTableName)).
 			Where(squirrel.And{
 				squirrel.Eq{"ur.user_id": userId},
-				squirrel.Eq{"r.title": roleTitles},
+				squirrel.Eq{"r.name": roleNames},
 			}).
 			Prefix("EXISTS (").Suffix(")"),
 	)

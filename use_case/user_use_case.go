@@ -111,9 +111,9 @@ func (u *userUseCase) AdminCreate(ctx context.Context, request dto_request.Admin
 
 func (u *userUseCase) AdminAddRole(ctx context.Context, request dto_request.AdminUserAddRoleRequest) model.User {
 	user := mustGetUser(ctx, u.repositoryManager, request.UserId, false)
-	role := mustGetRole(ctx, u.repositoryManager, request.RoleId, true)
+	mustGetRole(ctx, u.repositoryManager, request.RoleId, true)
 
-	userRole, err := u.repositoryManager.UserRoleRepository().GetByUserIdAndRoleTitle(ctx, request.UserId, role.Name)
+	userRole, err := u.repositoryManager.UserRoleRepository().GetByUserIdAndRoleId(ctx, request.UserId, request.RoleId)
 	panicIfErr(err, constant.ErrNoData)
 
 	if userRole != nil {
