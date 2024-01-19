@@ -242,6 +242,12 @@ func mustGetProductReceiveItemByProductReceiveIdAndProductUnitId(ctx context.Con
 	return *productReceiveItem
 }
 
+func mustGetDeliveryOrder(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.DeliveryOrder {
+	deliveryOrder, err := repositoryManager.DeliveryOrderRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "DELIVERY_ORDER.NOT_FOUND", isValidate)
+	return *deliveryOrder
+}
+
 func shouldGetProductStockByProductId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string) *model.ProductStock {
 	productStock, err := repositoryManager.ProductStockRepository().GetByProductId(ctx, productId)
 	panicIfErr(err, constant.ErrNoData)
