@@ -45,6 +45,37 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionBalanceUpdate,
 		PermissionBalanceDelete,
 
+		// supplier
+		PermissionSupplierCreate,
+		PermissionSupplierFetch,
+		PermissionSupplierGet,
+		PermissionSupplierUpdate,
+		PermissionSupplierDelete,
+
+		// supplier type
+		PermissionSupplierTypeCreate,
+		PermissionSupplierTypeFetch,
+		PermissionSupplierTypeGet,
+		PermissionSupplierTypeUpdate,
+		PermissionSupplierTypeDelete,
+
+		// product
+		PermissionProductCreate,
+		PermissionProductFetch,
+		PermissionProductGet,
+		PermissionProductUpdate,
+		PermissionProductDelete,
+
+		// product unit
+		PermissionProductUnitCreate,
+		PermissionProductUnitUpload,
+		PermissionProductUnitGet,
+		PermissionProductUnitUpdate,
+		PermissionProductUnitDelete,
+
+		// role
+		PermissionRoleOptionForUserForm,
+
 		// user
 		PermissionUserCreate,
 		PermissionUserUpdate,
@@ -60,30 +91,6 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionUnitGet,
 		PermissionUnitUpdate,
 		PermissionUnitDelete,
-
-		// supplier
-		PermissionSupplierCreate,
-		PermissionSupplierFetch,
-		PermissionSupplierGet,
-		PermissionSupplierUpdate,
-		PermissionSupplierDelete,
-
-		// supplier type
-		PermissionSupplierTypeCreate,
-		PermissionSupplierTypeFetch,
-		PermissionSupplierTypeGet,
-		PermissionSupplierTypeUpdate,
-		PermissionSupplierTypeDelete,
-
-		// product unit
-		PermissionProductUnitCreate,
-		PermissionProductUnitUpload,
-		PermissionProductUnitGet,
-		PermissionProductUnitUpdate,
-		PermissionProductUnitDelete,
-
-		// role
-		PermissionRoleOptionForUserForm,
 	}
 }
 
