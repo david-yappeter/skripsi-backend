@@ -17,17 +17,17 @@ type productLoaderParams struct {
 }
 
 type ProductUseCase interface {
-	// admin create
+	//  create
 	Create(ctx context.Context, request dto_request.ProductCreateRequest) model.Product
 
-	// admin read
+	//  read
 	Fetch(ctx context.Context, request dto_request.ProductFetchRequest) ([]model.Product, int)
 	Get(ctx context.Context, request dto_request.ProductGetRequest) model.Product
 
-	// admin update
+	//  update
 	Update(ctx context.Context, request dto_request.ProductUpdateRequest) model.Product
 
-	// admin delete
+	//  delete
 	Delete(ctx context.Context, request dto_request.ProductDeleteRequest)
 }
 

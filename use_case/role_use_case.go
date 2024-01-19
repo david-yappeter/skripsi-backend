@@ -8,7 +8,7 @@ import (
 )
 
 type RoleUseCase interface {
-	// admin
+	//
 	OptionForUserForm(ctx context.Context, request dto_request.RoleOptionForUserFormRequest) ([]model.Role, int)
 }
 

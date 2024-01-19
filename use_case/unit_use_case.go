@@ -10,17 +10,17 @@ import (
 )
 
 type UnitUseCase interface {
-	// admin create
+	//  create
 	Create(ctx context.Context, request dto_request.UnitCreateRequest) model.Unit
 
-	// admin read
+	//  read
 	Fetch(ctx context.Context, request dto_request.UnitFetchRequest) ([]model.Unit, int)
 	Get(ctx context.Context, request dto_request.UnitGetRequest) model.Unit
 
-	// admin update
+	//  update
 	Update(ctx context.Context, request dto_request.UnitUpdateRequest) model.Unit
 
-	// admin delete
+	//  delete
 	Delete(ctx context.Context, request dto_request.UnitDeleteRequest)
 }
 

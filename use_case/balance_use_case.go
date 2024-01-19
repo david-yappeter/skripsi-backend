@@ -9,17 +9,17 @@ import (
 )
 
 type BalanceUseCase interface {
-	// admin create
+	//  create
 	Create(ctx context.Context, request dto_request.BalanceCreateRequest) model.Balance
 
-	// admin read
+	//  read
 	Fetch(ctx context.Context, request dto_request.BalanceFetchRequest) ([]model.Balance, int)
 	Get(ctx context.Context, request dto_request.BalanceGetRequest) model.Balance
 
-	// admin update
+	//  update
 	Update(ctx context.Context, request dto_request.BalanceUpdateRequest) model.Balance
 
-	// admin delete
+	//  delete
 	Delete(ctx context.Context, request dto_request.BalanceDeleteRequest)
 }
 

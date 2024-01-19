@@ -19,17 +19,17 @@ type userLoaderParams struct {
 }
 
 type UserUseCase interface {
-	// admin create
+	//  create
 	Create(ctx context.Context, request dto_request.UserCreateRequest) model.User
 	AddRole(ctx context.Context, request dto_request.UserAddRoleRequest) model.User
 
-	// admin update
+	//  update
 	Update(ctx context.Context, request dto_request.UserUpdateRequest) model.User
 	UpdatePassword(ctx context.Context, request dto_request.UserUpdatePasswordRequest) model.User
 	UpdateActive(ctx context.Context, request dto_request.UserUpdateActiveRequest) model.User
 	UpdateInActive(ctx context.Context, request dto_request.UserUpdateInActiveRequest) model.User
 
-	// admin delete
+	//  delete
 	DeleteRole(ctx context.Context, request dto_request.UserDeleteRoleRequest) model.User
 
 	// read
