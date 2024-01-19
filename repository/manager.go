@@ -22,6 +22,7 @@ type RepositoryManager interface {
 	ProductReceiveItemRepository() ProductReceiveItemRepository
 	ProductReceiveImageRepository() ProductReceiveImageRepository
 	ProductRepository() ProductRepository
+	ProductStockRepository() ProductStockRepository
 	ProductUnitRepository() ProductUnitRepository
 	RolePermissionRepository() RolePermissionRepository
 	RoleRepository() RoleRepository
@@ -45,6 +46,7 @@ type repositoryManager struct {
 	productReceiveItemRepository  ProductReceiveItemRepository
 	productReceiveImageRepository ProductReceiveImageRepository
 	productRepository             ProductRepository
+	productStockRepository        ProductStockRepository
 	productUnitRepository         ProductUnitRepository
 	rolePermissionRepository      RolePermissionRepository
 	roleRepository                RoleRepository
@@ -112,6 +114,10 @@ func (r *repositoryManager) ProductReceiveImageRepository() ProductReceiveImageR
 
 func (r *repositoryManager) ProductRepository() ProductRepository {
 	return r.productRepository
+}
+
+func (r *repositoryManager) ProductStockRepository() ProductStockRepository {
+	return r.productStockRepository
 }
 
 func (r *repositoryManager) ProductUnitRepository() ProductUnitRepository {
@@ -186,6 +192,10 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		productRepository: NewProductRepository(
+			db,
+			loggerStack,
+		),
+		productStockRepository: NewProductStockRepository(
 			db,
 			loggerStack,
 		),
