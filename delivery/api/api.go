@@ -208,11 +208,11 @@ func registerRoutes(router gin.IRouter, useCaseManager use_case.UseCaseManager) 
 		)
 	}
 
-	RegisterAdminBalanceApi(router, useCaseManager)
-	RegisterAdminUserApi(router, useCaseManager)
-	RegisterAdminUnitApi(router, useCaseManager)
-	RegisterAdminProductUnitApi(router, useCaseManager)
-	RegisterAdminRoleApi(router, useCaseManager)
+	RegisterBalanceApi(router, useCaseManager)
+	RegisterUserApi(router, useCaseManager)
+	RegisterUnitApi(router, useCaseManager)
+	RegisterProductUnitApi(router, useCaseManager)
+	RegisterRoleApi(router, useCaseManager)
 
 	RegisterCustomerApi(router, useCaseManager)
 	RegisterProductReceiveApi(router, useCaseManager)

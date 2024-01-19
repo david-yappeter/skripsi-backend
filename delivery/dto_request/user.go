@@ -1,40 +1,40 @@
 package dto_request
 
-type AdminUserCreateRequest struct {
+type UserCreateRequest struct {
 	Name     string `json:"name" validate:"required,not_empty,max=255"`
 	Username string `json:"username" validate:"required,not_empty,max=255"`
 	Password string `json:"password" validate:"required,not_empty,max=255"`
 	IsActive bool   `json:"is_active"`
-} // @name AdminUserCreateRequest
+} // @name UserCreateRequest
 
-type AdminUserUpdateRequest struct {
+type UserUpdateRequest struct {
 	Name string `json:"name" validate:"required,not_empty,max=255"`
 
 	UserId string `json:"-" swaggerignore:"true"`
-} // @name AdminUserUpdateRequest
+} // @name UserUpdateRequest
 
-type AdminUserUpdatePasswordRequest struct {
+type UserUpdatePasswordRequest struct {
 	Password string `json:"password" validate:"required,not_empty,max=255"`
 
 	UserId string `json:"-" swaggerignore:"true"`
-} // @name AdminUserUpdatePasswordRequest
+} // @name UserUpdatePasswordRequest
 
-type AdminUserUpdateActiveRequest struct {
+type UserUpdateActiveRequest struct {
 	UserId string `json:"-" swaggerignore:"true"`
-} // @name AdminUserUpdateActiveRequest
+} // @name UserUpdateActiveRequest
 
-type AdminUserUpdateInActiveRequest struct {
+type UserUpdateInActiveRequest struct {
 	UserId string `json:"-" swaggerignore:"true"`
-} // @name AdminUserUpdateInActiveRequest
+} // @name UserUpdateInActiveRequest
 
-type AdminUserAddRoleRequest struct {
+type UserAddRoleRequest struct {
 	RoleId string `json:"role_id" validate:"required,not_empty,uuid"`
 
 	UserId string `json:"-" swaggerignore:"true"`
-} // @name AdminUserAddRoleRequest
+} // @name UserAddRoleRequest
 
-type AdminUserDeleteRoleRequest struct {
+type UserDeleteRoleRequest struct {
 	RoleId string `json:"role_id" validate:"required,not_empty,uuid"`
 
 	UserId string `json:"-" swaggerignore:"true"`
-} // @name AdminUserDeleteRoleRequest
+} // @name UserDeleteRoleRequest

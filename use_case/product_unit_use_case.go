@@ -16,18 +16,18 @@ import (
 )
 
 type ProductUnitUseCase interface {
-	// admin create
-	AdminCreate(ctx context.Context, request dto_request.AdminProductUnitCreateRequest) model.ProductUnit
-	AdminUpload(ctx context.Context, request dto_request.AdminProductUnitUploadRequest) string
+	//  create
+	Create(ctx context.Context, request dto_request.ProductUnitCreateRequest) model.ProductUnit
+	Upload(ctx context.Context, request dto_request.ProductUnitUploadRequest) string
 
-	// admin read
-	AdminGet(ctx context.Context, request dto_request.AdminProductUnitGetRequest) model.ProductUnit
+	//  read
+	Get(ctx context.Context, request dto_request.ProductUnitGetRequest) model.ProductUnit
 
-	// admin update
-	AdminUpdate(ctx context.Context, request dto_request.AdminProductUnitUpdateRequest) model.ProductUnit
+	//  update
+	Update(ctx context.Context, request dto_request.ProductUnitUpdateRequest) model.ProductUnit
 
-	// admin delete
-	AdminDelete(ctx context.Context, request dto_request.AdminProductUnitDeleteRequest)
+	//  delete
+	Delete(ctx context.Context, request dto_request.ProductUnitDeleteRequest)
 }
 
 type productUnitUseCase struct {
@@ -63,7 +63,7 @@ func (u *productUnitUseCase) mustValidateAllowDeleteProductUnit(ctx context.Cont
 
 }
 
-func (u *productUnitUseCase) AdminCreate(ctx context.Context, request dto_request.AdminProductUnitCreateRequest) model.ProductUnit {
+func (u *productUnitUseCase) Create(ctx context.Context, request dto_request.ProductUnitCreateRequest) model.ProductUnit {
 	var (
 		imageFile *model.File
 	)
@@ -133,7 +133,7 @@ func (u *productUnitUseCase) AdminCreate(ctx context.Context, request dto_reques
 	return productUnit
 }
 
-func (u *productUnitUseCase) AdminUpload(ctx context.Context, request dto_request.AdminProductUnitUploadRequest) string {
+func (u *productUnitUseCase) Upload(ctx context.Context, request dto_request.ProductUnitUploadRequest) string {
 	return u.baseFileUseCase.mustUploadFileToTemporary(
 		ctx,
 		constant.ProductUnitImagePath,
@@ -148,13 +148,13 @@ func (u *productUnitUseCase) AdminUpload(ctx context.Context, request dto_reques
 	)
 }
 
-func (u *productUnitUseCase) AdminGet(ctx context.Context, request dto_request.AdminProductUnitGetRequest) model.ProductUnit {
+func (u *productUnitUseCase) Get(ctx context.Context, request dto_request.ProductUnitGetRequest) model.ProductUnit {
 	productUnit := mustGetProductUnit(ctx, u.repositoryManager, request.ProductUnitId, true)
 
 	return productUnit
 }
 
-func (u *productUnitUseCase) AdminUpdate(ctx context.Context, request dto_request.AdminProductUnitUpdateRequest) model.ProductUnit {
+func (u *productUnitUseCase) Update(ctx context.Context, request dto_request.ProductUnitUpdateRequest) model.ProductUnit {
 	productUnit := mustGetProductUnit(ctx, u.repositoryManager, request.ProductUnitId, true)
 
 	productUnit.ProductId = request.ProductId
@@ -167,7 +167,7 @@ func (u *productUnitUseCase) AdminUpdate(ctx context.Context, request dto_reques
 	return productUnit
 }
 
-func (u *productUnitUseCase) AdminDelete(ctx context.Context, request dto_request.AdminProductUnitDeleteRequest) {
+func (u *productUnitUseCase) Delete(ctx context.Context, request dto_request.ProductUnitDeleteRequest) {
 	var (
 		file *model.File
 	)

@@ -183,10 +183,10 @@ func RegisterCustomerApi(router gin.IRouter, useCaseManager use_case.UseCaseMana
 		customerUseCase: useCaseManager.CustomerUseCase(),
 	}
 
-	adminRouterGroup := router.Group("/customers")
-	adminRouterGroup.POST("", api.Create())
-	adminRouterGroup.POST("/filter", api.Fetch())
-	adminRouterGroup.GET("/:id", api.Get())
-	adminRouterGroup.PUT("/:id", api.Update())
-	adminRouterGroup.DELETE("/:id", api.Delete())
+	routerGroup := router.Group("/customers")
+	routerGroup.POST("", api.Create())
+	routerGroup.POST("/filter", api.Fetch())
+	routerGroup.GET("/:id", api.Get())
+	routerGroup.PUT("/:id", api.Update())
+	routerGroup.DELETE("/:id", api.Delete())
 }

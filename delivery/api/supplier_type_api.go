@@ -183,10 +183,10 @@ func RegisterSupplierTypeApi(router gin.IRouter, useCaseManager use_case.UseCase
 		supplierTypeUseCase: useCaseManager.SupplierTypeUseCase(),
 	}
 
-	adminRouterGroup := router.Group("/supplier-types")
-	adminRouterGroup.POST("", api.Create())
-	adminRouterGroup.POST("/filter", api.Fetch())
-	adminRouterGroup.GET("/:id", api.Get())
-	adminRouterGroup.PUT("/:id", api.Update())
-	adminRouterGroup.DELETE("/:id", api.Delete())
+	routerGroup := router.Group("/supplier-types")
+	routerGroup.POST("", api.Create())
+	routerGroup.POST("/filter", api.Fetch())
+	routerGroup.GET("/:id", api.Get())
+	routerGroup.PUT("/:id", api.Update())
+	routerGroup.DELETE("/:id", api.Delete())
 }

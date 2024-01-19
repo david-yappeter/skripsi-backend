@@ -11,28 +11,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AdminUnitApi struct {
+type UnitApi struct {
 	api
 	unitUseCase use_case.UnitUseCase
 }
 
 // API:
 //
-//	@Router		/admin/units [post]
+//	@Router		/units [post]
 //	@Summary	Create
-//	@tags		Admin Units
+//	@tags		Units
 //	@Accept		json
-//	@Param		dto_request.AdminUnitCreateRequest	body	dto_request.AdminUnitCreateRequest	true	"Body Request"
+//	@Param		dto_request.UnitCreateRequest	body	dto_request.UnitCreateRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{unit=dto_response.UnitResponse}}
-func (a *AdminUnitApi) Create() gin.HandlerFunc {
+func (a *UnitApi) Create() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionAdminUnitCreate),
+		data_type.PermissionP(data_type.PermissionUnitCreate),
 		func(ctx apiContext) {
-			var request dto_request.AdminUnitCreateRequest
+			var request dto_request.UnitCreateRequest
 			ctx.mustBind(&request)
 
-			unit := a.unitUseCase.AdminCreate(ctx.context(), request)
+			unit := a.unitUseCase.Create(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -48,21 +48,21 @@ func (a *AdminUnitApi) Create() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/admin/units/filter [post]
+//	@Router		/units/filter [post]
 //	@Summary	Filter
-//	@tags		Admin Units
+//	@tags		Units
 //	@Accept		json
-//	@Param		dto_request.AdminUnitFetchRequest	body	dto_request.AdminUnitFetchRequest	true	"Body Request"
+//	@Param		dto_request.UnitFetchRequest	body	dto_request.UnitFetchRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.UnitResponse}}
-func (a *AdminUnitApi) Fetch() gin.HandlerFunc {
+func (a *UnitApi) Fetch() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionAdminUnitCreate),
+		data_type.PermissionP(data_type.PermissionUnitCreate),
 		func(ctx apiContext) {
-			var request dto_request.AdminUnitFetchRequest
+			var request dto_request.UnitFetchRequest
 			ctx.mustBind(&request)
 
-			units, total := a.unitUseCase.AdminFetch(ctx.context(), request)
+			units, total := a.unitUseCase.Fetch(ctx.context(), request)
 
 			nodes := util.ConvertArray(units, dto_response.NewUnitResponse)
 
@@ -83,23 +83,23 @@ func (a *AdminUnitApi) Fetch() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/admin/units/{id} [get]
+//	@Router		/units/{id} [get]
 //	@Summary	Get
-//	@tags		Admin Units
+//	@tags		Units
 //	@Param		id	path	string	true	"Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{unit=dto_response.UnitResponse}}
-func (a *AdminUnitApi) Get() gin.HandlerFunc {
+func (a *UnitApi) Get() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionAdminUnitGet),
+		data_type.PermissionP(data_type.PermissionUnitGet),
 		func(ctx apiContext) {
 			id := ctx.getUuidParam("id")
-			var request dto_request.AdminUnitGetRequest
+			var request dto_request.UnitGetRequest
 			ctx.mustBind(&request)
 
 			request.UnitId = id
 
-			unit := a.unitUseCase.AdminGet(ctx.context(), request)
+			unit := a.unitUseCase.Get(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -115,25 +115,25 @@ func (a *AdminUnitApi) Get() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/admin/units/{id} [put]
+//	@Router		/units/{id} [put]
 //	@Summary	Update
-//	@tags		Admin Units
+//	@tags		Units
 //	@Accept		json
-//	@Param		id									path	string								true	"Id"
-//	@Param		dto_request.AdminUnitUpdateRequest	body	dto_request.AdminUnitUpdateRequest	true	"Body Request"
+//	@Param		id								path	string							true	"Id"
+//	@Param		dto_request.UnitUpdateRequest	body	dto_request.UnitUpdateRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{unit=dto_response.UnitResponse}}
-func (a *AdminUnitApi) Update() gin.HandlerFunc {
+func (a *UnitApi) Update() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionAdminUnitUpdate),
+		data_type.PermissionP(data_type.PermissionUnitUpdate),
 		func(ctx apiContext) {
 			id := ctx.getUuidParam("id")
-			var request dto_request.AdminUnitUpdateRequest
+			var request dto_request.UnitUpdateRequest
 			ctx.mustBind(&request)
 
 			request.UnitId = id
 
-			unit := a.unitUseCase.AdminUpdate(ctx.context(), request)
+			unit := a.unitUseCase.Update(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -149,23 +149,23 @@ func (a *AdminUnitApi) Update() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/admin/units/{id} [delete]
+//	@Router		/units/{id} [delete]
 //	@Summary	Delete
-//	@tags		Admin Units
+//	@tags		Units
 //	@Accept		json
 //	@Param		id	path	string	true	"Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.SuccessResponse
-func (a *AdminUnitApi) Delete() gin.HandlerFunc {
+func (a *UnitApi) Delete() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionAdminUnitDelete),
+		data_type.PermissionP(data_type.PermissionUnitDelete),
 		func(ctx apiContext) {
 			id := ctx.getUuidParam("id")
-			var request dto_request.AdminUnitDeleteRequest
+			var request dto_request.UnitDeleteRequest
 			ctx.mustBind(&request)
 			request.UnitId = id
 
-			a.unitUseCase.AdminDelete(ctx.context(), request)
+			a.unitUseCase.Delete(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -177,16 +177,16 @@ func (a *AdminUnitApi) Delete() gin.HandlerFunc {
 	)
 }
 
-func RegisterAdminUnitApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
-	api := AdminUnitApi{
+func RegisterUnitApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
+	api := UnitApi{
 		api:         newApi(useCaseManager),
 		unitUseCase: useCaseManager.UnitUseCase(),
 	}
 
-	adminRouterGroup := router.Group("/admin/units")
-	adminRouterGroup.POST("", api.Create())
-	adminRouterGroup.POST("/filter", api.Fetch())
-	adminRouterGroup.GET("/:id", api.Get())
-	adminRouterGroup.PUT("/:id", api.Update())
-	adminRouterGroup.DELETE("/:id", api.Delete())
+	routerGroup := router.Group("/units")
+	routerGroup.POST("", api.Create())
+	routerGroup.POST("/filter", api.Fetch())
+	routerGroup.GET("/:id", api.Get())
+	routerGroup.PUT("/:id", api.Update())
+	routerGroup.DELETE("/:id", api.Delete())
 }

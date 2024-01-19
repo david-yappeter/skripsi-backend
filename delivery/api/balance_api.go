@@ -11,28 +11,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AdminBalanceApi struct {
+type BalanceApi struct {
 	api
 	balanceUseCase use_case.BalanceUseCase
 }
 
 // API:
 //
-//	@Router		/admin/balances [post]
+//	@Router		/balances [post]
 //	@Summary	Create
-//	@tags		Admin Balances
+//	@tags		Balances
 //	@Accept		json
-//	@Param		dto_request.AdminBalanceCreateRequest	body	dto_request.AdminBalanceCreateRequest	true	"Body Request"
+//	@Param		dto_request.BalanceCreateRequest	body	dto_request.BalanceCreateRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{balance=dto_response.BalanceResponse}}
-func (a *AdminBalanceApi) Create() gin.HandlerFunc {
+func (a *BalanceApi) Create() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionAdminBalanceCreate),
+		data_type.PermissionP(data_type.PermissionBalanceCreate),
 		func(ctx apiContext) {
-			var request dto_request.AdminBalanceCreateRequest
+			var request dto_request.BalanceCreateRequest
 			ctx.mustBind(&request)
 
-			balance := a.balanceUseCase.AdminCreate(ctx.context(), request)
+			balance := a.balanceUseCase.Create(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -46,21 +46,21 @@ func (a *AdminBalanceApi) Create() gin.HandlerFunc {
 	)
 }
 
-//	@Router		/admin/balances/filter [post]
+//	@Router		/balances/filter [post]
 //	@Summary	Filter
-//	@tags		Admin Balances
+//	@tags		Balances
 //	@Accept		json
-//	@Param		dto_request.AdminBalanceFetchRequest	body	dto_request.AdminBalanceFetchRequest	true	"Body Request"
+//	@Param		dto_request.BalanceFetchRequest	body	dto_request.BalanceFetchRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.BalanceResponse}}
-func (a *AdminBalanceApi) Fetch() gin.HandlerFunc {
+func (a *BalanceApi) Fetch() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionAdminBalanceCreate),
+		data_type.PermissionP(data_type.PermissionBalanceCreate),
 		func(ctx apiContext) {
-			var request dto_request.AdminBalanceFetchRequest
+			var request dto_request.BalanceFetchRequest
 			ctx.mustBind(&request)
 
-			balances, total := a.balanceUseCase.AdminFetch(ctx.context(), request)
+			balances, total := a.balanceUseCase.Fetch(ctx.context(), request)
 
 			nodes := util.ConvertArray(balances, dto_response.NewBalanceResponse)
 
@@ -79,23 +79,23 @@ func (a *AdminBalanceApi) Fetch() gin.HandlerFunc {
 	)
 }
 
-//	@Router		/admin/balances/{id} [get]
+//	@Router		/balances/{id} [get]
 //	@Summary	Get
-//	@tags		Admin Balances
+//	@tags		Balances
 //	@Param		id	path	string	true	"Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{balance=dto_response.BalanceResponse}}
-func (a *AdminBalanceApi) Get() gin.HandlerFunc {
+func (a *BalanceApi) Get() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionAdminBalanceGet),
+		data_type.PermissionP(data_type.PermissionBalanceGet),
 		func(ctx apiContext) {
 			id := ctx.getUuidParam("id")
-			var request dto_request.AdminBalanceGetRequest
+			var request dto_request.BalanceGetRequest
 			ctx.mustBind(&request)
 
 			request.BalanceId = id
 
-			balance := a.balanceUseCase.AdminGet(ctx.context(), request)
+			balance := a.balanceUseCase.Get(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -109,25 +109,25 @@ func (a *AdminBalanceApi) Get() gin.HandlerFunc {
 	)
 }
 
-//	@Router		/admin/balances/{id} [put]
+//	@Router		/balances/{id} [put]
 //	@Summary	Update
-//	@tags		Admin Balances
+//	@tags		Balances
 //	@Accept		json
-//	@Param		id										path	string									true	"Id"
-//	@Param		dto_request.AdminBalanceUpdateRequest	body	dto_request.AdminBalanceUpdateRequest	true	"Body Request"
+//	@Param		id									path	string								true	"Id"
+//	@Param		dto_request.BalanceUpdateRequest	body	dto_request.BalanceUpdateRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{balance=dto_response.BalanceResponse}}
-func (a *AdminBalanceApi) Update() gin.HandlerFunc {
+func (a *BalanceApi) Update() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionAdminBalanceUpdate),
+		data_type.PermissionP(data_type.PermissionBalanceUpdate),
 		func(ctx apiContext) {
 			id := ctx.getUuidParam("id")
-			var request dto_request.AdminBalanceUpdateRequest
+			var request dto_request.BalanceUpdateRequest
 			ctx.mustBind(&request)
 
 			request.BalanceId = id
 
-			balance := a.balanceUseCase.AdminUpdate(ctx.context(), request)
+			balance := a.balanceUseCase.Update(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -141,23 +141,23 @@ func (a *AdminBalanceApi) Update() gin.HandlerFunc {
 	)
 }
 
-//	@Router		/admin/balances/{id} [delete]
+//	@Router		/balances/{id} [delete]
 //	@Summary	Delete
-//	@tags		Admin Balances
+//	@tags		Balances
 //	@Accept		json
 //	@Param		id	path	string	true	"Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.SuccessResponse
-func (a *AdminBalanceApi) Delete() gin.HandlerFunc {
+func (a *BalanceApi) Delete() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionAdminBalanceDelete),
+		data_type.PermissionP(data_type.PermissionBalanceDelete),
 		func(ctx apiContext) {
 			id := ctx.getUuidParam("id")
-			var request dto_request.AdminBalanceDeleteRequest
+			var request dto_request.BalanceDeleteRequest
 			ctx.mustBind(&request)
 			request.BalanceId = id
 
-			a.balanceUseCase.AdminDelete(ctx.context(), request)
+			a.balanceUseCase.Delete(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -169,16 +169,16 @@ func (a *AdminBalanceApi) Delete() gin.HandlerFunc {
 	)
 }
 
-func RegisterAdminBalanceApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
-	api := AdminBalanceApi{
+func RegisterBalanceApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
+	api := BalanceApi{
 		api:            newApi(useCaseManager),
 		balanceUseCase: useCaseManager.BalanceUseCase(),
 	}
 
-	adminRouterGroup := router.Group("/admin/balances")
-	adminRouterGroup.POST("", api.Create())
-	adminRouterGroup.POST("/filter", api.Fetch())
-	adminRouterGroup.GET("/:id", api.Get())
-	adminRouterGroup.PUT("/:id", api.Update())
-	adminRouterGroup.DELETE("/:id", api.Delete())
+	routerGroup := router.Group("/balances")
+	routerGroup.POST("", api.Create())
+	routerGroup.POST("/filter", api.Fetch())
+	routerGroup.GET("/:id", api.Get())
+	routerGroup.PUT("/:id", api.Update())
+	routerGroup.DELETE("/:id", api.Delete())
 }

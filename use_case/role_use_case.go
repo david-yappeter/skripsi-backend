@@ -9,7 +9,7 @@ import (
 
 type RoleUseCase interface {
 	// admin
-	AdminOptionForUserForm(ctx context.Context, request dto_request.AdminRoleOptionForUserFormRequest) ([]model.Role, int)
+	OptionForUserForm(ctx context.Context, request dto_request.RoleOptionForUserFormRequest) ([]model.Role, int)
 }
 
 type roleUseCase struct {
@@ -24,7 +24,7 @@ func NewRoleUseCase(
 	}
 }
 
-func (u *roleUseCase) AdminOptionForUserForm(ctx context.Context, request dto_request.AdminRoleOptionForUserFormRequest) ([]model.Role, int) {
+func (u *roleUseCase) OptionForUserForm(ctx context.Context, request dto_request.RoleOptionForUserFormRequest) ([]model.Role, int) {
 	queryOption := model.RoleQueryOption{
 		QueryOption: model.NewQueryOptionWithPagination(request.Page, request.Limit, model.Sorts(request.Sorts)),
 		Phrase:      request.Phrase,

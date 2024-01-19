@@ -1,36 +1,36 @@
 package dto_request
 
-type AdminBalanceCreateRequest struct {
+type BalanceCreateRequest struct {
 	AccountNumber string `json:"account_number" validate:"required,not_empty"`
 	AccountName   string `json:"account_name" validate:"required,not_empty"`
 	BankName      string `json:"bank_name" validate:"required,not_empty"`
 	Name          string `json:"name" validate:"required,not_empty"`
-} // @name AdminBalanceCreateRequest
+} // @name BalanceCreateRequest
 
-type AdminBalanceFetchSorts []struct {
+type BalanceFetchSorts []struct {
 	Field     string `json:"field" validate:"required,oneof=account_number account_name bank_name name created_at updated_at" example:"name"`
 	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
-} // @name AdminBalanceFetchSorts
+} // @name BalanceFetchSorts
 
-type AdminBalanceFetchRequest struct {
+type BalanceFetchRequest struct {
 	PaginationRequest
-	Sorts  AdminBalanceFetchSorts `json:"sorts" validate:"unique=Field,dive"`
-	Phrase *string                `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
-} // @name AdminBalanceFetchRequest
+	Sorts  BalanceFetchSorts `json:"sorts" validate:"unique=Field,dive"`
+	Phrase *string           `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name BalanceFetchRequest
 
-type AdminBalanceGetRequest struct {
+type BalanceGetRequest struct {
 	BalanceId string `json:"-" swaggerignore:"true"`
-} // @name AdminBalanceGetRequest
+} // @name BalanceGetRequest
 
-type AdminBalanceUpdateRequest struct {
+type BalanceUpdateRequest struct {
 	AccountNumber string `json:"account_number" validate:"required,not_empty"`
 	AccountName   string `json:"account_name" validate:"required,not_empty"`
 	BankName      string `json:"bank_name" validate:"required,not_empty"`
 	Name          string `json:"name" validate:"required,not_empty"`
 
 	BalanceId string `json:"-" swaggerignore:"true"`
-} // @name AdminBalanceUpdateRequest
+} // @name BalanceUpdateRequest
 
-type AdminBalanceDeleteRequest struct {
+type BalanceDeleteRequest struct {
 	BalanceId string `json:"-" swaggerignore:"true"`
-} // @name AdminBalanceDeleteRequest
+} // @name BalanceDeleteRequest

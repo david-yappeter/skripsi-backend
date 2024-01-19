@@ -11,17 +11,17 @@ import (
 
 type ProductUseCase interface {
 	// admin create
-	Create(ctx context.Context, request dto_request.AdminProductCreateRequest) model.Product
+	Create(ctx context.Context, request dto_request.ProductCreateRequest) model.Product
 
 	// admin read
-	Fetch(ctx context.Context, request dto_request.AdminProductFetchRequest) ([]model.Product, int)
-	Get(ctx context.Context, request dto_request.AdminProductGetRequest) model.Product
+	Fetch(ctx context.Context, request dto_request.ProductFetchRequest) ([]model.Product, int)
+	Get(ctx context.Context, request dto_request.ProductGetRequest) model.Product
 
 	// admin update
-	Update(ctx context.Context, request dto_request.AdminProductUpdateRequest) model.Product
+	Update(ctx context.Context, request dto_request.ProductUpdateRequest) model.Product
 
 	// admin delete
-	Delete(ctx context.Context, request dto_request.AdminProductDeleteRequest)
+	Delete(ctx context.Context, request dto_request.ProductDeleteRequest)
 }
 
 type productUseCase struct {
@@ -41,7 +41,7 @@ func (u *productUseCase) mustValidateAllowDeleteProduct(ctx context.Context, pro
 
 }
 
-func (u *productUseCase) Create(ctx context.Context, request dto_request.AdminProductCreateRequest) model.Product {
+func (u *productUseCase) Create(ctx context.Context, request dto_request.ProductCreateRequest) model.Product {
 	u.mustValidateNameNotDuplicate(ctx, request.Name)
 
 	product := model.Product{
@@ -59,7 +59,7 @@ func (u *productUseCase) Create(ctx context.Context, request dto_request.AdminPr
 	return product
 }
 
-func (u *productUseCase) Fetch(ctx context.Context, request dto_request.AdminProductFetchRequest) ([]model.Product, int) {
+func (u *productUseCase) Fetch(ctx context.Context, request dto_request.ProductFetchRequest) ([]model.Product, int) {
 	queryOption := model.ProductQueryOption{
 		QueryOption: model.NewQueryOptionWithPagination(
 			request.Page,
@@ -78,13 +78,13 @@ func (u *productUseCase) Fetch(ctx context.Context, request dto_request.AdminPro
 	return products, total
 }
 
-func (u *productUseCase) Get(ctx context.Context, request dto_request.AdminProductGetRequest) model.Product {
+func (u *productUseCase) Get(ctx context.Context, request dto_request.ProductGetRequest) model.Product {
 	product := mustGetProduct(ctx, u.repositoryManager, request.ProductId, true)
 
 	return product
 }
 
-func (u *productUseCase) Update(ctx context.Context, request dto_request.AdminProductUpdateRequest) model.Product {
+func (u *productUseCase) Update(ctx context.Context, request dto_request.ProductUpdateRequest) model.Product {
 	product := mustGetProduct(ctx, u.repositoryManager, request.ProductId, true)
 
 	if product.Name != request.Name {
@@ -107,7 +107,7 @@ func (u *productUseCase) Update(ctx context.Context, request dto_request.AdminPr
 	return product
 }
 
-func (u *productUseCase) Delete(ctx context.Context, request dto_request.AdminProductDeleteRequest) {
+func (u *productUseCase) Delete(ctx context.Context, request dto_request.ProductDeleteRequest) {
 	product := mustGetProduct(ctx, u.repositoryManager, request.ProductId, true)
 
 	u.mustValidateAllowDeleteProduct(ctx, request.ProductId)

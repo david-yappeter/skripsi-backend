@@ -14,29 +14,20 @@ func _() {
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
 	_ = x[RoleTypeSuperAdmin-1]
-	_ = x[RoleTypeDoctor-2]
-	_ = x[RoleTypeNurse-3]
-	_ = x[RoleTypePharmacist-4]
-	_ = x[RoleTypeGlobal-5]
-	_ = x[RoleTypeAdmin-6]
+	_ = x[RoleTypeGlobal-2]
+	_ = x[RoleTypeAdmin-3]
 }
 
-const _RoleType_nameReadable = "SUPER_ADMIN, DOCTOR, NURSE, PHARMACIST, GLOBAL, ADMIN"
+const _RoleType_nameReadable = "SUPER_ADMIN, GLOBAL, ADMIN"
 
-const _RoleType_name = "SUPER_ADMINDOCTORNURSEPHARMACISTGLOBALADMIN"
+const _RoleType_name = "SUPER_ADMINGLOBALADMIN"
 
-var _RoleType_index = [...]uint8{0, 11, 17, 22, 32, 38, 43}
+var _RoleType_index = [...]uint8{0, 11, 17, 22}
 
 func (i *RoleType) determine(s string) {
 	switch s {
 	case "SUPER_ADMIN":
 		*i = RoleTypeSuperAdmin
-	case "DOCTOR":
-		*i = RoleTypeDoctor
-	case "NURSE":
-		*i = RoleTypeNurse
-	case "PHARMACIST":
-		*i = RoleTypePharmacist
 	case "GLOBAL":
 		*i = RoleTypeGlobal
 	case "ADMIN":
@@ -110,9 +101,6 @@ func RoleTypeP(v RoleType) *RoleType {
 func ListRoleType() []RoleType {
 	return []RoleType{
 		RoleTypeSuperAdmin,
-		RoleTypeDoctor,
-		RoleTypeNurse,
-		RoleTypePharmacist,
 		RoleTypeGlobal,
 		RoleTypeAdmin,
 	}
@@ -121,9 +109,6 @@ func ListRoleType() []RoleType {
 func ListRoleTypeString() []string {
 	return []string{
 		RoleTypeSuperAdmin.String(),
-		RoleTypeDoctor.String(),
-		RoleTypeNurse.String(),
-		RoleTypePharmacist.String(),
 		RoleTypeGlobal.String(),
 		RoleTypeAdmin.String(),
 	}

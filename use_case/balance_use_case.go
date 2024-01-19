@@ -10,17 +10,17 @@ import (
 
 type BalanceUseCase interface {
 	// admin create
-	AdminCreate(ctx context.Context, request dto_request.AdminBalanceCreateRequest) model.Balance
+	Create(ctx context.Context, request dto_request.BalanceCreateRequest) model.Balance
 
 	// admin read
-	AdminFetch(ctx context.Context, request dto_request.AdminBalanceFetchRequest) ([]model.Balance, int)
-	AdminGet(ctx context.Context, request dto_request.AdminBalanceGetRequest) model.Balance
+	Fetch(ctx context.Context, request dto_request.BalanceFetchRequest) ([]model.Balance, int)
+	Get(ctx context.Context, request dto_request.BalanceGetRequest) model.Balance
 
 	// admin update
-	AdminUpdate(ctx context.Context, request dto_request.AdminBalanceUpdateRequest) model.Balance
+	Update(ctx context.Context, request dto_request.BalanceUpdateRequest) model.Balance
 
 	// admin delete
-	AdminDelete(ctx context.Context, request dto_request.AdminBalanceDeleteRequest)
+	Delete(ctx context.Context, request dto_request.BalanceDeleteRequest)
 }
 
 type balanceUseCase struct {
@@ -31,7 +31,7 @@ func (u *balanceUseCase) mustValidateAllowDeleteBalance(ctx context.Context, bal
 
 }
 
-func (u *balanceUseCase) AdminCreate(ctx context.Context, request dto_request.AdminBalanceCreateRequest) model.Balance {
+func (u *balanceUseCase) Create(ctx context.Context, request dto_request.BalanceCreateRequest) model.Balance {
 	balance := model.Balance{
 		Id:            util.NewUuid(),
 		AccountNumber: request.AccountNumber,
@@ -48,7 +48,7 @@ func (u *balanceUseCase) AdminCreate(ctx context.Context, request dto_request.Ad
 	return balance
 }
 
-func (u *balanceUseCase) AdminFetch(ctx context.Context, request dto_request.AdminBalanceFetchRequest) ([]model.Balance, int) {
+func (u *balanceUseCase) Fetch(ctx context.Context, request dto_request.BalanceFetchRequest) ([]model.Balance, int) {
 	queryOption := model.BalanceQueryOption{
 		QueryOption: model.NewQueryOptionWithPagination(
 			request.Page,
@@ -67,13 +67,13 @@ func (u *balanceUseCase) AdminFetch(ctx context.Context, request dto_request.Adm
 	return balances, total
 }
 
-func (u *balanceUseCase) AdminGet(ctx context.Context, request dto_request.AdminBalanceGetRequest) model.Balance {
+func (u *balanceUseCase) Get(ctx context.Context, request dto_request.BalanceGetRequest) model.Balance {
 	balance := mustGetBalance(ctx, u.repositoryManager, request.BalanceId, true)
 
 	return balance
 }
 
-func (u *balanceUseCase) AdminUpdate(ctx context.Context, request dto_request.AdminBalanceUpdateRequest) model.Balance {
+func (u *balanceUseCase) Update(ctx context.Context, request dto_request.BalanceUpdateRequest) model.Balance {
 	balance := mustGetBalance(ctx, u.repositoryManager, request.BalanceId, true)
 
 	balance.Name = request.Name
@@ -88,7 +88,7 @@ func (u *balanceUseCase) AdminUpdate(ctx context.Context, request dto_request.Ad
 	return balance
 }
 
-func (u *balanceUseCase) AdminDelete(ctx context.Context, request dto_request.AdminBalanceDeleteRequest) {
+func (u *balanceUseCase) Delete(ctx context.Context, request dto_request.BalanceDeleteRequest) {
 	balance := mustGetBalance(ctx, u.repositoryManager, request.BalanceId, true)
 
 	u.mustValidateAllowDeleteBalance(ctx, request.BalanceId)

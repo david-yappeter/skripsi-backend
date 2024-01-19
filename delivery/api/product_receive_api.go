@@ -316,16 +316,16 @@ func RegisterProductReceiveApi(router gin.IRouter, useCaseManager use_case.UseCa
 		productReceiveUseCase: useCaseManager.ProductReceiveUseCase(),
 	}
 
-	adminRouterGroup := router.Group("/product-receives")
-	adminRouterGroup.POST("", api.Create())
-	adminRouterGroup.POST("/upload", api.Upload())
-	adminRouterGroup.POST("/filter", api.Fetch())
-	adminRouterGroup.GET("/:id", api.Get())
-	adminRouterGroup.DELETE("/:id", api.Delete())
+	routerGroup := router.Group("/product-receives")
+	routerGroup.POST("", api.Create())
+	routerGroup.POST("/upload", api.Upload())
+	routerGroup.POST("/filter", api.Fetch())
+	routerGroup.GET("/:id", api.Get())
+	routerGroup.DELETE("/:id", api.Delete())
 
-	adminRouterGroup.POST("/:id/items", api.AddItem())
-	adminRouterGroup.POST("/:id/images", api.AddImage())
+	routerGroup.POST("/:id/items", api.AddItem())
+	routerGroup.POST("/:id/images", api.AddImage())
 
-	adminRouterGroup.DELETE("/:id/items/:product_unit_id", api.DeleteItem())
-	adminRouterGroup.DELETE("/:id/images/:file_id", api.DeleteImage())
+	routerGroup.DELETE("/:id/items/:product_unit_id", api.DeleteItem())
+	routerGroup.DELETE("/:id/images/:file_id", api.DeleteImage())
 }

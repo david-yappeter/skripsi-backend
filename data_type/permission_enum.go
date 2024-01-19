@@ -4,52 +4,38 @@ package data_type
 type Permission int // @name PermissionEnum
 
 const (
-	// admin balance
-	PermissionAdminBalanceCreate Permission = iota + 1 // ADMIN_BALANCE_CREATE
-	PermissionAdminBalanceFetch                        // ADMIN_BALANCE_FETCH
-	PermissionAdminBalanceGet                          // ADMIN_BALANCE_GET
-	PermissionAdminBalanceUpdate                       // ADMIN_BALANCE_UPDATE
-	PermissionAdminBalanceDelete                       // ADMIN_BALANCE_DELETE
+	// balance
+	PermissionBalanceCreate Permission = iota + 1 // BALANCE_CREATE
+	PermissionBalanceFetch                        // BALANCE_FETCH
+	PermissionBalanceGet                          // BALANCE_GET
+	PermissionBalanceUpdate                       // BALANCE_UPDATE
+	PermissionBalanceDelete                       // BALANCE_DELETE
 
-	// admin supplier
-	PermissionAdminSupplierCreate // ADMIN_SUPPLIER_CREATE
-	PermissionAdminSupplierFetch  // ADMIN_SUPPLIER_FETCH
-	PermissionAdminSupplierGet    // ADMIN_SUPPLIER_GET
-	PermissionAdminSupplierUpdate // ADMIN_SUPPLIER_UPDATE
-	PermissionAdminSupplierDelete // ADMIN_SUPPLIER_DELETE
+	// product unit
+	PermissionProductUnitCreate // PRODUCT_UNIT_CREATE
+	PermissionProductUnitUpload // PRODUCT_UNIT_UPLOAD
+	PermissionProductUnitGet    // PRODUCT_UNIT_GET
+	PermissionProductUnitUpdate // PRODUCT_UNIT_UPDATE
+	PermissionProductUnitDelete // PRODUCT_UNIT_DELETE
 
-	// admin supplier type
-	PermissionAdminSupplierTypeCreate // ADMIN_SUPPLIER_TYPE_CREATE
-	PermissionAdminSupplierTypeFetch  // ADMIN_SUPPLIER_TYPE_FETCH
-	PermissionAdminSupplierTypeGet    // ADMIN_SUPPLIER_TYPE_GET
-	PermissionAdminSupplierTypeUpdate // ADMIN_SUPPLIER_TYPE_UPDATE
-	PermissionAdminSupplierTypeDelete // ADMIN_SUPPLIER_TYPE_DELETE
+	// role
+	PermissionRoleOptionForUserForm // ROLE_OPTION_FOR_USER_FORM
 
-	// admin product unit
-	PermissionAdminProductUnitCreate // ADMIN_PRODUCT_UNIT_CREATE
-	PermissionAdminProductUnitUpload // ADMIN_PRODUCT_UNIT_UPLOAD
-	PermissionAdminProductUnitGet    // ADMIN_PRODUCT_UNIT_GET
-	PermissionAdminProductUnitUpdate // ADMIN_PRODUCT_UNIT_UPDATE
-	PermissionAdminProductUnitDelete // ADMIN_PRODUCT_UNIT_DELETE
+	// user
+	PermissionUserCreate         // USER_CREATE
+	PermissionUserUpdate         // USER_UPDATE
+	PermissionUserUpdatePassword // USER_UPDATE_PASSWORD
+	PermissionUserUpdateActive   // USER_UPDATE_ACTIVE
+	PermissionUserUpdateInActive // USER_UPDATE_INACTIVE
+	PermissionUserAddRole        // USER_ADD_ROLE
+	PermissionUserDeleteRole     // USER_DELETE_ROLE
 
-	// admin role
-	PermissionAdminRoleOptionForUserForm // ADMIN_ROLE_OPTION_FOR_USER_FORM
-
-	// admin user
-	PermissionAdminUserCreate         // ADMIN_USER_CREATE
-	PermissionAdminUserUpdate         // ADMIN_USER_UPDATE
-	PermissionAdminUserUpdatePassword // ADMIN_USER_UPDATE_PASSWORD
-	PermissionAdminUserUpdateActive   // ADMIN_USER_UPDATE_ACTIVE
-	PermissionAdminUserUpdateInActive // ADMIN_USER_UPDATE_INACTIVE
-	PermissionAdminUserAddRole        // ADMIN_USER_ADD_ROLE
-	PermissionAdminUserDeleteRole     // ADMIN_USER_DELETE_ROLE
-
-	// admin unit
-	PermissionAdminUnitCreate // ADMIN_UNIT_CREATE
-	PermissionAdminUnitFetch  // ADMIN_UNIT_FETCH
-	PermissionAdminUnitGet    // ADMIN_UNIT_GET
-	PermissionAdminUnitUpdate // ADMIN_UNIT_UPDATE
-	PermissionAdminUnitDelete // ADMIN_UNIT_DELETE
+	// unit
+	PermissionUnitCreate // UNIT_CREATE
+	PermissionUnitFetch  // UNIT_FETCH
+	PermissionUnitGet    // UNIT_GET
+	PermissionUnitUpdate // UNIT_UPDATE
+	PermissionUnitDelete // UNIT_DELETE
 
 	// customer
 	PermissionCustomerCreate // CUSTOMER_CREATE

@@ -1,35 +1,35 @@
 package dto_request
 
-type AdminProductCreateRequest struct {
+type ProductCreateRequest struct {
 	Name        string  `json:"name" validate:"required,not_empty"`
 	Description *string `json:"description" validate:"omitempty,not_empty" extensions:"x-nullable"`
-} // @name AdminProductCreateRequest
+} // @name ProductCreateRequest
 
-type AdminProductFetchSorts []struct {
+type ProductFetchSorts []struct {
 	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
 	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
-} // @name AdminProductFetchSorts
+} // @name ProductFetchSorts
 
-type AdminProductFetchRequest struct {
+type ProductFetchRequest struct {
 	PaginationRequest
-	Sorts    AdminProductFetchSorts `json:"sorts" validate:"unique=Field,dive"`
-	IsActive bool                   `json:"is_active" extensions:"x-nullable"`
-	Phrase   *string                `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
-} // @name AdminProductFetchRequest
+	Sorts    ProductFetchSorts `json:"sorts" validate:"unique=Field,dive"`
+	IsActive bool              `json:"is_active" extensions:"x-nullable"`
+	Phrase   *string           `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name ProductFetchRequest
 
-type AdminProductGetRequest struct {
+type ProductGetRequest struct {
 	ProductId string `json:"-" swaggerignore:"true"`
-} // @name AdminProductGetRequest
+} // @name ProductGetRequest
 
-type AdminProductUpdateRequest struct {
+type ProductUpdateRequest struct {
 	ProductId string `json:"-" swaggerignore:"true"`
 
 	Name        string   `json:"name" validate:"required,not_empty"`
 	Description *string  `json:"description" validate:"omitempty,not_empty" extensions:"x-nullable"`
 	Price       *float64 `json:"price" validate:"omitempty,gt=0" extensions:"x-nullable"`
 	IsActive    bool     `json:"is_active"`
-} // @name AdminProductUpdateRequest
+} // @name ProductUpdateRequest
 
-type AdminProductDeleteRequest struct {
+type ProductDeleteRequest struct {
 	ProductId string `json:"-" swaggerignore:"true"`
-} // @name AdminProductDeleteRequest
+} // @name ProductDeleteRequest

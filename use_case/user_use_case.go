@@ -20,17 +20,17 @@ type userLoaderParams struct {
 
 type UserUseCase interface {
 	// admin create
-	AdminCreate(ctx context.Context, request dto_request.AdminUserCreateRequest) model.User
-	AdminAddRole(ctx context.Context, request dto_request.AdminUserAddRoleRequest) model.User
+	Create(ctx context.Context, request dto_request.UserCreateRequest) model.User
+	AddRole(ctx context.Context, request dto_request.UserAddRoleRequest) model.User
 
 	// admin update
-	AdminUpdate(ctx context.Context, request dto_request.AdminUserUpdateRequest) model.User
-	AdminUpdatePassword(ctx context.Context, request dto_request.AdminUserUpdatePasswordRequest) model.User
-	AdminUpdateActive(ctx context.Context, request dto_request.AdminUserUpdateActiveRequest) model.User
-	AdminUpdateInActive(ctx context.Context, request dto_request.AdminUserUpdateInActiveRequest) model.User
+	Update(ctx context.Context, request dto_request.UserUpdateRequest) model.User
+	UpdatePassword(ctx context.Context, request dto_request.UserUpdatePasswordRequest) model.User
+	UpdateActive(ctx context.Context, request dto_request.UserUpdateActiveRequest) model.User
+	UpdateInActive(ctx context.Context, request dto_request.UserUpdateInActiveRequest) model.User
 
 	// admin delete
-	AdminDeleteRole(ctx context.Context, request dto_request.AdminUserDeleteRoleRequest) model.User
+	DeleteRole(ctx context.Context, request dto_request.UserDeleteRoleRequest) model.User
 
 	// read
 	GetMe(ctx context.Context) model.User
@@ -91,7 +91,7 @@ func (u *userUseCase) mustLoadUsersData(ctx context.Context, users []*model.User
 	)
 }
 
-func (u *userUseCase) AdminCreate(ctx context.Context, request dto_request.AdminUserCreateRequest) model.User {
+func (u *userUseCase) Create(ctx context.Context, request dto_request.UserCreateRequest) model.User {
 	u.mustValidateUsernameUnique(ctx, request.Username)
 
 	user := model.User{
@@ -109,7 +109,7 @@ func (u *userUseCase) AdminCreate(ctx context.Context, request dto_request.Admin
 	return user
 }
 
-func (u *userUseCase) AdminAddRole(ctx context.Context, request dto_request.AdminUserAddRoleRequest) model.User {
+func (u *userUseCase) AddRole(ctx context.Context, request dto_request.UserAddRoleRequest) model.User {
 	user := mustGetUser(ctx, u.repositoryManager, request.UserId, false)
 	mustGetRole(ctx, u.repositoryManager, request.RoleId, true)
 
@@ -136,7 +136,7 @@ func (u *userUseCase) AdminAddRole(ctx context.Context, request dto_request.Admi
 	return user
 }
 
-func (u *userUseCase) AdminUpdate(ctx context.Context, request dto_request.AdminUserUpdateRequest) model.User {
+func (u *userUseCase) Update(ctx context.Context, request dto_request.UserUpdateRequest) model.User {
 	user := mustGetUser(ctx, u.repositoryManager, request.UserId, false)
 
 	if user.Name != request.Name {
@@ -154,7 +154,7 @@ func (u *userUseCase) AdminUpdate(ctx context.Context, request dto_request.Admin
 	return user
 }
 
-func (u *userUseCase) AdminUpdatePassword(ctx context.Context, request dto_request.AdminUserUpdatePasswordRequest) model.User {
+func (u *userUseCase) UpdatePassword(ctx context.Context, request dto_request.UserUpdatePasswordRequest) model.User {
 	user := mustGetUser(ctx, u.repositoryManager, request.UserId, false)
 
 	user.Password = u.mustGetHashedPassword(request.Password)
@@ -169,7 +169,7 @@ func (u *userUseCase) AdminUpdatePassword(ctx context.Context, request dto_reque
 	return user
 }
 
-func (u *userUseCase) AdminUpdateActive(ctx context.Context, request dto_request.AdminUserUpdateActiveRequest) model.User {
+func (u *userUseCase) UpdateActive(ctx context.Context, request dto_request.UserUpdateActiveRequest) model.User {
 	user := mustGetUser(ctx, u.repositoryManager, request.UserId, false)
 
 	if user.IsActive {
@@ -188,7 +188,7 @@ func (u *userUseCase) AdminUpdateActive(ctx context.Context, request dto_request
 	return user
 }
 
-func (u *userUseCase) AdminUpdateInActive(ctx context.Context, request dto_request.AdminUserUpdateInActiveRequest) model.User {
+func (u *userUseCase) UpdateInActive(ctx context.Context, request dto_request.UserUpdateInActiveRequest) model.User {
 	user := mustGetUser(ctx, u.repositoryManager, request.UserId, false)
 
 	if !user.IsActive {
@@ -207,7 +207,7 @@ func (u *userUseCase) AdminUpdateInActive(ctx context.Context, request dto_reque
 	return user
 }
 
-func (u *userUseCase) AdminDeleteRole(ctx context.Context, request dto_request.AdminUserDeleteRoleRequest) model.User {
+func (u *userUseCase) DeleteRole(ctx context.Context, request dto_request.UserDeleteRoleRequest) model.User {
 	user := mustGetUser(ctx, u.repositoryManager, request.UserId, false)
 	mustGetRole(ctx, u.repositoryManager, request.RoleId, false)
 	userRole := mustGetUserRoleByUserIdAndRoleId(ctx, u.repositoryManager, request.UserId, request.RoleId, true)

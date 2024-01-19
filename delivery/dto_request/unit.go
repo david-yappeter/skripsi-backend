@@ -1,32 +1,32 @@
 package dto_request
 
-type AdminUnitCreateRequest struct {
+type UnitCreateRequest struct {
 	Name        string  `json:"name" validate:"required,not_empty"`
 	Description *string `json:"description" validate:"omitempty,not_empty" extensions:"x-nullable"`
-} // @name AdminUnitCreateRequest
+} // @name UnitCreateRequest
 
-type AdminUnitFetchSorts []struct {
+type UnitFetchSorts []struct {
 	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
 	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
-} // @name AdminUnitFetchSorts
+} // @name UnitFetchSorts
 
-type AdminUnitFetchRequest struct {
+type UnitFetchRequest struct {
 	PaginationRequest
-	Sorts  AdminUnitFetchSorts `json:"sorts" validate:"unique=Field,dive"`
-	Phrase *string             `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
-} // @name AdminUnitFetchRequest
+	Sorts  UnitFetchSorts `json:"sorts" validate:"unique=Field,dive"`
+	Phrase *string        `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name UnitFetchRequest
 
-type AdminUnitGetRequest struct {
+type UnitGetRequest struct {
 	UnitId string `json:"-" swaggerignore:"true"`
-} // @name AdminUnitGetRequest
+} // @name UnitGetRequest
 
-type AdminUnitUpdateRequest struct {
+type UnitUpdateRequest struct {
 	UnitId string `json:"-" swaggerignore:"true"`
 
 	Name        string  `json:"name" validate:"required,not_empty"`
 	Description *string `json:"description" validate:"omitempty,not_empty" extensions:"x-nullable"`
-} // @name AdminUnitUpdateRequest
+} // @name UnitUpdateRequest
 
-type AdminUnitDeleteRequest struct {
+type UnitDeleteRequest struct {
 	UnitId string `json:"-" swaggerignore:"true"`
-} // @name AdminUnitDeleteRequest
+} // @name UnitDeleteRequest

@@ -12,6 +12,9 @@ const (
 
 var roleTypeByRole = map[Role]RoleType{
 	RoleSuperAdmin: RoleTypeSuperAdmin,
+	RoleInventory:  RoleTypeGlobal,
+	RoleCashier:    RoleTypeGlobal,
+	RoleDriver:     RoleTypeGlobal,
 }
 
 func (r Role) RoleType() RoleType {
@@ -21,7 +24,7 @@ func (r Role) RoleType() RoleType {
 func (r Role) Permissions() []Permission {
 	switch r {
 	case RoleSuperAdmin:
-		return GetRoleSuperAdminPermissions()
+		return GetRoleSuperPermissions()
 	case RoleInventory:
 		return GetRoleInventoryPermissions()
 	case RoleCashier:
@@ -33,54 +36,54 @@ func (r Role) Permissions() []Permission {
 	return []Permission{}
 }
 
-func GetRoleSuperAdminPermissions() []Permission {
+func GetRoleSuperPermissions() []Permission {
 	return []Permission{
-		// admin balance
-		PermissionAdminBalanceCreate,
-		PermissionAdminBalanceFetch,
-		PermissionAdminBalanceGet,
-		PermissionAdminBalanceUpdate,
-		PermissionAdminBalanceDelete,
+		// balance
+		PermissionBalanceCreate,
+		PermissionBalanceFetch,
+		PermissionBalanceGet,
+		PermissionBalanceUpdate,
+		PermissionBalanceDelete,
 
-		// admin user
-		PermissionAdminUserCreate,
-		PermissionAdminUserUpdate,
-		PermissionAdminUserUpdatePassword,
-		PermissionAdminUserUpdateActive,
-		PermissionAdminUserUpdateInActive,
-		PermissionAdminUserAddRole,
-		PermissionAdminUserDeleteRole,
+		// user
+		PermissionUserCreate,
+		PermissionUserUpdate,
+		PermissionUserUpdatePassword,
+		PermissionUserUpdateActive,
+		PermissionUserUpdateInActive,
+		PermissionUserAddRole,
+		PermissionUserDeleteRole,
 
-		// admin unit
-		PermissionAdminUnitCreate,
-		PermissionAdminUnitFetch,
-		PermissionAdminUnitGet,
-		PermissionAdminUnitUpdate,
-		PermissionAdminUnitDelete,
+		// unit
+		PermissionUnitCreate,
+		PermissionUnitFetch,
+		PermissionUnitGet,
+		PermissionUnitUpdate,
+		PermissionUnitDelete,
 
-		// admin supplier
-		PermissionAdminSupplierCreate,
-		PermissionAdminSupplierFetch,
-		PermissionAdminSupplierGet,
-		PermissionAdminSupplierUpdate,
-		PermissionAdminSupplierDelete,
+		// supplier
+		PermissionSupplierCreate,
+		PermissionSupplierFetch,
+		PermissionSupplierGet,
+		PermissionSupplierUpdate,
+		PermissionSupplierDelete,
 
-		// admin supplier type
-		PermissionAdminSupplierTypeCreate,
-		PermissionAdminSupplierTypeFetch,
-		PermissionAdminSupplierTypeGet,
-		PermissionAdminSupplierTypeUpdate,
-		PermissionAdminSupplierTypeDelete,
+		// supplier type
+		PermissionSupplierTypeCreate,
+		PermissionSupplierTypeFetch,
+		PermissionSupplierTypeGet,
+		PermissionSupplierTypeUpdate,
+		PermissionSupplierTypeDelete,
 
-		// admin product unit
-		PermissionAdminProductUnitCreate,
-		PermissionAdminProductUnitUpload,
-		PermissionAdminProductUnitGet,
-		PermissionAdminProductUnitUpdate,
-		PermissionAdminProductUnitDelete,
+		// product unit
+		PermissionProductUnitCreate,
+		PermissionProductUnitUpload,
+		PermissionProductUnitGet,
+		PermissionProductUnitUpdate,
+		PermissionProductUnitDelete,
 
-		// admin role
-		PermissionAdminRoleOptionForUserForm,
+		// role
+		PermissionRoleOptionForUserForm,
 	}
 }
 

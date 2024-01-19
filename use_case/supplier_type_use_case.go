@@ -10,19 +10,6 @@ import (
 )
 
 type SupplierTypeUseCase interface {
-	// admin create
-	AdminCreate(ctx context.Context, request dto_request.AdminSupplierTypeCreateRequest) model.SupplierType
-
-	// admin read
-	AdminFetch(ctx context.Context, request dto_request.AdminSupplierTypeFetchRequest) ([]model.SupplierType, int)
-	AdminGet(ctx context.Context, request dto_request.AdminSupplierTypeGetRequest) model.SupplierType
-
-	// admin update
-	AdminUpdate(ctx context.Context, request dto_request.AdminSupplierTypeUpdateRequest) model.SupplierType
-
-	// admin delete
-	AdminDelete(ctx context.Context, request dto_request.AdminSupplierTypeDeleteRequest)
-
 	// create
 	Create(ctx context.Context, request dto_request.SupplierTypeCreateRequest) model.SupplierType
 
@@ -57,74 +44,6 @@ func (u *supplierTypeUseCase) mustValidateAllowDeleteSupplierType(ctx context.Co
 	if isExist {
 		panic(dto_response.NewBadRequestErrorResponse("SUPPLIER_TYPE.IN_USED_BY.SUPPLIER"))
 	}
-}
-
-func (u *supplierTypeUseCase) AdminCreate(ctx context.Context, request dto_request.AdminSupplierTypeCreateRequest) model.SupplierType {
-	u.mustValidateNameNotDuplicate(ctx, request.Name)
-
-	supplierType := model.SupplierType{
-		Id:          util.NewUuid(),
-		Name:        request.Name,
-		Description: request.Description,
-	}
-
-	panicIfErr(
-		u.repositoryManager.SupplierTypeRepository().Insert(ctx, &supplierType),
-	)
-
-	return supplierType
-}
-
-func (u *supplierTypeUseCase) AdminFetch(ctx context.Context, request dto_request.AdminSupplierTypeFetchRequest) ([]model.SupplierType, int) {
-	queryOption := model.SupplierTypeQueryOption{
-		QueryOption: model.NewQueryOptionWithPagination(
-			request.Page,
-			request.Limit,
-			model.Sorts(request.Sorts),
-		),
-		Phrase: request.Phrase,
-	}
-
-	supplierTypes, err := u.repositoryManager.SupplierTypeRepository().Fetch(ctx, queryOption)
-	panicIfErr(err)
-
-	total, err := u.repositoryManager.SupplierTypeRepository().Count(ctx, queryOption)
-	panicIfErr(err)
-
-	return supplierTypes, total
-}
-
-func (u *supplierTypeUseCase) AdminGet(ctx context.Context, request dto_request.AdminSupplierTypeGetRequest) model.SupplierType {
-	supplierType := mustGetSupplierType(ctx, u.repositoryManager, request.SupplierTypeId, true)
-
-	return supplierType
-}
-
-func (u *supplierTypeUseCase) AdminUpdate(ctx context.Context, request dto_request.AdminSupplierTypeUpdateRequest) model.SupplierType {
-	supplierType := mustGetSupplierType(ctx, u.repositoryManager, request.SupplierTypeId, true)
-
-	if supplierType.Name != request.Name {
-		u.mustValidateNameNotDuplicate(ctx, request.Name)
-	}
-
-	supplierType.Name = request.Name
-	supplierType.Description = request.Description
-
-	panicIfErr(
-		u.repositoryManager.SupplierTypeRepository().Update(ctx, &supplierType),
-	)
-
-	return supplierType
-}
-
-func (u *supplierTypeUseCase) AdminDelete(ctx context.Context, request dto_request.AdminSupplierTypeDeleteRequest) {
-	supplierType := mustGetSupplierType(ctx, u.repositoryManager, request.SupplierTypeId, true)
-
-	u.mustValidateAllowDeleteSupplierType(ctx, request.SupplierTypeId)
-
-	panicIfErr(
-		u.repositoryManager.SupplierTypeRepository().Delete(ctx, &supplierType),
-	)
 }
 
 func (u *supplierTypeUseCase) Create(ctx context.Context, request dto_request.SupplierTypeCreateRequest) model.SupplierType {

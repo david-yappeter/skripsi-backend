@@ -5,9 +5,6 @@ type RoleType int // @name RoleTypeEnum
 
 const (
 	RoleTypeSuperAdmin RoleType = iota + 1 // SUPER_ADMIN
-	RoleTypeDoctor                         // DOCTOR
-	RoleTypeNurse                          // NURSE
-	RoleTypePharmacist                     // PHARMACIST
 	RoleTypeGlobal                         // GLOBAL
 	RoleTypeAdmin                          // ADMIN
 )
@@ -16,12 +13,6 @@ var rolesByRoleType = map[RoleType][]Role{}
 
 func (rt RoleType) Roles() []Role {
 	return rolesByRoleType[rt]
-}
-
-func (rt RoleType) IsExclusiveRoleType() bool {
-	return rt == RoleTypeDoctor ||
-		rt == RoleTypeNurse ||
-		rt == RoleTypePharmacist
 }
 
 func init() {
