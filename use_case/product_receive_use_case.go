@@ -114,18 +114,33 @@ func (u *productReceiveUseCase) Create(ctx context.Context, request dto_request.
 
 func (u *productReceiveUseCase) AddItem(ctx context.Context, request dto_request.ProductReceiveAddItemRequest) model.ProductReceive {
 	var (
-		authUser       = model.MustGetUserCtx(ctx)
-		productReceive = mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, false)
-		productUnit    = mustGetProductUnitByProductIdAndUnitId(ctx, u.repositoryManager, request.ProductId, request.UnitId, true)
-		product        = mustGetProduct(ctx, u.repositoryManager, request.ProductId, false)
+		authUser            = model.MustGetUserCtx(ctx)
+		productReceive      = mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, false)
+		productUnit         = mustGetProductUnitByProductIdAndUnitId(ctx, u.repositoryManager, request.ProductId, request.UnitId, true)
+		product             = mustGetProduct(ctx, u.repositoryManager, request.ProductId, false)
+		productStock        = shouldGetProductStockByProductId(ctx, u.repositoryManager, product.Id)
+		isProductStockExist = productStock != nil
+
+		totalSmallestQty = request.Qty * productUnit.ScaleToBase
 	)
 
 	if !product.IsActive {
-		panic(dto_response.NewBadRequestErrorResponse("Product data not found"))
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT.NOT_FOUND"))
 	}
 
+	if !isProductStockExist {
+		productStock = &model.ProductStock{
+			Id:        util.NewUuid(),
+			ProductId: product.Id,
+			Qty:       0,
+		}
+	}
+
+	// add stock
+	productStock.Qty += totalSmallestQty
+
 	// add total to product receive
-	productReceive.TotalPrice += request.Qty * *product.Price
+	productReceive.TotalPrice += totalSmallestQty * *product.Price
 
 	// add product receive item
 	productReceiveItem := model.ProductReceiveItem{
@@ -141,6 +156,17 @@ func (u *productReceiveUseCase) AddItem(ctx context.Context, request dto_request
 		u.repositoryManager.Transaction(ctx, func(tx infrastructure.DBTX, loggerStack infrastructure.LoggerStack) error {
 			productReceiveRepository := repository.NewProductReceiveRepository(tx, loggerStack)
 			productReceiveItemRepository := repository.NewProductReceiveItemRepository(tx, loggerStack)
+			productStockRepository := repository.NewProductStockRepository(tx, loggerStack)
+
+			if isProductStockExist {
+				if err := productStockRepository.Update(ctx, productStock); err != nil {
+					return err
+				}
+			} else {
+				if err := productStockRepository.Insert(ctx, productStock); err != nil {
+					return err
+				}
+			}
 
 			if err := productReceiveRepository.Update(ctx, &productReceive); err != nil {
 				return err

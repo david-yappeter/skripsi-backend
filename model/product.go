@@ -8,8 +8,9 @@ type Product struct {
 	Description *string  `db:"description"`
 	Price       *float64 `db:"price"`
 	IsActive    bool     `db:"is_active"`
-
 	Timestamp
+
+	ProductStock *ProductStock `db:"-"`
 }
 
 func (m *Product) TableName() string {

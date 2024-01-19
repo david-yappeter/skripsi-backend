@@ -4,10 +4,17 @@ import (
 	"context"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
+	"myapp/loader"
 	"myapp/model"
 	"myapp/repository"
 	"myapp/util"
+
+	"golang.org/x/sync/errgroup"
 )
+
+type productLoaderParams struct {
+	productStock bool
+}
 
 type ProductUseCase interface {
 	// admin create
@@ -38,7 +45,24 @@ func (u *productUseCase) mustValidateNameNotDuplicate(ctx context.Context, name 
 }
 
 func (u *productUseCase) mustValidateAllowDeleteProduct(ctx context.Context, productId string) {
+	isExist, err := u.repositoryManager.ProductStockRepository().IsExistByProductId(ctx, productId)
+	panicIfErr(err)
 
+	if isExist {
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT.ALREADY_HAVE_STOCK"))
+	}
+}
+
+func (u *productUseCase) mustLoadProductDatas(ctx context.Context, products []*model.Product, option productLoaderParams) {
+	productStockLoader := loader.NewProductStockLoader(u.repositoryManager.ProductStockRepository())
+
+	panicIfErr(
+		util.Await(func(group *errgroup.Group) {
+			for i := range products {
+				group.Go(productStockLoader.ProductFn(products[i]))
+			}
+		}),
+	)
 }
 
 func (u *productUseCase) Create(ctx context.Context, request dto_request.ProductCreateRequest) model.Product {
@@ -75,11 +99,19 @@ func (u *productUseCase) Fetch(ctx context.Context, request dto_request.ProductF
 	total, err := u.repositoryManager.ProductRepository().Count(ctx, queryOption)
 	panicIfErr(err)
 
+	u.mustLoadProductDatas(ctx, util.SliceValueToSlicePointer(products), productLoaderParams{
+		productStock: true,
+	})
+
 	return products, total
 }
 
 func (u *productUseCase) Get(ctx context.Context, request dto_request.ProductGetRequest) model.Product {
 	product := mustGetProduct(ctx, u.repositoryManager, request.ProductId, true)
+
+	u.mustLoadProductDatas(ctx, []*model.Product{&product}, productLoaderParams{
+		productStock: true,
+	})
 
 	return product
 }
@@ -103,6 +135,10 @@ func (u *productUseCase) Update(ctx context.Context, request dto_request.Product
 	panicIfErr(
 		u.repositoryManager.ProductRepository().Update(ctx, &product),
 	)
+
+	u.mustLoadProductDatas(ctx, []*model.Product{&product}, productLoaderParams{
+		productStock: true,
+	})
 
 	return product
 }

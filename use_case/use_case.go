@@ -241,3 +241,9 @@ func mustGetProductReceiveItemByProductReceiveIdAndProductUnitId(ctx context.Con
 	panicIfRepositoryError(err, "PRODUCT_RECEIVE_ITEM.NOT_FOUND", isValidate)
 	return *productReceiveItem
 }
+
+func shouldGetProductStockByProductId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string) *model.ProductStock {
+	productStock, err := repositoryManager.ProductStockRepository().GetByProductId(ctx, productId)
+	panicIfErr(err, constant.ErrNoData)
+	return productStock
+}

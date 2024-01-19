@@ -18,8 +18,11 @@ type ProductStockRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.ProductStockQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.ProductStockQueryOption) ([]model.ProductStock, error)
+	FetchByProductIds(ctx context.Context, productIds []string) ([]model.ProductStock, error)
 	Get(ctx context.Context, id string) (*model.ProductStock, error)
+	GetByProductId(ctx context.Context, productId string) (*model.ProductStock, error)
 	IsExistByName(ctx context.Context, name string) (bool, error)
+	IsExistByProductId(ctx context.Context, productId string) (bool, error)
 
 	// update
 	Update(ctx context.Context, productStock *model.ProductStock) error
@@ -121,10 +124,26 @@ func (r *productStockRepository) Fetch(ctx context.Context, options ...model.Pro
 	return r.fetch(ctx, stmt)
 }
 
+func (r *productStockRepository) FetchByProductIds(ctx context.Context, productIds []string) ([]model.ProductStock, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.ProductStockTableName).
+		Where(squirrel.Eq{"product_id": productIds})
+
+	return r.fetch(ctx, stmt)
+}
+
 func (r *productStockRepository) Get(ctx context.Context, id string) (*model.ProductStock, error) {
 	stmt := stmtBuilder.Select("*").
 		From(model.ProductStockTableName).
 		Where(squirrel.Eq{"id": id})
+
+	return r.get(ctx, stmt)
+}
+
+func (r *productStockRepository) GetByProductId(ctx context.Context, productId string) (*model.ProductStock, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.ProductStockTableName).
+		Where(squirrel.Eq{"product_id": productId})
 
 	return r.get(ctx, stmt)
 }
@@ -134,6 +153,17 @@ func (r *productStockRepository) IsExistByName(ctx context.Context, name string)
 		stmtBuilder.Select("1").
 			From(model.ProductStockTableName).
 			Where(squirrel.Eq{"name": name}).
+			Prefix("EXISTS (").Suffix(")"),
+	)
+
+	return isExist(r.db, ctx, stmt)
+}
+
+func (r *productStockRepository) IsExistByProductId(ctx context.Context, productId string) (bool, error) {
+	stmt := stmtBuilder.Select().Column(
+		stmtBuilder.Select("1").
+			From(model.ProductStockTableName).
+			Where(squirrel.Eq{"product_id": productId}).
 			Prefix("EXISTS (").Suffix(")"),
 	)
 
