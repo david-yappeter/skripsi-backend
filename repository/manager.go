@@ -16,6 +16,9 @@ type RepositoryManager interface {
 
 	BalanceRepository() BalanceRepository
 	CustomerRepository() CustomerRepository
+	DeliveryOrderRepository() DeliveryOrderRepository
+	DeliveryOrderImageRepository() DeliveryOrderImageRepository
+	DeliveryOrderItemRepository() DeliveryOrderItemRepository
 	FileRepository() FileRepository
 	PermissionRepository() PermissionRepository
 	ProductReceiveRepository() ProductReceiveRepository
@@ -40,6 +43,9 @@ type repositoryManager struct {
 
 	balanceRepository             BalanceRepository
 	customerRepository            CustomerRepository
+	deliveryOrderRepository       DeliveryOrderRepository
+	deliveryOrderImageRepository  DeliveryOrderImageRepository
+	deliveryOrderItemRepository   DeliveryOrderItemRepository
 	fileRepository                FileRepository
 	permissionRepository          PermissionRepository
 	productReceiveRepository      ProductReceiveRepository
@@ -90,6 +96,18 @@ func (r *repositoryManager) BalanceRepository() BalanceRepository {
 
 func (r *repositoryManager) CustomerRepository() CustomerRepository {
 	return r.customerRepository
+}
+
+func (r *repositoryManager) DeliveryOrderRepository() DeliveryOrderRepository {
+	return r.deliveryOrderRepository
+}
+
+func (r *repositoryManager) DeliveryOrderImageRepository() DeliveryOrderImageRepository {
+	return r.deliveryOrderImageRepository
+}
+
+func (r *repositoryManager) DeliveryOrderItemRepository() DeliveryOrderItemRepository {
+	return r.deliveryOrderItemRepository
 }
 
 func (r *repositoryManager) FileRepository() FileRepository {
@@ -168,6 +186,18 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		customerRepository: NewCustomerRepository(
+			db,
+			loggerStack,
+		),
+		deliveryOrderRepository: NewDeliveryOrderRepository(
+			db,
+			loggerStack,
+		),
+		deliveryOrderImageRepository: NewDeliveryOrderImageRepository(
+			db,
+			loggerStack,
+		),
+		deliveryOrderItemRepository: NewDeliveryOrderItemRepository(
 			db,
 			loggerStack,
 		),
