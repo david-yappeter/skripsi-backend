@@ -30,11 +30,13 @@ const (
 	PermissionDeliveryOrderDeleteImage // DELIVERY_ORDER_DELETE_IMAGE
 
 	// product
-	PermissionProductCreate // PRODUCT_CREATE
-	PermissionProductFetch  // PRODUCT_FETCH
-	PermissionProductGet    // PRODUCT_GET
-	PermissionProductUpdate // PRODUCT_UPDATE
-	PermissionProductDelete // PRODUCT_DELETE
+	PermissionProductCreate                      // PRODUCT_CREATE
+	PermissionProductFetch                       // PRODUCT_FETCH
+	PermissionProductGet                         // PRODUCT_GET
+	PermissionProductUpdate                      // PRODUCT_UPDATE
+	PermissionProductDelete                      // PRODUCT_DELETE
+	PermissionProductOptionForProductReceiveForm // PRODUCT_OPTION_FOR_PRODUCT_RECEIVE_FORM
+	PermissionProductOptionForDeliveryOrderForm  // PRODUCT_OPTION_FOR_DELIVERY_ORDER_FORM
 
 	// product receive
 	PermissionProductReceiveCreate      // PRODUCT_RECEIVE_CREATE

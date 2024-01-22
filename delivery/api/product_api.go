@@ -177,6 +177,68 @@ func (a *ProductApi) Delete() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/products/options/product-receive-form [post]
+//	@Summary	Option for Product Receive Form
+//	@tags		Products
+//	@Accept		json
+//	@Param		id	path	string	true	"Id"
+//	@Param		dto_request.ProductOptionForProductReceiveFormRequest body dto_request.ProductOptionForProductReceiveFormRequest true "Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.ProductResponse}}
+func (a *ProductApi) OptionForProductReceiveForm() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionProductDelete),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.ProductDeleteRequest
+			ctx.mustBind(&request)
+			request.ProductId = id
+
+			a.productUseCase.Delete(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.SuccessResponse{
+					Message: "OK",
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/products/options/delivery-order-form [post]
+//	@Summary	Option for Delivery Order Form
+//	@tags		Products
+//	@Accept		json
+//	@Param		id	path	string	true	"Id"
+//	@Param		dto_request.ProductOptionForDeliveryOrderFormRequest body dto_request.ProductOptionForDeliveryOrderFormRequest true "Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.ProductResponse}}
+func (a *ProductApi) OptionForDeliveryOrderForm() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionProductDelete),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.ProductDeleteRequest
+			ctx.mustBind(&request)
+			request.ProductId = id
+
+			a.productUseCase.Delete(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.SuccessResponse{
+					Message: "OK",
+				},
+			)
+		},
+	)
+}
+
 func RegisterProductApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := ProductApi{
 		api:            newApi(useCaseManager),
@@ -189,4 +251,8 @@ func RegisterProductApi(router gin.IRouter, useCaseManager use_case.UseCaseManag
 	routerGroup.GET("/:id", api.Get())
 	routerGroup.PUT("/:id", api.Update())
 	routerGroup.DELETE("/:id", api.Delete())
+
+	optionRouterGroup := routerGroup.Group("/options")
+	optionRouterGroup.POST("/product-receive-form", api.OptionForProductReceiveForm())
+	optionRouterGroup.POST("/delivery-order-form", api.OptionForDeliveryOrderForm())
 }
