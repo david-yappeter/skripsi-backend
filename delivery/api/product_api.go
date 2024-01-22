@@ -119,7 +119,7 @@ func (a *ProductApi) Get() gin.HandlerFunc {
 //	@Summary	Update
 //	@tags		Products
 //	@Accept		json
-//	@Param		id								path	string							true	"Id"
+//	@Param		id									path	string								true	"Id"
 //	@Param		dto_request.ProductUpdateRequest	body	dto_request.ProductUpdateRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product=dto_response.ProductResponse}}

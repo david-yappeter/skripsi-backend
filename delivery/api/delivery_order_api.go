@@ -18,7 +18,7 @@ type DeliveryOrderApi struct {
 
 // API:
 //
-//	@Router		 [post]
+//	@Router		/delivery-orders [post]
 //	@Summary	Create
 //	@tags		Delivery Orders
 //	@Accept		json
@@ -48,7 +48,7 @@ func (a *DeliveryOrderApi) Create() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/upload [post]
+//	@Router		/delivery-orders/upload [post]
 //	@Summary	Upload
 //	@tags		Delivery Orders
 //	@Accept		json
@@ -78,11 +78,11 @@ func (a *DeliveryOrderApi) Upload() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/{id}/items [post]
+//	@Router		/delivery-orders/{id}/items [post]
 //	@Summary	Add Item
 //	@tags		Delivery Orders
 //	@Accept		json
-//	@Param		id											path	string										true	"Id"
+//	@Param		id										path	string									true	"Id"
 //	@Param		dto_request.DeliveryOrderAddItemRequest	body	dto_request.DeliveryOrderAddItemRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
@@ -111,7 +111,7 @@ func (a *DeliveryOrderApi) AddItem() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/{id}/images [post]
+//	@Router		/delivery-orders/{id}/images [post]
 //	@Summary	Add Image
 //	@tags		Delivery Orders
 //	@Accept		json
@@ -144,7 +144,7 @@ func (a *DeliveryOrderApi) AddImage() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/filter [post]
+//	@Router		/delivery-orders/filter [post]
 //	@Summary	Filter
 //	@tags		Delivery Orders
 //	@Accept		json
@@ -179,7 +179,7 @@ func (a *DeliveryOrderApi) Fetch() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/{id} [get]
+//	@Router		/delivery-orders/{id} [get]
 //	@Summary	Get
 //	@tags		Delivery Orders
 //	@Param		id	path	string	true	"Id"
@@ -211,7 +211,7 @@ func (a *DeliveryOrderApi) Get() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/{id} [delete]
+//	@Router		/delivery-orders/{id} [delete]
 //	@Summary	Delete
 //	@tags		Delivery Orders
 //	@Accept		json
@@ -241,7 +241,7 @@ func (a *DeliveryOrderApi) Delete() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/{id}/items/{product_unit_id} [delete]
+//	@Router		/delivery-orders/{id}/items/{product_unit_id} [delete]
 //	@Summary	Delete Item
 //	@tags		Delivery Orders
 //	@Accept		json
@@ -277,11 +277,11 @@ func (a *DeliveryOrderApi) DeleteItem() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/{id}/images/{file_id} [post]
+//	@Router		/delivery-orders/{id}/images/{file_id} [post]
 //	@Summary	Delete File
 //	@tags		Delivery Orders
 //	@Accept		json
-//	@Param		id												path	string											true	"Id"
+//	@Param		id											path	string										true	"Id"
 //	@Param		dto_request.DeliveryOrderDeleteImageRequest	body	dto_request.DeliveryOrderDeleteImageRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
@@ -316,7 +316,7 @@ func RegisterDeliveryOrderApi(router gin.IRouter, useCaseManager use_case.UseCas
 		deliveryOrderUseCase: useCaseManager.DeliveryOrderUseCase(),
 	}
 
-	routerGroup := router.Group("")
+	routerGroup := router.Group("/delivery-orders")
 	routerGroup.POST("", api.Create())
 	routerGroup.POST("/upload", api.Upload())
 	routerGroup.POST("/filter", api.Fetch())
