@@ -37,3 +37,14 @@ type CustomerUpdateRequest struct {
 type CustomerDeleteRequest struct {
 	CustomerId string `json:"-" swaggerignore:"true"`
 } // @name CustomerDeleteRequest
+
+type CustomerOptionForDeliveryOrderFormSorts []struct {
+	Field     string `json:"field" validate:"required,oneof=name email created_at updated_at" example:"name"`
+	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
+} // @name CustomerOptionForDeliveryOrderFormSorts
+
+type CustomerOptionForDeliveryOrderFormRequest struct {
+	PaginationRequest
+	Sorts  CustomerOptionForDeliveryOrderFormSorts `json:"sorts" validate:"unique=Field,dive"`
+	Phrase *string                                 `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name CustomerOptionForDeliveryOrderFormRequest

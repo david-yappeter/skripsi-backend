@@ -12,11 +12,12 @@ const (
 	PermissionBalanceDelete                       // BALANCE_DELETE
 
 	// customer
-	PermissionCustomerCreate // CUSTOMER_CREATE
-	PermissionCustomerFetch  // CUSTOMER_FETCH
-	PermissionCustomerGet    // CUSTOMER_GET
-	PermissionCustomerUpdate // CUSTOMER_UPDATE
-	PermissionCustomerDelete // CUSTOMER_DELETE
+	PermissionCustomerCreate                     // CUSTOMER_CREATE
+	PermissionCustomerFetch                      // CUSTOMER_FETCH
+	PermissionCustomerGet                        // CUSTOMER_GET
+	PermissionCustomerUpdate                     // CUSTOMER_UPDATE
+	PermissionCustomerDelete                     // CUSTOMER_DELETE
+	PermissionCustomerOptionForDeliveryOrderForm // CUSTOMER_OPTION_FOR_DELIVERY_ORDER_FORM
 
 	// delivery order
 	PermissionDeliveryOrderCreate      // DELIVERY_ORDER_CREATE

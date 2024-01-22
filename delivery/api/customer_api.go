@@ -177,6 +177,41 @@ func (a *CustomerApi) Delete() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/customers/options/delivery-order-form [post]
+//	@Summary	Option for Delivery Order Form
+//	@tags		Customers
+//	@Accept		json
+//	@Param		dto_request.CustomerOptionForDeliveryOrderForm body dto_request.CustomerOptionForDeliveryOrderForm  true "Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.CustomerResponse}}
+func (a *CustomerApi) OptionForDeliveryOrderForm() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCustomerOptionForDeliveryOrderForm),
+		func(ctx apiContext) {
+			var request dto_request.CustomerOptionForDeliveryOrderFormRequest
+			ctx.mustBind(&request)
+
+			customers, total := a.customerUseCase.OptionForDeliveryOrderForm(ctx.context(), request)
+
+			nodes := util.ConvertArray(customers, dto_response.NewCustomerResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Total: total,
+						Nodes: nodes,
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterCustomerApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := CustomerApi{
 		api:             newApi(useCaseManager),
@@ -189,4 +224,7 @@ func RegisterCustomerApi(router gin.IRouter, useCaseManager use_case.UseCaseMana
 	routerGroup.GET("/:id", api.Get())
 	routerGroup.PUT("/:id", api.Update())
 	routerGroup.DELETE("/:id", api.Delete())
+
+	optionRouterGroup := routerGroup.Group("/options")
+	optionRouterGroup.POST("/delivery-order-form", api.OptionForDeliveryOrderForm())
 }

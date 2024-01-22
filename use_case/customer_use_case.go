@@ -21,6 +21,9 @@ type CustomerUseCase interface {
 
 	//  delete
 	Delete(ctx context.Context, request dto_request.CustomerDeleteRequest)
+
+	// option
+	OptionForDeliveryOrderForm(ctx context.Context, request dto_request.CustomerOptionForDeliveryOrderFormRequest) ([]model.Customer, int)
 }
 
 type customerUseCase struct {
@@ -106,4 +109,24 @@ func (u *customerUseCase) Delete(ctx context.Context, request dto_request.Custom
 	panicIfErr(
 		u.repositoryManager.CustomerRepository().Delete(ctx, &customer),
 	)
+}
+
+func (u *customerUseCase) OptionForDeliveryOrderForm(ctx context.Context, request dto_request.CustomerOptionForDeliveryOrderFormRequest) ([]model.Customer, int) {
+	queryOption := model.CustomerQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts(request.Sorts),
+		),
+		IsActive: util.BoolP(true),
+		Phrase:   request.Phrase,
+	}
+
+	customers, err := u.repositoryManager.CustomerRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.CustomerRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	return customers, total
 }
