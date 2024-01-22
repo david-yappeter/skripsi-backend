@@ -9,8 +9,9 @@ type File struct {
 	Name string             `db:"name"`
 	Type data_type.FileType `db:"type"`
 	Path string             `db:"path"`
-
 	Timestamp
+
+	Link *string `db:"-"`
 }
 
 func (m *File) TableName() string {

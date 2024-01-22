@@ -28,3 +28,9 @@ func NewProductUnitResponse(productUnit model.ProductUnit) ProductUnitResponse {
 
 	return r
 }
+
+func NewProductUnitResponseP(productUnit model.ProductUnit) *ProductUnitResponse {
+	r := NewProductUnitResponse(productUnit)
+
+	return &r
+}

@@ -33,3 +33,9 @@ func NewUserResponse(user model.User) UserResponse {
 
 	return r
 }
+
+func NewUserResponseP(user model.User) *UserResponse {
+	r := NewUserResponse(user)
+
+	return &r
+}

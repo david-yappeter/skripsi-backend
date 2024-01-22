@@ -11,38 +11,23 @@ const (
 	PermissionBalanceUpdate                       // BALANCE_UPDATE
 	PermissionBalanceDelete                       // BALANCE_DELETE
 
-	// product unit
-	PermissionProductUnitCreate // PRODUCT_UNIT_CREATE
-	PermissionProductUnitUpload // PRODUCT_UNIT_UPLOAD
-	PermissionProductUnitGet    // PRODUCT_UNIT_GET
-	PermissionProductUnitUpdate // PRODUCT_UNIT_UPDATE
-	PermissionProductUnitDelete // PRODUCT_UNIT_DELETE
-
-	// role
-	PermissionRoleOptionForUserForm // ROLE_OPTION_FOR_USER_FORM
-
-	// user
-	PermissionUserCreate         // USER_CREATE
-	PermissionUserUpdate         // USER_UPDATE
-	PermissionUserUpdatePassword // USER_UPDATE_PASSWORD
-	PermissionUserUpdateActive   // USER_UPDATE_ACTIVE
-	PermissionUserUpdateInActive // USER_UPDATE_INACTIVE
-	PermissionUserAddRole        // USER_ADD_ROLE
-	PermissionUserDeleteRole     // USER_DELETE_ROLE
-
-	// unit
-	PermissionUnitCreate // UNIT_CREATE
-	PermissionUnitFetch  // UNIT_FETCH
-	PermissionUnitGet    // UNIT_GET
-	PermissionUnitUpdate // UNIT_UPDATE
-	PermissionUnitDelete // UNIT_DELETE
-
 	// customer
 	PermissionCustomerCreate // CUSTOMER_CREATE
 	PermissionCustomerFetch  // CUSTOMER_FETCH
 	PermissionCustomerGet    // CUSTOMER_GET
 	PermissionCustomerUpdate // CUSTOMER_UPDATE
 	PermissionCustomerDelete // CUSTOMER_DELETE
+
+	// delivery order
+	PermissionDeliveryOrderCreate      // DELIVERY_ORDER_CREATE
+	PermissionDeliveryOrderUpload      // DELIVERY_ORDER_UPLOAD
+	PermissionDeliveryOrderAddItem     // DELIVERY_ORDER_ADD_ITEM
+	PermissionDeliveryOrderAddImage    // DELIVERY_ORDER_ADD_IMAGE
+	PermissionDeliveryOrderFetch       // DELIVERY_ORDER_FETCH
+	PermissionDeliveryOrderGet         // DELIVERY_ORDER_GET
+	PermissionDeliveryOrderDelete      // DELIVERY_ORDER_DELETE
+	PermissionDeliveryOrderDeleteItem  // DELIVERY_ORDER_DELETE_ITEM
+	PermissionDeliveryOrderDeleteImage // DELIVERY_ORDER_DELETE_IMAGE
 
 	// product
 	PermissionProductCreate // PRODUCT_CREATE
@@ -62,6 +47,16 @@ const (
 	PermissionProductReceiveDeleteItem  // PRODUCT_RECEIVE_DELETE_ITEM
 	PermissionProductReceiveDeleteImage // PRODUCT_RECEIVE_DELETE_IMAGE
 
+	// product unit
+	PermissionProductUnitCreate // PRODUCT_UNIT_CREATE
+	PermissionProductUnitUpload // PRODUCT_UNIT_UPLOAD
+	PermissionProductUnitGet    // PRODUCT_UNIT_GET
+	PermissionProductUnitUpdate // PRODUCT_UNIT_UPDATE
+	PermissionProductUnitDelete // PRODUCT_UNIT_DELETE
+
+	// role
+	PermissionRoleOptionForUserForm // ROLE_OPTION_FOR_USER_FORM
+
 	// supplier
 	PermissionSupplierCreate // SUPPLIER_CREATE
 	PermissionSupplierFetch  // SUPPLIER_FETCH
@@ -75,4 +70,21 @@ const (
 	PermissionSupplierTypeGet    // SUPPLIER_TYPE_GET
 	PermissionSupplierTypeUpdate // SUPPLIER_TYPE_UPDATE
 	PermissionSupplierTypeDelete // SUPPLIER_TYPE_DELETE
+
+	// user
+	PermissionUserCreate         // USER_CREATE
+	PermissionUserUpdate         // USER_UPDATE
+	PermissionUserUpdatePassword // USER_UPDATE_PASSWORD
+	PermissionUserUpdateActive   // USER_UPDATE_ACTIVE
+	PermissionUserUpdateInActive // USER_UPDATE_INACTIVE
+	PermissionUserAddRole        // USER_ADD_ROLE
+	PermissionUserDeleteRole     // USER_DELETE_ROLE
+
+	// unit
+	PermissionUnitCreate // UNIT_CREATE
+	PermissionUnitFetch  // UNIT_FETCH
+	PermissionUnitGet    // UNIT_GET
+	PermissionUnitUpdate // UNIT_UPDATE
+	PermissionUnitDelete // UNIT_DELETE
+
 )

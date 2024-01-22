@@ -9,8 +9,10 @@ type ProductReceiveItem struct {
 	UserId           string  `db:"user_id"`
 	Qty              float64 `db:"qty"`
 	PricePerUnit     float64 `db:"price_per_unit"`
-
 	Timestamp
+
+	ProductUnit *ProductUnit `db:"-"`
+	User        *User        `db:"-"`
 }
 
 func (m *ProductReceiveItem) TableName() string {

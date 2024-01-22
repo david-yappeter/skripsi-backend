@@ -11,6 +11,7 @@ type UseCaseManager interface {
 	AuthUseCase() AuthUseCase
 	BalanceUseCase() BalanceUseCase
 	CustomerUseCase() CustomerUseCase
+	DeliveryOrderUseCase() DeliveryOrderUseCase
 	PermissionUseCase() PermissionUseCase
 	ProductUseCase() ProductUseCase
 	ProductReceiveUseCase() ProductReceiveUseCase
@@ -26,6 +27,7 @@ type useCaseManager struct {
 	authUseCase           AuthUseCase
 	balanceUseCase        BalanceUseCase
 	customerUseCase       CustomerUseCase
+	deliveryOrderUseCase  DeliveryOrderUseCase
 	permissionUseCase     PermissionUseCase
 	productUseCase        ProductUseCase
 	productReceiveUseCase ProductReceiveUseCase
@@ -47,6 +49,9 @@ func (u *useCaseManager) BalanceUseCase() BalanceUseCase {
 
 func (u *useCaseManager) CustomerUseCase() CustomerUseCase {
 	return u.customerUseCase
+}
+func (u *useCaseManager) DeliveryOrderUseCase() DeliveryOrderUseCase {
+	return u.deliveryOrderUseCase
 }
 
 func (u *useCaseManager) PermissionUseCase() PermissionUseCase {
@@ -101,6 +106,11 @@ func NewUseCaseManager(
 		),
 		customerUseCase: NewCustomerUseCase(
 			repositoryManager,
+		),
+		deliveryOrderUseCase: NewDeliveryOrderUseCase(
+			repositoryManager,
+			filesystemManager.Main(),
+			filesystemManager.Tmp(),
 		),
 		permissionUseCase: NewPermissionUseCase(
 			repositoryManager,

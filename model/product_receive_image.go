@@ -7,8 +7,9 @@ type ProductReceiveImage struct {
 	ProductReceiveId string  `db:"product_receive_id"`
 	FileId           string  `db:"file_id"`
 	Description      *string `db:"description"`
-
 	Timestamp
+
+	File *File `db:"-"`
 }
 
 func (m *ProductReceiveImage) TableName() string {

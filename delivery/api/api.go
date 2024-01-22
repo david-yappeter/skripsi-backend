@@ -210,6 +210,7 @@ func registerRoutes(router gin.IRouter, useCaseManager use_case.UseCaseManager) 
 
 	RegisterBalanceApi(router, useCaseManager)
 	RegisterCustomerApi(router, useCaseManager)
+	RegisterDeliveryOrderApi(router, useCaseManager)
 	RegisterProductApi(router, useCaseManager)
 	RegisterProductUnitApi(router, useCaseManager)
 	RegisterProductReceiveApi(router, useCaseManager)

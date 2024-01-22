@@ -18,60 +18,69 @@ func _() {
 	_ = x[PermissionBalanceGet-3]
 	_ = x[PermissionBalanceUpdate-4]
 	_ = x[PermissionBalanceDelete-5]
-	_ = x[PermissionProductUnitCreate-6]
-	_ = x[PermissionProductUnitUpload-7]
-	_ = x[PermissionProductUnitGet-8]
-	_ = x[PermissionProductUnitUpdate-9]
-	_ = x[PermissionProductUnitDelete-10]
-	_ = x[PermissionRoleOptionForUserForm-11]
-	_ = x[PermissionUserCreate-12]
-	_ = x[PermissionUserUpdate-13]
-	_ = x[PermissionUserUpdatePassword-14]
-	_ = x[PermissionUserUpdateActive-15]
-	_ = x[PermissionUserUpdateInActive-16]
-	_ = x[PermissionUserAddRole-17]
-	_ = x[PermissionUserDeleteRole-18]
-	_ = x[PermissionUnitCreate-19]
-	_ = x[PermissionUnitFetch-20]
-	_ = x[PermissionUnitGet-21]
-	_ = x[PermissionUnitUpdate-22]
-	_ = x[PermissionUnitDelete-23]
-	_ = x[PermissionCustomerCreate-24]
-	_ = x[PermissionCustomerFetch-25]
-	_ = x[PermissionCustomerGet-26]
-	_ = x[PermissionCustomerUpdate-27]
-	_ = x[PermissionCustomerDelete-28]
-	_ = x[PermissionProductCreate-29]
-	_ = x[PermissionProductFetch-30]
-	_ = x[PermissionProductGet-31]
-	_ = x[PermissionProductUpdate-32]
-	_ = x[PermissionProductDelete-33]
-	_ = x[PermissionProductReceiveCreate-34]
-	_ = x[PermissionProductReceiveUpload-35]
-	_ = x[PermissionProductReceiveAddItem-36]
-	_ = x[PermissionProductReceiveAddImage-37]
-	_ = x[PermissionProductReceiveFetch-38]
-	_ = x[PermissionProductReceiveGet-39]
-	_ = x[PermissionProductReceiveDelete-40]
-	_ = x[PermissionProductReceiveDeleteItem-41]
-	_ = x[PermissionProductReceiveDeleteImage-42]
-	_ = x[PermissionSupplierCreate-43]
-	_ = x[PermissionSupplierFetch-44]
-	_ = x[PermissionSupplierGet-45]
-	_ = x[PermissionSupplierUpdate-46]
-	_ = x[PermissionSupplierDelete-47]
-	_ = x[PermissionSupplierTypeCreate-48]
-	_ = x[PermissionSupplierTypeFetch-49]
-	_ = x[PermissionSupplierTypeGet-50]
-	_ = x[PermissionSupplierTypeUpdate-51]
-	_ = x[PermissionSupplierTypeDelete-52]
+	_ = x[PermissionCustomerCreate-6]
+	_ = x[PermissionCustomerFetch-7]
+	_ = x[PermissionCustomerGet-8]
+	_ = x[PermissionCustomerUpdate-9]
+	_ = x[PermissionCustomerDelete-10]
+	_ = x[PermissionDeliveryOrderCreate-11]
+	_ = x[PermissionDeliveryOrderUpload-12]
+	_ = x[PermissionDeliveryOrderAddItem-13]
+	_ = x[PermissionDeliveryOrderAddImage-14]
+	_ = x[PermissionDeliveryOrderFetch-15]
+	_ = x[PermissionDeliveryOrderGet-16]
+	_ = x[PermissionDeliveryOrderDelete-17]
+	_ = x[PermissionDeliveryOrderDeleteItem-18]
+	_ = x[PermissionDeliveryOrderDeleteImage-19]
+	_ = x[PermissionProductCreate-20]
+	_ = x[PermissionProductFetch-21]
+	_ = x[PermissionProductGet-22]
+	_ = x[PermissionProductUpdate-23]
+	_ = x[PermissionProductDelete-24]
+	_ = x[PermissionProductReceiveCreate-25]
+	_ = x[PermissionProductReceiveUpload-26]
+	_ = x[PermissionProductReceiveAddItem-27]
+	_ = x[PermissionProductReceiveAddImage-28]
+	_ = x[PermissionProductReceiveFetch-29]
+	_ = x[PermissionProductReceiveGet-30]
+	_ = x[PermissionProductReceiveDelete-31]
+	_ = x[PermissionProductReceiveDeleteItem-32]
+	_ = x[PermissionProductReceiveDeleteImage-33]
+	_ = x[PermissionProductUnitCreate-34]
+	_ = x[PermissionProductUnitUpload-35]
+	_ = x[PermissionProductUnitGet-36]
+	_ = x[PermissionProductUnitUpdate-37]
+	_ = x[PermissionProductUnitDelete-38]
+	_ = x[PermissionRoleOptionForUserForm-39]
+	_ = x[PermissionSupplierCreate-40]
+	_ = x[PermissionSupplierFetch-41]
+	_ = x[PermissionSupplierGet-42]
+	_ = x[PermissionSupplierUpdate-43]
+	_ = x[PermissionSupplierDelete-44]
+	_ = x[PermissionSupplierTypeCreate-45]
+	_ = x[PermissionSupplierTypeFetch-46]
+	_ = x[PermissionSupplierTypeGet-47]
+	_ = x[PermissionSupplierTypeUpdate-48]
+	_ = x[PermissionSupplierTypeDelete-49]
+	_ = x[PermissionUserCreate-50]
+	_ = x[PermissionUserUpdate-51]
+	_ = x[PermissionUserUpdatePassword-52]
+	_ = x[PermissionUserUpdateActive-53]
+	_ = x[PermissionUserUpdateInActive-54]
+	_ = x[PermissionUserAddRole-55]
+	_ = x[PermissionUserDeleteRole-56]
+	_ = x[PermissionUnitCreate-57]
+	_ = x[PermissionUnitFetch-58]
+	_ = x[PermissionUnitGet-59]
+	_ = x[PermissionUnitUpdate-60]
+	_ = x[PermissionUnitDelete-61]
 }
 
-const _Permission_nameReadable = "BALANCE_CREATE, BALANCE_FETCH, BALANCE_GET, BALANCE_UPDATE, BALANCE_DELETE, PRODUCT_UNIT_CREATE, PRODUCT_UNIT_UPLOAD, PRODUCT_UNIT_GET, PRODUCT_UNIT_UPDATE, PRODUCT_UNIT_DELETE, ROLE_OPTION_FOR_USER_FORM, USER_CREATE, USER_UPDATE, USER_UPDATE_PASSWORD, USER_UPDATE_ACTIVE, USER_UPDATE_INACTIVE, USER_ADD_ROLE, USER_DELETE_ROLE, UNIT_CREATE, UNIT_FETCH, UNIT_GET, UNIT_UPDATE, UNIT_DELETE, CUSTOMER_CREATE, CUSTOMER_FETCH, CUSTOMER_GET, CUSTOMER_UPDATE, CUSTOMER_DELETE, PRODUCT_CREATE, PRODUCT_FETCH, PRODUCT_GET, PRODUCT_UPDATE, PRODUCT_DELETE, PRODUCT_RECEIVE_CREATE, PRODUCT_RECEIVE_UPLOAD, PRODUCT_RECEIVE_ADD_ITEM, PRODUCT_RECEIVE_ADD_IMAGE, PRODUCT_RECEIVE_FETCH, PRODUCT_RECEIVE_GET, PRODUCT_RECEIVE_DELETE, PRODUCT_RECEIVE_DELETE_ITEM, PRODUCT_RECEIVE_DELETE_IMAGE, SUPPLIER_CREATE, SUPPLIER_FETCH, SUPPLIER_GET, SUPPLIER_UPDATE, SUPPLIER_DELETE, SUPPLIER_TYPE_CREATE, SUPPLIER_TYPE_FETCH, SUPPLIER_TYPE_GET, SUPPLIER_TYPE_UPDATE, SUPPLIER_TYPE_DELETE"
+const _Permission_nameReadable = "BALANCE_CREATE, BALANCE_FETCH, BALANCE_GET, BALANCE_UPDATE, BALANCE_DELETE, CUSTOMER_CREATE, CUSTOMER_FETCH, CUSTOMER_GET, CUSTOMER_UPDATE, CUSTOMER_DELETE, DELIVERY_ORDER_CREATE, DELIVERY_ORDER_UPLOAD, DELIVERY_ORDER_ADD_ITEM, DELIVERY_ORDER_ADD_IMAGE, DELIVERY_ORDER_FETCH, DELIVERY_ORDER_GET, DELIVERY_ORDER_DELETE, DELIVERY_ORDER_DELETE_ITEM, DELIVERY_ORDER_DELETE_IMAGE, PRODUCT_CREATE, PRODUCT_FETCH, PRODUCT_GET, PRODUCT_UPDATE, PRODUCT_DELETE, PRODUCT_RECEIVE_CREATE, PRODUCT_RECEIVE_UPLOAD, PRODUCT_RECEIVE_ADD_ITEM, PRODUCT_RECEIVE_ADD_IMAGE, PRODUCT_RECEIVE_FETCH, PRODUCT_RECEIVE_GET, PRODUCT_RECEIVE_DELETE, PRODUCT_RECEIVE_DELETE_ITEM, PRODUCT_RECEIVE_DELETE_IMAGE, PRODUCT_UNIT_CREATE, PRODUCT_UNIT_UPLOAD, PRODUCT_UNIT_GET, PRODUCT_UNIT_UPDATE, PRODUCT_UNIT_DELETE, ROLE_OPTION_FOR_USER_FORM, SUPPLIER_CREATE, SUPPLIER_FETCH, SUPPLIER_GET, SUPPLIER_UPDATE, SUPPLIER_DELETE, SUPPLIER_TYPE_CREATE, SUPPLIER_TYPE_FETCH, SUPPLIER_TYPE_GET, SUPPLIER_TYPE_UPDATE, SUPPLIER_TYPE_DELETE, USER_CREATE, USER_UPDATE, USER_UPDATE_PASSWORD, USER_UPDATE_ACTIVE, USER_UPDATE_INACTIVE, USER_ADD_ROLE, USER_DELETE_ROLE, UNIT_CREATE, UNIT_FETCH, UNIT_GET, UNIT_UPDATE, UNIT_DELETE"
 
-const _Permission_name = "BALANCE_CREATEBALANCE_FETCHBALANCE_GETBALANCE_UPDATEBALANCE_DELETEPRODUCT_UNIT_CREATEPRODUCT_UNIT_UPLOADPRODUCT_UNIT_GETPRODUCT_UNIT_UPDATEPRODUCT_UNIT_DELETEROLE_OPTION_FOR_USER_FORMUSER_CREATEUSER_UPDATEUSER_UPDATE_PASSWORDUSER_UPDATE_ACTIVEUSER_UPDATE_INACTIVEUSER_ADD_ROLEUSER_DELETE_ROLEUNIT_CREATEUNIT_FETCHUNIT_GETUNIT_UPDATEUNIT_DELETECUSTOMER_CREATECUSTOMER_FETCHCUSTOMER_GETCUSTOMER_UPDATECUSTOMER_DELETEPRODUCT_CREATEPRODUCT_FETCHPRODUCT_GETPRODUCT_UPDATEPRODUCT_DELETEPRODUCT_RECEIVE_CREATEPRODUCT_RECEIVE_UPLOADPRODUCT_RECEIVE_ADD_ITEMPRODUCT_RECEIVE_ADD_IMAGEPRODUCT_RECEIVE_FETCHPRODUCT_RECEIVE_GETPRODUCT_RECEIVE_DELETEPRODUCT_RECEIVE_DELETE_ITEMPRODUCT_RECEIVE_DELETE_IMAGESUPPLIER_CREATESUPPLIER_FETCHSUPPLIER_GETSUPPLIER_UPDATESUPPLIER_DELETESUPPLIER_TYPE_CREATESUPPLIER_TYPE_FETCHSUPPLIER_TYPE_GETSUPPLIER_TYPE_UPDATESUPPLIER_TYPE_DELETE"
+const _Permission_name = "BALANCE_CREATEBALANCE_FETCHBALANCE_GETBALANCE_UPDATEBALANCE_DELETECUSTOMER_CREATECUSTOMER_FETCHCUSTOMER_GETCUSTOMER_UPDATECUSTOMER_DELETEDELIVERY_ORDER_CREATEDELIVERY_ORDER_UPLOADDELIVERY_ORDER_ADD_ITEMDELIVERY_ORDER_ADD_IMAGEDELIVERY_ORDER_FETCHDELIVERY_ORDER_GETDELIVERY_ORDER_DELETEDELIVERY_ORDER_DELETE_ITEMDELIVERY_ORDER_DELETE_IMAGEPRODUCT_CREATEPRODUCT_FETCHPRODUCT_GETPRODUCT_UPDATEPRODUCT_DELETEPRODUCT_RECEIVE_CREATEPRODUCT_RECEIVE_UPLOADPRODUCT_RECEIVE_ADD_ITEMPRODUCT_RECEIVE_ADD_IMAGEPRODUCT_RECEIVE_FETCHPRODUCT_RECEIVE_GETPRODUCT_RECEIVE_DELETEPRODUCT_RECEIVE_DELETE_ITEMPRODUCT_RECEIVE_DELETE_IMAGEPRODUCT_UNIT_CREATEPRODUCT_UNIT_UPLOADPRODUCT_UNIT_GETPRODUCT_UNIT_UPDATEPRODUCT_UNIT_DELETEROLE_OPTION_FOR_USER_FORMSUPPLIER_CREATESUPPLIER_FETCHSUPPLIER_GETSUPPLIER_UPDATESUPPLIER_DELETESUPPLIER_TYPE_CREATESUPPLIER_TYPE_FETCHSUPPLIER_TYPE_GETSUPPLIER_TYPE_UPDATESUPPLIER_TYPE_DELETEUSER_CREATEUSER_UPDATEUSER_UPDATE_PASSWORDUSER_UPDATE_ACTIVEUSER_UPDATE_INACTIVEUSER_ADD_ROLEUSER_DELETE_ROLEUNIT_CREATEUNIT_FETCHUNIT_GETUNIT_UPDATEUNIT_DELETE"
 
-var _Permission_index = [...]uint16{0, 14, 27, 38, 52, 66, 85, 104, 120, 139, 158, 183, 194, 205, 225, 243, 263, 276, 292, 303, 313, 321, 332, 343, 358, 372, 384, 399, 414, 428, 441, 452, 466, 480, 502, 524, 548, 573, 594, 613, 635, 662, 690, 705, 719, 731, 746, 761, 781, 800, 817, 837, 857}
+var _Permission_index = [...]uint16{0, 14, 27, 38, 52, 66, 81, 95, 107, 122, 137, 158, 179, 202, 226, 246, 264, 285, 311, 338, 352, 365, 376, 390, 404, 426, 448, 472, 497, 518, 537, 559, 586, 614, 633, 652, 668, 687, 706, 731, 746, 760, 772, 787, 802, 822, 841, 858, 878, 898, 909, 920, 940, 958, 978, 991, 1007, 1018, 1028, 1036, 1047, 1058}
 
 func (i *Permission) determine(s string) {
 	switch s {
@@ -85,42 +94,6 @@ func (i *Permission) determine(s string) {
 		*i = PermissionBalanceUpdate
 	case "BALANCE_DELETE":
 		*i = PermissionBalanceDelete
-	case "PRODUCT_UNIT_CREATE":
-		*i = PermissionProductUnitCreate
-	case "PRODUCT_UNIT_UPLOAD":
-		*i = PermissionProductUnitUpload
-	case "PRODUCT_UNIT_GET":
-		*i = PermissionProductUnitGet
-	case "PRODUCT_UNIT_UPDATE":
-		*i = PermissionProductUnitUpdate
-	case "PRODUCT_UNIT_DELETE":
-		*i = PermissionProductUnitDelete
-	case "ROLE_OPTION_FOR_USER_FORM":
-		*i = PermissionRoleOptionForUserForm
-	case "USER_CREATE":
-		*i = PermissionUserCreate
-	case "USER_UPDATE":
-		*i = PermissionUserUpdate
-	case "USER_UPDATE_PASSWORD":
-		*i = PermissionUserUpdatePassword
-	case "USER_UPDATE_ACTIVE":
-		*i = PermissionUserUpdateActive
-	case "USER_UPDATE_INACTIVE":
-		*i = PermissionUserUpdateInActive
-	case "USER_ADD_ROLE":
-		*i = PermissionUserAddRole
-	case "USER_DELETE_ROLE":
-		*i = PermissionUserDeleteRole
-	case "UNIT_CREATE":
-		*i = PermissionUnitCreate
-	case "UNIT_FETCH":
-		*i = PermissionUnitFetch
-	case "UNIT_GET":
-		*i = PermissionUnitGet
-	case "UNIT_UPDATE":
-		*i = PermissionUnitUpdate
-	case "UNIT_DELETE":
-		*i = PermissionUnitDelete
 	case "CUSTOMER_CREATE":
 		*i = PermissionCustomerCreate
 	case "CUSTOMER_FETCH":
@@ -131,6 +104,24 @@ func (i *Permission) determine(s string) {
 		*i = PermissionCustomerUpdate
 	case "CUSTOMER_DELETE":
 		*i = PermissionCustomerDelete
+	case "DELIVERY_ORDER_CREATE":
+		*i = PermissionDeliveryOrderCreate
+	case "DELIVERY_ORDER_UPLOAD":
+		*i = PermissionDeliveryOrderUpload
+	case "DELIVERY_ORDER_ADD_ITEM":
+		*i = PermissionDeliveryOrderAddItem
+	case "DELIVERY_ORDER_ADD_IMAGE":
+		*i = PermissionDeliveryOrderAddImage
+	case "DELIVERY_ORDER_FETCH":
+		*i = PermissionDeliveryOrderFetch
+	case "DELIVERY_ORDER_GET":
+		*i = PermissionDeliveryOrderGet
+	case "DELIVERY_ORDER_DELETE":
+		*i = PermissionDeliveryOrderDelete
+	case "DELIVERY_ORDER_DELETE_ITEM":
+		*i = PermissionDeliveryOrderDeleteItem
+	case "DELIVERY_ORDER_DELETE_IMAGE":
+		*i = PermissionDeliveryOrderDeleteImage
 	case "PRODUCT_CREATE":
 		*i = PermissionProductCreate
 	case "PRODUCT_FETCH":
@@ -159,6 +150,18 @@ func (i *Permission) determine(s string) {
 		*i = PermissionProductReceiveDeleteItem
 	case "PRODUCT_RECEIVE_DELETE_IMAGE":
 		*i = PermissionProductReceiveDeleteImage
+	case "PRODUCT_UNIT_CREATE":
+		*i = PermissionProductUnitCreate
+	case "PRODUCT_UNIT_UPLOAD":
+		*i = PermissionProductUnitUpload
+	case "PRODUCT_UNIT_GET":
+		*i = PermissionProductUnitGet
+	case "PRODUCT_UNIT_UPDATE":
+		*i = PermissionProductUnitUpdate
+	case "PRODUCT_UNIT_DELETE":
+		*i = PermissionProductUnitDelete
+	case "ROLE_OPTION_FOR_USER_FORM":
+		*i = PermissionRoleOptionForUserForm
 	case "SUPPLIER_CREATE":
 		*i = PermissionSupplierCreate
 	case "SUPPLIER_FETCH":
@@ -179,6 +182,30 @@ func (i *Permission) determine(s string) {
 		*i = PermissionSupplierTypeUpdate
 	case "SUPPLIER_TYPE_DELETE":
 		*i = PermissionSupplierTypeDelete
+	case "USER_CREATE":
+		*i = PermissionUserCreate
+	case "USER_UPDATE":
+		*i = PermissionUserUpdate
+	case "USER_UPDATE_PASSWORD":
+		*i = PermissionUserUpdatePassword
+	case "USER_UPDATE_ACTIVE":
+		*i = PermissionUserUpdateActive
+	case "USER_UPDATE_INACTIVE":
+		*i = PermissionUserUpdateInActive
+	case "USER_ADD_ROLE":
+		*i = PermissionUserAddRole
+	case "USER_DELETE_ROLE":
+		*i = PermissionUserDeleteRole
+	case "UNIT_CREATE":
+		*i = PermissionUnitCreate
+	case "UNIT_FETCH":
+		*i = PermissionUnitFetch
+	case "UNIT_GET":
+		*i = PermissionUnitGet
+	case "UNIT_UPDATE":
+		*i = PermissionUnitUpdate
+	case "UNIT_DELETE":
+		*i = PermissionUnitDelete
 	default:
 		*i = 0
 	}
@@ -252,29 +279,20 @@ func ListPermission() []Permission {
 		PermissionBalanceGet,
 		PermissionBalanceUpdate,
 		PermissionBalanceDelete,
-		PermissionProductUnitCreate,
-		PermissionProductUnitUpload,
-		PermissionProductUnitGet,
-		PermissionProductUnitUpdate,
-		PermissionProductUnitDelete,
-		PermissionRoleOptionForUserForm,
-		PermissionUserCreate,
-		PermissionUserUpdate,
-		PermissionUserUpdatePassword,
-		PermissionUserUpdateActive,
-		PermissionUserUpdateInActive,
-		PermissionUserAddRole,
-		PermissionUserDeleteRole,
-		PermissionUnitCreate,
-		PermissionUnitFetch,
-		PermissionUnitGet,
-		PermissionUnitUpdate,
-		PermissionUnitDelete,
 		PermissionCustomerCreate,
 		PermissionCustomerFetch,
 		PermissionCustomerGet,
 		PermissionCustomerUpdate,
 		PermissionCustomerDelete,
+		PermissionDeliveryOrderCreate,
+		PermissionDeliveryOrderUpload,
+		PermissionDeliveryOrderAddItem,
+		PermissionDeliveryOrderAddImage,
+		PermissionDeliveryOrderFetch,
+		PermissionDeliveryOrderGet,
+		PermissionDeliveryOrderDelete,
+		PermissionDeliveryOrderDeleteItem,
+		PermissionDeliveryOrderDeleteImage,
 		PermissionProductCreate,
 		PermissionProductFetch,
 		PermissionProductGet,
@@ -289,6 +307,12 @@ func ListPermission() []Permission {
 		PermissionProductReceiveDelete,
 		PermissionProductReceiveDeleteItem,
 		PermissionProductReceiveDeleteImage,
+		PermissionProductUnitCreate,
+		PermissionProductUnitUpload,
+		PermissionProductUnitGet,
+		PermissionProductUnitUpdate,
+		PermissionProductUnitDelete,
+		PermissionRoleOptionForUserForm,
 		PermissionSupplierCreate,
 		PermissionSupplierFetch,
 		PermissionSupplierGet,
@@ -299,6 +323,18 @@ func ListPermission() []Permission {
 		PermissionSupplierTypeGet,
 		PermissionSupplierTypeUpdate,
 		PermissionSupplierTypeDelete,
+		PermissionUserCreate,
+		PermissionUserUpdate,
+		PermissionUserUpdatePassword,
+		PermissionUserUpdateActive,
+		PermissionUserUpdateInActive,
+		PermissionUserAddRole,
+		PermissionUserDeleteRole,
+		PermissionUnitCreate,
+		PermissionUnitFetch,
+		PermissionUnitGet,
+		PermissionUnitUpdate,
+		PermissionUnitDelete,
 	}
 }
 
@@ -309,29 +345,20 @@ func ListPermissionString() []string {
 		PermissionBalanceGet.String(),
 		PermissionBalanceUpdate.String(),
 		PermissionBalanceDelete.String(),
-		PermissionProductUnitCreate.String(),
-		PermissionProductUnitUpload.String(),
-		PermissionProductUnitGet.String(),
-		PermissionProductUnitUpdate.String(),
-		PermissionProductUnitDelete.String(),
-		PermissionRoleOptionForUserForm.String(),
-		PermissionUserCreate.String(),
-		PermissionUserUpdate.String(),
-		PermissionUserUpdatePassword.String(),
-		PermissionUserUpdateActive.String(),
-		PermissionUserUpdateInActive.String(),
-		PermissionUserAddRole.String(),
-		PermissionUserDeleteRole.String(),
-		PermissionUnitCreate.String(),
-		PermissionUnitFetch.String(),
-		PermissionUnitGet.String(),
-		PermissionUnitUpdate.String(),
-		PermissionUnitDelete.String(),
 		PermissionCustomerCreate.String(),
 		PermissionCustomerFetch.String(),
 		PermissionCustomerGet.String(),
 		PermissionCustomerUpdate.String(),
 		PermissionCustomerDelete.String(),
+		PermissionDeliveryOrderCreate.String(),
+		PermissionDeliveryOrderUpload.String(),
+		PermissionDeliveryOrderAddItem.String(),
+		PermissionDeliveryOrderAddImage.String(),
+		PermissionDeliveryOrderFetch.String(),
+		PermissionDeliveryOrderGet.String(),
+		PermissionDeliveryOrderDelete.String(),
+		PermissionDeliveryOrderDeleteItem.String(),
+		PermissionDeliveryOrderDeleteImage.String(),
 		PermissionProductCreate.String(),
 		PermissionProductFetch.String(),
 		PermissionProductGet.String(),
@@ -346,6 +373,12 @@ func ListPermissionString() []string {
 		PermissionProductReceiveDelete.String(),
 		PermissionProductReceiveDeleteItem.String(),
 		PermissionProductReceiveDeleteImage.String(),
+		PermissionProductUnitCreate.String(),
+		PermissionProductUnitUpload.String(),
+		PermissionProductUnitGet.String(),
+		PermissionProductUnitUpdate.String(),
+		PermissionProductUnitDelete.String(),
+		PermissionRoleOptionForUserForm.String(),
 		PermissionSupplierCreate.String(),
 		PermissionSupplierFetch.String(),
 		PermissionSupplierGet.String(),
@@ -356,5 +389,17 @@ func ListPermissionString() []string {
 		PermissionSupplierTypeGet.String(),
 		PermissionSupplierTypeUpdate.String(),
 		PermissionSupplierTypeDelete.String(),
+		PermissionUserCreate.String(),
+		PermissionUserUpdate.String(),
+		PermissionUserUpdatePassword.String(),
+		PermissionUserUpdateActive.String(),
+		PermissionUserUpdateInActive.String(),
+		PermissionUserAddRole.String(),
+		PermissionUserDeleteRole.String(),
+		PermissionUnitCreate.String(),
+		PermissionUnitFetch.String(),
+		PermissionUnitGet.String(),
+		PermissionUnitUpdate.String(),
+		PermissionUnitDelete.String(),
 	}
 }

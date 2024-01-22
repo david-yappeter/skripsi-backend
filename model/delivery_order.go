@@ -14,6 +14,7 @@ type DeliveryOrder struct {
 	TotalPrice    float64                       `db:"total_price"`
 	Timestamp
 
+	Customer            *Customer            `db:"-"`
 	DeliveryOrderItems  []DeliveryOrderItem  `db:"-"`
 	DeliveryOrderImages []DeliveryOrderImage `db:"-"`
 }
