@@ -177,6 +177,41 @@ func (a *SupplierApi) Delete() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/suppliers/options/product-receive-form [post]
+//	@Summary	Option for Product Receive Form
+//	@tags		Suppliers
+//	@Accept		json
+//	@Param		dto_request.SupplierOptionForProductReceiveFormRequest	body	dto_request.SupplierOptionForProductReceiveFormRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.SuccessResponse
+func (a *SupplierApi) OptionForProductReceiveForm() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionSupplierOptionForProductReceiveForm),
+		func(ctx apiContext) {
+			var request dto_request.SupplierOptionForProductReceiveFormRequest
+			ctx.mustBind(&request)
+
+			suppliers, total := a.supplierUseCase.OptionForProductReceiveForm(ctx.context(), request)
+
+			nodes := util.ConvertArray(suppliers, dto_response.NewSupplierResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Total: total,
+						Nodes: nodes,
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterSupplierApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := SupplierApi{
 		api:             newApi(useCaseManager),
@@ -189,4 +224,7 @@ func RegisterSupplierApi(router gin.IRouter, useCaseManager use_case.UseCaseMana
 	routerGroup.GET("/:id", api.Get())
 	routerGroup.PUT("/:id", api.Update())
 	routerGroup.DELETE("/:id", api.Delete())
+
+	optionRouterGroup := routerGroup.Group("/options")
+	optionRouterGroup.POST("/product-receive-form", api.OptionForProductReceiveForm())
 }

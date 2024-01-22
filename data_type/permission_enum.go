@@ -62,11 +62,12 @@ const (
 	PermissionRoleOptionForUserForm // ROLE_OPTION_FOR_USER_FORM
 
 	// supplier
-	PermissionSupplierCreate // SUPPLIER_CREATE
-	PermissionSupplierFetch  // SUPPLIER_FETCH
-	PermissionSupplierGet    // SUPPLIER_GET
-	PermissionSupplierUpdate // SUPPLIER_UPDATE
-	PermissionSupplierDelete // SUPPLIER_DELETE
+	PermissionSupplierCreate                      // SUPPLIER_CREATE
+	PermissionSupplierFetch                       // SUPPLIER_FETCH
+	PermissionSupplierGet                         // SUPPLIER_GET
+	PermissionSupplierUpdate                      // SUPPLIER_UPDATE
+	PermissionSupplierDelete                      // SUPPLIER_DELETE
+	PermissionSupplierOptionForProductReceiveForm // SUPPLIER_OPTION_FOR_PRODUCT_RECEIVE_FORM
 
 	// supplier type
 	PermissionSupplierTypeCreate // SUPPLIER_TYPE_CREATE
