@@ -67,19 +67,18 @@ func (r *productProductUnitRepository) prepareQuery(option model.ProductUnitQuer
 	stmt := stmtBuilder.Select().
 		From(fmt.Sprintf("%s u", model.ProductUnitTableName))
 
-	andStatements := squirrel.And{}
-
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
-		andStatements = append(
-			andStatements,
-			squirrel.Or{
-				squirrel.ILike{"u.name": phrase},
-			},
-		)
+		stmt = stmt.Where(squirrel.Or{
+			squirrel.ILike{"u.name": phrase},
+		})
 	}
 
-	stmt = stmt.Where(andStatements)
+	if len(option.ExcludeIds) > 0 {
+		stmt = stmt.Where(squirrel.NotEq{
+			"id": option.ExcludeIds,
+		})
+	}
 
 	stmt = model.Prepare(stmt, &option)
 

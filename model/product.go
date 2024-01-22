@@ -36,8 +36,9 @@ func (m *Product) ToMap() map[string]interface{} {
 type ProductQueryOption struct {
 	QueryOption
 
-	IsActive *bool
-	Phrase   *string
+	ExcludeIds []string
+	IsActive   *bool
+	Phrase     *string
 }
 
 var _ PrepareOption = &ProductQueryOption{}

@@ -33,3 +33,25 @@ type ProductUpdateRequest struct {
 type ProductDeleteRequest struct {
 	ProductId string `json:"-" swaggerignore:"true"`
 } // @name ProductDeleteRequest
+
+type ProductOptionForProductReceiveFormSorts []struct {
+	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
+	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
+} // @name ProductOptionForProductReceiveFormSorts
+
+type ProductOptionForProductReceiveFormRequest struct {
+	PaginationRequest
+	Sorts  ProductOptionForProductReceiveFormSorts `json:"sorts" validate:"unique=Field,dive"`
+	Phrase *string                                 `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name ProductOptionForProductReceiveFormRequest
+
+type ProductOptionForDeliveryOrderFormSorts []struct {
+	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
+	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
+} // @name ProductOptionForDeliveryOrderFormSorts
+
+type ProductOptionForDeliveryOrderFormRequest struct {
+	PaginationRequest
+	Sorts  ProductOptionForDeliveryOrderFormSorts `json:"sorts" validate:"unique=Field,dive"`
+	Phrase *string                                `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name ProductOptionForDeliveryOrderFormRequest

@@ -66,19 +66,12 @@ func (r *unitRepository) prepareQuery(option model.UnitQueryOption) squirrel.Sel
 	stmt := stmtBuilder.Select().
 		From(fmt.Sprintf("%s u", model.UnitTableName))
 
-	andStatements := squirrel.And{}
-
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
-		andStatements = append(
-			andStatements,
-			squirrel.Or{
-				squirrel.ILike{"u.name": phrase},
-			},
-		)
+		stmt = stmt.Where(squirrel.Or{
+			squirrel.ILike{"u.name": phrase},
+		})
 	}
-
-	stmt = stmt.Where(andStatements)
 
 	stmt = model.Prepare(stmt, &option)
 

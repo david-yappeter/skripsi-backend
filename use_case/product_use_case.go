@@ -29,10 +29,22 @@ type ProductUseCase interface {
 
 	//  delete
 	Delete(ctx context.Context, request dto_request.ProductDeleteRequest)
+
+	// option
+	OptionForProductReceiveForm(ctx context.Context, request dto_request.ProductOptionForProductReceiveFormRequest) ([]model.Product, int)
+	OptionForDeliveryOrderForm(ctx context.Context, request dto_request.ProductOptionForDeliveryOrderFormRequest) ([]model.Product, int)
 }
 
 type productUseCase struct {
 	repositoryManager repository.RepositoryManager
+}
+
+func NewProductUseCase(
+	repositoryManager repository.RepositoryManager,
+) ProductUseCase {
+	return &productUseCase{
+		repositoryManager: repositoryManager,
+	}
 }
 
 func (u *productUseCase) mustValidateNameNotDuplicate(ctx context.Context, name string) {
@@ -90,7 +102,8 @@ func (u *productUseCase) Fetch(ctx context.Context, request dto_request.ProductF
 			request.Limit,
 			model.Sorts(request.Sorts),
 		),
-		Phrase: request.Phrase,
+		IsActive: &request.IsActive,
+		Phrase:   request.Phrase,
 	}
 
 	products, err := u.repositoryManager.ProductRepository().Fetch(ctx, queryOption)
@@ -153,10 +166,46 @@ func (u *productUseCase) Delete(ctx context.Context, request dto_request.Product
 	)
 }
 
-func NewProductUseCase(
-	repositoryManager repository.RepositoryManager,
-) ProductUseCase {
-	return &productUseCase{
-		repositoryManager: repositoryManager,
+func (u *productUseCase) OptionForProductReceiveForm(ctx context.Context, request dto_request.ProductOptionForProductReceiveFormRequest) ([]model.Product, int) {
+	queryOption := model.ProductQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts(request.Sorts),
+		),
+		IsActive: util.BoolP(true),
+		Phrase:   request.Phrase,
 	}
+
+	products, err := u.repositoryManager.ProductRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.ProductRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	return products, total
+}
+
+func (u *productUseCase) OptionForDeliveryOrderForm(ctx context.Context, request dto_request.ProductOptionForDeliveryOrderFormRequest) ([]model.Product, int) {
+	queryOption := model.ProductQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts(request.Sorts),
+		),
+		IsActive: util.BoolP(true),
+		Phrase:   request.Phrase,
+	}
+
+	products, err := u.repositoryManager.ProductRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.ProductRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	u.mustLoadProductDatas(ctx, util.SliceValueToSlicePointer(products), productLoaderParams{
+		productStock: true,
+	})
+
+	return products, total
 }

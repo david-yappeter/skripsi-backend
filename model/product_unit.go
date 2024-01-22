@@ -39,7 +39,8 @@ func (m *ProductUnit) ToMap() map[string]interface{} {
 type ProductUnitQueryOption struct {
 	QueryOption
 
-	Phrase *string
+	ExcludeIds []string
+	Phrase     *string
 }
 
 var _ PrepareOption = &ProductUnitQueryOption{}

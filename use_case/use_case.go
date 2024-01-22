@@ -230,6 +230,12 @@ func mustGetProductReceive(ctx context.Context, repositoryManager repository.Rep
 	return *productReceive
 }
 
+func mustGetProductReceiveItem(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.ProductReceiveItem {
+	productReceiveItem, err := repositoryManager.ProductReceiveItemRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "PRODUCT_RECEIVE_ITEM.NOT_FOUND", isValidate)
+	return *productReceiveItem
+}
+
 func mustGetProductReceiveImageByProductReceiveIdAndFileId(ctx context.Context, repositoryManager repository.RepositoryManager, productReceiveId string, fileId string, isValidate bool) model.ProductReceiveImage {
 	productReceiveImage, err := repositoryManager.ProductReceiveImageRepository().GetByProductReceiveIdAndFileId(ctx, productReceiveId, fileId)
 	panicIfRepositoryError(err, "PRODUCT_RECEIVE_IMAGE.NOT_FOUND", isValidate)
@@ -246,6 +252,12 @@ func mustGetDeliveryOrder(ctx context.Context, repositoryManager repository.Repo
 	deliveryOrder, err := repositoryManager.DeliveryOrderRepository().Get(ctx, id)
 	panicIfRepositoryError(err, "DELIVERY_ORDER.NOT_FOUND", isValidate)
 	return *deliveryOrder
+}
+
+func mustGetDeliveryOrderItem(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.DeliveryOrderItem {
+	deliveryOrderItem, err := repositoryManager.DeliveryOrderItemRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "DELIVERY_ORDER_ITEM.NOT_FOUND", isValidate)
+	return *deliveryOrderItem
 }
 
 func mustGetDeliveryOrderImageByDeliveryOrderIdAndFileId(ctx context.Context, repositoryManager repository.RepositoryManager, deliveryOrderId string, fileId string, isValidate bool) model.DeliveryOrderImage {

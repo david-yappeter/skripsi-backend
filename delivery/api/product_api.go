@@ -183,25 +183,29 @@ func (a *ProductApi) Delete() gin.HandlerFunc {
 //	@Summary	Option for Product Receive Form
 //	@tags		Products
 //	@Accept		json
-//	@Param		id	path	string	true	"Id"
 //	@Param		dto_request.ProductOptionForProductReceiveFormRequest body dto_request.ProductOptionForProductReceiveFormRequest true "Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.ProductResponse}}
 func (a *ProductApi) OptionForProductReceiveForm() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionProductDelete),
+		data_type.PermissionP(data_type.PermissionProductOptionForProductReceiveForm),
 		func(ctx apiContext) {
-			id := ctx.getUuidParam("id")
-			var request dto_request.ProductDeleteRequest
+			var request dto_request.ProductOptionForProductReceiveFormRequest
 			ctx.mustBind(&request)
-			request.ProductId = id
 
-			a.productUseCase.Delete(ctx.context(), request)
+			products, total := a.productUseCase.OptionForProductReceiveForm(ctx.context(), request)
+
+			nodes := util.ConvertArray(products, dto_response.NewProductResponse)
 
 			ctx.json(
 				http.StatusOK,
-				dto_response.SuccessResponse{
-					Message: "OK",
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Total: total,
+						Nodes: nodes,
+					},
 				},
 			)
 		},
@@ -214,25 +218,29 @@ func (a *ProductApi) OptionForProductReceiveForm() gin.HandlerFunc {
 //	@Summary	Option for Delivery Order Form
 //	@tags		Products
 //	@Accept		json
-//	@Param		id	path	string	true	"Id"
 //	@Param		dto_request.ProductOptionForDeliveryOrderFormRequest body dto_request.ProductOptionForDeliveryOrderFormRequest true "Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.ProductResponse}}
 func (a *ProductApi) OptionForDeliveryOrderForm() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionProductDelete),
+		data_type.PermissionP(data_type.PermissionProductOptionForDeliveryOrderForm),
 		func(ctx apiContext) {
-			id := ctx.getUuidParam("id")
-			var request dto_request.ProductDeleteRequest
+			var request dto_request.ProductOptionForDeliveryOrderFormRequest
 			ctx.mustBind(&request)
-			request.ProductId = id
 
-			a.productUseCase.Delete(ctx.context(), request)
+			products, total := a.productUseCase.OptionForDeliveryOrderForm(ctx.context(), request)
+
+			nodes := util.ConvertArray(products, dto_response.NewProductResponse)
 
 			ctx.json(
 				http.StatusOK,
-				dto_response.SuccessResponse{
-					Message: "OK",
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Total: total,
+						Nodes: nodes,
+					},
 				},
 			)
 		},

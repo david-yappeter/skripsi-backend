@@ -50,11 +50,13 @@ const (
 	PermissionProductReceiveDeleteImage // PRODUCT_RECEIVE_DELETE_IMAGE
 
 	// product unit
-	PermissionProductUnitCreate // PRODUCT_UNIT_CREATE
-	PermissionProductUnitUpload // PRODUCT_UNIT_UPLOAD
-	PermissionProductUnitGet    // PRODUCT_UNIT_GET
-	PermissionProductUnitUpdate // PRODUCT_UNIT_UPDATE
-	PermissionProductUnitDelete // PRODUCT_UNIT_DELETE
+	PermissionProductUnitCreate                      // PRODUCT_UNIT_CREATE
+	PermissionProductUnitUpload                      // PRODUCT_UNIT_UPLOAD
+	PermissionProductUnitGet                         // PRODUCT_UNIT_GET
+	PermissionProductUnitUpdate                      // PRODUCT_UNIT_UPDATE
+	PermissionProductUnitDelete                      // PRODUCT_UNIT_DELETE
+	PermissionProductUnitOptionForProductReceiveForm // PRODUCT_UNIT_OPTION_FOR_PRODUCT_RECEIVE_FORM
+	PermissionProductUnitOptionForDeliveryOrderForm  // PRODUCT_UNIT_OPTION_FOR_DELIVERY_ORDER_FORM
 
 	// role
 	PermissionRoleOptionForUserForm // ROLE_OPTION_FOR_USER_FORM

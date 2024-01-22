@@ -5,6 +5,7 @@ import (
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
 	"myapp/use_case"
+	"myapp/util"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -139,6 +140,76 @@ func (a *ProductUnitApi) Delete() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/product-units/options/product-receive-form [post]
+//	@Summary	Option for Product Receive Form
+//	@tags		Product Units
+//	@Accept		json
+//	@Param		dto_request.ProductUnitOptionForProductReceiveFormRequest	body	dto_request.ProductUnitOptionForProductReceiveFormRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.ProductUnitResponse}}
+func (a *ProductUnitApi) OptionForProductReceiveForm() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionProductUnitOptionForProductReceiveForm),
+		func(ctx apiContext) {
+			var request dto_request.ProductUnitOptionForProductReceiveFormRequest
+			ctx.mustBind(&request)
+
+			productUnits, total := a.productUnitUseCase.OptionForProductReceiveForm(ctx.context(), request)
+
+			nodes := util.ConvertArray(productUnits, dto_response.NewProductUnitResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Total: total,
+						Nodes: nodes,
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/product-units/options/delivery-order-form [post]
+//	@Summary	Option for Delivery Order Form
+//	@tags		Product Units
+//	@Accept		json
+//	@Param		dto_request.ProductUnitOptionForDeliveryOrderFormRequest	body	dto_request.ProductUnitOptionForDeliveryOrderFormRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.ProductUnitResponse}}
+func (a *ProductUnitApi) OptionForDeliveryOrderForm() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionProductUnitOptionForDeliveryOrderForm),
+		func(ctx apiContext) {
+			var request dto_request.ProductUnitOptionForDeliveryOrderFormRequest
+			ctx.mustBind(&request)
+
+			productUnits, total := a.productUnitUseCase.OptionForDeliveryOrderForm(ctx.context(), request)
+
+			nodes := util.ConvertArray(productUnits, dto_response.NewProductUnitResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Total: total,
+						Nodes: nodes,
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterProductUnitApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := ProductUnitApi{
 		api:                newApi(useCaseManager),
@@ -150,4 +221,8 @@ func RegisterProductUnitApi(router gin.IRouter, useCaseManager use_case.UseCaseM
 	routerGroup.POST("/upload", api.Upload())
 	routerGroup.PUT("/:id", api.Update())
 	routerGroup.DELETE("/:id", api.Delete())
+
+	optionRouterGroup := routerGroup.Group("/options")
+	optionRouterGroup.POST("/product-receive-form", api.OptionForProductReceiveForm())
+	optionRouterGroup.POST("/delivery-order-form", api.OptionForDeliveryOrderForm())
 }

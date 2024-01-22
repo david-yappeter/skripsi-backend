@@ -28,6 +28,10 @@ type ProductUnitUseCase interface {
 
 	//  delete
 	Delete(ctx context.Context, request dto_request.ProductUnitDeleteRequest)
+
+	// option
+	OptionForProductReceiveForm(ctx context.Context, request dto_request.ProductUnitOptionForProductReceiveFormRequest) ([]model.ProductUnit, int)
+	OptionForDeliveryOrderForm(ctx context.Context, request dto_request.ProductUnitOptionForDeliveryOrderFormRequest) ([]model.ProductUnit, int)
 }
 
 type productUnitUseCase struct {
@@ -205,4 +209,64 @@ func (u *productUnitUseCase) Delete(ctx context.Context, request dto_request.Pro
 			return nil
 		}),
 	)
+}
+
+func (u *productUnitUseCase) OptionForProductReceiveForm(ctx context.Context, request dto_request.ProductUnitOptionForProductReceiveFormRequest) ([]model.ProductUnit, int) {
+	mustGetProductReceiveItem(ctx, u.repositoryManager, request.ProductReceiveId, true)
+
+	productReceiveItems, err := u.repositoryManager.ProductReceiveItemRepository().FetchByProductReceiveIds(ctx, []string{request.ProductReceiveId})
+	panicIfErr(err)
+
+	excludeProductUnitIds := []string{}
+	for _, productReceiveItem := range productReceiveItems {
+		excludeProductUnitIds = append(excludeProductUnitIds, productReceiveItem.ProductUnitId)
+	}
+
+	queryOption := model.ProductUnitQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts(request.Sorts),
+		),
+		ExcludeIds: excludeProductUnitIds,
+		Phrase:     request.Phrase,
+	}
+
+	productUnits, err := u.repositoryManager.ProductUnitRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.ProductUnitRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	return productUnits, total
+}
+
+func (u *productUnitUseCase) OptionForDeliveryOrderForm(ctx context.Context, request dto_request.ProductUnitOptionForDeliveryOrderFormRequest) ([]model.ProductUnit, int) {
+	mustGetDeliveryOrderItem(ctx, u.repositoryManager, request.DeliveryOrderId, true)
+
+	deliveryOrderItems, err := u.repositoryManager.DeliveryOrderItemRepository().FetchByDeliveryOrderIds(ctx, []string{request.DeliveryOrderId})
+	panicIfErr(err)
+
+	excludeProductUnitIds := []string{}
+	for _, deliveryOrderItem := range deliveryOrderItems {
+		excludeProductUnitIds = append(excludeProductUnitIds, deliveryOrderItem.ProductUnitId)
+	}
+
+	queryOption := model.ProductUnitQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts(request.Sorts),
+		),
+		ExcludeIds: excludeProductUnitIds,
+		Phrase:     request.Phrase,
+	}
+
+	productUnits, err := u.repositoryManager.ProductUnitRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.ProductUnitRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	return productUnits, total
 }
