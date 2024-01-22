@@ -27,6 +27,14 @@ type customerUseCase struct {
 	repositoryManager repository.RepositoryManager
 }
 
+func NewCustomerUseCase(
+	repositoryManager repository.RepositoryManager,
+) CustomerUseCase {
+	return &customerUseCase{
+		repositoryManager: repositoryManager,
+	}
+}
+
 func (u *customerUseCase) mustValidateAllowDeleteCustomer(ctx context.Context, customerId string) {
 
 }
@@ -98,12 +106,4 @@ func (u *customerUseCase) Delete(ctx context.Context, request dto_request.Custom
 	panicIfErr(
 		u.repositoryManager.CustomerRepository().Delete(ctx, &customer),
 	)
-}
-
-func NewCustomerUseCase(
-	repositoryManager repository.RepositoryManager,
-) CustomerUseCase {
-	return &customerUseCase{
-		repositoryManager: repositoryManager,
-	}
 }

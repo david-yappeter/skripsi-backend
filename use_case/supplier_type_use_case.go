@@ -28,6 +28,14 @@ type supplierTypeUseCase struct {
 	repositoryManager repository.RepositoryManager
 }
 
+func NewSupplierTypeUseCase(
+	repositoryManager repository.RepositoryManager,
+) SupplierTypeUseCase {
+	return &supplierTypeUseCase{
+		repositoryManager: repositoryManager,
+	}
+}
+
 func (u *supplierTypeUseCase) mustValidateNameNotDuplicate(ctx context.Context, name string) {
 	isExist, err := u.repositoryManager.SupplierTypeRepository().IsExistByName(ctx, name)
 	panicIfErr(err)
@@ -112,12 +120,4 @@ func (u *supplierTypeUseCase) Delete(ctx context.Context, request dto_request.Su
 	panicIfErr(
 		u.repositoryManager.SupplierTypeRepository().Delete(ctx, &supplierType),
 	)
-}
-
-func NewSupplierTypeUseCase(
-	repositoryManager repository.RepositoryManager,
-) SupplierTypeUseCase {
-	return &supplierTypeUseCase{
-		repositoryManager: repositoryManager,
-	}
 }

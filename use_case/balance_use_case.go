@@ -27,6 +27,14 @@ type balanceUseCase struct {
 	repositoryManager repository.RepositoryManager
 }
 
+func NewBalanceUseCase(
+	repositoryManager repository.RepositoryManager,
+) BalanceUseCase {
+	return &balanceUseCase{
+		repositoryManager: repositoryManager,
+	}
+}
+
 func (u *balanceUseCase) mustValidateAllowDeleteBalance(ctx context.Context, balanceId string) {
 
 }
@@ -96,12 +104,4 @@ func (u *balanceUseCase) Delete(ctx context.Context, request dto_request.Balance
 	panicIfErr(
 		u.repositoryManager.BalanceRepository().Delete(ctx, &balance),
 	)
-}
-
-func NewBalanceUseCase(
-	repositoryManager repository.RepositoryManager,
-) BalanceUseCase {
-	return &balanceUseCase{
-		repositoryManager: repositoryManager,
-	}
 }

@@ -28,6 +28,14 @@ type unitUseCase struct {
 	repositoryManager repository.RepositoryManager
 }
 
+func NewUnitUseCase(
+	repositoryManager repository.RepositoryManager,
+) UnitUseCase {
+	return &unitUseCase{
+		repositoryManager: repositoryManager,
+	}
+}
+
 func (u *unitUseCase) mustValidateNameNotDuplicate(ctx context.Context, name string) {
 	isExist, err := u.repositoryManager.UnitRepository().IsExistByName(ctx, name)
 	panicIfErr(err)
@@ -107,12 +115,4 @@ func (u *unitUseCase) Delete(ctx context.Context, request dto_request.UnitDelete
 	panicIfErr(
 		u.repositoryManager.UnitRepository().Delete(ctx, &unit),
 	)
-}
-
-func NewUnitUseCase(
-	repositoryManager repository.RepositoryManager,
-) UnitUseCase {
-	return &unitUseCase{
-		repositoryManager: repositoryManager,
-	}
 }

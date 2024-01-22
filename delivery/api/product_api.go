@@ -183,7 +183,7 @@ func (a *ProductApi) Delete() gin.HandlerFunc {
 //	@Summary	Option for Product Receive Form
 //	@tags		Products
 //	@Accept		json
-//	@Param		dto_request.ProductOptionForProductReceiveFormRequest body dto_request.ProductOptionForProductReceiveFormRequest true "Body Request"
+//	@Param		dto_request.ProductOptionForProductReceiveFormRequest	body	dto_request.ProductOptionForProductReceiveFormRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.ProductResponse}}
 func (a *ProductApi) OptionForProductReceiveForm() gin.HandlerFunc {
@@ -218,7 +218,7 @@ func (a *ProductApi) OptionForProductReceiveForm() gin.HandlerFunc {
 //	@Summary	Option for Delivery Order Form
 //	@tags		Products
 //	@Accept		json
-//	@Param		dto_request.ProductOptionForDeliveryOrderFormRequest body dto_request.ProductOptionForDeliveryOrderFormRequest true "Body Request"
+//	@Param		dto_request.ProductOptionForDeliveryOrderFormRequest	body	dto_request.ProductOptionForDeliveryOrderFormRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.ProductResponse}}
 func (a *ProductApi) OptionForDeliveryOrderForm() gin.HandlerFunc {
