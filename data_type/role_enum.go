@@ -102,6 +102,18 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionCustomerGet,
 		PermissionCustomerUpdate,
 		PermissionCustomerDelete,
+		PermissionCustomerOptionForDeliveryOrderForm,
+
+		// delivery order
+		PermissionDeliveryOrderCreate,
+		PermissionDeliveryOrderUpload,
+		PermissionDeliveryOrderAddItem,
+		PermissionDeliveryOrderAddImage,
+		PermissionDeliveryOrderFetch,
+		PermissionDeliveryOrderGet,
+		PermissionDeliveryOrderDelete,
+		PermissionDeliveryOrderDeleteItem,
+		PermissionDeliveryOrderDeleteImage,
 
 		// product receive
 		PermissionProductReceiveCreate,
@@ -113,6 +125,14 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionProductReceiveDelete,
 		PermissionProductReceiveDeleteItem,
 		PermissionProductReceiveDeleteImage,
+
+		// product
+		PermissionProductOptionForDeliveryOrderForm,
+		PermissionProductOptionForProductReceiveForm,
+
+		// product_unit
+		PermissionProductUnitOptionForDeliveryOrderForm,
+		PermissionProductUnitOptionForProductReceiveForm,
 
 		// supplier type
 		PermissionSupplierTypeCreate,
@@ -127,6 +147,7 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionSupplierGet,
 		PermissionSupplierUpdate,
 		PermissionSupplierDelete,
+		PermissionSupplierOptionForProductReceiveForm,
 	}
 }
 
