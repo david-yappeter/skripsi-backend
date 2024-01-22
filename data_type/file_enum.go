@@ -6,4 +6,6 @@ type FileType int // @name FileTypeEnum
 const (
 	FileTypeProductUnitImage    FileType = iota + 1 // PRODUCT_UNIT_IMAGE
 	FileTypeProductReceiveImage                     // PRODUCT_RECEIVE_IMAGE
+	FileTypeDeliveryOrderImage                      // DELIVERY_ORDER_IMAGE
+
 )

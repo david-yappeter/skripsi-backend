@@ -248,6 +248,18 @@ func mustGetDeliveryOrder(ctx context.Context, repositoryManager repository.Repo
 	return *deliveryOrder
 }
 
+func mustGetDeliveryOrderImageByDeliveryOrderIdAndFileId(ctx context.Context, repositoryManager repository.RepositoryManager, deliveryOrderId string, fileId string, isValidate bool) model.DeliveryOrderImage {
+	deliveryOrderImage, err := repositoryManager.DeliveryOrderImageRepository().GetByDeliveryOrderIdAndFileId(ctx, deliveryOrderId, fileId)
+	panicIfRepositoryError(err, "DELIVERY_ORDER_IMAGE.NOT_FOUND", isValidate)
+	return *deliveryOrderImage
+}
+
+func mustGetDeliveryOrderItemByDeliveryOrderIdAndProductUnitId(ctx context.Context, repositoryManager repository.RepositoryManager, deliveryOrderId string, productUnitId string, isValidate bool) model.DeliveryOrderItem {
+	deliveryOrderItem, err := repositoryManager.DeliveryOrderItemRepository().GetByDeliveryOrderIdAndProductUnitId(ctx, deliveryOrderId, productUnitId)
+	panicIfRepositoryError(err, "DELIVERY_ORDER_ITEM.NOT_FOUND", isValidate)
+	return *deliveryOrderItem
+}
+
 func shouldGetProductStockByProductId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string) *model.ProductStock {
 	productStock, err := repositoryManager.ProductStockRepository().GetByProductId(ctx, productId)
 	panicIfErr(err, constant.ErrNoData)

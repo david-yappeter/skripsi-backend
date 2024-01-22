@@ -15,7 +15,7 @@ type DeliveryOrderItemRepository interface {
 	InsertMany(ctx context.Context, deliveryOrderItems []model.DeliveryOrderItem, options ...data_type.RepositoryOption) error
 
 	// read
-	FetchByProductReceiveIds(ctx context.Context, deliveryOrderIds []string) ([]model.DeliveryOrderItem, error)
+	FetchByDeliveryOrderIds(ctx context.Context, deliveryOrderIds []string) ([]model.DeliveryOrderItem, error)
 	Get(ctx context.Context, id string) (*model.DeliveryOrderItem, error)
 	GetByDeliveryOrderIdAndProductUnitId(ctx context.Context, deliveryOrderId string, productUnitId string) (*model.DeliveryOrderItem, error)
 
@@ -74,7 +74,7 @@ func (r *deliveryOrderItemRepository) InsertMany(ctx context.Context, deliveryOr
 	return defaultInsertMany(r.db, ctx, arr, "*")
 }
 
-func (r *deliveryOrderItemRepository) FetchByProductReceiveIds(ctx context.Context, deliveryOrderIds []string) ([]model.DeliveryOrderItem, error) {
+func (r *deliveryOrderItemRepository) FetchByDeliveryOrderIds(ctx context.Context, deliveryOrderIds []string) ([]model.DeliveryOrderItem, error) {
 	stmt := stmtBuilder.Select("*").
 		From(model.DeliveryOrderItemTableName).
 		Where(squirrel.Eq{"delivery_order_id": deliveryOrderIds})
@@ -90,10 +90,10 @@ func (r *deliveryOrderItemRepository) Get(ctx context.Context, id string) (*mode
 	return r.get(ctx, stmt)
 }
 
-func (r *deliveryOrderItemRepository) GetByDeliveryOrderIdAndProductUnitId(ctx context.Context, productReceiveId string, productUnitId string) (*model.DeliveryOrderItem, error) {
+func (r *deliveryOrderItemRepository) GetByDeliveryOrderIdAndProductUnitId(ctx context.Context, deliveryOrderId string, productUnitId string) (*model.DeliveryOrderItem, error) {
 	stmt := stmtBuilder.Select("*").
 		From(model.DeliveryOrderItemTableName).
-		Where(squirrel.Eq{"delivery_order_id": productReceiveId}).
+		Where(squirrel.Eq{"delivery_order_id": deliveryOrderId}).
 		Where(squirrel.Eq{"product_unit_id": productUnitId})
 
 	return r.get(ctx, stmt)

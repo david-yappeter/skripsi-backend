@@ -12,8 +12,10 @@ type DeliveryOrder struct {
 	Date          data_type.Date                `db:"date"`
 	Status        data_type.DeliveryOrderStatus `db:"status"`
 	TotalPrice    float64                       `db:"total_price"`
-
 	Timestamp
+
+	DeliveryOrderItems  []DeliveryOrderItem  `db:"-"`
+	DeliveryOrderImages []DeliveryOrderImage `db:"-"`
 }
 
 func (m *DeliveryOrder) TableName() string {
