@@ -87,6 +87,19 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 			}
 		}),
 	)
+
+	fileLoader := loader.NewFileLoader(u.repositoryManager.FileRepository())
+	panicIfErr(
+		util.Await(func(group *errgroup.Group) {
+			for i := range productReceives {
+				if option.productReceiveImages {
+					for j := range productReceives[i].ProductReceiveImages {
+						group.Go(fileLoader.ProductReceiveImageFn(&productReceives[i].ProductReceiveImages[j]))
+					}
+				}
+			}
+		}),
+	)
 }
 
 func (u *productReceiveUseCase) Create(ctx context.Context, request dto_request.ProductReceiveCreateRequest) model.ProductReceive {

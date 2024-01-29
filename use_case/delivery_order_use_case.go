@@ -87,6 +87,20 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 			}
 		}),
 	)
+
+	fileLoader := loader.NewFileLoader(u.repositoryManager.FileRepository())
+
+	panicIfErr(
+		util.Await(func(group *errgroup.Group) {
+			for i := range deliveryOrders {
+				if option.deliveryOrderImages {
+					for j := range deliveryOrders[i].DeliveryOrderImages {
+						group.Go(fileLoader.DeliveryOrderImageFn(&deliveryOrders[i].DeliveryOrderImages[j]))
+					}
+				}
+			}
+		}),
+	)
 }
 
 func (u *deliveryOrderUseCase) Create(ctx context.Context, request dto_request.DeliveryOrderCreateRequest) model.DeliveryOrder {
