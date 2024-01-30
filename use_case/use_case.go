@@ -272,6 +272,12 @@ func mustGetDeliveryOrderItemByDeliveryOrderIdAndProductUnitId(ctx context.Conte
 	return *deliveryOrderItem
 }
 
+func mustGetDeliveryOrderDriverByDeliveryOrderIdAndUserId(ctx context.Context, repositoryManager repository.RepositoryManager, deliveryOrderId string, driverId string, isValidate bool) model.DeliveryOrderDriver {
+	deliveryOrderDriver, err := repositoryManager.DeliveryOrderDriverRepository().GetByDeliveryOrderIdAndDriverUserId(ctx, deliveryOrderId, driverId)
+	panicIfRepositoryError(err, "DELIVERY_ORDER_ITEM.NOT_FOUND", isValidate)
+	return *deliveryOrderDriver
+}
+
 func shouldGetProductStockByProductId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string) *model.ProductStock {
 	productStock, err := repositoryManager.ProductStockRepository().GetByProductId(ctx, productId)
 	panicIfErr(err, constant.ErrNoData)

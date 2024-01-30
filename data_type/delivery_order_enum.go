@@ -4,6 +4,8 @@ package data_type
 type DeliveryOrderStatus int // @name DeliveryOrderStatusEnum
 
 const (
-	DeliveryOrderStatusPending   DeliveryOrderStatus = iota + 1 // PENDING
+	DeliveryOrderStatusDraft     DeliveryOrderStatus = iota + 1 // DRAFT
+	DeliveryOrderStatusOngoing                                  // ONGOING
+	DeliveryOrderStatusCanceled                                 // CANCELED
 	DeliveryOrderStatusCompleted                                // COMPLETED
 )

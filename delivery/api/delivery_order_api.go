@@ -144,6 +144,138 @@ func (a *DeliveryOrderApi) AddImage() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/delivery-orders/{id}/drivers [post]
+//	@Summary	Add Driver
+//	@tags		Delivery Orders
+//	@Accept		json
+//	@Param		id											path	string										true	"Id"
+//	@Param		dto_request.DeliveryOrderAddDriverRequest	body	dto_request.DeliveryOrderAddDriverRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
+func (a *DeliveryOrderApi) AddDriver() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionDeliveryOrderAddDriver),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.DeliveryOrderAddDriverRequest
+			ctx.mustBind(&request)
+			request.DeliveryOrderId = id
+
+			deliveryOrder := a.deliveryOrderUseCase.AddDriver(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"delivery_order": dto_response.NewDeliveryOrderResponse(deliveryOrder),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/delivery-orders/{id}/cancel [patch]
+//	@Summary	Cancel
+//	@tags		Delivery Orders
+//	@Accept		json
+//	@Param		id											path	string										true	"Id"
+//	@Param		dto_request.DeliveryOrderCancelRequest	body	dto_request.DeliveryOrderCancelRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
+func (a *DeliveryOrderApi) Cancel() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionDeliveryOrderCancel),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.DeliveryOrderCancelRequest
+			ctx.mustBind(&request)
+			request.DeliveryOrderId = id
+
+			deliveryOrder := a.deliveryOrderUseCase.Cancel(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"delivery_order": dto_response.NewDeliveryOrderResponse(deliveryOrder),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/delivery-orders/{id}/completed [patch]
+//	@Summary	Completed
+//	@tags		Delivery Orders
+//	@Accept		json
+//	@Param		id											path	string										true	"Id"
+//	@Param		dto_request.DeliveryOrderMarkCompletedRequest	body	dto_request.DeliveryOrderMarkCompletedRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
+func (a *DeliveryOrderApi) Completed() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionDeliveryOrderMarkCompleted),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.DeliveryOrderMarkCompletedRequest
+			ctx.mustBind(&request)
+			request.DeliveryOrderId = id
+
+			deliveryOrder := a.deliveryOrderUseCase.MarkCompleted(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"delivery_order": dto_response.NewDeliveryOrderResponse(deliveryOrder),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/delivery-orders/{id}/on-going [patch]
+//	@Summary	On Going
+//	@tags		Delivery Orders
+//	@Accept		json
+//	@Param		id											path	string										true	"Id"
+//	@Param		dto_request.DeliveryOrderMarkOngoingRequest	body	dto_request.DeliveryOrderMarkOngoingRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
+func (a *DeliveryOrderApi) OnGoing() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionDeliveryOrderMarkOngoing),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.DeliveryOrderMarkOngoingRequest
+			ctx.mustBind(&request)
+			request.DeliveryOrderId = id
+
+			deliveryOrder := a.deliveryOrderUseCase.MarkOngoing(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"delivery_order": dto_response.NewDeliveryOrderResponse(deliveryOrder),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/delivery-orders/filter [post]
 //	@Summary	Filter
 //	@tags		Delivery Orders
@@ -282,6 +414,7 @@ func (a *DeliveryOrderApi) DeleteItem() gin.HandlerFunc {
 //	@tags		Delivery Orders
 //	@Accept		json
 //	@Param		id											path	string										true	"Id"
+//	@Param		file_id											path	string										true	"Id"
 //	@Param		dto_request.DeliveryOrderDeleteImageRequest	body	dto_request.DeliveryOrderDeleteImageRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
@@ -310,6 +443,42 @@ func (a *DeliveryOrderApi) DeleteImage() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/delivery-orders/{id}/drivers/{driver_user_id} [post]
+//	@Summary	Delete Driver
+//	@tags		Delivery Orders
+//	@Accept		json
+//	@Param		id											path	string										true	"Id"
+//	@Param		driver_user_id											path	string										true	"Id"
+//	@Param		dto_request.DeliveryOrderDeleteDriverRequest	body	dto_request.DeliveryOrderDeleteDriverRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
+func (a *DeliveryOrderApi) DeleteDriver() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionDeliveryOrderDeleteDriver),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			driverUserId := ctx.getUuidParam("driver_user_id")
+			var request dto_request.DeliveryOrderDeleteDriverRequest
+			ctx.mustBind(&request)
+			request.DeliveryOrderId = id
+			request.DriverUserId = driverUserId
+
+			deliveryOrder := a.deliveryOrderUseCase.DeleteDriver(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"delivery_order": dto_response.NewDeliveryOrderResponse(deliveryOrder),
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterDeliveryOrderApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := DeliveryOrderApi{
 		api:                  newApi(useCaseManager),
@@ -325,7 +494,13 @@ func RegisterDeliveryOrderApi(router gin.IRouter, useCaseManager use_case.UseCas
 
 	routerGroup.POST("/:id/items", api.AddItem())
 	routerGroup.POST("/:id/images", api.AddImage())
+	routerGroup.POST("/:id/drivers", api.AddDriver())
+
+	routerGroup.PATCH("/:id/cancel", api.Cancel())
+	routerGroup.PATCH("/:id/on-going", api.OnGoing())
+	routerGroup.PATCH("/:id/completed", api.Completed())
 
 	routerGroup.DELETE("/:id/items/:product_unit_id", api.DeleteItem())
 	routerGroup.DELETE("/:id/images/:file_id", api.DeleteImage())
+	routerGroup.DELETE("/:id/images/:driver_user_id", api.DeleteDriver())
 }

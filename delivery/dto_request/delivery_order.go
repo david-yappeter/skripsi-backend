@@ -24,6 +24,12 @@ type DeliveryOrderAddImageRequest struct {
 	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderAddImageRequest
 
+type DeliveryOrderAddDriverRequest struct {
+	DriverUserId string `json:"driver_user_id" validate:"required,not_empty,uuid"`
+
+	DeliveryOrderId string `json:"-" swaggerignore:"true"`
+} // @name DeliveryOrderAddDriverRequest
+
 type DeliveryOrderUploadRequest struct {
 	File *multipart.FileHeader `json:"file" validate:"required"`
 
@@ -45,6 +51,14 @@ type DeliveryOrderGetRequest struct {
 	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderGetRequest
 
+type DeliveryOrderMarkOngoingRequest struct {
+	DeliveryOrderId string `json:"-" swaggerignore:"true"`
+} // @name DeliveryOrderMarkOngoingRequest
+
+type DeliveryOrderCancelRequest struct {
+	DeliveryOrderId string `json:"-" swaggerignore:"true"`
+} // @name DeliveryOrderCancelRequest
+
 type DeliveryOrderMarkCompletedRequest struct {
 	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderMarkCompletedRequest
@@ -54,11 +68,16 @@ type DeliveryOrderDeleteRequest struct {
 } // @name DeliveryOrderDeleteRequest
 
 type DeliveryOrderDeleteImageRequest struct {
-	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 	FileId          string `json:"-" swaggerignore:"true"`
+	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderDeleteImageRequest
 
 type DeliveryOrderDeleteItemRequest struct {
-	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 	ProductUnitId   string `json:"-" swaggerignore:"true"`
+	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderDeleteItemRequest
+
+type DeliveryOrderDeleteDriverRequest struct {
+	DriverUserId    string `json:"-" swaggerignore:"true"`
+	DeliveryOrderId string `json:"-" swaggerignore:"true"`
+} // @name DeliveryOrderDeleteDriverRequest

@@ -28,6 +28,7 @@ type DeliveryOrderUseCase interface {
 	Create(ctx context.Context, request dto_request.DeliveryOrderCreateRequest) model.DeliveryOrder
 	AddItem(ctx context.Context, request dto_request.DeliveryOrderAddItemRequest) model.DeliveryOrder
 	AddImage(ctx context.Context, request dto_request.DeliveryOrderAddImageRequest) model.DeliveryOrder
+	AddDriver(ctx context.Context, request dto_request.DeliveryOrderAddDriverRequest) model.DeliveryOrder
 	Upload(ctx context.Context, request dto_request.DeliveryOrderUploadRequest) string
 
 	// read
@@ -35,12 +36,15 @@ type DeliveryOrderUseCase interface {
 	Get(ctx context.Context, request dto_request.DeliveryOrderGetRequest) model.DeliveryOrder
 
 	// update
+	MarkOngoing(ctx context.Context, request dto_request.DeliveryOrderMarkOngoingRequest) model.DeliveryOrder
+	Cancel(ctx context.Context, request dto_request.DeliveryOrderCancelRequest) model.DeliveryOrder
 	MarkCompleted(ctx context.Context, request dto_request.DeliveryOrderMarkCompletedRequest) model.DeliveryOrder
 
 	// delete
 	Delete(ctx context.Context, request dto_request.DeliveryOrderDeleteRequest)
 	DeleteImage(ctx context.Context, request dto_request.DeliveryOrderDeleteImageRequest) model.DeliveryOrder
 	DeleteItem(ctx context.Context, request dto_request.DeliveryOrderDeleteItemRequest) model.DeliveryOrder
+	DeleteDriver(ctx context.Context, request dto_request.DeliveryOrderDeleteDriverRequest) model.DeliveryOrder
 }
 
 type deliveryOrderUseCase struct {
@@ -114,7 +118,7 @@ func (u *deliveryOrderUseCase) Create(ctx context.Context, request dto_request.D
 		UserId:        authUser.Id,
 		InvoiceNumber: "",
 		Date:          request.Date,
-		Status:        data_type.DeliveryOrderStatusPending,
+		Status:        data_type.DeliveryOrderStatusDraft,
 		TotalPrice:    0,
 	}
 
@@ -137,6 +141,10 @@ func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.
 		totalSmallestQty = request.Qty * productUnit.ScaleToBase
 	)
 
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusDraft {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
+	}
+
 	if !product.IsActive {
 		panic(dto_response.NewBadRequestErrorResponse("PRODUCT.NOT_FOUND"))
 	}
@@ -150,7 +158,7 @@ func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.
 	}
 
 	// add stock
-	productStock.Qty += totalSmallestQty
+	// productStock.Qty -= totalSmallestQty
 
 	// add total to product receive
 	deliveryOrder.TotalPrice += totalSmallestQty * *product.Price
@@ -204,7 +212,7 @@ func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.
 func (u *deliveryOrderUseCase) AddImage(ctx context.Context, request dto_request.DeliveryOrderAddImageRequest) model.DeliveryOrder {
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, false)
 
-	if deliveryOrder.Status != data_type.DeliveryOrderStatusPending {
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusDraft {
 		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
 	}
 
@@ -232,10 +240,43 @@ func (u *deliveryOrderUseCase) AddImage(ctx context.Context, request dto_request
 	return deliveryOrder
 }
 
+func (u *deliveryOrderUseCase) AddDriver(ctx context.Context, request dto_request.DeliveryOrderAddDriverRequest) model.DeliveryOrder {
+	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, false)
+	mustGetUser(ctx, u.repositoryManager, request.DriverUserId, false)
+
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusDraft {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
+	}
+
+	deliveryOrderDriver, err := u.repositoryManager.DeliveryOrderDriverRepository().Get(ctx, request.DriverUserId)
+	panicIfErr(err, constant.ErrNoData)
+
+	if deliveryOrderDriver == nil {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.DRIVER_ALREADY_ADDED"))
+	}
+
+	deliveryOrderDriver = &model.DeliveryOrderDriver{
+		Id:              util.NewUuid(),
+		DeliveryOrderId: request.DeliveryOrderId,
+		DriverUserId:    request.DriverUserId,
+	}
+
+	panicIfErr(
+		u.repositoryManager.DeliveryOrderDriverRepository().Insert(ctx, deliveryOrderDriver),
+	)
+
+	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		deliveryOrderItems:  true,
+		deliveryOrderImages: true,
+	})
+
+	return deliveryOrder
+}
+
 func (u *deliveryOrderUseCase) Upload(ctx context.Context, request dto_request.DeliveryOrderUploadRequest) string {
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, false)
 
-	if deliveryOrder.Status != data_type.DeliveryOrderStatusPending {
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusDraft {
 		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
 	}
 
@@ -278,10 +319,66 @@ func (u *deliveryOrderUseCase) Get(ctx context.Context, request dto_request.Deli
 	return deliveryOrder
 }
 
+func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.DeliveryOrderCancelRequest) model.DeliveryOrder {
+	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
+
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusDraft {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
+	}
+
+	// change status
+	deliveryOrder.Status = data_type.DeliveryOrderStatusCanceled
+
+	// // remove stock
+	// deliveryOrderItems, err := u.repositoryManager.DeliveryOrderItemRepository().FetchByDeliveryOrderIds(ctx, []string{deliveryOrder.Id})
+	// panicIfErr(err)
+
+	// productStocks, err := u.repositoryManager.ProductStockRepository().FetchByProductIds()
+
+	panicIfErr(
+		u.repositoryManager.Transaction(ctx, func(tx infrastructure.DBTX, loggerStack infrastructure.LoggerStack) error {
+			deliveryOrderRepository := repository.NewDeliveryOrderRepository(tx, loggerStack)
+
+			if err := deliveryOrderRepository.Update(ctx, &deliveryOrder); err != nil {
+				return err
+			}
+
+			return nil
+		}),
+	)
+
+	return deliveryOrder
+}
+
+func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_request.DeliveryOrderMarkOngoingRequest) model.DeliveryOrder {
+	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
+
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusDraft {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
+	}
+
+	// change status
+	deliveryOrder.Status = data_type.DeliveryOrderStatusOngoing
+
+	panicIfErr(
+		u.repositoryManager.Transaction(ctx, func(tx infrastructure.DBTX, loggerStack infrastructure.LoggerStack) error {
+			deliveryOrderRepository := repository.NewDeliveryOrderRepository(tx, loggerStack)
+
+			if err := deliveryOrderRepository.Update(ctx, &deliveryOrder); err != nil {
+				return err
+			}
+
+			return nil
+		}),
+	)
+
+	return deliveryOrder
+}
+
 func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_request.DeliveryOrderMarkCompletedRequest) model.DeliveryOrder {
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
 
-	if deliveryOrder.Status != data_type.DeliveryOrderStatusPending {
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusDraft {
 		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
 	}
 
@@ -328,7 +425,7 @@ func (u *deliveryOrderUseCase) Delete(ctx context.Context, request dto_request.D
 func (u *deliveryOrderUseCase) DeleteImage(ctx context.Context, request dto_request.DeliveryOrderDeleteImageRequest) model.DeliveryOrder {
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
 
-	if deliveryOrder.Status != data_type.DeliveryOrderStatusPending {
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusDraft {
 		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
 	}
 
@@ -352,18 +449,38 @@ func (u *deliveryOrderUseCase) DeleteImage(ctx context.Context, request dto_requ
 func (u *deliveryOrderUseCase) DeleteItem(ctx context.Context, request dto_request.DeliveryOrderDeleteItemRequest) model.DeliveryOrder {
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
 
-	if deliveryOrder.Status != data_type.DeliveryOrderStatusPending {
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusDraft {
 		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
 	}
 
-	productUnit := mustGetFile(ctx, u.repositoryManager, request.ProductUnitId, true)
+	mustGetProductUnit(ctx, u.repositoryManager, request.ProductUnitId, true)
 	deliveryOrderItem := mustGetDeliveryOrderItemByDeliveryOrderIdAndProductUnitId(ctx, u.repositoryManager, request.DeliveryOrderId, request.ProductUnitId, true)
 
 	panicIfErr(
 		u.repositoryManager.DeliveryOrderItemRepository().Delete(ctx, &deliveryOrderItem),
 	)
 
-	panicIfErr(u.mainFilesystem.Delete(productUnit.Path))
+	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		deliveryOrderItems:  true,
+		deliveryOrderImages: true,
+	})
+
+	return deliveryOrder
+}
+
+func (u *deliveryOrderUseCase) DeleteDriver(ctx context.Context, request dto_request.DeliveryOrderDeleteDriverRequest) model.DeliveryOrder {
+	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
+
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusDraft {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
+	}
+
+	mustGetUser(ctx, u.repositoryManager, request.DriverUserId, true)
+	deliveryOrderDriver := mustGetDeliveryOrderDriverByDeliveryOrderIdAndUserId(ctx, u.repositoryManager, request.DeliveryOrderId, request.DriverUserId, true)
+
+	panicIfErr(
+		u.repositoryManager.DeliveryOrderDriverRepository().Delete(ctx, &deliveryOrderDriver),
+	)
 
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
 		deliveryOrderItems:  true,

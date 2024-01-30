@@ -356,14 +356,12 @@ func (u *productReceiveUseCase) DeleteItem(ctx context.Context, request dto_requ
 		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.STATUS.MUST_BE_PENDING"))
 	}
 
-	productUnit := mustGetFile(ctx, u.repositoryManager, request.ProductUnitId, true)
+	mustGetProductUnit(ctx, u.repositoryManager, request.ProductUnitId, true)
 	productReceiveItem := mustGetProductReceiveItemByProductReceiveIdAndProductUnitId(ctx, u.repositoryManager, request.ProductReceiveId, request.ProductUnitId, true)
 
 	panicIfErr(
 		u.repositoryManager.ProductReceiveItemRepository().Delete(ctx, &productReceiveItem),
 	)
-
-	panicIfErr(u.mainFilesystem.Delete(productUnit.Path))
 
 	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
 		productReceiveItems:  true,

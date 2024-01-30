@@ -17,6 +17,7 @@ type RepositoryManager interface {
 	BalanceRepository() BalanceRepository
 	CustomerRepository() CustomerRepository
 	DeliveryOrderRepository() DeliveryOrderRepository
+	DeliveryOrderDriverRepository() DeliveryOrderDriverRepository
 	DeliveryOrderImageRepository() DeliveryOrderImageRepository
 	DeliveryOrderItemRepository() DeliveryOrderItemRepository
 	FileRepository() FileRepository
@@ -44,6 +45,7 @@ type repositoryManager struct {
 	balanceRepository             BalanceRepository
 	customerRepository            CustomerRepository
 	deliveryOrderRepository       DeliveryOrderRepository
+	deliveryOrderDriverRepository DeliveryOrderDriverRepository
 	deliveryOrderImageRepository  DeliveryOrderImageRepository
 	deliveryOrderItemRepository   DeliveryOrderItemRepository
 	fileRepository                FileRepository
@@ -100,6 +102,10 @@ func (r *repositoryManager) CustomerRepository() CustomerRepository {
 
 func (r *repositoryManager) DeliveryOrderRepository() DeliveryOrderRepository {
 	return r.deliveryOrderRepository
+}
+
+func (r *repositoryManager) DeliveryOrderDriverRepository() DeliveryOrderDriverRepository {
+	return r.deliveryOrderDriverRepository
 }
 
 func (r *repositoryManager) DeliveryOrderImageRepository() DeliveryOrderImageRepository {
@@ -190,6 +196,10 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		deliveryOrderRepository: NewDeliveryOrderRepository(
+			db,
+			loggerStack,
+		),
+		deliveryOrderDriverRepository: NewDeliveryOrderDriverRepository(
 			db,
 			loggerStack,
 		),
