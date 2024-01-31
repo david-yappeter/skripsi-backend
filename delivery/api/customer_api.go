@@ -57,7 +57,7 @@ func (a *CustomerApi) Create() gin.HandlerFunc {
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.CustomerResponse}}
 func (a *CustomerApi) Fetch() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionCustomerCreate),
+		data_type.PermissionP(data_type.PermissionCustomerFetch),
 		func(ctx apiContext) {
 			var request dto_request.CustomerFetchRequest
 			ctx.mustBind(&request)
