@@ -2,6 +2,7 @@ package use_case
 
 import (
 	"context"
+	"myapp/constant"
 	"myapp/data_type"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
@@ -100,7 +101,7 @@ func (u *cashierSessionUseCase) Get(ctx context.Context, request dto_request.Cas
 func (u *cashierSessionUseCase) GetByCurrentUser(ctx context.Context) *model.CashierSession {
 	authUser := model.MustGetUserCtx(ctx)
 	cashierSession, err := u.repositoryManager.CashierSessionRepository().GetByUserIdAndStatusActive(ctx, authUser.Id)
-	panicIfErr(err)
+	panicIfErr(err, constant.ErrNoData)
 
 	return cashierSession
 }
