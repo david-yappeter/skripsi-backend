@@ -19,81 +19,82 @@ func _() {
 	_ = x[PermissionBalanceUpdate-4]
 	_ = x[PermissionBalanceDelete-5]
 	_ = x[PermissionCashierSessionStart-6]
-	_ = x[PermissionCashierSessionEnd-7]
-	_ = x[PermissionCustomerCreate-8]
-	_ = x[PermissionCustomerFetch-9]
-	_ = x[PermissionCustomerGet-10]
-	_ = x[PermissionCustomerUpdate-11]
-	_ = x[PermissionCustomerDelete-12]
-	_ = x[PermissionCustomerOptionForDeliveryOrderForm-13]
-	_ = x[PermissionDeliveryOrderCreate-14]
-	_ = x[PermissionDeliveryOrderUpload-15]
-	_ = x[PermissionDeliveryOrderAddItem-16]
-	_ = x[PermissionDeliveryOrderAddImage-17]
-	_ = x[PermissionDeliveryOrderAddDriver-18]
-	_ = x[PermissionDeliveryOrderFetch-19]
-	_ = x[PermissionDeliveryOrderGet-20]
-	_ = x[PermissionDeliveryOrderMarkOngoing-21]
-	_ = x[PermissionDeliveryOrderCancel-22]
-	_ = x[PermissionDeliveryOrderMarkCompleted-23]
-	_ = x[PermissionDeliveryOrderDelete-24]
-	_ = x[PermissionDeliveryOrderDeleteItem-25]
-	_ = x[PermissionDeliveryOrderDeleteImage-26]
-	_ = x[PermissionDeliveryOrderDeleteDriver-27]
-	_ = x[PermissionProductCreate-28]
-	_ = x[PermissionProductFetch-29]
-	_ = x[PermissionProductGet-30]
-	_ = x[PermissionProductUpdate-31]
-	_ = x[PermissionProductDelete-32]
-	_ = x[PermissionProductOptionForProductReceiveForm-33]
-	_ = x[PermissionProductOptionForDeliveryOrderForm-34]
-	_ = x[PermissionProductReceiveCreate-35]
-	_ = x[PermissionProductReceiveUpload-36]
-	_ = x[PermissionProductReceiveAddItem-37]
-	_ = x[PermissionProductReceiveAddImage-38]
-	_ = x[PermissionProductReceiveFetch-39]
-	_ = x[PermissionProductReceiveGet-40]
-	_ = x[PermissionProductReceiveDelete-41]
-	_ = x[PermissionProductReceiveDeleteItem-42]
-	_ = x[PermissionProductReceiveDeleteImage-43]
-	_ = x[PermissionProductUnitCreate-44]
-	_ = x[PermissionProductUnitUpload-45]
-	_ = x[PermissionProductUnitGet-46]
-	_ = x[PermissionProductUnitUpdate-47]
-	_ = x[PermissionProductUnitDelete-48]
-	_ = x[PermissionProductUnitOptionForProductReceiveForm-49]
-	_ = x[PermissionProductUnitOptionForDeliveryOrderForm-50]
-	_ = x[PermissionRoleOptionForUserForm-51]
-	_ = x[PermissionSupplierCreate-52]
-	_ = x[PermissionSupplierFetch-53]
-	_ = x[PermissionSupplierGet-54]
-	_ = x[PermissionSupplierUpdate-55]
-	_ = x[PermissionSupplierDelete-56]
-	_ = x[PermissionSupplierOptionForProductReceiveForm-57]
-	_ = x[PermissionSupplierTypeCreate-58]
-	_ = x[PermissionSupplierTypeFetch-59]
-	_ = x[PermissionSupplierTypeGet-60]
-	_ = x[PermissionSupplierTypeUpdate-61]
-	_ = x[PermissionSupplierTypeDelete-62]
-	_ = x[PermissionUserCreate-63]
-	_ = x[PermissionUserUpdate-64]
-	_ = x[PermissionUserUpdatePassword-65]
-	_ = x[PermissionUserUpdateActive-66]
-	_ = x[PermissionUserUpdateInActive-67]
-	_ = x[PermissionUserAddRole-68]
-	_ = x[PermissionUserDeleteRole-69]
-	_ = x[PermissionUnitCreate-70]
-	_ = x[PermissionUnitFetch-71]
-	_ = x[PermissionUnitGet-72]
-	_ = x[PermissionUnitUpdate-73]
-	_ = x[PermissionUnitDelete-74]
+	_ = x[PermissionCashierSessionGetCurrent-7]
+	_ = x[PermissionCashierSessionEnd-8]
+	_ = x[PermissionCustomerCreate-9]
+	_ = x[PermissionCustomerFetch-10]
+	_ = x[PermissionCustomerGet-11]
+	_ = x[PermissionCustomerUpdate-12]
+	_ = x[PermissionCustomerDelete-13]
+	_ = x[PermissionCustomerOptionForDeliveryOrderForm-14]
+	_ = x[PermissionDeliveryOrderCreate-15]
+	_ = x[PermissionDeliveryOrderUpload-16]
+	_ = x[PermissionDeliveryOrderAddItem-17]
+	_ = x[PermissionDeliveryOrderAddImage-18]
+	_ = x[PermissionDeliveryOrderAddDriver-19]
+	_ = x[PermissionDeliveryOrderFetch-20]
+	_ = x[PermissionDeliveryOrderGet-21]
+	_ = x[PermissionDeliveryOrderMarkOngoing-22]
+	_ = x[PermissionDeliveryOrderCancel-23]
+	_ = x[PermissionDeliveryOrderMarkCompleted-24]
+	_ = x[PermissionDeliveryOrderDelete-25]
+	_ = x[PermissionDeliveryOrderDeleteItem-26]
+	_ = x[PermissionDeliveryOrderDeleteImage-27]
+	_ = x[PermissionDeliveryOrderDeleteDriver-28]
+	_ = x[PermissionProductCreate-29]
+	_ = x[PermissionProductFetch-30]
+	_ = x[PermissionProductGet-31]
+	_ = x[PermissionProductUpdate-32]
+	_ = x[PermissionProductDelete-33]
+	_ = x[PermissionProductOptionForProductReceiveForm-34]
+	_ = x[PermissionProductOptionForDeliveryOrderForm-35]
+	_ = x[PermissionProductReceiveCreate-36]
+	_ = x[PermissionProductReceiveUpload-37]
+	_ = x[PermissionProductReceiveAddItem-38]
+	_ = x[PermissionProductReceiveAddImage-39]
+	_ = x[PermissionProductReceiveFetch-40]
+	_ = x[PermissionProductReceiveGet-41]
+	_ = x[PermissionProductReceiveDelete-42]
+	_ = x[PermissionProductReceiveDeleteItem-43]
+	_ = x[PermissionProductReceiveDeleteImage-44]
+	_ = x[PermissionProductUnitCreate-45]
+	_ = x[PermissionProductUnitUpload-46]
+	_ = x[PermissionProductUnitGet-47]
+	_ = x[PermissionProductUnitUpdate-48]
+	_ = x[PermissionProductUnitDelete-49]
+	_ = x[PermissionProductUnitOptionForProductReceiveForm-50]
+	_ = x[PermissionProductUnitOptionForDeliveryOrderForm-51]
+	_ = x[PermissionRoleOptionForUserForm-52]
+	_ = x[PermissionSupplierCreate-53]
+	_ = x[PermissionSupplierFetch-54]
+	_ = x[PermissionSupplierGet-55]
+	_ = x[PermissionSupplierUpdate-56]
+	_ = x[PermissionSupplierDelete-57]
+	_ = x[PermissionSupplierOptionForProductReceiveForm-58]
+	_ = x[PermissionSupplierTypeCreate-59]
+	_ = x[PermissionSupplierTypeFetch-60]
+	_ = x[PermissionSupplierTypeGet-61]
+	_ = x[PermissionSupplierTypeUpdate-62]
+	_ = x[PermissionSupplierTypeDelete-63]
+	_ = x[PermissionUserCreate-64]
+	_ = x[PermissionUserUpdate-65]
+	_ = x[PermissionUserUpdatePassword-66]
+	_ = x[PermissionUserUpdateActive-67]
+	_ = x[PermissionUserUpdateInActive-68]
+	_ = x[PermissionUserAddRole-69]
+	_ = x[PermissionUserDeleteRole-70]
+	_ = x[PermissionUnitCreate-71]
+	_ = x[PermissionUnitFetch-72]
+	_ = x[PermissionUnitGet-73]
+	_ = x[PermissionUnitUpdate-74]
+	_ = x[PermissionUnitDelete-75]
 }
 
-const _Permission_nameReadable = "BALANCE_CREATE, BALANCE_FETCH, BALANCE_GET, BALANCE_UPDATE, BALANCE_DELETE, CASHIER_SESSION_START, CASHIER_SESSION_END, CUSTOMER_CREATE, CUSTOMER_FETCH, CUSTOMER_GET, CUSTOMER_UPDATE, CUSTOMER_DELETE, CUSTOMER_OPTION_FOR_DELIVERY_ORDER_FORM, DELIVERY_ORDER_CREATE, DELIVERY_ORDER_UPLOAD, DELIVERY_ORDER_ADD_ITEM, DELIVERY_ORDER_ADD_IMAGE, DELIVERY_ORDER_ADD_DRIVER, DELIVERY_ORDER_FETCH, DELIVERY_ORDER_GET, DELIVERY_ORDER_MARK_ONGOING, DELIVERY_ORDER_CANCEL, DELIVERY_ORDER_MARK_COMPLETED, DELIVERY_ORDER_DELETE, DELIVERY_ORDER_DELETE_ITEM, DELIVERY_ORDER_DELETE_IMAGE, DELIVERY_ORDER_DELETE_DRIVER, PRODUCT_CREATE, PRODUCT_FETCH, PRODUCT_GET, PRODUCT_UPDATE, PRODUCT_DELETE, PRODUCT_OPTION_FOR_PRODUCT_RECEIVE_FORM, PRODUCT_OPTION_FOR_DELIVERY_ORDER_FORM, PRODUCT_RECEIVE_CREATE, PRODUCT_RECEIVE_UPLOAD, PRODUCT_RECEIVE_ADD_ITEM, PRODUCT_RECEIVE_ADD_IMAGE, PRODUCT_RECEIVE_FETCH, PRODUCT_RECEIVE_GET, PRODUCT_RECEIVE_DELETE, PRODUCT_RECEIVE_DELETE_ITEM, PRODUCT_RECEIVE_DELETE_IMAGE, PRODUCT_UNIT_CREATE, PRODUCT_UNIT_UPLOAD, PRODUCT_UNIT_GET, PRODUCT_UNIT_UPDATE, PRODUCT_UNIT_DELETE, PRODUCT_UNIT_OPTION_FOR_PRODUCT_RECEIVE_FORM, PRODUCT_UNIT_OPTION_FOR_DELIVERY_ORDER_FORM, ROLE_OPTION_FOR_USER_FORM, SUPPLIER_CREATE, SUPPLIER_FETCH, SUPPLIER_GET, SUPPLIER_UPDATE, SUPPLIER_DELETE, SUPPLIER_OPTION_FOR_PRODUCT_RECEIVE_FORM, SUPPLIER_TYPE_CREATE, SUPPLIER_TYPE_FETCH, SUPPLIER_TYPE_GET, SUPPLIER_TYPE_UPDATE, SUPPLIER_TYPE_DELETE, USER_CREATE, USER_UPDATE, USER_UPDATE_PASSWORD, USER_UPDATE_ACTIVE, USER_UPDATE_INACTIVE, USER_ADD_ROLE, USER_DELETE_ROLE, UNIT_CREATE, UNIT_FETCH, UNIT_GET, UNIT_UPDATE, UNIT_DELETE"
+const _Permission_nameReadable = "BALANCE_CREATE, BALANCE_FETCH, BALANCE_GET, BALANCE_UPDATE, BALANCE_DELETE, CASHIER_SESSION_START, CASHIER_SESSION_GET_CURRENT, CASHIER_SESSION_END, CUSTOMER_CREATE, CUSTOMER_FETCH, CUSTOMER_GET, CUSTOMER_UPDATE, CUSTOMER_DELETE, CUSTOMER_OPTION_FOR_DELIVERY_ORDER_FORM, DELIVERY_ORDER_CREATE, DELIVERY_ORDER_UPLOAD, DELIVERY_ORDER_ADD_ITEM, DELIVERY_ORDER_ADD_IMAGE, DELIVERY_ORDER_ADD_DRIVER, DELIVERY_ORDER_FETCH, DELIVERY_ORDER_GET, DELIVERY_ORDER_MARK_ONGOING, DELIVERY_ORDER_CANCEL, DELIVERY_ORDER_MARK_COMPLETED, DELIVERY_ORDER_DELETE, DELIVERY_ORDER_DELETE_ITEM, DELIVERY_ORDER_DELETE_IMAGE, DELIVERY_ORDER_DELETE_DRIVER, PRODUCT_CREATE, PRODUCT_FETCH, PRODUCT_GET, PRODUCT_UPDATE, PRODUCT_DELETE, PRODUCT_OPTION_FOR_PRODUCT_RECEIVE_FORM, PRODUCT_OPTION_FOR_DELIVERY_ORDER_FORM, PRODUCT_RECEIVE_CREATE, PRODUCT_RECEIVE_UPLOAD, PRODUCT_RECEIVE_ADD_ITEM, PRODUCT_RECEIVE_ADD_IMAGE, PRODUCT_RECEIVE_FETCH, PRODUCT_RECEIVE_GET, PRODUCT_RECEIVE_DELETE, PRODUCT_RECEIVE_DELETE_ITEM, PRODUCT_RECEIVE_DELETE_IMAGE, PRODUCT_UNIT_CREATE, PRODUCT_UNIT_UPLOAD, PRODUCT_UNIT_GET, PRODUCT_UNIT_UPDATE, PRODUCT_UNIT_DELETE, PRODUCT_UNIT_OPTION_FOR_PRODUCT_RECEIVE_FORM, PRODUCT_UNIT_OPTION_FOR_DELIVERY_ORDER_FORM, ROLE_OPTION_FOR_USER_FORM, SUPPLIER_CREATE, SUPPLIER_FETCH, SUPPLIER_GET, SUPPLIER_UPDATE, SUPPLIER_DELETE, SUPPLIER_OPTION_FOR_PRODUCT_RECEIVE_FORM, SUPPLIER_TYPE_CREATE, SUPPLIER_TYPE_FETCH, SUPPLIER_TYPE_GET, SUPPLIER_TYPE_UPDATE, SUPPLIER_TYPE_DELETE, USER_CREATE, USER_UPDATE, USER_UPDATE_PASSWORD, USER_UPDATE_ACTIVE, USER_UPDATE_INACTIVE, USER_ADD_ROLE, USER_DELETE_ROLE, UNIT_CREATE, UNIT_FETCH, UNIT_GET, UNIT_UPDATE, UNIT_DELETE"
 
-const _Permission_name = "BALANCE_CREATEBALANCE_FETCHBALANCE_GETBALANCE_UPDATEBALANCE_DELETECASHIER_SESSION_STARTCASHIER_SESSION_ENDCUSTOMER_CREATECUSTOMER_FETCHCUSTOMER_GETCUSTOMER_UPDATECUSTOMER_DELETECUSTOMER_OPTION_FOR_DELIVERY_ORDER_FORMDELIVERY_ORDER_CREATEDELIVERY_ORDER_UPLOADDELIVERY_ORDER_ADD_ITEMDELIVERY_ORDER_ADD_IMAGEDELIVERY_ORDER_ADD_DRIVERDELIVERY_ORDER_FETCHDELIVERY_ORDER_GETDELIVERY_ORDER_MARK_ONGOINGDELIVERY_ORDER_CANCELDELIVERY_ORDER_MARK_COMPLETEDDELIVERY_ORDER_DELETEDELIVERY_ORDER_DELETE_ITEMDELIVERY_ORDER_DELETE_IMAGEDELIVERY_ORDER_DELETE_DRIVERPRODUCT_CREATEPRODUCT_FETCHPRODUCT_GETPRODUCT_UPDATEPRODUCT_DELETEPRODUCT_OPTION_FOR_PRODUCT_RECEIVE_FORMPRODUCT_OPTION_FOR_DELIVERY_ORDER_FORMPRODUCT_RECEIVE_CREATEPRODUCT_RECEIVE_UPLOADPRODUCT_RECEIVE_ADD_ITEMPRODUCT_RECEIVE_ADD_IMAGEPRODUCT_RECEIVE_FETCHPRODUCT_RECEIVE_GETPRODUCT_RECEIVE_DELETEPRODUCT_RECEIVE_DELETE_ITEMPRODUCT_RECEIVE_DELETE_IMAGEPRODUCT_UNIT_CREATEPRODUCT_UNIT_UPLOADPRODUCT_UNIT_GETPRODUCT_UNIT_UPDATEPRODUCT_UNIT_DELETEPRODUCT_UNIT_OPTION_FOR_PRODUCT_RECEIVE_FORMPRODUCT_UNIT_OPTION_FOR_DELIVERY_ORDER_FORMROLE_OPTION_FOR_USER_FORMSUPPLIER_CREATESUPPLIER_FETCHSUPPLIER_GETSUPPLIER_UPDATESUPPLIER_DELETESUPPLIER_OPTION_FOR_PRODUCT_RECEIVE_FORMSUPPLIER_TYPE_CREATESUPPLIER_TYPE_FETCHSUPPLIER_TYPE_GETSUPPLIER_TYPE_UPDATESUPPLIER_TYPE_DELETEUSER_CREATEUSER_UPDATEUSER_UPDATE_PASSWORDUSER_UPDATE_ACTIVEUSER_UPDATE_INACTIVEUSER_ADD_ROLEUSER_DELETE_ROLEUNIT_CREATEUNIT_FETCHUNIT_GETUNIT_UPDATEUNIT_DELETE"
+const _Permission_name = "BALANCE_CREATEBALANCE_FETCHBALANCE_GETBALANCE_UPDATEBALANCE_DELETECASHIER_SESSION_STARTCASHIER_SESSION_GET_CURRENTCASHIER_SESSION_ENDCUSTOMER_CREATECUSTOMER_FETCHCUSTOMER_GETCUSTOMER_UPDATECUSTOMER_DELETECUSTOMER_OPTION_FOR_DELIVERY_ORDER_FORMDELIVERY_ORDER_CREATEDELIVERY_ORDER_UPLOADDELIVERY_ORDER_ADD_ITEMDELIVERY_ORDER_ADD_IMAGEDELIVERY_ORDER_ADD_DRIVERDELIVERY_ORDER_FETCHDELIVERY_ORDER_GETDELIVERY_ORDER_MARK_ONGOINGDELIVERY_ORDER_CANCELDELIVERY_ORDER_MARK_COMPLETEDDELIVERY_ORDER_DELETEDELIVERY_ORDER_DELETE_ITEMDELIVERY_ORDER_DELETE_IMAGEDELIVERY_ORDER_DELETE_DRIVERPRODUCT_CREATEPRODUCT_FETCHPRODUCT_GETPRODUCT_UPDATEPRODUCT_DELETEPRODUCT_OPTION_FOR_PRODUCT_RECEIVE_FORMPRODUCT_OPTION_FOR_DELIVERY_ORDER_FORMPRODUCT_RECEIVE_CREATEPRODUCT_RECEIVE_UPLOADPRODUCT_RECEIVE_ADD_ITEMPRODUCT_RECEIVE_ADD_IMAGEPRODUCT_RECEIVE_FETCHPRODUCT_RECEIVE_GETPRODUCT_RECEIVE_DELETEPRODUCT_RECEIVE_DELETE_ITEMPRODUCT_RECEIVE_DELETE_IMAGEPRODUCT_UNIT_CREATEPRODUCT_UNIT_UPLOADPRODUCT_UNIT_GETPRODUCT_UNIT_UPDATEPRODUCT_UNIT_DELETEPRODUCT_UNIT_OPTION_FOR_PRODUCT_RECEIVE_FORMPRODUCT_UNIT_OPTION_FOR_DELIVERY_ORDER_FORMROLE_OPTION_FOR_USER_FORMSUPPLIER_CREATESUPPLIER_FETCHSUPPLIER_GETSUPPLIER_UPDATESUPPLIER_DELETESUPPLIER_OPTION_FOR_PRODUCT_RECEIVE_FORMSUPPLIER_TYPE_CREATESUPPLIER_TYPE_FETCHSUPPLIER_TYPE_GETSUPPLIER_TYPE_UPDATESUPPLIER_TYPE_DELETEUSER_CREATEUSER_UPDATEUSER_UPDATE_PASSWORDUSER_UPDATE_ACTIVEUSER_UPDATE_INACTIVEUSER_ADD_ROLEUSER_DELETE_ROLEUNIT_CREATEUNIT_FETCHUNIT_GETUNIT_UPDATEUNIT_DELETE"
 
-var _Permission_index = [...]uint16{0, 14, 27, 38, 52, 66, 87, 106, 121, 135, 147, 162, 177, 216, 237, 258, 281, 305, 330, 350, 368, 395, 416, 445, 466, 492, 519, 547, 561, 574, 585, 599, 613, 652, 690, 712, 734, 758, 783, 804, 823, 845, 872, 900, 919, 938, 954, 973, 992, 1036, 1079, 1104, 1119, 1133, 1145, 1160, 1175, 1215, 1235, 1254, 1271, 1291, 1311, 1322, 1333, 1353, 1371, 1391, 1404, 1420, 1431, 1441, 1449, 1460, 1471}
+var _Permission_index = [...]uint16{0, 14, 27, 38, 52, 66, 87, 114, 133, 148, 162, 174, 189, 204, 243, 264, 285, 308, 332, 357, 377, 395, 422, 443, 472, 493, 519, 546, 574, 588, 601, 612, 626, 640, 679, 717, 739, 761, 785, 810, 831, 850, 872, 899, 927, 946, 965, 981, 1000, 1019, 1063, 1106, 1131, 1146, 1160, 1172, 1187, 1202, 1242, 1262, 1281, 1298, 1318, 1338, 1349, 1360, 1380, 1398, 1418, 1431, 1447, 1458, 1468, 1476, 1487, 1498}
 
 func (i *Permission) determine(s string) {
 	switch s {
@@ -109,6 +110,8 @@ func (i *Permission) determine(s string) {
 		*i = PermissionBalanceDelete
 	case "CASHIER_SESSION_START":
 		*i = PermissionCashierSessionStart
+	case "CASHIER_SESSION_GET_CURRENT":
+		*i = PermissionCashierSessionGetCurrent
 	case "CASHIER_SESSION_END":
 		*i = PermissionCashierSessionEnd
 	case "CUSTOMER_CREATE":
@@ -319,6 +322,7 @@ func ListPermission() []Permission {
 		PermissionBalanceUpdate,
 		PermissionBalanceDelete,
 		PermissionCashierSessionStart,
+		PermissionCashierSessionGetCurrent,
 		PermissionCashierSessionEnd,
 		PermissionCustomerCreate,
 		PermissionCustomerFetch,
@@ -398,6 +402,7 @@ func ListPermissionString() []string {
 		PermissionBalanceUpdate.String(),
 		PermissionBalanceDelete.String(),
 		PermissionCashierSessionStart.String(),
+		PermissionCashierSessionGetCurrent.String(),
 		PermissionCashierSessionEnd.String(),
 		PermissionCustomerCreate.String(),
 		PermissionCustomerFetch.String(),

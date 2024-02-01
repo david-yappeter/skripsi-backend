@@ -2,7 +2,7 @@ package dto_request
 
 type CashierSessionStartRequest struct {
 	StartingCash float64 `db:"starting_cash"`
-} // @name CashierSessionCreateRequest
+} // @name CashierSessionStartRequest
 
 type CashierSessionFetchSorts []struct {
 	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
@@ -19,7 +19,7 @@ type CashierSessionGetRequest struct {
 	CashierSessionId string `json:"-" swaggerignore:"true"`
 } // @name CashierSessionGetRequest
 
-type CashierSessionMarkCompleteRequest struct {
+type CashierSessionEndRequest struct {
 	EndingCash       float64 `json:"ending_cash"`
 	CashierSessionId string  `json:"-" swaggerignore:"true"`
-} // @name CashierSessionMarkCompleteRequest
+} // @name CashierSessionEndRequest

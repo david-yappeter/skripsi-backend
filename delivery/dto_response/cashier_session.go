@@ -32,3 +32,8 @@ func NewCashierSessionResponse(cashierSession model.CashierSession) CashierSessi
 
 	return r
 }
+
+func NewCashierSessionResponseP(cashierSession model.CashierSession) *CashierSessionResponse {
+	r := NewCashierSessionResponse(cashierSession)
+	return &r
+}

@@ -20,7 +20,7 @@ type CashierSessionUseCase interface {
 	GetByCurrentUser(ctx context.Context) *model.CashierSession
 
 	//  update
-	MarkComplete(ctx context.Context, request dto_request.CashierSessionMarkCompleteRequest) model.CashierSession
+	End(ctx context.Context, request dto_request.CashierSessionEndRequest) model.CashierSession
 }
 
 type cashierSessionUseCase struct {
@@ -44,8 +44,13 @@ func (u *cashierSessionUseCase) mustValidateCashierSessionUserNotDuplicate(ctx c
 	}
 }
 
-func (u *cashierSessionUseCase) mustValidateAllowDeleteCashierSession(ctx context.Context, cashierSessionId string) {
+func (u *cashierSessionUseCase) mustValidateCashierSessionNoActiveCart(ctx context.Context, cashierSessionId string) {
+	isExist, err := u.repositoryManager.CartRepository().IsExistByCashierSessionId(ctx, cashierSessionId)
+	panicIfErr(err)
 
+	if isExist {
+		panic(dto_response.NewBadRequestErrorResponse("CASHIER_SESSION.STILL_HAVE_CART"))
+	}
 }
 
 func (u *cashierSessionUseCase) Start(ctx context.Context, request dto_request.CashierSessionStartRequest) model.CashierSession {
@@ -100,8 +105,10 @@ func (u *cashierSessionUseCase) GetByCurrentUser(ctx context.Context) *model.Cas
 	return cashierSession
 }
 
-func (u *cashierSessionUseCase) MarkComplete(ctx context.Context, request dto_request.CashierSessionMarkCompleteRequest) model.CashierSession {
+func (u *cashierSessionUseCase) End(ctx context.Context, request dto_request.CashierSessionEndRequest) model.CashierSession {
 	cashierSession := mustGetCashierSession(ctx, u.repositoryManager, request.CashierSessionId, false)
+
+	u.mustValidateCashierSessionNoActiveCart(ctx, cashierSession.Id)
 
 	cashierSession.EndingCash = &request.EndingCash
 	cashierSession.Status = data_type.CashierSessionStatusCompleted

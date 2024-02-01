@@ -12,8 +12,9 @@ const (
 	PermissionBalanceDelete                       // BALANCE_DELETE
 
 	// cashier session
-	PermissionCashierSessionStart // CASHIER_SESSION_START
-	PermissionCashierSessionEnd   // CASHIER_SESSION_END
+	PermissionCashierSessionStart      // CASHIER_SESSION_START
+	PermissionCashierSessionGetCurrent // CASHIER_SESSION_GET_CURRENT
+	PermissionCashierSessionEnd        // CASHIER_SESSION_END
 
 	// customer
 	PermissionCustomerCreate                     // CUSTOMER_CREATE
