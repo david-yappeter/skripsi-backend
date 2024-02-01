@@ -10,6 +10,7 @@ import (
 type UseCaseManager interface {
 	AuthUseCase() AuthUseCase
 	BalanceUseCase() BalanceUseCase
+	CashierSessionUseCase() CashierSessionUseCase
 	CustomerUseCase() CustomerUseCase
 	DeliveryOrderUseCase() DeliveryOrderUseCase
 	PermissionUseCase() PermissionUseCase
@@ -26,6 +27,7 @@ type UseCaseManager interface {
 type useCaseManager struct {
 	authUseCase           AuthUseCase
 	balanceUseCase        BalanceUseCase
+	cashierSessionUseCase CashierSessionUseCase
 	customerUseCase       CustomerUseCase
 	deliveryOrderUseCase  DeliveryOrderUseCase
 	permissionUseCase     PermissionUseCase
@@ -45,6 +47,10 @@ func (u *useCaseManager) AuthUseCase() AuthUseCase {
 
 func (u *useCaseManager) BalanceUseCase() BalanceUseCase {
 	return u.balanceUseCase
+}
+
+func (u *useCaseManager) CashierSessionUseCase() CashierSessionUseCase {
+	return u.cashierSessionUseCase
 }
 
 func (u *useCaseManager) CustomerUseCase() CustomerUseCase {
@@ -102,6 +108,9 @@ func NewUseCaseManager(
 			jwt,
 		),
 		balanceUseCase: NewBalanceUseCase(
+			repositoryManager,
+		),
+		cashierSessionUseCase: NewCashierSessionUseCase(
 			repositoryManager,
 		),
 		customerUseCase: NewCustomerUseCase(

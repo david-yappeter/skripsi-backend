@@ -15,6 +15,9 @@ type RepositoryManager interface {
 	) error
 
 	BalanceRepository() BalanceRepository
+	CartRepository() CartRepository
+	CartItemRepository() CartItemRepository
+	CashierSessionRepository() CashierSessionRepository
 	CustomerRepository() CustomerRepository
 	DeliveryOrderRepository() DeliveryOrderRepository
 	DeliveryOrderDriverRepository() DeliveryOrderDriverRepository
@@ -43,6 +46,9 @@ type repositoryManager struct {
 	loggerStack infrastructure.LoggerStack
 
 	balanceRepository             BalanceRepository
+	cartRepository                CartRepository
+	cartItemRepository            CartItemRepository
+	cashierSessionRepository      CashierSessionRepository
 	customerRepository            CustomerRepository
 	deliveryOrderRepository       DeliveryOrderRepository
 	deliveryOrderDriverRepository DeliveryOrderDriverRepository
@@ -94,6 +100,18 @@ func (r *repositoryManager) Transaction(
 
 func (r *repositoryManager) BalanceRepository() BalanceRepository {
 	return r.balanceRepository
+}
+
+func (r *repositoryManager) CartRepository() CartRepository {
+	return r.cartRepository
+}
+
+func (r *repositoryManager) CartItemRepository() CartItemRepository {
+	return r.cartItemRepository
+}
+
+func (r *repositoryManager) CashierSessionRepository() CashierSessionRepository {
+	return r.cashierSessionRepository
 }
 
 func (r *repositoryManager) CustomerRepository() CustomerRepository {
@@ -188,6 +206,18 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 		loggerStack: loggerStack,
 
 		balanceRepository: NewBalanceRepository(
+			db,
+			loggerStack,
+		),
+		cartRepository: NewCartRepository(
+			db,
+			loggerStack,
+		),
+		cartItemRepository: NewCartItemRepository(
+			db,
+			loggerStack,
+		),
+		cashierSessionRepository: NewCashierSessionRepository(
 			db,
 			loggerStack,
 		),

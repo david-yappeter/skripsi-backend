@@ -278,6 +278,12 @@ func mustGetDeliveryOrderDriverByDeliveryOrderIdAndUserId(ctx context.Context, r
 	return *deliveryOrderDriver
 }
 
+func mustGetCashierSession(ctx context.Context, repositoryManager repository.RepositoryManager, cashierSessionId string, isValidate bool) model.CashierSession {
+	cashierSession, err := repositoryManager.CashierSessionRepository().Get(ctx, cashierSessionId)
+	panicIfRepositoryError(err, "CASHIER_SESSION.NOT_FOUND", isValidate)
+	return *cashierSession
+}
+
 func shouldGetProductStockByProductId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string) *model.ProductStock {
 	productStock, err := repositoryManager.ProductStockRepository().GetByProductId(ctx, productId)
 	panicIfErr(err, constant.ErrNoData)
