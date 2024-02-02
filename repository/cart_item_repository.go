@@ -24,6 +24,7 @@ type CartItemRepository interface {
 
 	// delete
 	Delete(ctx context.Context, cartItem *model.CartItem) error
+	DeleteManyByCartId(ctx context.Context, cartId string) error
 	Truncate(ctx context.Context) error
 }
 
@@ -126,6 +127,13 @@ func (r *cartItemRepository) Update(ctx context.Context, cartItem *model.CartIte
 
 func (r *cartItemRepository) Delete(ctx context.Context, cartItem *model.CartItem) error {
 	return defaultDestroy(r.db, r.loggerStack, ctx, cartItem, nil)
+}
+
+func (r *cartItemRepository) DeleteManyByCartId(ctx context.Context, cartId string) error {
+	whereStmt := squirrel.Eq{
+		"cart_id": cartId,
+	}
+	return destroy(r.db, ctx, model.CartItemTableName, whereStmt)
 }
 
 func (r *cartItemRepository) Truncate(ctx context.Context) error {

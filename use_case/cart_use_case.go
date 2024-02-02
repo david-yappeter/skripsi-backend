@@ -16,14 +16,17 @@ type CartUseCase interface {
 
 	//  read
 	Fetch(ctx context.Context, request dto_request.CartFetchRequest) ([]model.Cart, int)
-	FetchInActive(ctx context.Context, request dto_request.CartFetchFetchInActiveRequest) []model.Cart
+	FetchInActive(ctx context.Context, request dto_request.CartFetchInActiveRequest) []model.Cart
 	Get(ctx context.Context, request dto_request.CartGetRequest) model.Cart
 	GetCurrent(ctx context.Context) *model.Cart
 
 	//  update
 	UpdateItem(ctx context.Context, request dto_request.CartUpdateItemRequest) model.Cart
+	SetActive(ctx context.Context, request dto_request.CartSetActiveRequest) model.Cart
+	SetInActive(ctx context.Context) model.Cart
 
 	//  delete
+	Delete(ctx context.Context, request dto_request.CartDeleteRequest) model.Cart
 	DeleteItem(ctx context.Context, request dto_request.CartDeleteItemRequest) model.Cart
 }
 
@@ -50,17 +53,6 @@ func (u *cartUseCase) mustGetCurrentUserActiveCashierSession(ctx context.Context
 	}
 
 	return *cashierSession
-}
-
-func (u *cartUseCase) mustGetActiveCartByCashierSession(ctx context.Context, cashierSessionId string) model.Cart {
-	cart, err := u.repositoryManager.CartRepository().GetByCashierSessionIdAndIsActive(ctx, cashierSessionId, true)
-	panicIfErr(err, constant.ErrNoData)
-
-	if cart == nil {
-		panic(dto_response.NewBadRequestErrorResponse("CART.USER_MUST_HAVE_ACTIVE_CASHIER_SESSION"))
-	}
-
-	return *cart
 }
 
 func (u *cartUseCase) mustGetActiveCartByCashierSessionId(ctx context.Context, cashierSessionId string) model.Cart {
@@ -183,7 +175,7 @@ func (u *cartUseCase) Fetch(ctx context.Context, request dto_request.CartFetchRe
 	return carts, total
 }
 
-func (u *cartUseCase) FetchInActive(ctx context.Context, request dto_request.CartFetchFetchInActiveRequest) []model.Cart {
+func (u *cartUseCase) FetchInActive(ctx context.Context, request dto_request.CartFetchInActiveRequest) []model.Cart {
 	queryOption := model.CartQueryOption{
 		IsActive: util.BoolP(false),
 		Phrase:   request.Phrase,
@@ -210,7 +202,7 @@ func (u *cartUseCase) GetCurrent(ctx context.Context) *model.Cart {
 
 func (u *cartUseCase) UpdateItem(ctx context.Context, request dto_request.CartUpdateItemRequest) model.Cart {
 	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
-	cart := u.mustGetActiveCartByCashierSession(ctx, cashierSession.Id)
+	cart := u.mustGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
 	cartItem := u.mustGetCartItemByCartIdAndProductUnitId(ctx, cart.Id, request.ProductUnitId)
 
 	cartItem.Qty = request.Qty
@@ -222,9 +214,69 @@ func (u *cartUseCase) UpdateItem(ctx context.Context, request dto_request.CartUp
 	return cart
 }
 
+func (u *cartUseCase) SetActive(ctx context.Context, request dto_request.CartSetActiveRequest) model.Cart {
+	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
+	activeCart := u.shouldGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
+
+	if activeCart != nil {
+		panic(dto_response.NewBadRequestErrorResponse("CART.THERE_IS_AN_ACTIVE_CART"))
+	}
+
+	cart := mustGetCart(ctx, u.repositoryManager, request.CartId, false)
+
+	if cart.CashierSessionId != cashierSession.Id {
+		panic(dto_response.NewBadRequestErrorResponse("CART.NOT_FOUND"))
+	}
+
+	cart.IsActive = true
+
+	panicIfErr(
+		u.repositoryManager.CartRepository().Update(ctx, &cart),
+	)
+
+	return cart
+}
+
+func (u *cartUseCase) SetInActive(ctx context.Context) model.Cart {
+	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
+	cart := u.mustGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
+
+	cart.IsActive = false
+
+	panicIfErr(
+		u.repositoryManager.CartRepository().Update(ctx, &cart),
+	)
+
+	return cart
+}
+
+func (u *cartUseCase) Delete(ctx context.Context, request dto_request.CartDeleteRequest) model.Cart {
+	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
+	cart := u.mustGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
+
+	panicIfErr(
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			cartRepository := u.repositoryManager.CartRepository()
+			cartItemRepository := u.repositoryManager.CartItemRepository()
+
+			if err := cartItemRepository.DeleteManyByCartId(ctx, cart.Id); err != nil {
+				return err
+			}
+
+			if err := cartRepository.Delete(ctx, &cart); err != nil {
+				return err
+			}
+
+			return nil
+		}),
+	)
+
+	return cart
+}
+
 func (u *cartUseCase) DeleteItem(ctx context.Context, request dto_request.CartDeleteItemRequest) model.Cart {
 	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
-	cart := u.mustGetActiveCartByCashierSession(ctx, cashierSession.Id)
+	cart := u.mustGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
 	cartItem := u.mustGetCartItemByCartIdAndProductUnitId(ctx, cart.Id, request.ProductUnitId)
 
 	cartItemCount, err := u.repositoryManager.CartItemRepository().Count(ctx, model.CartItemQueryOption{

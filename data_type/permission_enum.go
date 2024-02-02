@@ -12,10 +12,13 @@ const (
 	PermissionBalanceDelete                       // BALANCE_DELETE
 
 	// cart
-	PermissionCartGetActive  // CART_GET_ACTIVE
-	PermissionCartAddItem    // CART_ADD_ITEM
-	PermissionCartUpdateItem // CART_UPDATE_ITEM
-	PermissionCartDeleteItem // CART_DELETE_ITEM
+	PermissionCartGetActive   // CART_GET_ACTIVE
+	PermissionCartAddItem     // CART_ADD_ITEM
+	PermissionCartUpdateItem  // CART_UPDATE_ITEM
+	PermissionCartDeleteItem  // CART_DELETE_ITEM
+	PermissionCartSetActive   // CART_SET_ACTIVE
+	PermissionCartSetInActive // CART_SET_IN_ACTIVE
+	PermissionCartDelete      // CART_DELETE
 
 	// cashier session
 	PermissionCashierSessionStart      // CASHIER_SESSION_START

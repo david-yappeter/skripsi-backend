@@ -16,9 +16,13 @@ type CartFetchRequest struct {
 	Phrase *string        `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name CartFetchRequest
 
-type CartFetchFetchInActiveRequest struct {
+type CartFetchInActiveRequest struct {
 	Phrase *string `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
-} // @name CartFetchFetchInActiveRequest
+} // @name CartFetchInActiveRequest
+
+type CartSetActiveRequest struct {
+	CartId string `json:"cart_id" validate:"required,not_empty,uuid"`
+} // @name CartSetActiveRequest
 
 type CartGetRequest struct {
 	CartId string `json:"-" swaggerignore:"true"`
@@ -28,6 +32,10 @@ type CartUpdateItemRequest struct {
 	ProductUnitId string  `json:"product_unit_id" validate:"required,not_empty,uuid"`
 	Qty           float64 `json:"qty" validate:"required,gt=0"`
 } // @name CartUpdateRequest
+
+type CartDeleteRequest struct {
+	CartId string `json:"cart_id" validate:"required,not_empty,uuid"`
+} // @name CartDeleteRequest
 
 type CartDeleteItemRequest struct {
 	ProductUnitId string `json:"product_unit_id" validate:"required,not_empty,uuid"`

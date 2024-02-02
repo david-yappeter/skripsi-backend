@@ -60,7 +60,7 @@ func (a *CartApi) FetchInActive() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionCartGetActive),
 		func(ctx apiContext) {
-			var request dto_request.CartFetchFetchInActiveRequest
+			var request dto_request.CartFetchInActiveRequest
 			ctx.mustBind(&request)
 
 			carts := a.cartUseCase.FetchInActive(ctx.context(), request)
@@ -72,6 +72,63 @@ func (a *CartApi) FetchInActive() gin.HandlerFunc {
 				dto_response.Response{
 					Data: dto_response.DataResponse{
 						"carts": nodes,
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/carts/{id}/set-active [patch]
+//	@Summary	Set InActive Cart to Active
+//	@tags		Carts
+//	@Accept		json
+//	@Param		dto_request.CartSetActiveRequest body dto_request.CartSetActiveRequest true "Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{cart=dto_response.CartResponse}}
+func (a *CartApi) SetActive() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCartSetActive),
+		func(ctx apiContext) {
+			var request dto_request.CartSetActiveRequest
+			ctx.mustBind(&request)
+
+			cart := a.cartUseCase.SetActive(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"cart": dto_response.NewCartResponse(cart),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/carts/set-in-active [patch]
+//	@Summary	Set Active Cart to In Active
+//	@tags		Carts
+//	@Accept		json
+//	@Param		dto_request.CartFetchSetInActiveRequest body dto_request.CartFetchSetInActiveRequest true "Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{cart=dto_response.CartResponse}}
+func (a *CartApi) SetInActive() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCartSetInActive),
+		func(ctx apiContext) {
+			cart := a.cartUseCase.SetInActive(ctx.context())
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"cart": dto_response.NewCartResponse(cart),
 					},
 				},
 			)
@@ -146,6 +203,7 @@ func (a *CartApi) UpdateItem() gin.HandlerFunc {
 //	@tags		Carts
 //	@Accept		json
 //	@Param		dto_request.CartDeleteItemRequest	body	dto_request.CartDeleteItemRequest	true	"Body Request"
+//	@Param 		product_unit_id path string true "Product Unit Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{cart=dto_response.CartResponse}}
 func (a *CartApi) DeleteItem() gin.HandlerFunc {
@@ -169,6 +227,37 @@ func (a *CartApi) DeleteItem() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/carts/{id} [delete]
+//	@Summary	Delete Item
+//	@tags		Carts
+//	@Accept		json
+//	@Param		dto_request.CartDeleteRequest	body	dto_request.CartDeleteRequest	true	"Body Request"
+//	@Param		id	path	string	true	"Cart Id"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.SuccessResponse
+func (a *CartApi) Delete() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCartDelete),
+		func(ctx apiContext) {
+			var request dto_request.CartDeleteRequest
+			ctx.mustBind(&request)
+
+			cart := a.cartUseCase.Delete(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"cart": dto_response.NewCartResponse(cart),
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterCartApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := CartApi{
 		api:         newApi(useCaseManager),
@@ -178,7 +267,10 @@ func RegisterCartApi(router gin.IRouter, useCaseManager use_case.UseCaseManager)
 	routerGroup := router.Group("/carts")
 	routerGroup.GET("/active", api.GetActive())
 	routerGroup.GET("/in-active", api.FetchInActive())
+	routerGroup.PATCH("/:id/set-active", api.SetActive())
+	routerGroup.PATCH("/set-in-active", api.SetInActive())
 	routerGroup.POST("/items/:product_unit_id", api.AddItem())
 	routerGroup.PATCH("/items/:product_unit_id", api.UpdateItem())
 	routerGroup.DELETE("/items/:product_unit_id", api.DeleteItem())
+	routerGroup.DELETE("/:id", api.Delete())
 }
