@@ -7,9 +7,9 @@ type CartItem struct {
 	CartId        string  `db:"cart_id"`
 	ProductUnitId string  `db:"product_unit_id"`
 	Qty           float64 `db:"qty"`
-	IsActive      bool    `db:"is_active"`
-
 	Timestamp
+
+	ProductUnit *ProductUnit `db:"-"`
 }
 
 func (m *CartItem) TableName() string {

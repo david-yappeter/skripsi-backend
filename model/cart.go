@@ -3,11 +3,14 @@ package model
 const CartTableName = "carts"
 
 type Cart struct {
-	Id               string `db:"id"`
-	CashierSessionId string `db:"cashier_session_id"`
-	Name             string `db:"name"`
-	IsActive         bool   `db:"is_active"`
+	Id               string  `db:"id"`
+	CashierSessionId string  `db:"cashier_session_id"`
+	Name             *string `db:"name"`
+	IsActive         bool    `db:"is_active"`
 	Timestamp
+
+	CashierSession *CashierSession `db:"-"`
+	CartItems      []CartItem      `db:"-"`
 }
 
 func (m *Cart) TableName() string {

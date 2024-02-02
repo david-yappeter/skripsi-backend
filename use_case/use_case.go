@@ -284,6 +284,12 @@ func mustGetCashierSession(ctx context.Context, repositoryManager repository.Rep
 	return *cashierSession
 }
 
+func mustGetCart(ctx context.Context, repositoryManager repository.RepositoryManager, cartId string, isValidate bool) model.Cart {
+	cart, err := repositoryManager.CartRepository().Get(ctx, cartId)
+	panicIfRepositoryError(err, "CART.NOT_FOUND", isValidate)
+	return *cart
+}
+
 func shouldGetProductStockByProductId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string) *model.ProductStock {
 	productStock, err := repositoryManager.ProductStockRepository().GetByProductId(ctx, productId)
 	panicIfErr(err, constant.ErrNoData)

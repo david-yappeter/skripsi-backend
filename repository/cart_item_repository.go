@@ -17,6 +17,7 @@ type CartItemRepository interface {
 	Count(ctx context.Context, options ...model.CartItemQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.CartItemQueryOption) ([]model.CartItem, error)
 	Get(ctx context.Context, id string) (*model.CartItem, error)
+	GetByCartIdAndProductUnitId(ctx context.Context, cartId string, productUnitId string) (*model.CartItem, error)
 
 	// update
 	Update(ctx context.Context, cartItem *model.CartItem) error
@@ -106,6 +107,15 @@ func (r *cartItemRepository) Get(ctx context.Context, id string) (*model.CartIte
 	stmt := stmtBuilder.Select("*").
 		From(model.CartItemTableName).
 		Where(squirrel.Eq{"id": id})
+
+	return r.get(ctx, stmt)
+}
+
+func (r *cartItemRepository) GetByCartIdAndProductUnitId(ctx context.Context, cartId string, productUnitId string) (*model.CartItem, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.CartItemTableName).
+		Where(squirrel.Eq{"cart_id": cartId}).
+		Where(squirrel.Eq{"product_unit_id": productUnitId})
 
 	return r.get(ctx, stmt)
 }

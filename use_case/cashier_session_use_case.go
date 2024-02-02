@@ -46,7 +46,7 @@ func (u *cashierSessionUseCase) mustValidateCashierSessionUserNotDuplicate(ctx c
 }
 
 func (u *cashierSessionUseCase) mustValidateCashierSessionNoActiveCart(ctx context.Context, cashierSessionId string) {
-	isExist, err := u.repositoryManager.CartRepository().IsExistByCashierSessionId(ctx, cashierSessionId)
+	isExist, err := u.repositoryManager.CartRepository().IsExistByCashierSessionIdAndIsActive(ctx, cashierSessionId, true)
 	panicIfErr(err)
 
 	if isExist {

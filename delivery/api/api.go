@@ -209,6 +209,7 @@ func registerRoutes(router gin.IRouter, useCaseManager use_case.UseCaseManager) 
 	}
 
 	RegisterBalanceApi(router, useCaseManager)
+	RegisterCartApi(router, useCaseManager)
 	RegisterCashierSessionApi(router, useCaseManager)
 	RegisterCustomerApi(router, useCaseManager)
 	RegisterDeliveryOrderApi(router, useCaseManager)

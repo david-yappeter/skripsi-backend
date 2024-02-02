@@ -11,6 +11,12 @@ const (
 	PermissionBalanceUpdate                       // BALANCE_UPDATE
 	PermissionBalanceDelete                       // BALANCE_DELETE
 
+	// cart
+	PermissionCartGetActive  // CART_GET_ACTIVE
+	PermissionCartAddItem    // CART_ADD_ITEM
+	PermissionCartUpdateItem // CART_UPDATE_ITEM
+	PermissionCartDeleteItem // CART_DELETE_ITEM
+
 	// cashier session
 	PermissionCashierSessionStart      // CASHIER_SESSION_START
 	PermissionCashierSessionGetCurrent // CASHIER_SESSION_GET_CURRENT

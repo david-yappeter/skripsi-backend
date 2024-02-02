@@ -7,7 +7,6 @@ import (
 	"myapp/data_type"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
-	"myapp/infrastructure"
 	"myapp/internal/filesystem"
 	"myapp/loader"
 	"myapp/model"
@@ -174,10 +173,10 @@ func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.
 	}
 
 	panicIfErr(
-		u.repositoryManager.Transaction(ctx, func(tx infrastructure.DBTX, loggerStack infrastructure.LoggerStack) error {
-			deliveryOrderRepository := repository.NewDeliveryOrderRepository(tx, loggerStack)
-			deliveryOrderItemRepository := repository.NewDeliveryOrderItemRepository(tx, loggerStack)
-			productStockRepository := repository.NewProductStockRepository(tx, loggerStack)
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
+			deliveryOrderItemRepository := u.repositoryManager.DeliveryOrderItemRepository()
+			productStockRepository := u.repositoryManager.ProductStockRepository()
 
 			if isProductStockExist {
 				if err := productStockRepository.Update(ctx, productStock); err != nil {
@@ -336,8 +335,8 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 	// productStocks, err := u.repositoryManager.ProductStockRepository().FetchByProductIds()
 
 	panicIfErr(
-		u.repositoryManager.Transaction(ctx, func(tx infrastructure.DBTX, loggerStack infrastructure.LoggerStack) error {
-			deliveryOrderRepository := repository.NewDeliveryOrderRepository(tx, loggerStack)
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
 
 			if err := deliveryOrderRepository.Update(ctx, &deliveryOrder); err != nil {
 				return err
@@ -361,8 +360,8 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 	deliveryOrder.Status = data_type.DeliveryOrderStatusOngoing
 
 	panicIfErr(
-		u.repositoryManager.Transaction(ctx, func(tx infrastructure.DBTX, loggerStack infrastructure.LoggerStack) error {
-			deliveryOrderRepository := repository.NewDeliveryOrderRepository(tx, loggerStack)
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
 
 			if err := deliveryOrderRepository.Update(ctx, &deliveryOrder); err != nil {
 				return err
@@ -400,10 +399,10 @@ func (u *deliveryOrderUseCase) Delete(ctx context.Context, request dto_request.D
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
 
 	panicIfErr(
-		u.repositoryManager.Transaction(ctx, func(tx infrastructure.DBTX, loggerStack infrastructure.LoggerStack) error {
-			deliveryOrderRepository := repository.NewDeliveryOrderRepository(tx, loggerStack)
-			deliveryOrderItemRepository := repository.NewDeliveryOrderItemRepository(tx, loggerStack)
-			deliveryOrderImageRepository := repository.NewDeliveryOrderImageRepository(tx, loggerStack)
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
+			deliveryOrderItemRepository := u.repositoryManager.DeliveryOrderItemRepository()
+			deliveryOrderImageRepository := u.repositoryManager.DeliveryOrderImageRepository()
 
 			if err := deliveryOrderItemRepository.DeleteManyByDeliveryOrderId(ctx, deliveryOrder.Id); err != nil {
 				return err

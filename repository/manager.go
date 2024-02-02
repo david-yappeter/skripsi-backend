@@ -2,8 +2,10 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"myapp/infrastructure"
+	"myapp/model"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -11,7 +13,7 @@ import (
 type RepositoryManager interface {
 	Transaction(
 		ctx context.Context,
-		fn func(tx infrastructure.DBTX, loggerStack infrastructure.LoggerStack) error,
+		fn func(ctx context.Context) error,
 	) error
 
 	BalanceRepository() BalanceRepository
@@ -74,28 +76,33 @@ type repositoryManager struct {
 
 func (r *repositoryManager) Transaction(
 	ctx context.Context,
-	fn func(tx infrastructure.DBTX, loggerStack infrastructure.LoggerStack) error,
-) error {
-	tx, err := r.db.BeginTxx(ctx, nil)
-	if err != nil {
-		return translateSqlError(err)
-	}
+	fn func(ctx context.Context) error,
+) (err error) {
+	var tx *sqlx.Tx
 
-	if err := fn(tx, r.loggerStack); err != nil {
-		err = translateSqlError(err)
-		if rbErr := tx.Rollback(); rbErr != nil {
-			return fmt.Errorf(
-				"transaction error: %v"+"\n"+
-					"rollback err: %v",
-				err,
-				rbErr,
-			)
+	defer func() {
+		if err != nil && tx != nil {
+			if rbErr := tx.Rollback(); rbErr != nil && rbErr != sql.ErrTxDone {
+				err = fmt.Errorf("%v\nrollback err: %v", err, rbErr)
+			}
 		}
+	}()
 
-		return err
+	tx, err = r.db.BeginTxx(ctx, nil)
+	if err != nil {
+		return
 	}
 
-	return translateSqlError(tx.Commit())
+	ctx, err = model.SetDbtxCtx(ctx, tx)
+	if err != nil {
+		return
+	}
+
+	if err = fn(ctx); err != nil {
+		return
+	}
+
+	return tx.Commit()
 }
 
 func (r *repositoryManager) BalanceRepository() BalanceRepository {

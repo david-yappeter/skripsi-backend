@@ -14,4 +14,7 @@ var (
 	ErrRequestActionNotFound = errors.New("request action not found")
 
 	ErrNotImplemented = errors.New("not implemented")
+
+	ErrDbtxNotFound     = errors.New("db transaction not found")
+	ErrDbtxAlreadyExist = errors.New("db transaction already exist")
 )

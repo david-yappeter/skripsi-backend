@@ -1,9 +1,9 @@
 package dto_request
 
-type CartCreateRequest struct {
-	Name        string  `json:"name" validate:"required,not_empty"`
-	Description *string `json:"description" validate:"omitempty,not_empty" extensions:"x-nullable"`
-} // @name CartCreateRequest
+type CartAddItemRequest struct {
+	ProductUnitId string  `json:"product_unit_id" validate:"required,not_empty,uuid"`
+	Qty           float64 `json:"qty" validate:"required,gt=0"`
+} // @name CartAddItemRequest
 
 type CartFetchSorts []struct {
 	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
@@ -20,13 +20,11 @@ type CartGetRequest struct {
 	CartId string `json:"-" swaggerignore:"true"`
 } // @name CartGetRequest
 
-type CartUpdateRequest struct {
-	CartId string `json:"-" swaggerignore:"true"`
-
-	Name        string  `json:"name" validate:"required,not_empty"`
-	Description *string `json:"description" validate:"omitempty,not_empty" extensions:"x-nullable"`
+type CartUpdateItemRequest struct {
+	ProductUnitId string  `json:"product_unit_id" validate:"required,not_empty,uuid"`
+	Qty           float64 `json:"qty" validate:"required,gt=0"`
 } // @name CartUpdateRequest
 
-type CartDeleteRequest struct {
-	CartId string `json:"-" swaggerignore:"true"`
+type CartDeleteItemRequest struct {
+	ProductUnitId string `json:"product_unit_id" validate:"required,not_empty,uuid"`
 } // @name CartDeleteRequest

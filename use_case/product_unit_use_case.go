@@ -7,7 +7,6 @@ import (
 	"myapp/data_type"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
-	"myapp/infrastructure"
 	"myapp/internal/filesystem"
 	"myapp/model"
 	"myapp/repository"
@@ -114,9 +113,9 @@ func (u *productUnitUseCase) Create(ctx context.Context, request dto_request.Pro
 	}
 
 	panicIfErr(
-		u.repositoryManager.Transaction(ctx, func(tx infrastructure.DBTX, loggerStack infrastructure.LoggerStack) error {
-			productUnitRepository := repository.NewProductUnitRepository(tx, loggerStack)
-			fileRepository := repository.NewFileRepository(tx, loggerStack)
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			productUnitRepository := u.repositoryManager.ProductUnitRepository()
+			fileRepository := u.repositoryManager.FileRepository()
 
 			if imageFile != nil {
 				err := fileRepository.Insert(ctx, imageFile)
@@ -185,9 +184,9 @@ func (u *productUnitUseCase) Delete(ctx context.Context, request dto_request.Pro
 	u.mustValidateAllowDeleteProductUnit(ctx, request.ProductUnitId)
 
 	panicIfErr(
-		u.repositoryManager.Transaction(ctx, func(tx infrastructure.DBTX, loggerStack infrastructure.LoggerStack) error {
-			fileRepository := repository.NewFileRepository(tx, loggerStack)
-			productUnitRepository := repository.NewProductUnitRepository(tx, loggerStack)
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			fileRepository := u.repositoryManager.FileRepository()
+			productUnitRepository := u.repositoryManager.ProductUnitRepository()
 
 			err := productUnitRepository.Delete(ctx, &productUnit)
 			if err != nil {

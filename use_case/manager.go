@@ -10,6 +10,7 @@ import (
 type UseCaseManager interface {
 	AuthUseCase() AuthUseCase
 	BalanceUseCase() BalanceUseCase
+	CartUseCase() CartUseCase
 	CashierSessionUseCase() CashierSessionUseCase
 	CustomerUseCase() CustomerUseCase
 	DeliveryOrderUseCase() DeliveryOrderUseCase
@@ -27,6 +28,7 @@ type UseCaseManager interface {
 type useCaseManager struct {
 	authUseCase           AuthUseCase
 	balanceUseCase        BalanceUseCase
+	cartUseCase           CartUseCase
 	cashierSessionUseCase CashierSessionUseCase
 	customerUseCase       CustomerUseCase
 	deliveryOrderUseCase  DeliveryOrderUseCase
@@ -47,6 +49,10 @@ func (u *useCaseManager) AuthUseCase() AuthUseCase {
 
 func (u *useCaseManager) BalanceUseCase() BalanceUseCase {
 	return u.balanceUseCase
+}
+
+func (u *useCaseManager) CartUseCase() CartUseCase {
+	return u.cartUseCase
 }
 
 func (u *useCaseManager) CashierSessionUseCase() CashierSessionUseCase {

@@ -7,7 +7,6 @@ import (
 	"myapp/data_type"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
-	"myapp/infrastructure"
 	"myapp/internal/filesystem"
 	"myapp/loader"
 	"myapp/model"
@@ -166,10 +165,10 @@ func (u *productReceiveUseCase) AddItem(ctx context.Context, request dto_request
 	}
 
 	panicIfErr(
-		u.repositoryManager.Transaction(ctx, func(tx infrastructure.DBTX, loggerStack infrastructure.LoggerStack) error {
-			productReceiveRepository := repository.NewProductReceiveRepository(tx, loggerStack)
-			productReceiveItemRepository := repository.NewProductReceiveItemRepository(tx, loggerStack)
-			productStockRepository := repository.NewProductStockRepository(tx, loggerStack)
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			productReceiveRepository := u.repositoryManager.ProductReceiveRepository()
+			productReceiveItemRepository := u.repositoryManager.ProductReceiveItemRepository()
+			productStockRepository := u.repositoryManager.ProductStockRepository()
 
 			if isProductStockExist {
 				if err := productStockRepository.Update(ctx, productStock); err != nil {
@@ -303,10 +302,10 @@ func (u *productReceiveUseCase) Delete(ctx context.Context, request dto_request.
 	productReceive := mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, true)
 
 	panicIfErr(
-		u.repositoryManager.Transaction(ctx, func(tx infrastructure.DBTX, loggerStack infrastructure.LoggerStack) error {
-			productReceiveRepository := repository.NewProductReceiveRepository(tx, loggerStack)
-			productReceiveItemRepository := repository.NewProductReceiveItemRepository(tx, loggerStack)
-			productReceiveImageRepository := repository.NewProductReceiveImageRepository(tx, loggerStack)
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			productReceiveRepository := u.repositoryManager.ProductReceiveRepository()
+			productReceiveItemRepository := u.repositoryManager.ProductReceiveItemRepository()
+			productReceiveImageRepository := u.repositoryManager.ProductReceiveImageRepository()
 
 			if err := productReceiveItemRepository.DeleteManyByProductReceiveId(ctx, productReceive.Id); err != nil {
 				return err
