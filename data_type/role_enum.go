@@ -59,20 +59,6 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionSupplierTypeUpdate,
 		PermissionSupplierTypeDelete,
 
-		// product
-		PermissionProductCreate,
-		PermissionProductFetch,
-		PermissionProductGet,
-		PermissionProductUpdate,
-		PermissionProductDelete,
-
-		// product unit
-		PermissionProductUnitCreate,
-		PermissionProductUnitUpload,
-		PermissionProductUnitGet,
-		PermissionProductUnitUpdate,
-		PermissionProductUnitDelete,
-
 		// role
 		PermissionRoleOptionForUserForm,
 
@@ -120,6 +106,15 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionDeliveryOrderDeleteImage,
 		PermissionDeliveryOrderDeleteDriver,
 
+		// product
+		PermissionProductCreate,
+		PermissionProductFetch,
+		PermissionProductGet,
+		PermissionProductUpdate,
+		PermissionProductDelete,
+		PermissionProductOptionForDeliveryOrderForm,
+		PermissionProductOptionForProductReceiveForm,
+
 		// product receive
 		PermissionProductReceiveCreate,
 		PermissionProductReceiveUpload,
@@ -131,11 +126,12 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionProductReceiveDeleteItem,
 		PermissionProductReceiveDeleteImage,
 
-		// product
-		PermissionProductOptionForDeliveryOrderForm,
-		PermissionProductOptionForProductReceiveForm,
-
 		// product_unit
+		PermissionProductUnitCreate,
+		PermissionProductUnitUpload,
+		PermissionProductUnitGet,
+		PermissionProductUnitUpdate,
+		PermissionProductUnitDelete,
 		PermissionProductUnitOptionForDeliveryOrderForm,
 		PermissionProductUnitOptionForProductReceiveForm,
 
@@ -153,11 +149,32 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionSupplierUpdate,
 		PermissionSupplierDelete,
 		PermissionSupplierOptionForProductReceiveForm,
+
+		// unit
+		PermissionUnitCreate,
+		PermissionUnitFetch,
+		PermissionUnitGet,
+		PermissionUnitUpdate,
+		PermissionUnitDelete,
 	}
 }
 
 func GetRoleCashier() []Permission {
-	return []Permission{}
+	return []Permission{
+		// cart
+		PermissionCartGetActive,
+		PermissionCartAddItem,
+		PermissionCartUpdateItem,
+		PermissionCartDeleteItem,
+		PermissionCartSetActive,
+		PermissionCartSetInActive,
+		PermissionCartDelete,
+
+		// cashier session
+		PermissionCashierSessionStart,
+		PermissionCashierSessionGetCurrent,
+		PermissionCashierSessionEnd,
+	}
 }
 
 func GetRoleDriver() []Permission {
