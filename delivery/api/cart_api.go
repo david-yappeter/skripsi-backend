@@ -53,7 +53,7 @@ func (a *CartApi) GetActive() gin.HandlerFunc {
 //	@Summary	Get current user In-Active Cart
 //	@tags		Carts
 //	@Accept		json
-//	@Param		dto_request.CartFetchFetchInActiveRequest body dto_request.CartFetchFetchInActiveRequest true "Body Request"
+//	@Param		dto_request.CartFetchInActiveRequest	body	dto_request.CartFetchInActiveRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{carts=[]dto_response.CartResponse}}
 func (a *CartApi) FetchInActive() gin.HandlerFunc {
@@ -85,7 +85,7 @@ func (a *CartApi) FetchInActive() gin.HandlerFunc {
 //	@Summary	Set InActive Cart to Active
 //	@tags		Carts
 //	@Accept		json
-//	@Param		dto_request.CartSetActiveRequest body dto_request.CartSetActiveRequest true "Body Request"
+//	@Param		dto_request.CartSetActiveRequest	body	dto_request.CartSetActiveRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{cart=dto_response.CartResponse}}
 func (a *CartApi) SetActive() gin.HandlerFunc {
@@ -115,7 +115,6 @@ func (a *CartApi) SetActive() gin.HandlerFunc {
 //	@Summary	Set Active Cart to In Active
 //	@tags		Carts
 //	@Accept		json
-//	@Param		dto_request.CartFetchSetInActiveRequest body dto_request.CartFetchSetInActiveRequest true "Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{cart=dto_response.CartResponse}}
 func (a *CartApi) SetInActive() gin.HandlerFunc {
@@ -203,7 +202,7 @@ func (a *CartApi) UpdateItem() gin.HandlerFunc {
 //	@tags		Carts
 //	@Accept		json
 //	@Param		dto_request.CartDeleteItemRequest	body	dto_request.CartDeleteItemRequest	true	"Body Request"
-//	@Param 		product_unit_id path string true "Product Unit Id"
+//	@Param		product_unit_id						path	string								true	"Product Unit Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{cart=dto_response.CartResponse}}
 func (a *CartApi) DeleteItem() gin.HandlerFunc {
@@ -234,7 +233,7 @@ func (a *CartApi) DeleteItem() gin.HandlerFunc {
 //	@tags		Carts
 //	@Accept		json
 //	@Param		dto_request.CartDeleteRequest	body	dto_request.CartDeleteRequest	true	"Body Request"
-//	@Param		id	path	string	true	"Cart Id"
+//	@Param		id								path	string							true	"Cart Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.SuccessResponse
 func (a *CartApi) Delete() gin.HandlerFunc {

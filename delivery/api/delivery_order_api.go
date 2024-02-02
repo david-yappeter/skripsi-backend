@@ -181,7 +181,7 @@ func (a *DeliveryOrderApi) AddDriver() gin.HandlerFunc {
 //	@Summary	Cancel
 //	@tags		Delivery Orders
 //	@Accept		json
-//	@Param		id											path	string										true	"Id"
+//	@Param		id										path	string									true	"Id"
 //	@Param		dto_request.DeliveryOrderCancelRequest	body	dto_request.DeliveryOrderCancelRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
@@ -214,7 +214,7 @@ func (a *DeliveryOrderApi) Cancel() gin.HandlerFunc {
 //	@Summary	Completed
 //	@tags		Delivery Orders
 //	@Accept		json
-//	@Param		id											path	string										true	"Id"
+//	@Param		id												path	string											true	"Id"
 //	@Param		dto_request.DeliveryOrderMarkCompletedRequest	body	dto_request.DeliveryOrderMarkCompletedRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
@@ -414,7 +414,7 @@ func (a *DeliveryOrderApi) DeleteItem() gin.HandlerFunc {
 //	@tags		Delivery Orders
 //	@Accept		json
 //	@Param		id											path	string										true	"Id"
-//	@Param		file_id											path	string										true	"Id"
+//	@Param		file_id										path	string										true	"Id"
 //	@Param		dto_request.DeliveryOrderDeleteImageRequest	body	dto_request.DeliveryOrderDeleteImageRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
@@ -449,8 +449,8 @@ func (a *DeliveryOrderApi) DeleteImage() gin.HandlerFunc {
 //	@Summary	Delete Driver
 //	@tags		Delivery Orders
 //	@Accept		json
-//	@Param		id											path	string										true	"Id"
-//	@Param		driver_user_id											path	string										true	"Id"
+//	@Param		id												path	string											true	"Id"
+//	@Param		driver_user_id									path	string											true	"Id"
 //	@Param		dto_request.DeliveryOrderDeleteDriverRequest	body	dto_request.DeliveryOrderDeleteDriverRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}

@@ -183,7 +183,7 @@ func (a *CustomerApi) Delete() gin.HandlerFunc {
 //	@Summary	Option for Delivery Order Form
 //	@tags		Customers
 //	@Accept		json
-//	@Param		dto_request.CustomerOptionForDeliveryOrderForm body dto_request.CustomerOptionForDeliveryOrderForm  true "Body Request"
+//	@Param		dto_request.CustomerOptionForDeliveryOrderFormRequest	body	dto_request.CustomerOptionForDeliveryOrderFormRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.CustomerResponse}}
 func (a *CustomerApi) OptionForDeliveryOrderForm() gin.HandlerFunc {
