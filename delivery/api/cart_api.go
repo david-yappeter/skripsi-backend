@@ -5,6 +5,7 @@ import (
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
 	"myapp/use_case"
+	"myapp/util"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -39,6 +40,38 @@ func (a *CartApi) GetActive() gin.HandlerFunc {
 				dto_response.Response{
 					Data: dto_response.DataResponse{
 						"cart": resp,
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/carts/in-active [get]
+//	@Summary	Get current user In-Active Cart
+//	@tags		Carts
+//	@Accept		json
+//	@Param		dto_request.CartFetchFetchInActiveRequest body dto_request.CartFetchFetchInActiveRequest true "Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{carts=[]dto_response.CartResponse}}
+func (a *CartApi) FetchInActive() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCartGetActive),
+		func(ctx apiContext) {
+			var request dto_request.CartFetchFetchInActiveRequest
+			ctx.mustBind(&request)
+
+			carts := a.cartUseCase.FetchInActive(ctx.context(), request)
+
+			nodes := util.ConvertArray(carts, dto_response.NewCartResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"carts": nodes,
 					},
 				},
 			)
@@ -144,6 +177,7 @@ func RegisterCartApi(router gin.IRouter, useCaseManager use_case.UseCaseManager)
 
 	routerGroup := router.Group("/carts")
 	routerGroup.GET("/active", api.GetActive())
+	routerGroup.GET("/in-active", api.FetchInActive())
 	routerGroup.POST("/items/:product_unit_id", api.AddItem())
 	routerGroup.PATCH("/items/:product_unit_id", api.UpdateItem())
 	routerGroup.DELETE("/items/:product_unit_id", api.DeleteItem())

@@ -45,8 +45,8 @@ func (u *cashierSessionUseCase) mustValidateCashierSessionUserNotDuplicate(ctx c
 	}
 }
 
-func (u *cashierSessionUseCase) mustValidateCashierSessionNoActiveCart(ctx context.Context, cashierSessionId string) {
-	isExist, err := u.repositoryManager.CartRepository().IsExistByCashierSessionIdAndIsActive(ctx, cashierSessionId, true)
+func (u *cashierSessionUseCase) mustValidateCashierSessionNoCart(ctx context.Context, cashierSessionId string) {
+	isExist, err := u.repositoryManager.CartRepository().IsExistByCashierSessionId(ctx, cashierSessionId)
 	panicIfErr(err)
 
 	if isExist {
@@ -109,7 +109,7 @@ func (u *cashierSessionUseCase) GetByCurrentUser(ctx context.Context) *model.Cas
 func (u *cashierSessionUseCase) End(ctx context.Context, request dto_request.CashierSessionEndRequest) model.CashierSession {
 	cashierSession := mustGetCashierSession(ctx, u.repositoryManager, request.CashierSessionId, false)
 
-	u.mustValidateCashierSessionNoActiveCart(ctx, cashierSession.Id)
+	u.mustValidateCashierSessionNoCart(ctx, cashierSession.Id)
 
 	cashierSession.EndingCash = &request.EndingCash
 	cashierSession.Status = data_type.CashierSessionStatusCompleted

@@ -16,6 +16,7 @@ type CartUseCase interface {
 
 	//  read
 	Fetch(ctx context.Context, request dto_request.CartFetchRequest) ([]model.Cart, int)
+	FetchInActive(ctx context.Context, request dto_request.CartFetchFetchInActiveRequest) []model.Cart
 	Get(ctx context.Context, request dto_request.CartGetRequest) model.Cart
 	GetCurrent(ctx context.Context) *model.Cart
 
@@ -180,6 +181,18 @@ func (u *cartUseCase) Fetch(ctx context.Context, request dto_request.CartFetchRe
 	panicIfErr(err)
 
 	return carts, total
+}
+
+func (u *cartUseCase) FetchInActive(ctx context.Context, request dto_request.CartFetchFetchInActiveRequest) []model.Cart {
+	queryOption := model.CartQueryOption{
+		IsActive: util.BoolP(false),
+		Phrase:   request.Phrase,
+	}
+
+	carts, err := u.repositoryManager.CartRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	return carts
 }
 
 func (u *cartUseCase) Get(ctx context.Context, request dto_request.CartGetRequest) model.Cart {

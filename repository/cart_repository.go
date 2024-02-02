@@ -18,6 +18,7 @@ type CartRepository interface {
 	Fetch(ctx context.Context, options ...model.CartQueryOption) ([]model.Cart, error)
 	Get(ctx context.Context, id string) (*model.Cart, error)
 	GetByCashierSessionIdAndIsActive(ctx context.Context, cashierSessionId string, isActive bool) (*model.Cart, error)
+	IsExistByCashierSessionId(ctx context.Context, cashierSessionId string) (bool, error)
 	IsExistByCashierSessionIdAndIsActive(ctx context.Context, cashierSessionId string, isActive bool) (bool, error)
 
 	// update
@@ -119,6 +120,17 @@ func (r *cartRepository) GetByCashierSessionIdAndIsActive(ctx context.Context, c
 		Where(squirrel.Eq{"is_active": isActive})
 
 	return r.get(ctx, stmt)
+}
+
+func (r *cartRepository) IsExistByCashierSessionId(ctx context.Context, cashierSessionId string) (bool, error) {
+	stmt := stmtBuilder.Select().Column(
+		stmtBuilder.Select("1").
+			From(model.CartTableName).
+			Where(squirrel.Eq{"cashier_session_id": cashierSessionId}).
+			Prefix("EXISTS (").Suffix(")"),
+	)
+
+	return isExist(r.db, ctx, stmt)
 }
 
 func (r *cartRepository) IsExistByCashierSessionIdAndIsActive(ctx context.Context, cashierSessionId string, isActive bool) (bool, error) {

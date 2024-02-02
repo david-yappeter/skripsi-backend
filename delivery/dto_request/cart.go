@@ -16,6 +16,10 @@ type CartFetchRequest struct {
 	Phrase *string        `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name CartFetchRequest
 
+type CartFetchFetchInActiveRequest struct {
+	Phrase *string `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name CartFetchFetchInActiveRequest
+
 type CartGetRequest struct {
 	CartId string `json:"-" swaggerignore:"true"`
 } // @name CartGetRequest
