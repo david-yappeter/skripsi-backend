@@ -17,6 +17,7 @@ type ProductRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.ProductQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.ProductQueryOption) ([]model.Product, error)
+	FetchByIds(ctx context.Context, ids []string) ([]model.Product, error)
 	Get(ctx context.Context, id string) (*model.Product, error)
 	IsExistByName(ctx context.Context, name string) (bool, error)
 
@@ -121,6 +122,14 @@ func (r *productRepository) Fetch(ctx context.Context, options ...model.ProductQ
 	}
 
 	stmt := r.prepareQuery(option)
+
+	return r.fetch(ctx, stmt)
+}
+
+func (r *productRepository) FetchByIds(ctx context.Context, ids []string) ([]model.Product, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.ProductTableName).
+		Where(squirrel.Eq{"id": ids})
 
 	return r.fetch(ctx, stmt)
 }

@@ -6,8 +6,9 @@ type ProductStock struct {
 	Id        string  `db:"id"`
 	ProductId string  `db:"product_id"`
 	Qty       float64 `db:"qty"`
-
 	Timestamp
+
+	Product *Product `db:"-"`
 }
 
 func (m *ProductStock) TableName() string {

@@ -128,6 +128,11 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionProductReceiveDeleteItem,
 		PermissionProductReceiveDeleteImage,
 
+		// product stock
+		PermissionProductStockFetch,
+		PermissionProductStockGet,
+		PermissionProductStockAdjustment,
+
 		// product_unit
 		PermissionProductUnitCreate,
 		PermissionProductUnitUpload,

@@ -290,6 +290,12 @@ func mustGetCart(ctx context.Context, repositoryManager repository.RepositoryMan
 	return *cart
 }
 
+func mustGetProductStock(ctx context.Context, repositoryManager repository.RepositoryManager, productStockId string, isValidate bool) model.ProductStock {
+	productStock, err := repositoryManager.ProductStockRepository().Get(ctx, productStockId)
+	panicIfRepositoryError(err, "PRODUCT_STOCK.NOT_FOUND", isValidate)
+	return *productStock
+}
+
 func shouldGetProductStockByProductId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string) *model.ProductStock {
 	productStock, err := repositoryManager.ProductStockRepository().GetByProductId(ctx, productId)
 	panicIfErr(err, constant.ErrNoData)

@@ -71,6 +71,11 @@ const (
 	PermissionProductReceiveDeleteItem   // PRODUCT_RECEIVE_DELETE_ITEM
 	PermissionProductReceiveDeleteImage  // PRODUCT_RECEIVE_DELETE_IMAGE
 
+	// product stock
+	PermissionProductStockFetch      // PRODUCT_STOCK_FETCH
+	PermissionProductStockGet        // PRODUCT_STOCK_GET
+	PermissionProductStockAdjustment // PRODUCT_STOCK_ADJUSTMENT
+
 	// product unit
 	PermissionProductUnitCreate                      // PRODUCT_UNIT_CREATE
 	PermissionProductUnitUpload                      // PRODUCT_UNIT_UPLOAD

@@ -57,7 +57,7 @@ func (a *UnitApi) Create() gin.HandlerFunc {
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.UnitResponse}}
 func (a *UnitApi) Fetch() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionUnitCreate),
+		data_type.PermissionP(data_type.PermissionUnitFetch),
 		func(ctx apiContext) {
 			var request dto_request.UnitFetchRequest
 			ctx.mustBind(&request)

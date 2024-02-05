@@ -17,6 +17,7 @@ type UseCaseManager interface {
 	PermissionUseCase() PermissionUseCase
 	ProductUseCase() ProductUseCase
 	ProductReceiveUseCase() ProductReceiveUseCase
+	ProductStockUseCase() ProductStockUseCase
 	ProductUnitUseCase() ProductUnitUseCase
 	RoleUseCase() RoleUseCase
 	SupplierTypeUseCase() SupplierTypeUseCase
@@ -35,6 +36,7 @@ type useCaseManager struct {
 	permissionUseCase     PermissionUseCase
 	productUseCase        ProductUseCase
 	productReceiveUseCase ProductReceiveUseCase
+	productStockUseCase   ProductStockUseCase
 	productUnitUseCase    ProductUnitUseCase
 	roleUseCase           RoleUseCase
 	supplierTypeUseCase   SupplierTypeUseCase
@@ -78,6 +80,10 @@ func (u *useCaseManager) ProductReceiveUseCase() ProductReceiveUseCase {
 	return u.productReceiveUseCase
 }
 
+func (u *useCaseManager) ProductStockUseCase() ProductStockUseCase {
+	return u.productStockUseCase
+}
+
 func (u *useCaseManager) ProductUnitUseCase() ProductUnitUseCase {
 	return u.productUnitUseCase
 }
@@ -116,6 +122,9 @@ func NewUseCaseManager(
 		balanceUseCase: NewBalanceUseCase(
 			repositoryManager,
 		),
+		cartUseCase: NewCartUseCase(
+			repositoryManager,
+		),
 		cashierSessionUseCase: NewCashierSessionUseCase(
 			repositoryManager,
 		),
@@ -137,6 +146,9 @@ func NewUseCaseManager(
 			repositoryManager,
 			filesystemManager.Main(),
 			filesystemManager.Tmp(),
+		),
+		productStockUseCase: NewProductStockUseCase(
+			repositoryManager,
 		),
 		productUnitUseCase: NewProductUnitUseCase(
 			repositoryManager,
