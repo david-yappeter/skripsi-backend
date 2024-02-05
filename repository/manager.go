@@ -20,6 +20,7 @@ type RepositoryManager interface {
 	CartRepository() CartRepository
 	CartItemRepository() CartItemRepository
 	CashierSessionRepository() CashierSessionRepository
+	CustomerDebtRepository() CustomerDebtRepository
 	CustomerRepository() CustomerRepository
 	DeliveryOrderRepository() DeliveryOrderRepository
 	DeliveryOrderDriverRepository() DeliveryOrderDriverRepository
@@ -51,6 +52,7 @@ type repositoryManager struct {
 	cartRepository                CartRepository
 	cartItemRepository            CartItemRepository
 	cashierSessionRepository      CashierSessionRepository
+	customerDebtRepository        CustomerDebtRepository
 	customerRepository            CustomerRepository
 	deliveryOrderRepository       DeliveryOrderRepository
 	deliveryOrderDriverRepository DeliveryOrderDriverRepository
@@ -119,6 +121,10 @@ func (r *repositoryManager) CartItemRepository() CartItemRepository {
 
 func (r *repositoryManager) CashierSessionRepository() CashierSessionRepository {
 	return r.cashierSessionRepository
+}
+
+func (r *repositoryManager) CustomerDebtRepository() CustomerDebtRepository {
+	return r.customerDebtRepository
 }
 
 func (r *repositoryManager) CustomerRepository() CustomerRepository {
@@ -225,6 +231,10 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		cashierSessionRepository: NewCashierSessionRepository(
+			db,
+			loggerStack,
+		),
+		customerDebtRepository: NewCustomerDebtRepository(
 			db,
 			loggerStack,
 		),
