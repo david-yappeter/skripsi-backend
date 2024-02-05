@@ -37,6 +37,19 @@ func (l *ProductStockLoader) ProductFn(product *model.Product) func() error {
 	}
 }
 
+func (l *ProductStockLoader) ProductUnitFn(productUnit *model.ProductUnit) func() error {
+	return func() error {
+		productStock, err := l.loadByProductId(productUnit.Id)
+		if err != nil {
+			return err
+		}
+
+		productUnit.ProductStock = productStock
+
+		return nil
+	}
+}
+
 func NewProductStockLoader(productStockRepository repository.ProductStockRepository) *ProductStockLoader {
 	batchByProductIdFn := func(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
 		ids := make([]string, len(keys))

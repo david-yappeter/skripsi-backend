@@ -5,5 +5,6 @@ type ProductReceiveStatus int // @name ProductReceiveStatusEnum
 
 const (
 	ProductReceiveStatusPending   ProductReceiveStatus = iota + 1 // PENDING
+	ProductReceiveStatusCanceled                                  // CANCELED
 	ProductReceiveStatusCompleted                                 // COMPLETED
 )

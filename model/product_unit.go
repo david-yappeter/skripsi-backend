@@ -10,8 +10,9 @@ type ProductUnit struct {
 	ProductId   string  `db:"product_id"`
 	Scale       float64 `db:"scale"`
 	ScaleToBase float64 `db:"scale_to_base"`
-
 	Timestamp
+
+	ProductStock *ProductStock `db:"-"`
 }
 
 func (m *ProductUnit) TableName() string {

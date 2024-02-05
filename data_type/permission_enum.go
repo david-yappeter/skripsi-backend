@@ -59,15 +59,17 @@ const (
 	PermissionProductOptionForDeliveryOrderForm  // PRODUCT_OPTION_FOR_DELIVERY_ORDER_FORM
 
 	// product receive
-	PermissionProductReceiveCreate      // PRODUCT_RECEIVE_CREATE
-	PermissionProductReceiveUpload      // PRODUCT_RECEIVE_UPLOAD
-	PermissionProductReceiveAddItem     // PRODUCT_RECEIVE_ADD_ITEM
-	PermissionProductReceiveAddImage    // PRODUCT_RECEIVE_ADD_IMAGE
-	PermissionProductReceiveFetch       // PRODUCT_RECEIVE_FETCH
-	PermissionProductReceiveGet         // PRODUCT_RECEIVE_GET
-	PermissionProductReceiveDelete      // PRODUCT_RECEIVE_DELETE
-	PermissionProductReceiveDeleteItem  // PRODUCT_RECEIVE_DELETE_ITEM
-	PermissionProductReceiveDeleteImage // PRODUCT_RECEIVE_DELETE_IMAGE
+	PermissionProductReceiveCreate       // PRODUCT_RECEIVE_CREATE
+	PermissionProductReceiveUpload       // PRODUCT_RECEIVE_UPLOAD
+	PermissionProductReceiveAddItem      // PRODUCT_RECEIVE_ADD_ITEM
+	PermissionProductReceiveAddImage     // PRODUCT_RECEIVE_ADD_IMAGE
+	PermissionProductReceiveCancel       // PRODUCT_RECEIVE_CANCEL
+	PermissionProductReceiveMarkComplete // PRODUCT_RECEIVE_MARK_COMPLETE
+	PermissionProductReceiveFetch        // PRODUCT_RECEIVE_FETCH
+	PermissionProductReceiveGet          // PRODUCT_RECEIVE_GET
+	PermissionProductReceiveDelete       // PRODUCT_RECEIVE_DELETE
+	PermissionProductReceiveDeleteItem   // PRODUCT_RECEIVE_DELETE_ITEM
+	PermissionProductReceiveDeleteImage  // PRODUCT_RECEIVE_DELETE_IMAGE
 
 	// product unit
 	PermissionProductUnitCreate                      // PRODUCT_UNIT_CREATE

@@ -144,6 +144,72 @@ func (a *ProductReceiveApi) AddImage() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/product-receives/{id}/cancel [patch]
+//	@Summary	Cancel
+//	@tags		Product Receives
+//	@Accept		json
+//	@Param		id											path	string										true	"Id"
+//	@Param		dto_request.ProductReceiveCancelRequest	body	dto_request.ProductReceiveCancelRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_receive=dto_response.ProductReceiveResponse}}
+func (a *ProductReceiveApi) Cancel() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionProductReceiveCancel),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.ProductReceiveCancelRequest
+			ctx.mustBind(&request)
+			request.ProductReceiveId = id
+
+			productReceive := a.productReceiveUseCase.Cancel(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"product_receive": dto_response.NewProductReceiveResponse(productReceive),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/product-receives/{id}/completed [patch]
+//	@Summary	Update Completed
+//	@tags		Product Receives
+//	@Accept		json
+//	@Param		id											path	string										true	"Id"
+//	@Param		dto_request.ProductReceiveMarkCompleteRequest	body	dto_request.ProductReceiveMarkCompleteRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_receive=dto_response.ProductReceiveResponse}}
+func (a *ProductReceiveApi) MarkComplete() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionProductReceiveMarkComplete),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.ProductReceiveMarkCompleteRequest
+			ctx.mustBind(&request)
+			request.ProductReceiveId = id
+
+			productReceive := a.productReceiveUseCase.MarkComplete(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"product_receive": dto_response.NewProductReceiveResponse(productReceive),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/product-receives/filter [post]
 //	@Summary	Filter
 //	@tags		Product Receives
@@ -325,6 +391,9 @@ func RegisterProductReceiveApi(router gin.IRouter, useCaseManager use_case.UseCa
 
 	routerGroup.POST("/:id/items", api.AddItem())
 	routerGroup.POST("/:id/images", api.AddImage())
+
+	routerGroup.PATCH("/:id/cancel", api.Cancel())
+	routerGroup.PATCH("/:id/completed", api.MarkComplete())
 
 	routerGroup.DELETE("/:id/items/:product_unit_id", api.DeleteItem())
 	routerGroup.DELETE("/:id/images/:file_id", api.DeleteImage())

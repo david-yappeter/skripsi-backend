@@ -14,19 +14,22 @@ func _() {
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
 	_ = x[ProductReceiveStatusPending-1]
-	_ = x[ProductReceiveStatusCompleted-2]
+	_ = x[ProductReceiveStatusCanceled-2]
+	_ = x[ProductReceiveStatusCompleted-3]
 }
 
-const _ProductReceiveStatus_nameReadable = "PENDING, COMPLETED"
+const _ProductReceiveStatus_nameReadable = "PENDING, CANCELED, COMPLETED"
 
-const _ProductReceiveStatus_name = "PENDINGCOMPLETED"
+const _ProductReceiveStatus_name = "PENDINGCANCELEDCOMPLETED"
 
-var _ProductReceiveStatus_index = [...]uint8{0, 7, 16}
+var _ProductReceiveStatus_index = [...]uint8{0, 7, 15, 24}
 
 func (i *ProductReceiveStatus) determine(s string) {
 	switch s {
 	case "PENDING":
 		*i = ProductReceiveStatusPending
+	case "CANCELED":
+		*i = ProductReceiveStatusCanceled
 	case "COMPLETED":
 		*i = ProductReceiveStatusCompleted
 	default:
@@ -98,6 +101,7 @@ func ProductReceiveStatusP(v ProductReceiveStatus) *ProductReceiveStatus {
 func ListProductReceiveStatus() []ProductReceiveStatus {
 	return []ProductReceiveStatus{
 		ProductReceiveStatusPending,
+		ProductReceiveStatusCanceled,
 		ProductReceiveStatusCompleted,
 	}
 }
@@ -105,6 +109,7 @@ func ListProductReceiveStatus() []ProductReceiveStatus {
 func ListProductReceiveStatusString() []string {
 	return []string{
 		ProductReceiveStatusPending.String(),
+		ProductReceiveStatusCanceled.String(),
 		ProductReceiveStatusCompleted.String(),
 	}
 }

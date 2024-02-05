@@ -20,6 +20,8 @@ import (
 type productReceivesLoaderParams struct {
 	productReceiveItems  bool
 	productReceiveImages bool
+
+	productReceiveProductStock bool
 }
 
 type ProductReceiveUseCase interface {
@@ -34,7 +36,8 @@ type ProductReceiveUseCase interface {
 	Get(ctx context.Context, request dto_request.ProductReceiveGetRequest) model.ProductReceive
 
 	// update
-	MarkCompleted(ctx context.Context, request dto_request.ProductReceiveMarkCompletedRequest) model.ProductReceive
+	Cancel(ctx context.Context, request dto_request.ProductReceiveCancelRequest) model.ProductReceive
+	MarkComplete(ctx context.Context, request dto_request.ProductReceiveMarkCompleteRequest) model.ProductReceive
 
 	// delete
 	Delete(ctx context.Context, request dto_request.ProductReceiveDeleteRequest)
@@ -87,6 +90,7 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 		}),
 	)
 
+	productUnitLoader := loader.NewProductUnitLoader(u.repositoryManager.ProductUnitRepository())
 	fileLoader := loader.NewFileLoader(u.repositoryManager.FileRepository())
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
@@ -94,6 +98,25 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 				if option.productReceiveImages {
 					for j := range productReceives[i].ProductReceiveImages {
 						group.Go(fileLoader.ProductReceiveImageFn(&productReceives[i].ProductReceiveImages[j]))
+					}
+				}
+
+				if option.productReceiveItems {
+					for j := range productReceives[i].ProductReceiveItems {
+						group.Go(productUnitLoader.ProductReceiveItemFn(&productReceives[i].ProductReceiveItems[j]))
+					}
+				}
+			}
+		}),
+	)
+
+	productStockLoader := loader.NewProductStockLoader(u.repositoryManager.ProductStockRepository())
+	panicIfErr(
+		util.Await(func(group *errgroup.Group) {
+			for i := range productReceives {
+				if option.productReceiveItems && option.productReceiveProductStock {
+					for j := range productReceives[i].ProductReceiveItems {
+						group.Go(productStockLoader.ProductUnitFn(productReceives[i].ProductReceiveItems[j].ProductUnit))
 					}
 				}
 			}
@@ -277,23 +300,122 @@ func (u *productReceiveUseCase) Get(ctx context.Context, request dto_request.Pro
 	return productReceive
 }
 
-func (u *productReceiveUseCase) MarkCompleted(ctx context.Context, request dto_request.ProductReceiveMarkCompletedRequest) model.ProductReceive {
+func (u *productReceiveUseCase) Cancel(ctx context.Context, request dto_request.ProductReceiveCancelRequest) model.ProductReceive {
+	var (
+		toBeRemovedStockByProductId map[string]float64            = nil
+		productStockByProductId     map[string]model.ProductStock = nil
+	)
+
 	productReceive := mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, true)
+
+	if productReceive.Status == data_type.ProductReceiveStatusCanceled {
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.ALREADY_CANCELED"))
+	}
+
+	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
+		productReceiveItems: true,
+	})
+
+	switch productReceive.Status {
+	case data_type.ProductReceiveStatusCompleted:
+		u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
+			productReceiveProductStock: true,
+		})
+
+		if len(productReceive.ProductReceiveItems) > 0 {
+			toBeRemovedStockByProductId = make(map[string]float64)
+			productStockByProductId = make(map[string]model.ProductStock)
+		}
+
+		for _, productReceiveItem := range productReceive.ProductReceiveItems {
+			productStockByProductId[productReceiveItem.ProductUnit.ProductId] = *productReceiveItem.ProductUnit.ProductStock
+			toBeRemovedStockByProductId[productReceiveItem.ProductUnit.ProductId] += productReceiveItem.Qty * productReceiveItem.ProductUnit.ScaleToBase
+		}
+
+		for productId, removedStock := range toBeRemovedStockByProductId {
+			productStock := productStockByProductId[productId]
+			productStock.Qty -= removedStock
+			productStockByProductId[productId] = productStock
+		}
+	}
+
+	productReceive.Status = data_type.ProductReceiveStatusCanceled
+
+	panicIfErr(
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			productReceiveRepository := u.repositoryManager.ProductReceiveRepository()
+			productStockRepository := u.repositoryManager.ProductStockRepository()
+
+			if err := productReceiveRepository.Update(ctx, &productReceive); err != nil {
+				return err
+			}
+
+			for _, productStock := range productStockByProductId {
+				if err := productStockRepository.Update(ctx, &productStock); err != nil {
+					return err
+				}
+			}
+
+			return nil
+		}),
+	)
+
+	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
+		productReceiveImages: true,
+	})
+
+	return productReceive
+}
+
+func (u *productReceiveUseCase) MarkComplete(ctx context.Context, request dto_request.ProductReceiveMarkCompleteRequest) model.ProductReceive {
+	var (
+		toBeAddedStockByProductId map[string]float64            = make(map[string]float64)
+		productStockByProductId   map[string]model.ProductStock = make(map[string]model.ProductStock)
+	)
+
+	productReceive := mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, true)
+
+	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
+		productReceiveItems:        true,
+		productReceiveImages:       true,
+		productReceiveProductStock: true,
+	})
 
 	if productReceive.Status != data_type.ProductReceiveStatusPending {
 		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.STATUS.MUST_BE_PENDING"))
 	}
 
+	for _, productReceiveItem := range productReceive.ProductReceiveItems {
+		productStockByProductId[productReceiveItem.ProductUnit.ProductId] = *productReceiveItem.ProductUnit.ProductStock
+		toBeAddedStockByProductId[productReceiveItem.ProductUnit.ProductId] += productReceiveItem.Qty * productReceiveItem.ProductUnit.ScaleToBase
+	}
+
+	for productId, addedStock := range toBeAddedStockByProductId {
+		productStock := productStockByProductId[productId]
+		productStock.Qty += addedStock
+		productStockByProductId[productId] = productStock
+	}
+
 	productReceive.Status = data_type.ProductReceiveStatusCompleted
 
 	panicIfErr(
-		u.repositoryManager.ProductReceiveRepository().Update(ctx, &productReceive),
-	)
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			productReceiveRepository := u.repositoryManager.ProductReceiveRepository()
+			productStockRepository := u.repositoryManager.ProductStockRepository()
 
-	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
-		productReceiveItems:  true,
-		productReceiveImages: true,
-	})
+			if err := productReceiveRepository.Update(ctx, &productReceive); err != nil {
+				return err
+			}
+
+			for _, productStock := range productStockByProductId {
+				if err := productStockRepository.Update(ctx, &productStock); err != nil {
+					return err
+				}
+			}
+
+			return nil
+		}),
+	)
 
 	return productReceive
 }

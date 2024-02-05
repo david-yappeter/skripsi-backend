@@ -120,6 +120,8 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionProductReceiveUpload,
 		PermissionProductReceiveAddItem,
 		PermissionProductReceiveAddImage,
+		PermissionProductReceiveCancel,
+		PermissionProductReceiveMarkComplete,
 		PermissionProductReceiveFetch,
 		PermissionProductReceiveGet,
 		PermissionProductReceiveDelete,

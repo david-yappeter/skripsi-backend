@@ -45,9 +45,13 @@ type ProductReceiveGetRequest struct {
 	ProductReceiveId string `json:"-" swaggerignore:"true"`
 } // @name ProductReceiveGetRequest
 
-type ProductReceiveMarkCompletedRequest struct {
+type ProductReceiveCancelRequest struct {
 	ProductReceiveId string `json:"-" swaggerignore:"true"`
-} // @name ProductReceiveMarkCompletedRequest
+} // @name ProductReceiveCancelRequest
+
+type ProductReceiveMarkCompleteRequest struct {
+	ProductReceiveId string `json:"-" swaggerignore:"true"`
+} // @name ProductReceiveMarkCompleteRequest
 
 type ProductReceiveDeleteRequest struct {
 	ProductReceiveId string `json:"-" swaggerignore:"true"`

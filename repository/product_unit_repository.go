@@ -18,6 +18,7 @@ type ProductUnitRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.ProductUnitQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.ProductUnitQueryOption) ([]model.ProductUnit, error)
+	FetchByIds(ctx context.Context, ids []string) ([]model.ProductUnit, error)
 	Get(ctx context.Context, id string) (*model.ProductUnit, error)
 	GetByProductIdAndUnitId(ctx context.Context, productId string, unitId string) (*model.ProductUnit, error)
 	IsExistByProductIdAndUnitId(ctx context.Context, productId string, unitId string) (bool, error)
@@ -117,6 +118,14 @@ func (r *productProductUnitRepository) Fetch(ctx context.Context, options ...mod
 	}
 
 	stmt := r.prepareQuery(option)
+
+	return r.fetch(ctx, stmt)
+}
+
+func (r *productProductUnitRepository) FetchByIds(ctx context.Context, ids []string) ([]model.ProductUnit, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.ProductUnitTableName).
+		Where(squirrel.Eq{"id": ids})
 
 	return r.fetch(ctx, stmt)
 }

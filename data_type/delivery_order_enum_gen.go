@@ -13,22 +13,22 @@ func _() {
 	// An "invalid array index" compiler error signifies that the constant values have changed.
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
-	_ = x[DeliveryOrderStatusDraft-1]
+	_ = x[DeliveryOrderStatusPending-1]
 	_ = x[DeliveryOrderStatusOngoing-2]
 	_ = x[DeliveryOrderStatusCanceled-3]
 	_ = x[DeliveryOrderStatusCompleted-4]
 }
 
-const _DeliveryOrderStatus_nameReadable = "DRAFT, ONGOING, CANCELED, COMPLETED"
+const _DeliveryOrderStatus_nameReadable = "PENDING, ONGOING, CANCELED, COMPLETED"
 
-const _DeliveryOrderStatus_name = "DRAFTONGOINGCANCELEDCOMPLETED"
+const _DeliveryOrderStatus_name = "PENDINGONGOINGCANCELEDCOMPLETED"
 
-var _DeliveryOrderStatus_index = [...]uint8{0, 5, 12, 20, 29}
+var _DeliveryOrderStatus_index = [...]uint8{0, 7, 14, 22, 31}
 
 func (i *DeliveryOrderStatus) determine(s string) {
 	switch s {
-	case "DRAFT":
-		*i = DeliveryOrderStatusDraft
+	case "PENDING":
+		*i = DeliveryOrderStatusPending
 	case "ONGOING":
 		*i = DeliveryOrderStatusOngoing
 	case "CANCELED":
@@ -103,7 +103,7 @@ func DeliveryOrderStatusP(v DeliveryOrderStatus) *DeliveryOrderStatus {
 
 func ListDeliveryOrderStatus() []DeliveryOrderStatus {
 	return []DeliveryOrderStatus{
-		DeliveryOrderStatusDraft,
+		DeliveryOrderStatusPending,
 		DeliveryOrderStatusOngoing,
 		DeliveryOrderStatusCanceled,
 		DeliveryOrderStatusCompleted,
@@ -112,7 +112,7 @@ func ListDeliveryOrderStatus() []DeliveryOrderStatus {
 
 func ListDeliveryOrderStatusString() []string {
 	return []string{
-		DeliveryOrderStatusDraft.String(),
+		DeliveryOrderStatusPending.String(),
 		DeliveryOrderStatusOngoing.String(),
 		DeliveryOrderStatusCanceled.String(),
 		DeliveryOrderStatusCompleted.String(),

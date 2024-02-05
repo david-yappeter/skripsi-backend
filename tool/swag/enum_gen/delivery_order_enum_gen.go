@@ -11,7 +11,7 @@ func init() {
 		SchemaProps: spec.SchemaProps{
 			Type: []string{"string"},
 			Enum: []interface{}{
-				"DRAFT",
+				"PENDING",
 				"ONGOING",
 				"CANCELED",
 				"COMPLETED",
