@@ -20,6 +20,8 @@ import (
 type deliveryOrdersLoaderParams struct {
 	deliveryOrderItems  bool
 	deliveryOrderImages bool
+
+	deliveryOrderProductStock bool
 }
 
 type DeliveryOrderUseCase interface {
@@ -92,6 +94,7 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 	)
 
 	fileLoader := loader.NewFileLoader(u.repositoryManager.FileRepository())
+	productUnitLoader := loader.NewProductUnitLoader(u.repositoryManager.ProductUnitRepository())
 
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
@@ -99,6 +102,25 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 				if option.deliveryOrderImages {
 					for j := range deliveryOrders[i].DeliveryOrderImages {
 						group.Go(fileLoader.DeliveryOrderImageFn(&deliveryOrders[i].DeliveryOrderImages[j]))
+					}
+				}
+
+				if option.deliveryOrderItems {
+					for j := range deliveryOrders[i].DeliveryOrderItems {
+						group.Go(productUnitLoader.DeliveryOrderItemFn(&deliveryOrders[i].DeliveryOrderItems[j]))
+					}
+				}
+			}
+		}),
+	)
+
+	productStockLoader := loader.NewProductStockLoader(u.repositoryManager.ProductStockRepository())
+	panicIfErr(
+		util.Await(func(group *errgroup.Group) {
+			for i := range deliveryOrders {
+				if option.deliveryOrderItems && option.deliveryOrderProductStock {
+					for j := range deliveryOrders[i].DeliveryOrderItems {
+						group.Go(productStockLoader.ProductUnitFn(deliveryOrders[i].DeliveryOrderItems[j].ProductUnit))
 					}
 				}
 			}
@@ -319,27 +341,53 @@ func (u *deliveryOrderUseCase) Get(ctx context.Context, request dto_request.Deli
 }
 
 func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.DeliveryOrderCancelRequest) model.DeliveryOrder {
+	var (
+		toBeAddedStockByProductId map[string]float64            = make(map[string]float64)
+		productStockByProductId   map[string]model.ProductStock = make(map[string]model.ProductStock)
+	)
+
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
 
-	if deliveryOrder.Status != data_type.DeliveryOrderStatusPending {
-		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
+	if deliveryOrder.Status == data_type.DeliveryOrderStatusCompleted {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.ALREADY_COMPLETED"))
+	}
+
+	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		deliveryOrderItems:        true,
+		deliveryOrderImages:       true,
+		deliveryOrderProductStock: true,
+	})
+
+	switch deliveryOrder.Status {
+	case data_type.DeliveryOrderStatusOngoing:
+		for _, deliveryOrderItem := range deliveryOrder.DeliveryOrderItems {
+			productStockByProductId[deliveryOrderItem.ProductUnit.ProductId] = *deliveryOrderItem.ProductUnit.ProductStock
+			toBeAddedStockByProductId[deliveryOrderItem.ProductUnit.ProductId] += deliveryOrderItem.Qty * deliveryOrderItem.ProductUnit.ScaleToBase
+		}
+
+		for productId, addedStock := range toBeAddedStockByProductId {
+			productStock := productStockByProductId[productId]
+			productStock.Qty += addedStock
+			productStockByProductId[productId] = productStock
+		}
 	}
 
 	// change status
 	deliveryOrder.Status = data_type.DeliveryOrderStatusCanceled
 
-	// // remove stock
-	// deliveryOrderItems, err := u.repositoryManager.DeliveryOrderItemRepository().FetchByDeliveryOrderIds(ctx, []string{deliveryOrder.Id})
-	// panicIfErr(err)
-
-	// productStocks, err := u.repositoryManager.ProductStockRepository().FetchByProductIds()
-
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
 			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
+			productStockRepository := u.repositoryManager.ProductStockRepository()
 
 			if err := deliveryOrderRepository.Update(ctx, &deliveryOrder); err != nil {
 				return err
+			}
+
+			for _, productStock := range productStockByProductId {
+				if err := productStockRepository.Update(ctx, &productStock); err != nil {
+					return err
+				}
 			}
 
 			return nil
@@ -350,26 +398,63 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 }
 
 func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_request.DeliveryOrderMarkOngoingRequest) model.DeliveryOrder {
+	var (
+		toBeRemovedStockByProductId map[string]float64            = nil
+		productStockByProductId     map[string]model.ProductStock = nil
+	)
+
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
 
 	if deliveryOrder.Status != data_type.DeliveryOrderStatusPending {
 		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
 	}
 
+	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		deliveryOrderItems: true,
+	})
+
 	// change status
 	deliveryOrder.Status = data_type.DeliveryOrderStatusOngoing
+
+	// remove stock
+	if len(deliveryOrder.DeliveryOrderItems) > 0 {
+		toBeRemovedStockByProductId = make(map[string]float64)
+		productStockByProductId = make(map[string]model.ProductStock)
+	}
+
+	for _, productReceiveItem := range deliveryOrder.DeliveryOrderItems {
+		productStockByProductId[productReceiveItem.ProductUnit.ProductId] = *productReceiveItem.ProductUnit.ProductStock
+		toBeRemovedStockByProductId[productReceiveItem.ProductUnit.ProductId] += productReceiveItem.Qty * productReceiveItem.ProductUnit.ScaleToBase
+	}
+
+	for productId, removedStock := range toBeRemovedStockByProductId {
+		productStock := productStockByProductId[productId]
+		productStock.Qty -= removedStock
+		productStockByProductId[productId] = productStock
+	}
 
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
 			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
+			productStockRepository := u.repositoryManager.ProductStockRepository()
 
 			if err := deliveryOrderRepository.Update(ctx, &deliveryOrder); err != nil {
 				return err
 			}
 
+			for _, productStock := range productStockByProductId {
+				if err := productStockRepository.Update(ctx, &productStock); err != nil {
+					return err
+				}
+			}
+
 			return nil
 		}),
 	)
+
+	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		deliveryOrderImages: true,
+	})
 
 	return deliveryOrder
 }

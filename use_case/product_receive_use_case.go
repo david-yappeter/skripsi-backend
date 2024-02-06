@@ -313,7 +313,8 @@ func (u *productReceiveUseCase) Cancel(ctx context.Context, request dto_request.
 	}
 
 	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
-		productReceiveItems: true,
+		productReceiveItems:        true,
+		productReceiveProductStock: true,
 	})
 
 	switch productReceive.Status {
