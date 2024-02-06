@@ -5,12 +5,14 @@ import "myapp/data_type"
 const CustomerDebtTableName = "customer_debts"
 
 type CustomerDebt struct {
-	Id              string             `db:"id"`
-	CustomerId      string             `db:"customer_id"`
-	DueDate         data_type.NullDate `db:"due_date"`
-	Status          string             `db:"status"`
-	Amount          float64            `db:"amount"`
-	RemainingAmount float64            `db:"remaining_amount"`
+	Id              string                           `db:"id"`
+	CustomerId      string                           `db:"customer_id"`
+	DebtSource      data_type.CustomerDebtDebtSource `db:"debt_source"`
+	DebtSourceId    string                           `db:"debt_source_id"`
+	DueDate         data_type.NullDate               `db:"due_date"`
+	Status          data_type.CustomerDebtStatus     `db:"status"`
+	Amount          float64                          `db:"amount"`
+	RemainingAmount float64                          `db:"remaining_amount"`
 
 	Timestamp
 }
@@ -40,6 +42,7 @@ type CustomerDebtQueryOption struct {
 	QueryOption
 
 	CustomerId *string
+	Status     *data_type.CustomerDebtStatus
 	Phrase     *string
 }
 

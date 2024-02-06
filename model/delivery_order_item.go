@@ -9,8 +9,9 @@ type DeliveryOrderItem struct {
 	UserId          string  `db:"user_id"`
 	Qty             float64 `db:"qty"`
 	PricePerUnit    float64 `db:"price_per_unit"`
-
 	Timestamp
+
+	ProductUnit *ProductUnit `db:"-"`
 }
 
 func (m *DeliveryOrderItem) TableName() string {

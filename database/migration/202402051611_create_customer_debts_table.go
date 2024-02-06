@@ -7,6 +7,8 @@ func init() {
 			CREATE TABLE IF NOT EXISTS customer_debts (
 				id char(36) NOT NULL,
 				customer_id char(36) NOT NULL,
+				debt_source varchar(255) NOT NULL,
+				debt_source_id varchar(255) NOT NULL,
 				due_date date NULL,
 				status varchar(255) NOT NULL,
 				amount decimal(16,2) NOT NULL,
