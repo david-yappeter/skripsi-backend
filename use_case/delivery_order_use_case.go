@@ -353,13 +353,16 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 	}
 
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
-		deliveryOrderItems:        true,
-		deliveryOrderImages:       true,
-		deliveryOrderProductStock: true,
+		deliveryOrderItems:  true,
+		deliveryOrderImages: true,
 	})
 
 	switch deliveryOrder.Status {
 	case data_type.DeliveryOrderStatusOngoing:
+		u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+			deliveryOrderProductStock: true,
+		})
+
 		for _, deliveryOrderItem := range deliveryOrder.DeliveryOrderItems {
 			productStockByProductId[deliveryOrderItem.ProductUnit.ProductId] = *deliveryOrderItem.ProductUnit.ProductStock
 			toBeAddedStockByProductId[deliveryOrderItem.ProductUnit.ProductId] += deliveryOrderItem.Qty * deliveryOrderItem.ProductUnit.ScaleToBase
@@ -410,7 +413,8 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 	}
 
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
-		deliveryOrderItems: true,
+		deliveryOrderItems:        true,
+		deliveryOrderProductStock: true,
 	})
 
 	// change status
