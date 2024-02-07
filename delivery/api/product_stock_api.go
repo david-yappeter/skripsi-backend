@@ -89,7 +89,7 @@ func (a *ProductStockApi) Get() gin.HandlerFunc {
 //	@Summary	Adjustment
 //	@tags		Product Stocks
 //	@Accept		json
-//	@Param		id								path	string							true	"Id"
+//	@Param		id											path	string										true	"Id"
 //	@Param		dto_request.ProductStockAdjustmentRequest	body	dto_request.ProductStockAdjustmentRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_stock=dto_response.ProductStockResponse}}

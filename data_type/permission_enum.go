@@ -33,6 +33,12 @@ const (
 	PermissionCustomerDelete                     // CUSTOMER_DELETE
 	PermissionCustomerOptionForDeliveryOrderForm // CUSTOMER_OPTION_FOR_DELIVERY_ORDER_FORM
 
+	// customer debt
+	PermissionCustomerDebtUploadImage // CUSTOMER_DEBT_UPLOAD_IMAGE
+	PermissionCustomerDebtFetch       // CUSTOMER_DEBT_FETCH
+	PermissionCustomerDebtGet         // CUSTOMER_DEBT_GET
+	PermissionCustomerDebtPayment     // CUSTOMER_DEBT_PAYMENT
+
 	// delivery order
 	PermissionDeliveryOrderCreate        // DELIVERY_ORDER_CREATE
 	PermissionDeliveryOrderUpload        // DELIVERY_ORDER_UPLOAD

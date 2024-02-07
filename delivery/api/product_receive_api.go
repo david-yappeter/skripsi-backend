@@ -148,7 +148,7 @@ func (a *ProductReceiveApi) AddImage() gin.HandlerFunc {
 //	@Summary	Cancel
 //	@tags		Product Receives
 //	@Accept		json
-//	@Param		id											path	string										true	"Id"
+//	@Param		id										path	string									true	"Id"
 //	@Param		dto_request.ProductReceiveCancelRequest	body	dto_request.ProductReceiveCancelRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_receive=dto_response.ProductReceiveResponse}}
@@ -181,7 +181,7 @@ func (a *ProductReceiveApi) Cancel() gin.HandlerFunc {
 //	@Summary	Update Completed
 //	@tags		Product Receives
 //	@Accept		json
-//	@Param		id											path	string										true	"Id"
+//	@Param		id												path	string											true	"Id"
 //	@Param		dto_request.ProductReceiveMarkCompleteRequest	body	dto_request.ProductReceiveMarkCompleteRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_receive=dto_response.ProductReceiveResponse}}
