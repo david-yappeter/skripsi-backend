@@ -7,6 +7,7 @@ const CustomerPaymentTableName = "customer_payments"
 type CustomerPayment struct {
 	Id             string             `db:"id"`
 	UserId         string             `db:"user_id"`
+	ImageFileId    string             `db:"image_file_id"`
 	CustomerDebtId string             `db:"customer_debt_id"`
 	Amount         float64            `db:"amount"`
 	Description    *string            `db:"description"`
@@ -27,6 +28,7 @@ func (m *CustomerPayment) ToMap() map[string]interface{} {
 	return map[string]interface{}{
 		"id":               m.Id,
 		"user_id":          m.UserId,
+		"image_file_id":    m.ImageFileId,
 		"customer_debt_id": m.CustomerDebtId,
 		"amount":           m.Amount,
 		"description":      m.Description,
