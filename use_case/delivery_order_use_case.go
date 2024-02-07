@@ -295,12 +295,6 @@ func (u *deliveryOrderUseCase) AddDriver(ctx context.Context, request dto_reques
 }
 
 func (u *deliveryOrderUseCase) Upload(ctx context.Context, request dto_request.DeliveryOrderUploadRequest) string {
-	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, false)
-
-	if deliveryOrder.Status != data_type.DeliveryOrderStatusPending {
-		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
-	}
-
 	return u.baseFileUseCase.mustUploadFileToTemporary(
 		ctx,
 		constant.DeliveryOrderImagePath,

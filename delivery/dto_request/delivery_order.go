@@ -32,8 +32,6 @@ type DeliveryOrderAddDriverRequest struct {
 
 type DeliveryOrderUploadRequest struct {
 	File *multipart.FileHeader `json:"file" validate:"required"`
-
-	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderUploadRequest
 
 type DeliveryOrderFetchSorts []struct {
