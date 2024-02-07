@@ -19,6 +19,7 @@ type CustomerDebtRepository interface {
 	Count(ctx context.Context, options ...model.CustomerDebtQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.CustomerDebtQueryOption) ([]model.CustomerDebt, error)
 	Get(ctx context.Context, id string) (*model.CustomerDebt, error)
+	GetByDebtSourceAndDebtSourceId(ctx context.Context, debtSource data_type.CustomerDebtDebtSource, debtSourceId string) (*model.CustomerDebt, error)
 
 	// update
 	Update(ctx context.Context, customerDebt *model.CustomerDebt) error
@@ -129,6 +130,15 @@ func (r *customerDebtRepository) Get(ctx context.Context, id string) (*model.Cus
 	stmt := stmtBuilder.Select("*").
 		From(model.CustomerDebtTableName).
 		Where(squirrel.Eq{"id": id})
+
+	return r.get(ctx, stmt)
+}
+
+func (r *customerDebtRepository) GetByDebtSourceAndDebtSourceId(ctx context.Context, debtSource data_type.CustomerDebtDebtSource, debtSourceId string) (*model.CustomerDebt, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.CustomerDebtTableName).
+		Where(squirrel.Eq{"debt_source": debtSource}).
+		Where(squirrel.Eq{"debt_source_id": debtSourceId})
 
 	return r.get(ctx, stmt)
 }
