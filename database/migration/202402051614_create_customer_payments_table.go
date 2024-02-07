@@ -7,6 +7,7 @@ func init() {
 			CREATE TABLE IF NOT EXISTS customer_payments (
 				id char(36) NOT NULL,
 				user_id char(36) NOT NULL,
+				image_file_id char(36) NOT NULL,
 				customer_debt_id char(36) NOT NULL,
 				amount decimal(16,2) NOT NULL,
 				description text NULL,
@@ -14,6 +15,7 @@ func init() {
 				created_at timestamp NOT NULL,
 				updated_at timestamp NOT NULL,
 				CONSTRAINT customer_payments_pk PRIMARY KEY (id),
+				CONSTRAINT customer_payment_files_fk FOREIGN KEY (image_file_id) REFERENCES files (id),
 				CONSTRAINT customer_payments_customer_debts_fk FOREIGN KEY (customer_debt_id) REFERENCES customer_debts (id)
 			);
 		`,
