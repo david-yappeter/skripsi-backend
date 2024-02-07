@@ -296,6 +296,12 @@ func mustGetProductStock(ctx context.Context, repositoryManager repository.Repos
 	return *productStock
 }
 
+func mustGetCustomerDebt(ctx context.Context, repositoryManager repository.RepositoryManager, customerDebtId string, isValidate bool) model.CustomerDebt {
+	customerDebt, err := repositoryManager.CustomerDebtRepository().Get(ctx, customerDebtId)
+	panicIfRepositoryError(err, "CUSTOMER_DEBT.NOT_FOUND", isValidate)
+	return *customerDebt
+}
+
 func shouldGetProductStockByProductId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string) *model.ProductStock {
 	productStock, err := repositoryManager.ProductStockRepository().GetByProductId(ctx, productId)
 	panicIfErr(err, constant.ErrNoData)

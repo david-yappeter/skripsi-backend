@@ -344,12 +344,18 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 	var (
 		toBeAddedStockByProductId map[string]float64            = make(map[string]float64)
 		productStockByProductId   map[string]model.ProductStock = make(map[string]model.ProductStock)
+		toBeCanceledCustomerDebt  *model.CustomerDebt           = nil
+		err                       error
 	)
 
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
 
-	if deliveryOrder.Status == data_type.DeliveryOrderStatusCompleted {
+	switch deliveryOrder.Status {
+	case data_type.DeliveryOrderStatusCompleted:
 		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.ALREADY_COMPLETED"))
+
+	case data_type.DeliveryOrderStatusCanceled:
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.ALREADY_CANCELED"))
 	}
 
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
@@ -359,6 +365,7 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 
 	switch deliveryOrder.Status {
 	case data_type.DeliveryOrderStatusOngoing:
+		// add canceled stock back if already 'OnGoing' status
 		u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
 			deliveryOrderProductStock: true,
 		})
@@ -373,6 +380,12 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 			productStock.Qty += addedStock
 			productStockByProductId[productId] = productStock
 		}
+
+		// cancel customer debt if already 'onGoing' status
+		toBeCanceledCustomerDebt, err = u.repositoryManager.CustomerDebtRepository().GetByDebtSourceAndDebtSourceId(ctx, data_type.CustomerDebtDebtSourceDeliveryOrder, deliveryOrder.Id)
+		panicIfErr(err)
+
+		toBeCanceledCustomerDebt.Status = data_type.CustomerDebtStatusCanceled
 	}
 
 	// change status
@@ -380,6 +393,7 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			customerDebtRepository := u.repositoryManager.CustomerDebtRepository()
 			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
 			productStockRepository := u.repositoryManager.ProductStockRepository()
 
@@ -389,6 +403,12 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 
 			for _, productStock := range productStockByProductId {
 				if err := productStockRepository.Update(ctx, &productStock); err != nil {
+					return err
+				}
+			}
+
+			if toBeCanceledCustomerDebt != nil {
+				if err := customerDebtRepository.Update(ctx, toBeCanceledCustomerDebt); err != nil {
 					return err
 				}
 			}
@@ -417,6 +437,18 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 		deliveryOrderProductStock: true,
 	})
 
+	// initialize customer debt
+	customerDebt := model.CustomerDebt{
+		Id:              util.NewUuid(),
+		CustomerId:      deliveryOrder.CustomerId,
+		DebtSource:      data_type.CustomerDebtDebtSourceDeliveryOrder,
+		DebtSourceId:    deliveryOrder.Id,
+		DueDate:         data_type.NewNullDate(nil),
+		Status:          data_type.CustomerDebtStatusUnpaid,
+		Amount:          deliveryOrder.TotalPrice,
+		RemainingAmount: deliveryOrder.TotalPrice,
+	}
+
 	// change status
 	deliveryOrder.Status = data_type.DeliveryOrderStatusOngoing
 
@@ -439,6 +471,7 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			customerDebtRepository := u.repositoryManager.CustomerDebtRepository()
 			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
 			productStockRepository := u.repositoryManager.ProductStockRepository()
 
@@ -450,6 +483,10 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 				if err := productStockRepository.Update(ctx, &productStock); err != nil {
 					return err
 				}
+			}
+
+			if err := customerDebtRepository.Insert(ctx, &customerDebt); err != nil {
+				return err
 			}
 
 			return nil
@@ -486,6 +523,10 @@ func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_re
 
 func (u *deliveryOrderUseCase) Delete(ctx context.Context, request dto_request.DeliveryOrderDeleteRequest) {
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
+
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusPending {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
+	}
 
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
@@ -577,3 +618,10 @@ func (u *deliveryOrderUseCase) DeleteDriver(ctx context.Context, request dto_req
 
 	return deliveryOrder
 }
+
+/*
+	Notes:
+	- Delivery Order can only be cancel if status 'PENDING' or 'ONGOING'
+	- Customer Debt will only be created when status changed from 'PENDING' to 'ONGOING'
+	- If Delivery Order canceled, the Customer Debt will be canceled
+*/

@@ -12,6 +12,7 @@ func init() {
 			Type: []string{"string"},
 			Enum: []interface{}{
 				"UNPAID",
+				"CANCELED",
 				"PAID",
 			},
 		},

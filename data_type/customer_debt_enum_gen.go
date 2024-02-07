@@ -14,19 +14,22 @@ func _() {
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
 	_ = x[CustomerDebtStatusUnpaid-1]
-	_ = x[CustomerDebtStatusPaid-2]
+	_ = x[CustomerDebtStatusCanceled-2]
+	_ = x[CustomerDebtStatusPaid-3]
 }
 
-const _CustomerDebtStatus_nameReadable = "UNPAID, PAID"
+const _CustomerDebtStatus_nameReadable = "UNPAID, CANCELED, PAID"
 
-const _CustomerDebtStatus_name = "UNPAIDPAID"
+const _CustomerDebtStatus_name = "UNPAIDCANCELEDPAID"
 
-var _CustomerDebtStatus_index = [...]uint8{0, 6, 10}
+var _CustomerDebtStatus_index = [...]uint8{0, 6, 14, 18}
 
 func (i *CustomerDebtStatus) determine(s string) {
 	switch s {
 	case "UNPAID":
 		*i = CustomerDebtStatusUnpaid
+	case "CANCELED":
+		*i = CustomerDebtStatusCanceled
 	case "PAID":
 		*i = CustomerDebtStatusPaid
 	default:
@@ -98,6 +101,7 @@ func CustomerDebtStatusP(v CustomerDebtStatus) *CustomerDebtStatus {
 func ListCustomerDebtStatus() []CustomerDebtStatus {
 	return []CustomerDebtStatus{
 		CustomerDebtStatusUnpaid,
+		CustomerDebtStatusCanceled,
 		CustomerDebtStatusPaid,
 	}
 }
@@ -105,6 +109,7 @@ func ListCustomerDebtStatus() []CustomerDebtStatus {
 func ListCustomerDebtStatusString() []string {
 	return []string{
 		CustomerDebtStatusUnpaid.String(),
+		CustomerDebtStatusCanceled.String(),
 		CustomerDebtStatusPaid.String(),
 	}
 }

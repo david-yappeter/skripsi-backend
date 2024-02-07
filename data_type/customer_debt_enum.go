@@ -4,8 +4,9 @@ package data_type
 type CustomerDebtStatus int // @name CustomerDebtStatusEnum
 
 const (
-	CustomerDebtStatusUnpaid CustomerDebtStatus = iota + 1 // UNPAID
-	CustomerDebtStatusPaid                                 // PAID
+	CustomerDebtStatusUnpaid   CustomerDebtStatus = iota + 1 // UNPAID
+	CustomerDebtStatusCanceled                               // CANCELED
+	CustomerDebtStatusPaid                                   // PAID
 )
 
 type CustomerDebtDebtSource int // @name CustomerDebtDebtSourceEnum
