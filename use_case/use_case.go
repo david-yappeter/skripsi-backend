@@ -8,6 +8,8 @@ import (
 	validatorInternal "myapp/internal/gin/validator"
 	"myapp/model"
 	"myapp/repository"
+
+	gotiktok "github.com/david-yappeter/go-tiktok"
 )
 
 const (
@@ -306,4 +308,27 @@ func shouldGetProductStockByProductId(ctx context.Context, repositoryManager rep
 	productStock, err := repositoryManager.ProductStockRepository().GetByProductId(ctx, productId)
 	panicIfErr(err, constant.ErrNoData)
 	return productStock
+}
+
+func mustGetTiktokConfig(ctx context.Context, repositoryManager repository.RepositoryManager) model.TiktokConfig {
+	tiktokConfig, err := repositoryManager.TiktokConfigRepository().Get(ctx)
+	panicIfErr(err, constant.ErrNoData)
+
+	if tiktokConfig == nil {
+		panic("TIKTOK_CONFIG.NOT_SET")
+	}
+
+	return *tiktokConfig
+}
+
+func mustGetTiktokClient(ctx context.Context, repositoryManager repository.RepositoryManager) (*gotiktok.Client, model.TiktokConfig) {
+	tiktokConfig := mustGetTiktokConfig(ctx, repositoryManager)
+
+	client, err := gotiktok.New(
+		tiktokConfig.AppKey,
+		tiktokConfig.AppSecret,
+		"202309",
+	)
+	panicIfErr(err)
+	return client, tiktokConfig
 }

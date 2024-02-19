@@ -14,6 +14,14 @@ var (
 		Password: "$2a$10$5Vw7Is.qZ2.0yLf919fMye.0AFlaXD0gbS3M4k7yQjN0OifCYi3hG",
 		IsActive: true,
 	}
+
+	UserInventoryOne = model.User{
+		Id:       "1e7a5eb3-c5c4-4fa3-b971-168765bfc413",
+		Username: "inventory.one",
+		Name:     "Inventory One",
+		Password: "$2a$10$5Vw7Is.qZ2.0yLf919fMye.0AFlaXD0gbS3M4k7yQjN0OifCYi3hG",
+		IsActive: true,
+	}
 )
 
 func UserSeeder(repositoryManager repository.RepositoryManager) {
@@ -37,5 +45,6 @@ func UserSeeder(repositoryManager repository.RepositoryManager) {
 func getUserData() []model.User {
 	return []model.User{
 		UserSuperAdminOne,
+		UserInventoryOne,
 	}
 }

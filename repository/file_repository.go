@@ -15,6 +15,7 @@ type FileRepository interface {
 	InsertMany(ctx context.Context, files []model.File, options ...data_type.RepositoryOption) error
 
 	// read
+	Count(ctx context.Context) (int, error)
 	FetchByIds(ctx context.Context, ids []string) ([]model.File, error)
 	Get(ctx context.Context, id string) (*model.File, error)
 
@@ -70,6 +71,13 @@ func (r *fileRepository) InsertMany(ctx context.Context, files []model.File, opt
 	}
 
 	return defaultInsertMany(r.db, ctx, arr, "*")
+}
+
+func (r *fileRepository) Count(ctx context.Context) (int, error) {
+	stmt := stmtBuilder.Select("COUNT(*) as count").
+		From(model.FileTableName)
+
+	return count(r.db, ctx, stmt)
 }
 
 func (r *fileRepository) FetchByIds(ctx context.Context, ids []string) ([]model.File, error) {

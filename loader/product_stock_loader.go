@@ -64,7 +64,7 @@ func NewProductStockLoader(productStockRepository repository.ProductStockReposit
 
 		productStockByProductId := map[string]model.ProductStock{}
 		for _, productStock := range productStocks {
-			productStockByProductId[productStock.Id] = productStock
+			productStockByProductId[productStock.ProductId] = productStock
 		}
 
 		results := make([]*dataloader.Result, len(keys))

@@ -163,6 +163,9 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionSupplierDelete,
 		PermissionSupplierOptionForProductReceiveForm,
 
+		// tiktok product
+		PermissionTiktokProductCreate,
+
 		// unit
 		PermissionUnitCreate,
 		PermissionUnitFetch,

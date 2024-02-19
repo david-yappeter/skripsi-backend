@@ -23,6 +23,8 @@ type UseCaseManager interface {
 	RoleUseCase() RoleUseCase
 	SupplierTypeUseCase() SupplierTypeUseCase
 	SupplierUseCase() SupplierUseCase
+	TiktokConfigUseCase() TiktokConfigUseCase
+	TiktokProductUseCase() TiktokProductUseCase
 	UnitUseCase() UnitUseCase
 	UserUseCase() UserUseCase
 }
@@ -43,6 +45,8 @@ type useCaseManager struct {
 	roleUseCase           RoleUseCase
 	supplierTypeUseCase   SupplierTypeUseCase
 	supplierUseCase       SupplierUseCase
+	tiktokConfigUseCase   TiktokConfigUseCase
+	tiktokProductUseCase  TiktokProductUseCase
 	unitUseCase           UnitUseCase
 	userUseCase           UserUseCase
 }
@@ -107,6 +111,14 @@ func (u *useCaseManager) SupplierUseCase() SupplierUseCase {
 	return u.supplierUseCase
 }
 
+func (u *useCaseManager) TiktokConfigUseCase() TiktokConfigUseCase {
+	return u.tiktokConfigUseCase
+}
+
+func (u *useCaseManager) TiktokProductUseCase() TiktokProductUseCase {
+	return u.tiktokProductUseCase
+}
+
 func (u *useCaseManager) UnitUseCase() UnitUseCase {
 	return u.unitUseCase
 }
@@ -137,6 +149,11 @@ func NewUseCaseManager(
 		),
 		customerUseCase: NewCustomerUseCase(
 			repositoryManager,
+		),
+		customerDebtUseCase: NewCustomerDebtUseCase(
+			repositoryManager,
+			filesystemManager.Main(),
+			filesystemManager.Tmp(),
 		),
 		deliveryOrderUseCase: NewDeliveryOrderUseCase(
 			repositoryManager,
@@ -169,6 +186,12 @@ func NewUseCaseManager(
 			repositoryManager,
 		),
 		supplierUseCase: NewSupplierUseCase(
+			repositoryManager,
+		),
+		tiktokConfigUseCase: NewTiktokConfigUseCase(
+			repositoryManager,
+		),
+		tiktokProductUseCase: NewTiktokProductUseCase(
 			repositoryManager,
 		),
 		unitUseCase: NewUnitUseCase(

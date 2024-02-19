@@ -109,6 +109,9 @@ const (
 	PermissionSupplierTypeUpdate // SUPPLIER_TYPE_UPDATE
 	PermissionSupplierTypeDelete // SUPPLIER_TYPE_DELETE
 
+	// tiktok product
+	PermissionTiktokProductCreate // TIKTOK_PRODUCT_CREATE
+
 	// user
 	PermissionUserCreate         // USER_CREATE
 	PermissionUserUpdate         // USER_UPDATE

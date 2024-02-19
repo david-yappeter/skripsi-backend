@@ -502,5 +502,5 @@ func RegisterDeliveryOrderApi(router gin.IRouter, useCaseManager use_case.UseCas
 
 	routerGroup.DELETE("/:id/items/:product_unit_id", api.DeleteItem())
 	routerGroup.DELETE("/:id/images/:file_id", api.DeleteImage())
-	routerGroup.DELETE("/:id/images/:driver_user_id", api.DeleteDriver())
+	routerGroup.DELETE("/:id/drivers/:driver_user_id", api.DeleteDriver())
 }

@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
+	github.com/david-yappeter/go-tiktok v0.1.11
 	github.com/gabriel-vasile/mimetype v1.4.3
 	github.com/ghodss/yaml v1.0.0
 	github.com/gin-contrib/cors v1.4.0
@@ -24,7 +25,6 @@ require (
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/segmentio/ksuid v1.0.4
-	github.com/shiyanhui/hero v0.0.2
 	github.com/spf13/cobra v1.8.0
 	github.com/swaggo/swag v1.8.9
 	golang.org/x/crypto v0.14.0
@@ -38,8 +38,8 @@ require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
-	github.com/david-yappeter/go-tiktok v0.1.1-0.20240216010616-0b9faf115943 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
+	github.com/go-co-op/gocron v1.37.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
@@ -65,10 +65,11 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
+	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
-	go.uber.org/atomic v1.7.0 // indirect
+	go.uber.org/atomic v1.9.0 // indirect
 	golang.org/x/arch v0.3.0 // indirect
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
