@@ -4,6 +4,7 @@ const ProductTableName = "products"
 
 type Product struct {
 	Id          string   `db:"id"`
+	ImageFileId string   `db:"image_file_id"`
 	Name        string   `db:"name"`
 	Description *string  `db:"description"`
 	Price       *float64 `db:"price"`
@@ -23,13 +24,14 @@ func (m *Product) TableIds() []string {
 
 func (m *Product) ToMap() map[string]interface{} {
 	return map[string]interface{}{
-		"id":          m.Id,
-		"name":        m.Name,
-		"description": m.Description,
-		"price":       m.Price,
-		"is_active":   m.IsActive,
-		"created_at":  m.CreatedAt,
-		"updated_at":  m.UpdatedAt,
+		"id":            m.Id,
+		"image_file_id": m.ImageFileId,
+		"name":          m.Name,
+		"description":   m.Description,
+		"price":         m.Price,
+		"is_active":     m.IsActive,
+		"created_at":    m.CreatedAt,
+		"updated_at":    m.UpdatedAt,
 	}
 }
 

@@ -11,7 +11,7 @@ func init() {
 		SchemaProps: spec.SchemaProps{
 			Type: []string{"string"},
 			Enum: []interface{}{
-				"PRODUCT_UNIT_IMAGE",
+				"PRODUCT_IMAGE",
 				"PRODUCT_RECEIVE_IMAGE",
 				"DELIVERY_ORDER_IMAGE",
 				"CUSTOMER_PAYMENT_IMAGE",

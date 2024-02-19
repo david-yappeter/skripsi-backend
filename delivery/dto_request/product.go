@@ -1,8 +1,9 @@
 package dto_request
 
 type ProductCreateRequest struct {
-	Name        string  `json:"name" validate:"required,not_empty"`
-	Description *string `json:"description" validate:"omitempty,not_empty" extensions:"x-nullable"`
+	Name          string  `json:"name" validate:"required,not_empty"`
+	Description   *string `json:"description" validate:"omitempty,not_empty" extensions:"x-nullable"`
+	ImageFilePath string  `json:"image_file_path" validate:"required,not_empty"`
 } // @name ProductCreateRequest
 
 type ProductFetchSorts []struct {
@@ -24,10 +25,11 @@ type ProductGetRequest struct {
 type ProductUpdateRequest struct {
 	ProductId string `json:"-" swaggerignore:"true"`
 
-	Name        string   `json:"name" validate:"required,not_empty"`
-	Description *string  `json:"description" validate:"omitempty,not_empty" extensions:"x-nullable"`
-	Price       *float64 `json:"price" validate:"omitempty,gt=0" extensions:"x-nullable"`
-	IsActive    bool     `json:"is_active"`
+	Name          string   `json:"name" validate:"required,not_empty"`
+	Description   *string  `json:"description" validate:"omitempty,not_empty" extensions:"x-nullable"`
+	Price         *float64 `json:"price" validate:"omitempty,gt=0" extensions:"x-nullable"`
+	IsActive      bool     `json:"is_active"`
+	ImageFilePath *string  `json:"image_file_path" extensions:"x-nullable"`
 } // @name ProductUpdateRequest
 
 type ProductDeleteRequest struct {

@@ -5,7 +5,6 @@ const ProductUnitTableName = "product_units"
 type ProductUnit struct {
 	Id          string  `db:"id"`
 	ToUnitId    *string `db:"to_unit_id"`
-	ImageFileId *string `db:"image_file_id"`
 	UnitId      string  `db:"unit_id"`
 	ProductId   string  `db:"product_id"`
 	Scale       float64 `db:"scale"`
@@ -27,7 +26,6 @@ func (m *ProductUnit) ToMap() map[string]interface{} {
 	return map[string]interface{}{
 		"id":            m.Id,
 		"to_unit_id":    m.ToUnitId,
-		"image_file_id": m.ImageFileId,
 		"unit_id":       m.UnitId,
 		"product_id":    m.ProductId,
 		"scale":         m.Scale,

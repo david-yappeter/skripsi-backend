@@ -2,12 +2,17 @@ package use_case
 
 import (
 	"context"
+	"fmt"
+	"myapp/constant"
+	"myapp/data_type"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
+	"myapp/internal/filesystem"
 	"myapp/loader"
 	"myapp/model"
 	"myapp/repository"
 	"myapp/util"
+	"path"
 
 	"golang.org/x/sync/errgroup"
 )
@@ -37,13 +42,21 @@ type ProductUseCase interface {
 
 type productUseCase struct {
 	repositoryManager repository.RepositoryManager
+
+	baseFileUseCase baseFileUseCase
 }
 
 func NewProductUseCase(
 	repositoryManager repository.RepositoryManager,
+	mainFilesystem filesystem.Client,
+	tmpFilesystem filesystem.Client,
 ) ProductUseCase {
 	return &productUseCase{
 		repositoryManager: repositoryManager,
+		baseFileUseCase: newBaseFileUseCase(
+			mainFilesystem,
+			tmpFilesystem,
+		),
 	}
 }
 
@@ -82,14 +95,47 @@ func (u *productUseCase) Create(ctx context.Context, request dto_request.Product
 
 	product := model.Product{
 		Id:          util.NewUuid(),
+		ImageFileId: "",
 		Name:        request.Name,
 		Description: request.Description,
 		Price:       nil,
 		IsActive:    false,
 	}
 
+	// upload image file
+	imageFile := model.File{
+		Id:   util.NewUuid(),
+		Type: data_type.FileTypeProductImage,
+	}
+
+	product.ImageFileId = imageFile.Id
+
+	imageFile.Path, imageFile.Name = u.baseFileUseCase.mustUploadFileFromTemporaryToMain(
+		ctx,
+		constant.ProductImagePath,
+		product.Id,
+		fmt.Sprintf("%s%s", imageFile.Id, path.Ext(request.ImageFilePath)),
+		request.ImageFilePath,
+		fileUploadTemporaryToMainParams{
+			deleteTmpOnSuccess: false,
+		},
+	)
+
 	panicIfErr(
-		u.repositoryManager.ProductRepository().Insert(ctx, &product),
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			fileRepository := u.repositoryManager.FileRepository()
+			productRepository := u.repositoryManager.ProductRepository()
+
+			if err := fileRepository.Insert(ctx, &imageFile); err != nil {
+				return err
+			}
+
+			if err := productRepository.Insert(ctx, &product); err != nil {
+				return err
+			}
+
+			return nil
+		}),
 	)
 
 	return product
@@ -161,9 +207,26 @@ func (u *productUseCase) Delete(ctx context.Context, request dto_request.Product
 
 	u.mustValidateAllowDeleteProduct(ctx, request.ProductId)
 
+	imageFile := mustGetFile(ctx, u.repositoryManager, product.ImageFileId, true)
+
 	panicIfErr(
-		u.repositoryManager.ProductRepository().Delete(ctx, &product),
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			productRepository := u.repositoryManager.ProductRepository()
+			fileRepository := u.repositoryManager.FileRepository()
+
+			if err := productRepository.Insert(ctx, &product); err != nil {
+				return err
+			}
+
+			if err := fileRepository.Delete(ctx, &imageFile); err != nil {
+				return err
+			}
+
+			return nil
+		}),
 	)
+
+	u.baseFileUseCase.mainFilesystem.Delete(imageFile.Path)
 }
 
 func (u *productUseCase) OptionForProductReceiveForm(ctx context.Context, request dto_request.ProductOptionForProductReceiveFormRequest) ([]model.Product, int) {

@@ -13,22 +13,22 @@ func _() {
 	// An "invalid array index" compiler error signifies that the constant values have changed.
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
-	_ = x[FileTypeProductUnitImage-1]
+	_ = x[FileTypeProductImage-1]
 	_ = x[FileTypeProductReceiveImage-2]
 	_ = x[FileTypeDeliveryOrderImage-3]
 	_ = x[FileTypeCustomerPaymentImage-4]
 }
 
-const _FileType_nameReadable = "PRODUCT_UNIT_IMAGE, PRODUCT_RECEIVE_IMAGE, DELIVERY_ORDER_IMAGE, CUSTOMER_PAYMENT_IMAGE"
+const _FileType_nameReadable = "PRODUCT_IMAGE, PRODUCT_RECEIVE_IMAGE, DELIVERY_ORDER_IMAGE, CUSTOMER_PAYMENT_IMAGE"
 
-const _FileType_name = "PRODUCT_UNIT_IMAGEPRODUCT_RECEIVE_IMAGEDELIVERY_ORDER_IMAGECUSTOMER_PAYMENT_IMAGE"
+const _FileType_name = "PRODUCT_IMAGEPRODUCT_RECEIVE_IMAGEDELIVERY_ORDER_IMAGECUSTOMER_PAYMENT_IMAGE"
 
-var _FileType_index = [...]uint8{0, 18, 39, 59, 81}
+var _FileType_index = [...]uint8{0, 13, 34, 54, 76}
 
 func (i *FileType) determine(s string) {
 	switch s {
-	case "PRODUCT_UNIT_IMAGE":
-		*i = FileTypeProductUnitImage
+	case "PRODUCT_IMAGE":
+		*i = FileTypeProductImage
 	case "PRODUCT_RECEIVE_IMAGE":
 		*i = FileTypeProductReceiveImage
 	case "DELIVERY_ORDER_IMAGE":
@@ -103,7 +103,7 @@ func FileTypeP(v FileType) *FileType {
 
 func ListFileType() []FileType {
 	return []FileType{
-		FileTypeProductUnitImage,
+		FileTypeProductImage,
 		FileTypeProductReceiveImage,
 		FileTypeDeliveryOrderImage,
 		FileTypeCustomerPaymentImage,
@@ -112,7 +112,7 @@ func ListFileType() []FileType {
 
 func ListFileTypeString() []string {
 	return []string{
-		FileTypeProductUnitImage.String(),
+		FileTypeProductImage.String(),
 		FileTypeProductReceiveImage.String(),
 		FileTypeDeliveryOrderImage.String(),
 		FileTypeCustomerPaymentImage.String(),

@@ -2,16 +2,13 @@ package use_case
 
 import (
 	"context"
-	"fmt"
 	"myapp/constant"
-	"myapp/data_type"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
 	"myapp/internal/filesystem"
 	"myapp/model"
 	"myapp/repository"
 	"myapp/util"
-	"path"
 )
 
 type ProductUnitUseCase interface {
@@ -67,10 +64,6 @@ func (u *productUnitUseCase) mustValidateAllowDeleteProductUnit(ctx context.Cont
 }
 
 func (u *productUnitUseCase) Create(ctx context.Context, request dto_request.ProductUnitCreateRequest) model.ProductUnit {
-	var (
-		imageFile *model.File
-	)
-
 	mustGetUnit(ctx, u.repositoryManager, request.UnitId, true)
 	mustGetProduct(ctx, u.repositoryManager, request.ProductId, true)
 
@@ -79,7 +72,6 @@ func (u *productUnitUseCase) Create(ctx context.Context, request dto_request.Pro
 	productUnit := model.ProductUnit{
 		Id:          util.NewUuid(),
 		ToUnitId:    request.ToUnitId,
-		ImageFileId: nil,
 		UnitId:      request.UnitId,
 		ProductId:   request.ProductId,
 		Scale:       request.Scale,
@@ -92,37 +84,9 @@ func (u *productUnitUseCase) Create(ctx context.Context, request dto_request.Pro
 		productUnit.ScaleToBase = toProductUnit.ScaleToBase
 	}
 
-	if request.ImageFilePath != nil {
-		imageFile = &model.File{
-			Id:   util.NewUuid(),
-			Type: data_type.FileTypeProductUnitImage,
-		}
-
-		productUnit.ImageFileId = &imageFile.Id
-
-		imageFile.Path, imageFile.Name = u.baseFileUseCase.mustUploadFileFromTemporaryToMain(
-			ctx,
-			constant.ProductUnitImagePath,
-			productUnit.Id,
-			fmt.Sprintf("%s%s", imageFile.Id, path.Ext(*request.ImageFilePath)),
-			*request.ImageFilePath,
-			fileUploadTemporaryToMainParams{
-				deleteTmpOnSuccess: false,
-			},
-		)
-	}
-
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
 			productUnitRepository := u.repositoryManager.ProductUnitRepository()
-			fileRepository := u.repositoryManager.FileRepository()
-
-			if imageFile != nil {
-				err := fileRepository.Insert(ctx, imageFile)
-				if err != nil {
-					return err
-				}
-			}
 
 			err := productUnitRepository.Insert(ctx, &productUnit)
 			if err != nil {
@@ -139,7 +103,7 @@ func (u *productUnitUseCase) Create(ctx context.Context, request dto_request.Pro
 func (u *productUnitUseCase) Upload(ctx context.Context, request dto_request.ProductUnitUploadRequest) string {
 	return u.baseFileUseCase.mustUploadFileToTemporary(
 		ctx,
-		constant.ProductUnitImagePath,
+		constant.ProductImagePath,
 		request.File.Filename,
 		request.File,
 		fileUploadTemporaryParams{
@@ -171,38 +135,17 @@ func (u *productUnitUseCase) Update(ctx context.Context, request dto_request.Pro
 }
 
 func (u *productUnitUseCase) Delete(ctx context.Context, request dto_request.ProductUnitDeleteRequest) {
-	var (
-		file *model.File
-	)
-
 	productUnit := mustGetProductUnit(ctx, u.repositoryManager, request.ProductUnitId, true)
-
-	if productUnit.ImageFileId != nil {
-		file = util.Pointer(mustGetFile(ctx, u.repositoryManager, *productUnit.ImageFileId, true))
-	}
 
 	u.mustValidateAllowDeleteProductUnit(ctx, request.ProductUnitId)
 
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
-			fileRepository := u.repositoryManager.FileRepository()
 			productUnitRepository := u.repositoryManager.ProductUnitRepository()
 
 			err := productUnitRepository.Delete(ctx, &productUnit)
 			if err != nil {
 				return err
-			}
-
-			if file != nil {
-				err := fileRepository.Delete(ctx, file)
-				if err != nil {
-					return err
-				}
-
-				err = u.mainFilesystem.Delete(file.Path)
-				if err != nil {
-					return err
-				}
 			}
 
 			return nil

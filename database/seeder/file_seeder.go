@@ -13,8 +13,8 @@ var (
 	FileOne = model.File{
 		Id:   "29e3a2e9-697d-4d74-8a35-8b8768e86cc2",
 		Name: "Gambar Kaleng Cat Merah",
-		Type: data_type.FileTypeProductUnitImage,
-		Path: fmt.Sprintf("%s/2wag9wejGEqjgieay38EG8edg8e8s.jpg", constant.ProductUnitImagePath),
+		Type: data_type.FileTypeProductImage,
+		Path: fmt.Sprintf("%s/2wag9wejGEqjgieay38EG8edg8e8s.jpg", constant.ProductImagePath),
 	}
 )
 

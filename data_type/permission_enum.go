@@ -110,7 +110,8 @@ const (
 	PermissionSupplierTypeDelete // SUPPLIER_TYPE_DELETE
 
 	// tiktok product
-	PermissionTiktokProductCreate // TIKTOK_PRODUCT_CREATE
+	PermissionTiktokProductCreate      // TIKTOK_PRODUCT_CREATE
+	PermissionTiktokProductUploadImage // TIKTOK_PRODUCT_UPLOAD_IMAGE
 
 	// user
 	PermissionUserCreate         // USER_CREATE

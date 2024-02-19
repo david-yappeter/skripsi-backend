@@ -3,11 +3,10 @@ package dto_request
 import "mime/multipart"
 
 type ProductUnitCreateRequest struct {
-	ToUnitId      *string `json:"to_unit_id" validate:"omitempty,not_empty,uuid" extensions:"x-nullable"`
-	ImageFilePath *string `json:"image_file_path" validate:"omitempty,not_empty"`
-	UnitId        string  `json:"unit_id" validate:"required,not_empty,uuid"`
-	ProductId     string  `json:"product_id" validate:"required,not_empty,uuid"`
-	Scale         float64 `json:"scale" validate:"required,not_empty,gte=1"`
+	ToUnitId  *string `json:"to_unit_id" validate:"omitempty,not_empty,uuid" extensions:"x-nullable"`
+	UnitId    string  `json:"unit_id" validate:"required,not_empty,uuid"`
+	ProductId string  `json:"product_id" validate:"required,not_empty,uuid"`
+	Scale     float64 `json:"scale" validate:"required,not_empty,gte=1"`
 } // @name ProductUnitCreateRequest
 
 type ProductUnitUploadRequest struct {

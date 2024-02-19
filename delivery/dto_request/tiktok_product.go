@@ -1,6 +1,7 @@
 package dto_request
 
 import (
+	"mime/multipart"
 	"myapp/data_type"
 
 	gotiktok "github.com/david-yappeter/go-tiktok"
@@ -21,3 +22,7 @@ type TiktokProductCreateRequest struct {
 	WeightUnit      data_type.TiktokProductPackageWeigth            `json:"weight_unit" validate:"required,data_type_enum"`
 	Attributes      []gotiktok.CreateProductRequestProductAttribute `json:"attributes"`
 } // @name TiktokProductCreateRequest
+
+type TiktokProductUploadImageRequest struct {
+	File multipart.FileHeader `json:"file" validate:"required"`
+} // @name TiktokProductUploadImageRequest

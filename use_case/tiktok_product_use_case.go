@@ -18,6 +18,8 @@ import (
 type TiktokProductUseCase interface {
 	//  create
 	Create(ctx context.Context, request dto_request.TiktokProductCreateRequest) model.TiktokProduct
+
+	UploadImage(ctx context.Context, request dto_request.TiktokProductUploadImageRequest) (string, string)
 }
 
 type tiktokProductUseCase struct {
@@ -126,8 +128,6 @@ func (u *tiktokProductUseCase) Create(ctx context.Context, request dto_request.T
 	)
 	panicIfErr(err)
 
-	fmt.Printf("RESPP: %+v\n\n", resp)
-
 	tiktokProduct := model.TiktokProduct{
 		TiktokProductId: resp.ProductId,
 		ProductId:       request.ProductId,
@@ -139,4 +139,36 @@ func (u *tiktokProductUseCase) Create(ctx context.Context, request dto_request.T
 	)
 
 	return tiktokProduct
+}
+
+func (u *tiktokProductUseCase) UploadImage(ctx context.Context, request dto_request.TiktokProductUploadImageRequest) (string, string) {
+	file, err := request.File.Open()
+	panicIfErr(err)
+
+	defer file.Close()
+
+	client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
+
+	if tiktokConfig.AccessToken == nil {
+		panic("TIKTOK_CONFIG.ACCESS_TOKEN_EMPTY")
+	}
+
+	resp, err := client.UploadImage(
+		ctx,
+		gotiktok.CommonParam{
+			AccessToken: *tiktokConfig.AccessToken,
+			ShopCipher:  tiktokConfig.ShopCipher,
+			ShopId:      tiktokConfig.ShopId,
+		},
+		gotiktok.UploadProductImageRequest{
+			Data:    file,
+			UseCase: util.StringP("MAIN_IMAGE"),
+		},
+	)
+
+	panicIfErr(err)
+
+	fmt.Printf("RESP: %+v\n\n", resp)
+
+	return resp.Url, resp.Uri
 }
