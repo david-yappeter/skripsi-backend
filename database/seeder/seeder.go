@@ -7,6 +7,7 @@ import (
 )
 
 var Seeders = map[string]func(repositoryManager repository.RepositoryManager){
+	model.FileTableName:         FileSeeder,
 	model.ProductTableName:      ProductSeeder,
 	model.ProductStockTableName: ProductStockSeeder,
 	model.ProductUnitTableName:  ProductUnitSeeder,
@@ -31,6 +32,8 @@ func SeedAll(repositoryManager repository.RepositoryManager) {
 		model.UserTableName,
 		model.UserRoleTableName,
 		model.TiktokConfigTableName,
+
+		model.FileTableName,
 
 		model.UnitTableName,
 		model.ProductTableName,

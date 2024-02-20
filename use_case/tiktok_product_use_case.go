@@ -18,8 +18,10 @@ import (
 type TiktokProductUseCase interface {
 	//  create
 	Create(ctx context.Context, request dto_request.TiktokProductCreateRequest) model.TiktokProduct
-
 	UploadImage(ctx context.Context, request dto_request.TiktokProductUploadImageRequest) (string, string)
+
+	// read
+	FetchCategories(ctx context.Context, request dto_request.TiktokProductFetchCategoriesRequest) []model.TiktokCategory
 }
 
 type tiktokProductUseCase struct {
@@ -168,7 +170,58 @@ func (u *tiktokProductUseCase) UploadImage(ctx context.Context, request dto_requ
 
 	panicIfErr(err)
 
-	fmt.Printf("RESP: %+v\n\n", resp)
-
 	return resp.Url, resp.Uri
+}
+
+func (u *tiktokProductUseCase) FetchCategories(ctx context.Context, request dto_request.TiktokProductFetchCategoriesRequest) []model.TiktokCategory {
+	client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
+
+	if tiktokConfig.AccessToken == nil {
+		panic("TIKTOK_CONFIG.ACCESS_TOKEN_EMPTY")
+	}
+
+	resp, err := client.GetCategories(
+		ctx,
+		gotiktok.CommonParam{
+			AccessToken: *tiktokConfig.AccessToken,
+			ShopCipher:  tiktokConfig.ShopCipher,
+			ShopId:      tiktokConfig.ShopId,
+		},
+		gotiktok.GetCategoriesRequest{
+			Locale: util.StringP("id-ID"),
+		},
+	)
+	panicIfErr(err)
+
+	categoryMap := map[string]*model.TiktokCategory{}
+	topCategoryList := []*model.TiktokCategory{}
+
+	for _, category := range resp.Categories {
+		var parentId *string = nil
+		if category.ParentId != "0" {
+			parentId = &category.ParentId
+		}
+
+		tiktokCategory := model.TiktokCategory{
+			Id:                 category.Id,
+			ParentId:           parentId,
+			Name:               category.LocalName,
+			IsLeaf:             category.IsLeaf,
+			ChildrenCategories: []*model.TiktokCategory{},
+			ParentCategory:     nil,
+		}
+
+		if parentId != nil && categoryMap[*parentId] != nil {
+			tiktokCategory.ParentCategory = categoryMap[*parentId]
+
+			categoryMap[*parentId].ChildrenCategories = append(categoryMap[*parentId].ChildrenCategories, &tiktokCategory)
+		}
+
+		categoryMap[tiktokCategory.Id] = &tiktokCategory
+		if category.ParentId == "0" {
+			topCategoryList = append(topCategoryList, &tiktokCategory)
+		}
+	}
+
+	return util.SlicePointerToSliceValue(topCategoryList)
 }

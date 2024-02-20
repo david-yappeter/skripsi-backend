@@ -30,3 +30,12 @@ func SliceValueToSlicePointer[T any](sliceValue []T) []*T {
 
 	return slicePointer
 }
+
+func SlicePointerToSliceValue[T any](sliceValue []*T) []T {
+	slicePointer := []T{}
+	for i := range sliceValue {
+		slicePointer = append(slicePointer, *sliceValue[i])
+	}
+
+	return slicePointer
+}

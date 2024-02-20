@@ -10,6 +10,7 @@ import (
 var (
 	ProductKalengCatMerah = model.Product{
 		Id:          "e1bf0592-7850-4602-a740-6aae98dfd281",
+		ImageFileId: FileOne.Id,
 		Name:        "Kaleng Cat Merah",
 		Description: nil,
 		Price:       util.Float64P(150000),

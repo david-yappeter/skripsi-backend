@@ -26,3 +26,6 @@ type TiktokProductCreateRequest struct {
 type TiktokProductUploadImageRequest struct {
 	File multipart.FileHeader `json:"file" validate:"required"`
 } // @name TiktokProductUploadImageRequest
+
+type TiktokProductFetchCategoriesRequest struct {
+} // @name TiktokProductFetchCategoriesRequest
