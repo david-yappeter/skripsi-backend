@@ -21,7 +21,8 @@ type TiktokProductUseCase interface {
 	UploadImage(ctx context.Context, request dto_request.TiktokProductUploadImageRequest) (string, string)
 
 	// read
-	FetchCategories(ctx context.Context, request dto_request.TiktokProductFetchCategoriesRequest) []model.TiktokCategory
+	FetchCategories(ctx context.Context) []model.TiktokCategory
+	RecommendedCategory(ctx context.Context, request dto_request.TiktokProductRecommendCategoryRequest) model.TiktokCategory
 }
 
 type tiktokProductUseCase struct {
@@ -173,7 +174,7 @@ func (u *tiktokProductUseCase) UploadImage(ctx context.Context, request dto_requ
 	return resp.Url, resp.Uri
 }
 
-func (u *tiktokProductUseCase) FetchCategories(ctx context.Context, request dto_request.TiktokProductFetchCategoriesRequest) []model.TiktokCategory {
+func (u *tiktokProductUseCase) FetchCategories(ctx context.Context) []model.TiktokCategory {
 	client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
 
 	if tiktokConfig.AccessToken == nil {
@@ -197,6 +198,10 @@ func (u *tiktokProductUseCase) FetchCategories(ctx context.Context, request dto_
 	topCategoryList := []*model.TiktokCategory{}
 
 	for _, category := range resp.Categories {
+		if category.PermissionStatuses[0] != "AVAILABLE" {
+			continue
+		}
+
 		var parentId *string = nil
 		if category.ParentId != "0" {
 			parentId = &category.ParentId
@@ -224,4 +229,63 @@ func (u *tiktokProductUseCase) FetchCategories(ctx context.Context, request dto_
 	}
 
 	return util.SlicePointerToSliceValue(topCategoryList)
+}
+
+func (u *tiktokProductUseCase) RecommendedCategory(ctx context.Context, request dto_request.TiktokProductRecommendCategoryRequest) model.TiktokCategory {
+	client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
+
+	if tiktokConfig.AccessToken == nil {
+		panic("TIKTOK_CONFIG.ACCESS_TOKEN_EMPTY")
+	}
+
+	var productImages []gotiktok.GetRecommendCategoryRequestImage = nil
+
+	if len(request.ImagesUri) > 0 {
+		productImages = []gotiktok.GetRecommendCategoryRequestImage{}
+		for _, imageUri := range request.ImagesUri {
+			productImages = append(productImages, gotiktok.GetRecommendCategoryRequestImage{
+				Uri: imageUri,
+			})
+		}
+	}
+
+	resp, err := client.GetRecommendCategory(
+		ctx,
+		gotiktok.CommonParam{
+			AccessToken: *tiktokConfig.AccessToken,
+			ShopCipher:  tiktokConfig.ShopCipher,
+			ShopId:      tiktokConfig.ShopId,
+		},
+		gotiktok.GetRecommendCategoryRequest{
+			ProductTitle: request.ProductTitle,
+			Description:  request.Description,
+			Images:       productImages,
+		},
+	)
+	panicIfErr(err)
+
+	var topCategory *model.TiktokCategory = nil
+
+	var previousCategory *model.TiktokCategory = nil
+	for _, category := range resp.Categories {
+
+		tiktokCategory := model.TiktokCategory{
+			Id:                 category.Id,
+			Name:               category.Name,
+			IsLeaf:             category.IsLeaf,
+			ParentCategory:     nil,
+			ChildrenCategories: []*model.TiktokCategory{},
+		}
+
+		if previousCategory != nil {
+			previousCategory.ChildrenCategories = append(previousCategory.ChildrenCategories, &tiktokCategory)
+		}
+		previousCategory = &tiktokCategory
+
+		if topCategory == nil {
+			topCategory = previousCategory
+		}
+	}
+
+	return *topCategory
 }

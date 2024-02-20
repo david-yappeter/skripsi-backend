@@ -27,5 +27,8 @@ type TiktokProductUploadImageRequest struct {
 	File multipart.FileHeader `json:"file" validate:"required"`
 } // @name TiktokProductUploadImageRequest
 
-type TiktokProductFetchCategoriesRequest struct {
-} // @name TiktokProductFetchCategoriesRequest
+type TiktokProductRecommendCategoryRequest struct {
+	ProductTitle string   `json:"product_title" validate:"required,not_empty"`
+	Description  *string  `json:"description" validate:"omitempty,not_empty"`
+	ImagesUri    []string `json:"images_uri"`
+} // @name TiktokProductRecommendCategoryRequest
