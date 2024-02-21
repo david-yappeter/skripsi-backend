@@ -48,36 +48,6 @@ func (a *ProductUnitApi) Create() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/product-units/upload [post]
-//	@Summary	Upload
-//	@tags		Product Units
-//	@Accept		json
-//	@Param		dto_request.ProductUnitUploadRequest	body	dto_request.ProductUnitUploadRequest	true	"Body Request"
-//	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{path=string}}
-func (a *ProductUnitApi) Upload() gin.HandlerFunc {
-	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionProductUnitUpload),
-		func(ctx apiContext) {
-			var request dto_request.ProductUnitUploadRequest
-			ctx.mustBind(&request)
-
-			path := a.productUnitUseCase.Upload(ctx.context(), request)
-
-			ctx.json(
-				http.StatusOK,
-				dto_response.Response{
-					Data: dto_response.DataResponse{
-						"path": path,
-					},
-				},
-			)
-		},
-	)
-}
-
-// API:
-//
 //	@Router		/product-units/{id} [put]
 //	@Summary	Update
 //	@tags		Product Units
@@ -218,7 +188,6 @@ func RegisterProductUnitApi(router gin.IRouter, useCaseManager use_case.UseCaseM
 
 	routerGroup := router.Group("/product-units")
 	routerGroup.POST("", api.Create())
-	routerGroup.POST("/upload", api.Upload())
 	routerGroup.PUT("/:id", api.Update())
 	routerGroup.DELETE("/:id", api.Delete())
 

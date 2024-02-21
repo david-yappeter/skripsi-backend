@@ -178,8 +178,6 @@ func NewUseCaseManager(
 		),
 		productUnitUseCase: NewProductUnitUseCase(
 			repositoryManager,
-			filesystemManager.Main(),
-			filesystemManager.Tmp(),
 		),
 		roleUseCase: NewRoleUseCase(
 			repositoryManager,

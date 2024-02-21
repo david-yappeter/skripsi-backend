@@ -48,6 +48,36 @@ func (a *ProductApi) Create() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/products/upload [post]
+//	@Summary	Upload
+//	@tags		Products
+//	@Accept		json
+//	@Param		dto_request.ProductUploadRequest	body	dto_request.ProductUploadRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{path=string}}
+func (a *ProductApi) Upload() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionProductUpload),
+		func(ctx apiContext) {
+			var request dto_request.ProductUploadRequest
+			ctx.mustBind(&request)
+
+			path := a.productUseCase.Upload(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"path": path,
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/products/filter [post]
 //	@Summary	Filter
 //	@tags		Products

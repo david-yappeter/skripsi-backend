@@ -57,6 +57,7 @@ const (
 
 	// product
 	PermissionProductCreate                      // PRODUCT_CREATE
+	PermissionProductUpload                      // PRODUCT_UPLOAD
 	PermissionProductFetch                       // PRODUCT_FETCH
 	PermissionProductGet                         // PRODUCT_GET
 	PermissionProductUpdate                      // PRODUCT_UPDATE
@@ -84,7 +85,6 @@ const (
 
 	// product unit
 	PermissionProductUnitCreate                      // PRODUCT_UNIT_CREATE
-	PermissionProductUnitUpload                      // PRODUCT_UNIT_UPLOAD
 	PermissionProductUnitGet                         // PRODUCT_UNIT_GET
 	PermissionProductUnitUpdate                      // PRODUCT_UNIT_UPDATE
 	PermissionProductUnitDelete                      // PRODUCT_UNIT_DELETE

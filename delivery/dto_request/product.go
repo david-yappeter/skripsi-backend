@@ -1,10 +1,16 @@
 package dto_request
 
+import "mime/multipart"
+
 type ProductCreateRequest struct {
 	Name          string  `json:"name" validate:"required,not_empty"`
 	Description   *string `json:"description" validate:"omitempty,not_empty" extensions:"x-nullable"`
 	ImageFilePath string  `json:"image_file_path" validate:"required,not_empty"`
 } // @name ProductCreateRequest
+
+type ProductUploadRequest struct {
+	File *multipart.FileHeader `json:"file" validate:"required"`
+} // @name ProductUploadRequest
 
 type ProductFetchSorts []struct {
 	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`

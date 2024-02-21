@@ -114,6 +114,7 @@ func GetRoleInventoryPermissions() []Permission {
 
 		// product
 		PermissionProductCreate,
+		PermissionProductUpload,
 		PermissionProductFetch,
 		PermissionProductGet,
 		PermissionProductUpdate,
@@ -141,7 +142,6 @@ func GetRoleInventoryPermissions() []Permission {
 
 		// product_unit
 		PermissionProductUnitCreate,
-		PermissionProductUnitUpload,
 		PermissionProductUnitGet,
 		PermissionProductUnitUpdate,
 		PermissionProductUnitDelete,

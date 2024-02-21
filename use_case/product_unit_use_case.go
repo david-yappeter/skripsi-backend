@@ -2,10 +2,8 @@ package use_case
 
 import (
 	"context"
-	"myapp/constant"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
-	"myapp/internal/filesystem"
 	"myapp/model"
 	"myapp/repository"
 	"myapp/util"
@@ -14,7 +12,6 @@ import (
 type ProductUnitUseCase interface {
 	//  create
 	Create(ctx context.Context, request dto_request.ProductUnitCreateRequest) model.ProductUnit
-	Upload(ctx context.Context, request dto_request.ProductUnitUploadRequest) string
 
 	//  read
 	Get(ctx context.Context, request dto_request.ProductUnitGetRequest) model.ProductUnit
@@ -32,21 +29,13 @@ type ProductUnitUseCase interface {
 
 type productUnitUseCase struct {
 	repositoryManager repository.RepositoryManager
-
-	baseFileUseCase
 }
 
 func NewProductUnitUseCase(
 	repositoryManager repository.RepositoryManager,
-	mainFilesystem filesystem.Client,
-	tmpFilesystem filesystem.Client,
 ) ProductUnitUseCase {
 	return &productUnitUseCase{
 		repositoryManager: repositoryManager,
-		baseFileUseCase: newBaseFileUseCase(
-			mainFilesystem,
-			tmpFilesystem,
-		),
 	}
 }
 
@@ -98,21 +87,6 @@ func (u *productUnitUseCase) Create(ctx context.Context, request dto_request.Pro
 	)
 
 	return productUnit
-}
-
-func (u *productUnitUseCase) Upload(ctx context.Context, request dto_request.ProductUnitUploadRequest) string {
-	return u.baseFileUseCase.mustUploadFileToTemporary(
-		ctx,
-		constant.ProductImagePath,
-		request.File.Filename,
-		request.File,
-		fileUploadTemporaryParams{
-			supportedExtensions: listSupportedExtension([]string{
-				extensionTypeImage,
-			}),
-			maxFileSizeInBytes: util.Pointer[int64](2 << 20),
-		},
-	)
 }
 
 func (u *productUnitUseCase) Get(ctx context.Context, request dto_request.ProductUnitGetRequest) model.ProductUnit {

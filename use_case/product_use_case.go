@@ -24,6 +24,7 @@ type productLoaderParams struct {
 type ProductUseCase interface {
 	//  create
 	Create(ctx context.Context, request dto_request.ProductCreateRequest) model.Product
+	Upload(ctx context.Context, request dto_request.ProductUploadRequest) string
 
 	//  read
 	Fetch(ctx context.Context, request dto_request.ProductFetchRequest) ([]model.Product, int)
@@ -139,6 +140,21 @@ func (u *productUseCase) Create(ctx context.Context, request dto_request.Product
 	)
 
 	return product
+}
+
+func (u *productUseCase) Upload(ctx context.Context, request dto_request.ProductUploadRequest) string {
+	return u.baseFileUseCase.mustUploadFileToTemporary(
+		ctx,
+		constant.ProductImagePath,
+		request.File.Filename,
+		request.File,
+		fileUploadTemporaryParams{
+			supportedExtensions: listSupportedExtension([]string{
+				extensionTypeImage,
+			}),
+			maxFileSizeInBytes: util.Pointer[int64](2 << 20),
+		},
+	)
 }
 
 func (u *productUseCase) Fetch(ctx context.Context, request dto_request.ProductFetchRequest) ([]model.Product, int) {
