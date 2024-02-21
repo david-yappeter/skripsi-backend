@@ -166,6 +166,9 @@ func GetRoleInventoryPermissions() []Permission {
 		// tiktok product
 		PermissionTiktokProductCreate,
 		PermissionTiktokProductUploadImage,
+		PermissionTiktokProductFetchBrands,
+		PermissionTiktokProductFetchCategories,
+		PermissionTiktokProductRecommendedCategory,
 
 		// unit
 		PermissionUnitCreate,

@@ -110,8 +110,11 @@ const (
 	PermissionSupplierTypeDelete // SUPPLIER_TYPE_DELETE
 
 	// tiktok product
-	PermissionTiktokProductCreate      // TIKTOK_PRODUCT_CREATE
-	PermissionTiktokProductUploadImage // TIKTOK_PRODUCT_UPLOAD_IMAGE
+	PermissionTiktokProductCreate              // TIKTOK_PRODUCT_CREATE
+	PermissionTiktokProductUploadImage         // TIKTOK_PRODUCT_UPLOAD_IMAGE
+	PermissionTiktokProductFetchBrands         // TIKTOK_PRODUCT_FETCH_BRANDS
+	PermissionTiktokProductFetchCategories     // TIKTOK_PRODUCT_FETCH_CATEGORIES
+	PermissionTiktokProductRecommendedCategory // TIKTOK_PRODUCT_RECOMMENDED_CATEGORY
 
 	// user
 	PermissionUserCreate         // USER_CREATE

@@ -77,6 +77,40 @@ func (a *TiktokProductApi) UploadImage() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/tiktok-products/brands [post]
+//	@Summary	Fetch Brands field for Form
+//	@tags		Tiktok Products
+//	@Accept		json
+//	@Param		dto_request.TiktokProductFetchBrandsRequest body dto_request.TiktokProductFetchBrandsRequest true "Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{brands=[]dto_response.TiktokBrandResponse,next_page_token=string,total_count=int}}
+func (a *TiktokProductApi) FetchBrands() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionTiktokProductFetchBrands),
+		func(ctx apiContext) {
+			var request dto_request.TiktokProductFetchBrandsRequest
+			ctx.mustBind(&request)
+
+			brands, nextPageToken, totalCount := a.tiktokProductUseCase.FetchBrands(ctx.context(), request)
+
+			nodes := util.ConvertArray(brands, dto_response.NewTiktokBrandResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"brands":          nodes,
+						"next_page_token": nextPageToken,
+						"total_count":     totalCount,
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/tiktok-products/categories [post]
 //	@Summary	Fetch Categories field for Form
 //	@tags		Tiktok Products
@@ -85,7 +119,7 @@ func (a *TiktokProductApi) UploadImage() gin.HandlerFunc {
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{categories=[]dto_response.TiktokCategoryResponse}}
 func (a *TiktokProductApi) FetchCategories() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionTiktokProductUploadImage),
+		data_type.PermissionP(data_type.PermissionTiktokProductFetchCategories),
 		func(ctx apiContext) {
 			categories := a.tiktokProductUseCase.FetchCategories(ctx.context())
 
@@ -109,12 +143,12 @@ func (a *TiktokProductApi) FetchCategories() gin.HandlerFunc {
 //	@Summary	Recommended Category
 //	@tags		Tiktok Products
 //	@Accept		json
-//	@Param		dto_request.TiktokProductFetchCategoriesRequest	body	dto_request.TiktokProductFetchCategoriesRequest	true	"Body Request"
+//	@Param		dto_request.TiktokProductRecommendCategoryRequest	body	dto_request.TiktokProductRecommendCategoryRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{categories=[]dto_response.TiktokCategoryResponse}}
 func (a *TiktokProductApi) RecommendedCategory() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionTiktokProductUploadImage),
+		data_type.PermissionP(data_type.PermissionTiktokProductRecommendedCategory),
 		func(ctx apiContext) {
 			var request dto_request.TiktokProductRecommendCategoryRequest
 			ctx.mustBind(&request)
@@ -142,6 +176,7 @@ func RegisterTiktokProductApi(router gin.IRouter, useCaseManager use_case.UseCas
 	routerGroup := router.Group("/tiktok-products")
 	routerGroup.POST("", api.Create())
 	routerGroup.POST("/upload-image", api.UploadImage())
+	routerGroup.POST("/brands", api.FetchBrands())
 	routerGroup.POST("/categories", api.FetchCategories())
 	routerGroup.POST("/recommended-category", api.RecommendedCategory())
 

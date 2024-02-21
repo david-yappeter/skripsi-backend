@@ -21,6 +21,7 @@ type TiktokProductUseCase interface {
 	UploadImage(ctx context.Context, request dto_request.TiktokProductUploadImageRequest) (string, string)
 
 	// read
+	FetchBrands(ctx context.Context, request dto_request.TiktokProductFetchBrandsRequest) (brandList []model.TiktokBrand, nextPageToken string, totalCount int)
 	FetchCategories(ctx context.Context) []model.TiktokCategory
 	RecommendedCategory(ctx context.Context, request dto_request.TiktokProductRecommendCategoryRequest) model.TiktokCategory
 }
@@ -172,6 +173,52 @@ func (u *tiktokProductUseCase) UploadImage(ctx context.Context, request dto_requ
 	panicIfErr(err)
 
 	return resp.Url, resp.Uri
+}
+
+func (u *tiktokProductUseCase) FetchBrands(ctx context.Context, request dto_request.TiktokProductFetchBrandsRequest) ([]model.TiktokBrand, string, int) {
+	client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
+
+	if tiktokConfig.AccessToken == nil {
+		panic("TIKTOK_CONFIG.ACCESS_TOKEN_EMPTY")
+	}
+
+	resp, err := client.GetBrands(
+		ctx,
+		gotiktok.CommonParam{
+			AccessToken: *tiktokConfig.AccessToken,
+			ShopCipher:  tiktokConfig.ShopCipher,
+			ShopId:      tiktokConfig.ShopId,
+		},
+		gotiktok.CursorPaginationParam{
+			NextPageToken: request.NextPageToken,
+			PageSize:      50,
+			SortField:     nil,
+			SortOrder:     nil,
+		},
+		gotiktok.GetBrandsRequest{
+			CategoryId:   request.CategoryId,
+			IsAuthorized: nil,
+			BrandName:    request.Phrase,
+		},
+	)
+	panicIfErr(err)
+
+	tiktokBrandList := []model.TiktokBrand{}
+	removedBrandCount := 0
+
+	for _, brand := range resp.Brands {
+		if brand.BrandStatus != "AVAILABLE" {
+			removedBrandCount++
+			continue
+		}
+
+		tiktokBrandList = append(tiktokBrandList, model.TiktokBrand{
+			Id:   brand.Id,
+			Name: brand.Name,
+		})
+	}
+
+	return tiktokBrandList, resp.NextPageToken, resp.TotalCount
 }
 
 func (u *tiktokProductUseCase) FetchCategories(ctx context.Context) []model.TiktokCategory {
