@@ -18,8 +18,8 @@ type TiktokProductCreateRequest struct {
 	DimensionWidth  *float64                                        `json:"dimension_width" validate:"required_with=DimensionUnit,omitempty,gt=0"`
 	DimensionLength *float64                                        `json:"dimension_length" validate:"required_with=DimensionUnit,omitempty,gt=0"`
 	DimensionUnit   *data_type.TiktokProductDimensionUnit           `json:"dimension_unit" validate:"omitempty,data_type_enum"`
-	Weight          float64                                         `json:"weight" validate:"omitempty,gt=0"`
-	WeightUnit      data_type.TiktokProductPackageWeigth            `json:"weight_unit" validate:"required,data_type_enum"`
+	Weight          float64                                         `json:"weight" validate:"required,gt=0"`
+	WeightUnit      data_type.TiktokProductPackageWeight            `json:"weight_unit" validate:"required,data_type_enum"`
 	Attributes      []gotiktok.CreateProductRequestProductAttribute `json:"attributes"`
 } // @name TiktokProductCreateRequest
 
