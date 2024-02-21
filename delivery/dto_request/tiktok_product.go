@@ -42,8 +42,16 @@ type TiktokProductGetCategoryAttributesRequest struct {
 	CategoryId string `json:"-" swaggerignore:"true"`
 } // @name TiktokProductGetCategoryRulesRequest
 
-type TiktokProductRecommendCategoryRequest struct {
+type TiktokProductRecommendedCategoryRequest struct {
 	ProductTitle string   `json:"product_title" validate:"required,not_empty"`
 	Description  *string  `json:"description" validate:"omitempty,not_empty"`
 	ImagesUri    []string `json:"images_uri"`
 } // @name TiktokProductRecommendCategoryRequest
+
+type TiktokProductActivateRequest struct {
+	Id string `json:"-" swaggerignore:"true"`
+} // @name TiktokProductActivateRequest
+
+type TiktokProductDeactivateRequest struct {
+	Id string `json:"-" swaggerignore:"true"`
+} // @name TiktokProductDeactivateRequest

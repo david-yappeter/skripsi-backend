@@ -304,6 +304,12 @@ func mustGetCustomerDebt(ctx context.Context, repositoryManager repository.Repos
 	return *customerDebt
 }
 
+func mustGetTiktokProduct(ctx context.Context, repositoryManager repository.RepositoryManager, tiktokProductId string, isValidate bool) model.TiktokProduct {
+	tiktokProduct, err := repositoryManager.TiktokProductRepository().Get(ctx, tiktokProductId)
+	panicIfRepositoryError(err, "TIKTOK_PRODUC.NOT_FOUND", isValidate)
+	return *tiktokProduct
+}
+
 func shouldGetProductStockByProductId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string) *model.ProductStock {
 	productStock, err := repositoryManager.ProductStockRepository().GetByProductId(ctx, productId)
 	panicIfErr(err, constant.ErrNoData)
