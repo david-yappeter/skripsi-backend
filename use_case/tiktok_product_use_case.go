@@ -24,6 +24,7 @@ type TiktokProductUseCase interface {
 	FetchBrands(ctx context.Context, request dto_request.TiktokProductFetchBrandsRequest) (brandList []model.TiktokBrand, nextPageToken string, totalCount int)
 	FetchCategories(ctx context.Context) []model.TiktokCategory
 	GetCategoryRules(ctx context.Context, request dto_request.TiktokProductGetCategoryRulesRequest) model.TiktokCategoryRule
+	GetCategoryAttributes(ctx context.Context, request dto_request.TiktokProductGetCategoryAttributesRequest) []model.TiktokAttribute
 	RecommendedCategory(ctx context.Context, request dto_request.TiktokProductRecommendCategoryRequest) model.TiktokCategory
 }
 
@@ -312,6 +313,50 @@ func (u *tiktokProductUseCase) GetCategoryRules(ctx context.Context, request dto
 		SizeChartIsSupported:       resp.SizeChart.IsSupported,
 		SizeChartIsRequired:        resp.SizeChart.IsRequired,
 	}
+}
+
+func (u *tiktokProductUseCase) GetCategoryAttributes(ctx context.Context, request dto_request.TiktokProductGetCategoryAttributesRequest) []model.TiktokAttribute {
+	client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
+
+	if tiktokConfig.AccessToken == nil {
+		panic("TIKTOK_CONFIG.ACCESS_TOKEN_EMPTY")
+	}
+
+	resp, err := client.GetAttributes(
+		ctx,
+		gotiktok.CommonParam{
+			AccessToken: *tiktokConfig.AccessToken,
+			ShopCipher:  tiktokConfig.ShopCipher,
+			ShopId:      tiktokConfig.ShopId,
+		},
+		request.CategoryId,
+		gotiktok.GetAttributesRequest{
+			Locale: util.StringP("id-ID"),
+		},
+	)
+	panicIfErr(err)
+
+	tiktokAttributes := []model.TiktokAttribute{}
+	for _, attribute := range resp.Attributes {
+		tiktokAttributeValues := []model.TiktokAttributeValue{}
+
+		for _, value := range attribute.Values {
+			tiktokAttributeValues = append(tiktokAttributeValues, model.TiktokAttributeValue{
+				Id:   value.Id,
+				Name: value.Name,
+			})
+		}
+
+		tiktokAttributes = append(tiktokAttributes, model.TiktokAttribute{
+			Id:                  attribute.Id,
+			Name:                attribute.Name,
+			IsCustomizable:      attribute.IsCustomizable,
+			IsMultipleSelection: attribute.IsMultipleSelection,
+			Values:              tiktokAttributeValues,
+		})
+	}
+
+	return tiktokAttributes
 }
 
 func (u *tiktokProductUseCase) RecommendedCategory(ctx context.Context, request dto_request.TiktokProductRecommendCategoryRequest) model.TiktokCategory {

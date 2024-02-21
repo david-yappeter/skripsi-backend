@@ -169,6 +169,7 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionTiktokProductFetchBrands,
 		PermissionTiktokProductFetchCategories,
 		PermissionTiktokProductGetCategoryRules,
+		PermissionTiktokProductGetCategoryAttributes,
 		PermissionTiktokProductRecommendedCategory,
 
 		// unit

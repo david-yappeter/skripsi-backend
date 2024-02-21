@@ -110,12 +110,13 @@ const (
 	PermissionSupplierTypeDelete // SUPPLIER_TYPE_DELETE
 
 	// tiktok product
-	PermissionTiktokProductCreate              // TIKTOK_PRODUCT_CREATE
-	PermissionTiktokProductUploadImage         // TIKTOK_PRODUCT_UPLOAD_IMAGE
-	PermissionTiktokProductFetchBrands         // TIKTOK_PRODUCT_FETCH_BRANDS
-	PermissionTiktokProductFetchCategories     // TIKTOK_PRODUCT_FETCH_CATEGORIES
-	PermissionTiktokProductGetCategoryRules    // TIKTOK_PRODUCT_GET_RULES
-	PermissionTiktokProductRecommendedCategory // TIKTOK_PRODUCT_RECOMMENDED_CATEGORY
+	PermissionTiktokProductCreate                // TIKTOK_PRODUCT_CREATE
+	PermissionTiktokProductUploadImage           // TIKTOK_PRODUCT_UPLOAD_IMAGE
+	PermissionTiktokProductFetchBrands           // TIKTOK_PRODUCT_FETCH_BRANDS
+	PermissionTiktokProductFetchCategories       // TIKTOK_PRODUCT_FETCH_CATEGORIES
+	PermissionTiktokProductGetCategoryRules      // TIKTOK_PRODUCT_GET_RULES
+	PermissionTiktokProductGetCategoryAttributes // TIKTOK_PRODUCT_GET_ATTRIBUTES
+	PermissionTiktokProductRecommendedCategory   // TIKTOK_PRODUCT_RECOMMENDED_CATEGORY
 
 	// user
 	PermissionUserCreate         // USER_CREATE
