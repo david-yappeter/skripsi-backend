@@ -114,6 +114,7 @@ const (
 	PermissionTiktokProductUploadImage         // TIKTOK_PRODUCT_UPLOAD_IMAGE
 	PermissionTiktokProductFetchBrands         // TIKTOK_PRODUCT_FETCH_BRANDS
 	PermissionTiktokProductFetchCategories     // TIKTOK_PRODUCT_FETCH_CATEGORIES
+	PermissionTiktokProductGetCategoryRules    // TIKTOK_PRODUCT_GET_RULES
 	PermissionTiktokProductRecommendedCategory // TIKTOK_PRODUCT_RECOMMENDED_CATEGORY
 
 	// user

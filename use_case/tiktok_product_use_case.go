@@ -23,6 +23,7 @@ type TiktokProductUseCase interface {
 	// read
 	FetchBrands(ctx context.Context, request dto_request.TiktokProductFetchBrandsRequest) (brandList []model.TiktokBrand, nextPageToken string, totalCount int)
 	FetchCategories(ctx context.Context) []model.TiktokCategory
+	GetCategoryRules(ctx context.Context, request dto_request.TiktokProductGetCategoryRulesRequest) model.TiktokCategoryRule
 	RecommendedCategory(ctx context.Context, request dto_request.TiktokProductRecommendCategoryRequest) model.TiktokCategory
 }
 
@@ -91,6 +92,16 @@ func (u *tiktokProductUseCase) Create(ctx context.Context, request dto_request.T
 		}
 	}
 
+	// size chart
+	var sizeChart *gotiktok.CreateProductRequestSizeChart = nil
+	if request.SizeChartUri != nil {
+		sizeChart = &gotiktok.CreateProductRequestSizeChart{
+			Image: &gotiktok.CreateProductRequestSizeChartImage{
+				Uri: *request.SizeChartUri,
+			},
+		}
+	}
+
 	resp, err := client.CreateProduct(ctx,
 		gotiktok.CommonParam{
 			AccessToken: *tiktokConfig.AccessToken,
@@ -127,7 +138,7 @@ func (u *tiktokProductUseCase) Create(ctx context.Context, request dto_request.T
 				Value: fmt.Sprintf("%+v", request.Weight),
 			},
 			Video:     nil,
-			SizeChart: nil,
+			SizeChart: sizeChart,
 		},
 	)
 	panicIfErr(err)
@@ -276,6 +287,31 @@ func (u *tiktokProductUseCase) FetchCategories(ctx context.Context) []model.Tikt
 	}
 
 	return util.SlicePointerToSliceValue(topCategoryList)
+}
+
+func (u *tiktokProductUseCase) GetCategoryRules(ctx context.Context, request dto_request.TiktokProductGetCategoryRulesRequest) model.TiktokCategoryRule {
+	client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
+
+	if tiktokConfig.AccessToken == nil {
+		panic("TIKTOK_CONFIG.ACCESS_TOKEN_EMPTY")
+	}
+
+	resp, err := client.GetCategoryRules(
+		ctx,
+		gotiktok.CommonParam{
+			AccessToken: *tiktokConfig.AccessToken,
+			ShopCipher:  tiktokConfig.ShopCipher,
+			ShopId:      tiktokConfig.ShopId,
+		},
+		request.CategoryId,
+	)
+	panicIfErr(err)
+
+	return model.TiktokCategoryRule{
+		PackageDimensionIsRequired: resp.PackageDimension.IsRequired,
+		SizeChartIsSupported:       resp.SizeChart.IsSupported,
+		SizeChartIsRequired:        resp.SizeChart.IsRequired,
+	}
 }
 
 func (u *tiktokProductUseCase) RecommendedCategory(ctx context.Context, request dto_request.TiktokProductRecommendCategoryRequest) model.TiktokCategory {

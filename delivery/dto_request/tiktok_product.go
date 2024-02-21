@@ -21,6 +21,7 @@ type TiktokProductCreateRequest struct {
 	Weight          float64                                         `json:"weight" validate:"required,gt=0"`
 	WeightUnit      data_type.TiktokProductPackageWeight            `json:"weight_unit" validate:"required,data_type_enum"`
 	Attributes      []gotiktok.CreateProductRequestProductAttribute `json:"attributes"`
+	SizeChartUri    *string                                         `json:"size_chart_uri" validate:"omitempty,not_empty"`
 } // @name TiktokProductCreateRequest
 
 type TiktokProductUploadImageRequest struct {
@@ -32,6 +33,10 @@ type TiktokProductFetchBrandsRequest struct {
 	Phrase        *string `json:"phrase" validate:"omitempty,not_empty"`
 	CategoryId    *string `json:"category_id" validate:"omitempty,not_empty"`
 } // @name TiktokProductFetchBrandsRequest
+
+type TiktokProductGetCategoryRulesRequest struct {
+	CategoryId string `json:"-" swaggerignore:"true"`
+} // @name TiktokProductGetCategoryRulesRequest
 
 type TiktokProductRecommendCategoryRequest struct {
 	ProductTitle string   `json:"product_title" validate:"required,not_empty"`
