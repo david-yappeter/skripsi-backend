@@ -10,6 +10,7 @@ import (
 	"myapp/model"
 	"myapp/repository"
 	"myapp/util"
+	"strconv"
 
 	gotiktok "github.com/david-yappeter/go-tiktok"
 	"golang.org/x/sync/errgroup"
@@ -25,6 +26,7 @@ type TiktokProductUseCase interface {
 	FetchCategories(ctx context.Context) []model.TiktokCategory
 	GetCategoryRules(ctx context.Context, request dto_request.TiktokProductGetCategoryRulesRequest) model.TiktokCategoryRule
 	GetCategoryAttributes(ctx context.Context, request dto_request.TiktokProductGetCategoryAttributesRequest) []model.TiktokAttribute
+	Get(ctx context.Context, request dto_request.TiktokProductGetRequest) model.TiktokPlatformProduct
 	RecommendedCategory(ctx context.Context, request dto_request.TiktokProductRecommendedCategoryRequest) model.TiktokCategory
 
 	// update
@@ -361,6 +363,138 @@ func (u *tiktokProductUseCase) GetCategoryAttributes(ctx context.Context, reques
 	}
 
 	return tiktokAttributes
+}
+
+func (u *tiktokProductUseCase) Get(ctx context.Context, request dto_request.TiktokProductGetRequest) model.TiktokPlatformProduct {
+	client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
+
+	if tiktokConfig.AccessToken == nil {
+		panic("TIKTOK_CONFIG.ACCESS_TOKEN_EMPTY")
+	}
+
+	resp, err := client.GetProductDetail(
+		ctx,
+		gotiktok.CommonParam{
+			AccessToken: *tiktokConfig.AccessToken,
+			ShopCipher:  tiktokConfig.ShopCipher,
+			ShopId:      tiktokConfig.ShopId,
+		},
+		request.ProductId,
+	)
+	panicIfErr(err)
+
+	var (
+		tiktokBrand                                      *model.TiktokBrand
+		topCategory                                      *model.TiktokCategory
+		dimensionHeight, dimensionLength, dimensionWidth *int
+		dimensionUnit                                    data_type.TiktokProductDimensionUnit
+		weightValue                                      *float64
+		weightUnit                                       data_type.TiktokProductPackageWeight
+		platformImages                                   []model.TiktokPlatformImage
+		platformAttributes                               []model.TiktokPlatformAttribute
+	)
+
+	var previousCategory *model.TiktokCategory = nil
+	for _, category := range resp.CategoryChains {
+
+		tiktokCategory := model.TiktokCategory{
+			Id:                 category.Id,
+			Name:               category.LocalName,
+			IsLeaf:             category.IsLeaf,
+			ParentCategory:     nil,
+			ChildrenCategories: []*model.TiktokCategory{},
+		}
+
+		if previousCategory != nil {
+			previousCategory.ChildrenCategories = append(previousCategory.ChildrenCategories, &tiktokCategory)
+		}
+		previousCategory = &tiktokCategory
+
+		if topCategory == nil {
+			topCategory = previousCategory
+		}
+	}
+
+	// brand
+	if resp.Brand != nil {
+		tiktokBrand = &model.TiktokBrand{
+			Id:   resp.Brand.Id,
+			Name: resp.Brand.Name,
+		}
+	}
+
+	// dimension
+	if resp.PackageDimensions.Height != "0" {
+		v, _ := strconv.Atoi(resp.PackageDimensions.Height)
+		dimensionHeight = util.IntP(v)
+	}
+
+	if resp.PackageDimensions.Width != "0" {
+		v, _ := strconv.Atoi(resp.PackageDimensions.Width)
+		dimensionWidth = util.IntP(v)
+	}
+
+	if resp.PackageDimensions.Length != "0" {
+		v, _ := strconv.Atoi(resp.PackageDimensions.Length)
+		dimensionLength = util.IntP(v)
+	}
+
+	dimensionUnit.Determine(resp.PackageDimensions.Unit)
+
+	// weight
+	weightUnit.Determine(resp.PackageWeight.Unit)
+
+	func() {
+		v, _ := strconv.ParseFloat(resp.PackageWeight.Value, 64)
+		weightValue = util.Float64P(v)
+	}()
+
+	// images
+	for _, image := range resp.MainImages {
+		platformImages = append(platformImages, model.TiktokPlatformImage{
+			Height:   image.Height,
+			Width:    image.Width,
+			ThumbUrl: image.ThumbUrls[0],
+			Uri:      image.Uri,
+			Url:      image.Urls[0],
+		})
+	}
+
+	// attributes
+	for _, attribute := range resp.ProductAttributes {
+		values := []model.TiktokAttributeValue{}
+		for _, val := range attribute.Values {
+			values = append(values, model.TiktokAttributeValue{
+				Id:   val.Id,
+				Name: val.Name,
+			})
+		}
+
+		platformAttributes = append(platformAttributes, model.TiktokPlatformAttribute{
+			Id:     attribute.Id,
+			Name:   attribute.Name,
+			Values: values,
+		})
+	}
+
+	tiktokPlatformProduct := model.TiktokPlatformProduct{
+		Id:              resp.Id,
+		Status:          resp.Status,
+		Title:           resp.Title,
+		Description:     resp.Description,
+		Category:        *topCategory,
+		Brand:           tiktokBrand,
+		DimensionHeight: dimensionHeight,
+		DimensionWidth:  dimensionWidth,
+		DimensionLength: dimensionLength,
+		DimensionUnit:   &dimensionUnit,
+		WeightValue:     weightValue,
+		WeightUnit:      &weightUnit,
+		Images:          platformImages,
+		Attributes:      platformAttributes,
+	}
+
+	return tiktokPlatformProduct
 }
 
 func (u *tiktokProductUseCase) RecommendedCategory(ctx context.Context, request dto_request.TiktokProductRecommendedCategoryRequest) model.TiktokCategory {

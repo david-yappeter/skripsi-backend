@@ -27,7 +27,7 @@ const _PermissionType_name = "ADMINGLOBALMUST_ASSIGNMUST_ON_SITEMUST_ASSIGN_AND_
 
 var _PermissionType_index = [...]uint8{0, 5, 11, 22, 34, 57, 87}
 
-func (i *PermissionType) determine(s string) {
+func (i *PermissionType) Determine(s string) {
 	switch s {
 	case "ADMIN":
 		*i = PermissionTypeAdmin
@@ -77,13 +77,13 @@ func (i *PermissionType) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	i.determine(s)
+	i.Determine(s)
 
 	return nil
 }
 
 func (i *PermissionType) UnmarshalText(b []byte) error {
-	i.determine(string(b))
+	i.Determine(string(b))
 
 	return nil
 }
@@ -91,7 +91,7 @@ func (i *PermissionType) UnmarshalText(b []byte) error {
 func (i *PermissionType) Scan(value interface{}) error {
 	switch s := value.(type) {
 	case string:
-		i.determine(s)
+		i.Determine(s)
 	default:
 		return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type %T", value, i)
 	}

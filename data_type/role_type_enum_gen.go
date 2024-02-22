@@ -24,7 +24,7 @@ const _RoleType_name = "SUPER_ADMINGLOBALADMIN"
 
 var _RoleType_index = [...]uint8{0, 11, 17, 22}
 
-func (i *RoleType) determine(s string) {
+func (i *RoleType) Determine(s string) {
 	switch s {
 	case "SUPER_ADMIN":
 		*i = RoleTypeSuperAdmin
@@ -68,13 +68,13 @@ func (i *RoleType) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	i.determine(s)
+	i.Determine(s)
 
 	return nil
 }
 
 func (i *RoleType) UnmarshalText(b []byte) error {
-	i.determine(string(b))
+	i.Determine(string(b))
 
 	return nil
 }
@@ -82,7 +82,7 @@ func (i *RoleType) UnmarshalText(b []byte) error {
 func (i *RoleType) Scan(value interface{}) error {
 	switch s := value.(type) {
 	case string:
-		i.determine(s)
+		i.Determine(s)
 	default:
 		return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type %T", value, i)
 	}

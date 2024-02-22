@@ -645,7 +645,7 @@ func (g *Generator) declareNameVars(runs [][]Value, typeName string, suffix stri
 
 // createDetermine create a func that convert a string to its original value.
 func (g *Generator) createDetermine(runs [][]Value, typeName string) {
-	g.Printf("func (i *%s) determine(s string) {\n", typeName)
+	g.Printf("func (i *%s) Determine(s string) {\n", typeName)
 	g.Printf("\tswitch s {\n")
 	for _, run := range runs {
 		for i := range run {
@@ -881,13 +881,13 @@ const unmarshaler = `func (i *%[1]s) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	i.determine(s)
+	i.Determine(s)
 
 	return nil
 }
 
 func (i *%[1]s) UnmarshalText(b []byte) error {
-	i.determine(string(b))
+	i.Determine(string(b))
 
 	return nil
 }
@@ -897,7 +897,7 @@ func (i *%[1]s) UnmarshalText(b []byte) error {
 const driverScanner = `func (i *%[1]s) Scan(value interface{}) error {
 	switch s := value.(type) {
 	case string:
-		i.determine(s)
+		i.Determine(s)
 	default:
 		return fmt.Errorf("unsupported Scan, storing driver.Value type %%T into type %%T", value, i)
 	}

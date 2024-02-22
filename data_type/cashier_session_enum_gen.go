@@ -23,7 +23,7 @@ const _CashierSessionStatus_name = "ACTIVECOMPLETED"
 
 var _CashierSessionStatus_index = [...]uint8{0, 6, 15}
 
-func (i *CashierSessionStatus) determine(s string) {
+func (i *CashierSessionStatus) Determine(s string) {
 	switch s {
 	case "ACTIVE":
 		*i = CashierSessionStatusActive
@@ -65,13 +65,13 @@ func (i *CashierSessionStatus) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	i.determine(s)
+	i.Determine(s)
 
 	return nil
 }
 
 func (i *CashierSessionStatus) UnmarshalText(b []byte) error {
-	i.determine(string(b))
+	i.Determine(string(b))
 
 	return nil
 }
@@ -79,7 +79,7 @@ func (i *CashierSessionStatus) UnmarshalText(b []byte) error {
 func (i *CashierSessionStatus) Scan(value interface{}) error {
 	switch s := value.(type) {
 	case string:
-		i.determine(s)
+		i.Determine(s)
 	default:
 		return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type %T", value, i)
 	}

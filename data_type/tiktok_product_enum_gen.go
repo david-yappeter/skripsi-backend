@@ -23,7 +23,7 @@ const _TiktokProductStatus_name = "ACTIVEIN_ACTIVE"
 
 var _TiktokProductStatus_index = [...]uint8{0, 6, 15}
 
-func (i *TiktokProductStatus) determine(s string) {
+func (i *TiktokProductStatus) Determine(s string) {
 	switch s {
 	case "ACTIVE":
 		*i = TiktokProductStatusActive
@@ -65,13 +65,13 @@ func (i *TiktokProductStatus) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	i.determine(s)
+	i.Determine(s)
 
 	return nil
 }
 
 func (i *TiktokProductStatus) UnmarshalText(b []byte) error {
-	i.determine(string(b))
+	i.Determine(string(b))
 
 	return nil
 }
@@ -79,7 +79,7 @@ func (i *TiktokProductStatus) UnmarshalText(b []byte) error {
 func (i *TiktokProductStatus) Scan(value interface{}) error {
 	switch s := value.(type) {
 	case string:
-		i.determine(s)
+		i.Determine(s)
 	default:
 		return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type %T", value, i)
 	}
@@ -122,7 +122,7 @@ const _TiktokProductDimensionUnit_name = "CENTIMETER"
 
 var _TiktokProductDimensionUnit_index = [...]uint8{0, 10}
 
-func (i *TiktokProductDimensionUnit) determine(s string) {
+func (i *TiktokProductDimensionUnit) Determine(s string) {
 	switch s {
 	case "CENTIMETER":
 		*i = TiktokProductDimensionUnitCentimeter
@@ -162,13 +162,13 @@ func (i *TiktokProductDimensionUnit) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	i.determine(s)
+	i.Determine(s)
 
 	return nil
 }
 
 func (i *TiktokProductDimensionUnit) UnmarshalText(b []byte) error {
-	i.determine(string(b))
+	i.Determine(string(b))
 
 	return nil
 }
@@ -176,7 +176,7 @@ func (i *TiktokProductDimensionUnit) UnmarshalText(b []byte) error {
 func (i *TiktokProductDimensionUnit) Scan(value interface{}) error {
 	switch s := value.(type) {
 	case string:
-		i.determine(s)
+		i.Determine(s)
 	default:
 		return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type %T", value, i)
 	}
@@ -217,7 +217,7 @@ const _TiktokProductPackageWeight_name = "KILOGRAM"
 
 var _TiktokProductPackageWeight_index = [...]uint8{0, 8}
 
-func (i *TiktokProductPackageWeight) determine(s string) {
+func (i *TiktokProductPackageWeight) Determine(s string) {
 	switch s {
 	case "KILOGRAM":
 		*i = TiktokProductPackageWeightKilogram
@@ -257,13 +257,13 @@ func (i *TiktokProductPackageWeight) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	i.determine(s)
+	i.Determine(s)
 
 	return nil
 }
 
 func (i *TiktokProductPackageWeight) UnmarshalText(b []byte) error {
-	i.determine(string(b))
+	i.Determine(string(b))
 
 	return nil
 }
@@ -271,7 +271,7 @@ func (i *TiktokProductPackageWeight) UnmarshalText(b []byte) error {
 func (i *TiktokProductPackageWeight) Scan(value interface{}) error {
 	switch s := value.(type) {
 	case string:
-		i.determine(s)
+		i.Determine(s)
 	default:
 		return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type %T", value, i)
 	}

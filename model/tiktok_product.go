@@ -4,6 +4,24 @@ import "myapp/data_type"
 
 const TiktokProductTableName = "tiktok_products"
 
+type TiktokPlatformProduct struct {
+	Id              string                                `db:"-"`
+	Status          string                                `db:"-"`
+	Title           string                                `db:"-"`
+	Description     string                                `db:"-"`
+	Category        TiktokCategory                        `db:"-"`
+	Brand           *TiktokBrand                          `db:"-"`
+	DimensionHeight *int                                  `db:"-"`
+	DimensionWidth  *int                                  `db:"-"`
+	DimensionLength *int                                  `db:"-"`
+	DimensionUnit   *data_type.TiktokProductDimensionUnit `db:"-"`
+	WeightValue     *float64                              `db:"-"`
+	WeightUnit      *data_type.TiktokProductPackageWeight `db:"-"`
+
+	Images     []TiktokPlatformImage     `db:"-"`
+	Attributes []TiktokPlatformAttribute `db:"-"`
+}
+
 type TiktokProduct struct {
 	TiktokProductId string                        `db:"tiktok_product_id"`
 	ProductId       string                        `db:"product_id"`

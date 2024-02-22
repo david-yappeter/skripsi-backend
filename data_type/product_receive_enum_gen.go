@@ -24,7 +24,7 @@ const _ProductReceiveStatus_name = "PENDINGCANCELEDCOMPLETED"
 
 var _ProductReceiveStatus_index = [...]uint8{0, 7, 15, 24}
 
-func (i *ProductReceiveStatus) determine(s string) {
+func (i *ProductReceiveStatus) Determine(s string) {
 	switch s {
 	case "PENDING":
 		*i = ProductReceiveStatusPending
@@ -68,13 +68,13 @@ func (i *ProductReceiveStatus) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	i.determine(s)
+	i.Determine(s)
 
 	return nil
 }
 
 func (i *ProductReceiveStatus) UnmarshalText(b []byte) error {
-	i.determine(string(b))
+	i.Determine(string(b))
 
 	return nil
 }
@@ -82,7 +82,7 @@ func (i *ProductReceiveStatus) UnmarshalText(b []byte) error {
 func (i *ProductReceiveStatus) Scan(value interface{}) error {
 	switch s := value.(type) {
 	case string:
-		i.determine(s)
+		i.Determine(s)
 	default:
 		return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type %T", value, i)
 	}

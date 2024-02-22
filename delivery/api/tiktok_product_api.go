@@ -143,6 +143,7 @@ func (a *TiktokProductApi) FetchCategories() gin.HandlerFunc {
 //	@Summary	Get Category Rule
 //	@tags		Tiktok Products
 //	@Accept		json
+//	@Param		category_id path string true "Tiktok Category Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{category_rule=dto_response.TiktokCategoryRuleResponse}}
 func (a *TiktokProductApi) GetCategoryRules() gin.HandlerFunc {
@@ -174,6 +175,7 @@ func (a *TiktokProductApi) GetCategoryRules() gin.HandlerFunc {
 //	@Summary	Get Category Attributes
 //	@tags		Tiktok Products
 //	@Accept		json
+//	@Param		category_id path string true "Tiktok Category Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{attributes=[]dto_response.TiktokAttributeResponse}}
 func (a *TiktokProductApi) GetCategoryAttributes() gin.HandlerFunc {
@@ -193,6 +195,37 @@ func (a *TiktokProductApi) GetCategoryAttributes() gin.HandlerFunc {
 				dto_response.Response{
 					Data: dto_response.DataResponse{
 						"attributes": nodes,
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/tiktok-products/{id} [get]
+//	@Summary	Get
+//	@tags		Tiktok Products
+//	@Accept		json
+//	@Param		id path string true "Tiktok Category Id"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{tiktok_product=dto_response.TiktokPlatformProductResponse}}
+func (a *TiktokProductApi) Get() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionTiktokProductGet),
+		func(ctx apiContext) {
+			productId := ctx.getParam("id")
+			var request dto_request.TiktokProductGetRequest
+			request.ProductId = productId
+
+			product := a.tiktokProductUseCase.Get(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"tiktok_product": dto_response.NewTiktokPlatformProductResponse(product),
 					},
 				},
 			)
@@ -303,6 +336,7 @@ func RegisterTiktokProductApi(router gin.IRouter, useCaseManager use_case.UseCas
 	routerGroup.POST("/categories", api.FetchCategories())
 	routerGroup.POST("/categories/:category_id/rules", api.GetCategoryRules())
 	routerGroup.POST("/categories/:category_id/attributes", api.GetCategoryAttributes())
+	routerGroup.GET("/:id", api.Get())
 	routerGroup.POST("/recommended-category", api.RecommendedCategory())
 	routerGroup.PATCH("/:id/activate", api.Activate())
 	routerGroup.PATCH("/:id/deactivate", api.Deactivate())

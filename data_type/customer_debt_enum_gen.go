@@ -24,7 +24,7 @@ const _CustomerDebtStatus_name = "UNPAIDCANCELEDPAID"
 
 var _CustomerDebtStatus_index = [...]uint8{0, 6, 14, 18}
 
-func (i *CustomerDebtStatus) determine(s string) {
+func (i *CustomerDebtStatus) Determine(s string) {
 	switch s {
 	case "UNPAID":
 		*i = CustomerDebtStatusUnpaid
@@ -68,13 +68,13 @@ func (i *CustomerDebtStatus) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	i.determine(s)
+	i.Determine(s)
 
 	return nil
 }
 
 func (i *CustomerDebtStatus) UnmarshalText(b []byte) error {
-	i.determine(string(b))
+	i.Determine(string(b))
 
 	return nil
 }
@@ -82,7 +82,7 @@ func (i *CustomerDebtStatus) UnmarshalText(b []byte) error {
 func (i *CustomerDebtStatus) Scan(value interface{}) error {
 	switch s := value.(type) {
 	case string:
-		i.determine(s)
+		i.Determine(s)
 	default:
 		return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type %T", value, i)
 	}
@@ -127,7 +127,7 @@ const _CustomerDebtDebtSource_name = "DELIVERY_ORDER"
 
 var _CustomerDebtDebtSource_index = [...]uint8{0, 14}
 
-func (i *CustomerDebtDebtSource) determine(s string) {
+func (i *CustomerDebtDebtSource) Determine(s string) {
 	switch s {
 	case "DELIVERY_ORDER":
 		*i = CustomerDebtDebtSourceDeliveryOrder
@@ -167,13 +167,13 @@ func (i *CustomerDebtDebtSource) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	i.determine(s)
+	i.Determine(s)
 
 	return nil
 }
 
 func (i *CustomerDebtDebtSource) UnmarshalText(b []byte) error {
-	i.determine(string(b))
+	i.Determine(string(b))
 
 	return nil
 }
@@ -181,7 +181,7 @@ func (i *CustomerDebtDebtSource) UnmarshalText(b []byte) error {
 func (i *CustomerDebtDebtSource) Scan(value interface{}) error {
 	switch s := value.(type) {
 	case string:
-		i.determine(s)
+		i.Determine(s)
 	default:
 		return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type %T", value, i)
 	}

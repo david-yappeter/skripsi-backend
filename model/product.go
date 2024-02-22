@@ -11,7 +11,8 @@ type Product struct {
 	IsActive    bool     `db:"is_active"`
 	Timestamp
 
-	ProductStock *ProductStock `db:"-"`
+	ProductStock  *ProductStock  `db:"-"`
+	TiktokProduct *TiktokProduct `db:"-"`
 }
 
 func (m *Product) TableName() string {
@@ -47,7 +48,7 @@ var _ PrepareOption = &ProductQueryOption{}
 
 func (o *ProductQueryOption) SetDefaultFields() {
 	if len(o.Fields) == 0 {
-		o.Fields = []string{"u.*"}
+		o.Fields = []string{"p.*"}
 	}
 }
 

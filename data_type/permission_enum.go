@@ -115,7 +115,8 @@ const (
 	PermissionTiktokProductFetchBrands           // TIKTOK_PRODUCT_FETCH_BRANDS
 	PermissionTiktokProductFetchCategories       // TIKTOK_PRODUCT_FETCH_CATEGORIES
 	PermissionTiktokProductGetCategoryRules      // TIKTOK_PRODUCT_GET_RULES
-	PermissionTiktokProductGetCategoryAttributes // TIKTOK_PRODUCT_GET_ATTRIBUTES
+	PermissionTiktokProductGetCategoryAttributes // TIKTOK_PRODUCT_GET_CATEGORY_ATTRIBUTES
+	PermissionTiktokProductGet                   // TIKTOK_PRODUCT_GET
 	PermissionTiktokProductRecommendedCategory   // TIKTOK_PRODUCT_RECOMMENDED_CATEGORY
 	PermissionTiktokProductActivate              // TIKTOK_PRODUCT_RECOMMENDED_ACTIVATE
 	PermissionTiktokProductDeactivate            // TIKTOK_PRODUCT_RECOMMENDED_DEACTIVATE

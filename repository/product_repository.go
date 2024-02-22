@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"myapp/data_type"
 	"myapp/infrastructure"
 	"myapp/model"
@@ -64,24 +65,24 @@ func (r *productRepository) get(ctx context.Context, stmt squirrel.Sqlizer) (*mo
 
 func (r *productRepository) prepareQuery(option model.ProductQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(model.ProductTableName)
+		From(fmt.Sprintf("%s p", model.ProductTableName))
 
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
 		stmt = stmt.Where(squirrel.And{
-			squirrel.ILike{"name": phrase},
+			squirrel.ILike{"p.name": phrase},
 		})
 	}
 
 	if option.IsActive != nil {
 		stmt = stmt.Where(squirrel.And{
-			squirrel.Eq{"is_active": option.IsActive},
+			squirrel.Eq{"p.is_active": option.IsActive},
 		})
 	}
 
 	if len(option.ExcludeIds) > 0 {
 		stmt = stmt.Where(squirrel.NotEq{
-			"id": option.ExcludeIds,
+			"p.id": option.ExcludeIds,
 		})
 	}
 

@@ -24,7 +24,7 @@ const _DatabaseAction_name = "INSERTUPDATEDELETE"
 
 var _DatabaseAction_index = [...]uint8{0, 6, 12, 18}
 
-func (i *DatabaseAction) determine(s string) {
+func (i *DatabaseAction) Determine(s string) {
 	switch s {
 	case "INSERT":
 		*i = DatabaseActionInsert
@@ -68,13 +68,13 @@ func (i *DatabaseAction) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	i.determine(s)
+	i.Determine(s)
 
 	return nil
 }
 
 func (i *DatabaseAction) UnmarshalText(b []byte) error {
-	i.determine(string(b))
+	i.Determine(string(b))
 
 	return nil
 }
@@ -82,7 +82,7 @@ func (i *DatabaseAction) UnmarshalText(b []byte) error {
 func (i *DatabaseAction) Scan(value interface{}) error {
 	switch s := value.(type) {
 	case string:
-		i.determine(s)
+		i.Determine(s)
 	default:
 		return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type %T", value, i)
 	}

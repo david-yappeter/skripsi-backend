@@ -25,7 +25,7 @@ const _FileType_name = "PRODUCT_IMAGEPRODUCT_RECEIVE_IMAGEDELIVERY_ORDER_IMAGECU
 
 var _FileType_index = [...]uint8{0, 13, 34, 54, 76}
 
-func (i *FileType) determine(s string) {
+func (i *FileType) Determine(s string) {
 	switch s {
 	case "PRODUCT_IMAGE":
 		*i = FileTypeProductImage
@@ -71,13 +71,13 @@ func (i *FileType) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	i.determine(s)
+	i.Determine(s)
 
 	return nil
 }
 
 func (i *FileType) UnmarshalText(b []byte) error {
-	i.determine(string(b))
+	i.Determine(string(b))
 
 	return nil
 }
@@ -85,7 +85,7 @@ func (i *FileType) UnmarshalText(b []byte) error {
 func (i *FileType) Scan(value interface{}) error {
 	switch s := value.(type) {
 	case string:
-		i.determine(s)
+		i.Determine(s)
 	default:
 		return fmt.Errorf("unsupported Scan, storing driver.Value type %T into type %T", value, i)
 	}

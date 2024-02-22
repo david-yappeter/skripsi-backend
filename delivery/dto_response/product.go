@@ -1,6 +1,9 @@
 package dto_response
 
-import "myapp/model"
+import (
+	"myapp/model"
+	"myapp/util"
+)
 
 type ProductResponse struct {
 	Id          string   `json:"id"`
@@ -8,8 +11,9 @@ type ProductResponse struct {
 	Description *string  `json:"description" extensions:"x-nullable"`
 	Price       *float64 `json:"price"`
 	IsActive    bool     `json:"is_active"`
-
 	Timestamp
+
+	Stock *ProductStockResponse `json:"stock"`
 } // @name ProductResponse
 
 func NewProductResponse(product model.Product) ProductResponse {
@@ -20,6 +24,10 @@ func NewProductResponse(product model.Product) ProductResponse {
 		Price:       product.Price,
 		IsActive:    product.IsActive,
 		Timestamp:   Timestamp(product.Timestamp),
+	}
+
+	if product.ProductStock != nil {
+		r.Stock = util.Pointer(NewProductStockResponse(*product.ProductStock))
 	}
 
 	return r

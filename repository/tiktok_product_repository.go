@@ -18,6 +18,7 @@ type TiktokProductRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.TiktokProductQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.TiktokProductQueryOption) ([]model.TiktokProduct, error)
+	FetchByProductIds(ctx context.Context, productIds []string) ([]model.TiktokProduct, error)
 	Get(ctx context.Context, tiktokProductId string) (*model.TiktokProduct, error)
 	GetByProductId(ctx context.Context, productId string) (*model.TiktokProduct, error)
 	IsExistByProductId(ctx context.Context, productId string) (bool, error)
@@ -111,6 +112,14 @@ func (r *tiktokProductRepository) Fetch(ctx context.Context, options ...model.Ti
 	}
 
 	stmt := r.prepareQuery(option)
+
+	return r.fetch(ctx, stmt)
+}
+
+func (r *tiktokProductRepository) FetchByProductIds(ctx context.Context, productIds []string) ([]model.TiktokProduct, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.TiktokProductTableName).
+		Where(squirrel.Eq{"product_id": productIds})
 
 	return r.fetch(ctx, stmt)
 }
