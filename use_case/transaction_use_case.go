@@ -59,6 +59,10 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 	cartItems, err := u.repositoryManager.CartItemRepository().FetchByCartIds(ctx, []string{cart.Id})
 	panicIfErr(err)
 
+	if len(cartItems) == 0 {
+		panic(dto_response.NewBadRequestErrorResponse("TRANSACTION.CART_ITEMS_EMPTY"))
+	}
+
 	productUnitLoader := loader.NewProductUnitLoader(u.repositoryManager.ProductUnitRepository())
 
 	panicIfErr(
@@ -84,20 +88,31 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 		transactionItems []model.TransactionItem
 	)
 
-	for _, cartItem := range cartItems {
-		transactionTotal += cartItem.Qty * cartItem.ProductUnit.ScaleToBase * *cartItem.ProductUnit.Product.Price
-	}
-
 	transaction := model.Transaction{
 		Id:               util.NewUuid(),
 		CashierSessionId: cashierSession.Id,
 		Status:           data_type.TransactionStatusProductPaid,
-		Total:            transactionTotal,
+		Total:            0,
 		PaymentAt:        currentTime.NullDateTime(),
 	}
 
+	for _, cartItem := range cartItems {
+		transactionTotal += cartItem.Qty * cartItem.ProductUnit.ScaleToBase * *cartItem.ProductUnit.Product.Price
+
+		transactionItems = append(transactionItems, model.TransactionItem{
+			Id:            util.NewUuid(),
+			TransactionId: transaction.Id,
+			ProductUnitId: cartItem.ProductUnitId,
+			Qty:           cartItem.Qty,
+		})
+	}
+
+	transaction.Total = transactionTotal
+
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			cartRepository := u.repositoryManager.CartRepository()
+			cartItemRepository := u.repositoryManager.CartItemRepository()
 			transactionRepository := u.repositoryManager.TransactionRepository()
 			transactionItemRepository := u.repositoryManager.TransactionItemRepository()
 
@@ -106,6 +121,14 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 			}
 
 			if err := transactionItemRepository.InsertMany(ctx, transactionItems); err != nil {
+				return err
+			}
+
+			if err := cartItemRepository.DeleteManyByCartId(ctx, cart.Id); err != nil {
+				return err
+			}
+
+			if err := cartRepository.Delete(ctx, cart); err != nil {
 				return err
 			}
 
