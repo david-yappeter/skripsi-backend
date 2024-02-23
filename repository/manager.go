@@ -39,6 +39,8 @@ type RepositoryManager interface {
 	RoleRepository() RoleRepository
 	SupplierRepository() SupplierRepository
 	SupplierTypeRepository() SupplierTypeRepository
+	TransactionRepository() TransactionRepository
+	TransactionItemRepository() TransactionItemRepository
 	TiktokConfigRepository() TiktokConfigRepository
 	TiktokProductRepository() TiktokProductRepository
 	UnitRepository() UnitRepository
@@ -74,6 +76,8 @@ type repositoryManager struct {
 	roleRepository                RoleRepository
 	supplierRepository            SupplierRepository
 	supplierTypeRepository        SupplierTypeRepository
+	transactionRepository         TransactionRepository
+	transactionItemRepository     TransactionItemRepository
 	tiktokConfigRepository        TiktokConfigRepository
 	tiktokProductRepository       TiktokProductRepository
 	unitRepository                UnitRepository
@@ -205,6 +209,14 @@ func (r *repositoryManager) SupplierTypeRepository() SupplierTypeRepository {
 	return r.supplierTypeRepository
 }
 
+func (r *repositoryManager) TransactionRepository() TransactionRepository {
+	return r.transactionRepository
+}
+
+func (r *repositoryManager) TransactionItemRepository() TransactionItemRepository {
+	return r.transactionItemRepository
+}
+
 func (r *repositoryManager) TiktokConfigRepository() TiktokConfigRepository {
 	return r.tiktokConfigRepository
 }
@@ -325,6 +337,14 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		supplierTypeRepository: NewSupplierTypeRepository(
+			db,
+			loggerStack,
+		),
+		transactionRepository: NewTransactionRepository(
+			db,
+			loggerStack,
+		),
+		transactionItemRepository: NewTransactionItemRepository(
 			db,
 			loggerStack,
 		),

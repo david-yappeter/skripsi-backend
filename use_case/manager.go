@@ -25,6 +25,7 @@ type UseCaseManager interface {
 	SupplierUseCase() SupplierUseCase
 	TiktokConfigUseCase() TiktokConfigUseCase
 	TiktokProductUseCase() TiktokProductUseCase
+	TransactionUseCase() TransactionUseCase
 	UnitUseCase() UnitUseCase
 	UserUseCase() UserUseCase
 }
@@ -47,6 +48,7 @@ type useCaseManager struct {
 	supplierUseCase       SupplierUseCase
 	tiktokConfigUseCase   TiktokConfigUseCase
 	tiktokProductUseCase  TiktokProductUseCase
+	transactionUseCase    TransactionUseCase
 	unitUseCase           UnitUseCase
 	userUseCase           UserUseCase
 }
@@ -117,6 +119,10 @@ func (u *useCaseManager) TiktokConfigUseCase() TiktokConfigUseCase {
 
 func (u *useCaseManager) TiktokProductUseCase() TiktokProductUseCase {
 	return u.tiktokProductUseCase
+}
+
+func (u *useCaseManager) TransactionUseCase() TransactionUseCase {
+	return u.transactionUseCase
 }
 
 func (u *useCaseManager) UnitUseCase() UnitUseCase {
@@ -192,6 +198,9 @@ func NewUseCaseManager(
 			repositoryManager,
 		),
 		tiktokProductUseCase: NewTiktokProductUseCase(
+			repositoryManager,
+		),
+		transactionUseCase: NewTransactionUseCase(
 			repositoryManager,
 		),
 		unitUseCase: NewUnitUseCase(

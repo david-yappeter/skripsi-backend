@@ -11,6 +11,7 @@ type ProductUnit struct {
 	ScaleToBase float64 `db:"scale_to_base"`
 	Timestamp
 
+	Product      *Product      `db:"-"`
 	ProductStock *ProductStock `db:"-"`
 }
 

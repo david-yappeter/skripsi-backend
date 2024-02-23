@@ -81,7 +81,7 @@ func (a *TiktokProductApi) UploadImage() gin.HandlerFunc {
 //	@Summary	Fetch Brands field for Form
 //	@tags		Tiktok Products
 //	@Accept		json
-//	@Param		dto_request.TiktokProductFetchBrandsRequest body dto_request.TiktokProductFetchBrandsRequest true "Body Request"
+//	@Param		dto_request.TiktokProductFetchBrandsRequest	body	dto_request.TiktokProductFetchBrandsRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{brands=[]dto_response.TiktokBrandResponse,next_page_token=string,total_count=int}}
 func (a *TiktokProductApi) FetchBrands() gin.HandlerFunc {
@@ -143,7 +143,7 @@ func (a *TiktokProductApi) FetchCategories() gin.HandlerFunc {
 //	@Summary	Get Category Rule
 //	@tags		Tiktok Products
 //	@Accept		json
-//	@Param		category_id path string true "Tiktok Category Id"
+//	@Param		category_id	path	string	true	"Tiktok Category Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{category_rule=dto_response.TiktokCategoryRuleResponse}}
 func (a *TiktokProductApi) GetCategoryRules() gin.HandlerFunc {
@@ -175,7 +175,7 @@ func (a *TiktokProductApi) GetCategoryRules() gin.HandlerFunc {
 //	@Summary	Get Category Attributes
 //	@tags		Tiktok Products
 //	@Accept		json
-//	@Param		category_id path string true "Tiktok Category Id"
+//	@Param		category_id	path	string	true	"Tiktok Category Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{attributes=[]dto_response.TiktokAttributeResponse}}
 func (a *TiktokProductApi) GetCategoryAttributes() gin.HandlerFunc {
@@ -208,7 +208,7 @@ func (a *TiktokProductApi) GetCategoryAttributes() gin.HandlerFunc {
 //	@Summary	Get
 //	@tags		Tiktok Products
 //	@Accept		json
-//	@Param		id path string true "Tiktok Category Id"
+//	@Param		id	path	string	true	"Tiktok Category Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{tiktok_product=dto_response.TiktokPlatformProductResponse}}
 func (a *TiktokProductApi) Get() gin.HandlerFunc {

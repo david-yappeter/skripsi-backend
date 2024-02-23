@@ -222,6 +222,7 @@ func registerRoutes(router gin.IRouter, useCaseManager use_case.UseCaseManager) 
 	RegisterSupplierTypeApi(router, useCaseManager)
 	RegisterSupplierApi(router, useCaseManager)
 	RegisterTiktokProductApi(router, useCaseManager)
+	RegisterTransactionApi(router, useCaseManager)
 	RegisterUnitApi(router, useCaseManager)
 	RegisterUserApi(router, useCaseManager)
 

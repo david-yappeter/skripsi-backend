@@ -5,10 +5,17 @@ import (
 	"myapp/constant"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
+	"myapp/loader"
 	"myapp/model"
 	"myapp/repository"
 	"myapp/util"
+
+	"golang.org/x/sync/errgroup"
 )
+
+type cartLoaderParams struct {
+	items bool
+}
 
 type CartUseCase interface {
 	//  create
@@ -26,7 +33,7 @@ type CartUseCase interface {
 	SetInActive(ctx context.Context) model.Cart
 
 	//  delete
-	Delete(ctx context.Context, request dto_request.CartDeleteRequest) model.Cart
+	Delete(ctx context.Context, request dto_request.CartDeleteRequest)
 	DeleteItem(ctx context.Context, request dto_request.CartDeleteItemRequest) model.Cart
 }
 
@@ -73,6 +80,34 @@ func (u *cartUseCase) mustGetCartItemByCartIdAndProductUnitId(ctx context.Contex
 	}
 
 	return *cartItem
+}
+
+func (u *cartUseCase) mustLoadCartDatas(ctx context.Context, carts []*model.Cart, option cartLoaderParams) {
+	cartItemsLoader := loader.NewCartItemsLoader(u.repositoryManager.CartItemRepository())
+
+	panicIfErr(
+		util.Await(func(group *errgroup.Group) {
+			for i := range carts {
+				if option.items {
+					group.Go(cartItemsLoader.CartFn(carts[i]))
+				}
+			}
+		}),
+	)
+
+	productUnitLoader := loader.NewProductUnitLoader(u.repositoryManager.ProductUnitRepository())
+
+	panicIfErr(
+		util.Await(func(group *errgroup.Group) {
+			for i := range carts {
+				if option.items {
+					for j := range carts[i].CartItems {
+						group.Go(productUnitLoader.CartItemFn(&carts[i].CartItems[j]))
+					}
+				}
+			}
+		}),
+	)
 }
 
 func (u *cartUseCase) shouldGetActiveCartByCashierSessionId(ctx context.Context, cashierSessionId string) *model.Cart {
@@ -153,6 +188,10 @@ func (u *cartUseCase) AddItem(ctx context.Context, request dto_request.CartAddIt
 		}),
 	)
 
+	u.mustLoadCartDatas(ctx, []*model.Cart{cart}, cartLoaderParams{
+		items: true,
+	})
+
 	return *cart
 }
 
@@ -190,12 +229,20 @@ func (u *cartUseCase) FetchInActive(ctx context.Context, request dto_request.Car
 func (u *cartUseCase) Get(ctx context.Context, request dto_request.CartGetRequest) model.Cart {
 	cart := mustGetCart(ctx, u.repositoryManager, request.CartId, true)
 
+	u.mustLoadCartDatas(ctx, []*model.Cart{&cart}, cartLoaderParams{
+		items: true,
+	})
+
 	return cart
 }
 
 func (u *cartUseCase) GetCurrent(ctx context.Context) *model.Cart {
 	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
 	cart := u.shouldGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
+
+	u.mustLoadCartDatas(ctx, []*model.Cart{cart}, cartLoaderParams{
+		items: true,
+	})
 
 	return cart
 }
@@ -210,6 +257,10 @@ func (u *cartUseCase) UpdateItem(ctx context.Context, request dto_request.CartUp
 	panicIfErr(
 		u.repositoryManager.CartRepository().Update(ctx, &cart),
 	)
+
+	u.mustLoadCartDatas(ctx, []*model.Cart{&cart}, cartLoaderParams{
+		items: true,
+	})
 
 	return cart
 }
@@ -234,6 +285,10 @@ func (u *cartUseCase) SetActive(ctx context.Context, request dto_request.CartSet
 		u.repositoryManager.CartRepository().Update(ctx, &cart),
 	)
 
+	u.mustLoadCartDatas(ctx, []*model.Cart{&cart}, cartLoaderParams{
+		items: true,
+	})
+
 	return cart
 }
 
@@ -247,10 +302,14 @@ func (u *cartUseCase) SetInActive(ctx context.Context) model.Cart {
 		u.repositoryManager.CartRepository().Update(ctx, &cart),
 	)
 
+	u.mustLoadCartDatas(ctx, []*model.Cart{&cart}, cartLoaderParams{
+		items: true,
+	})
+
 	return cart
 }
 
-func (u *cartUseCase) Delete(ctx context.Context, request dto_request.CartDeleteRequest) model.Cart {
+func (u *cartUseCase) Delete(ctx context.Context, request dto_request.CartDeleteRequest) {
 	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
 	cart := u.mustGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
 
@@ -270,8 +329,6 @@ func (u *cartUseCase) Delete(ctx context.Context, request dto_request.CartDelete
 			return nil
 		}),
 	)
-
-	return cart
 }
 
 func (u *cartUseCase) DeleteItem(ctx context.Context, request dto_request.CartDeleteItemRequest) model.Cart {
@@ -302,6 +359,10 @@ func (u *cartUseCase) DeleteItem(ctx context.Context, request dto_request.CartDe
 			return nil
 		}),
 	)
+
+	u.mustLoadCartDatas(ctx, []*model.Cart{&cart}, cartLoaderParams{
+		items: true,
+	})
 
 	return cart
 }

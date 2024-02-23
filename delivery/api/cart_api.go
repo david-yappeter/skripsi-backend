@@ -243,14 +243,12 @@ func (a *CartApi) Delete() gin.HandlerFunc {
 			var request dto_request.CartDeleteRequest
 			ctx.mustBind(&request)
 
-			cart := a.cartUseCase.Delete(ctx.context(), request)
+			a.cartUseCase.Delete(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
-				dto_response.Response{
-					Data: dto_response.DataResponse{
-						"cart": dto_response.NewCartResponse(cart),
-					},
+				dto_response.SuccessResponse{
+					Message: "OK",
 				},
 			)
 		},

@@ -50,6 +50,19 @@ func (l *ProductUnitLoader) DeliveryOrderItemFn(deliveryOrderItem *model.Deliver
 	}
 }
 
+func (l *ProductUnitLoader) CartItemFn(cartItem *model.CartItem) func() error {
+	return func() error {
+		productUnit, err := l.load(cartItem.ProductUnitId)
+		if err != nil {
+			return err
+		}
+
+		cartItem.ProductUnit = productUnit
+
+		return nil
+	}
+}
+
 func NewProductUnitLoader(productUnitRepository repository.ProductUnitRepository) *ProductUnitLoader {
 	batchFn := func(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
 		ids := make([]string, len(keys))

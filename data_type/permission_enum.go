@@ -121,6 +121,9 @@ const (
 	PermissionTiktokProductActivate              // TIKTOK_PRODUCT_RECOMMENDED_ACTIVATE
 	PermissionTiktokProductDeactivate            // TIKTOK_PRODUCT_RECOMMENDED_DEACTIVATE
 
+	// transaction
+	PermissionTransactionCheckoutCart // TRANSACTION_CHECKOUT_CART
+
 	// user
 	PermissionUserCreate         // USER_CREATE
 	PermissionUserUpdate         // USER_UPDATE
