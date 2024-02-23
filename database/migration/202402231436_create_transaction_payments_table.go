@@ -7,7 +7,6 @@ func init() {
 			CREATE TABLE IF NOT EXISTS transaction_payments (
 				id char(36) NOT NULL,
 				transaction_id char(36) NOT NULL,
-				status varchar(255) NOT NULL,
 				payment_type varchar(255) NOT NULL,
 				reference_number varchar(255) NULL,
 				total decimal(16,2) NOT NULL,

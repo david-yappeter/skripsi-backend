@@ -38,15 +38,14 @@ type TransactionQueryOption struct {
 	QueryOption
 
 	CashierSessionId *string
-	Status           []data_type.TransactionStatus
-	Phrase           *string
+	Status           *data_type.TransactionStatus
 }
 
 var _ PrepareOption = &TransactionQueryOption{}
 
 func (o *TransactionQueryOption) SetDefaultFields() {
 	if len(o.Fields) == 0 {
-		o.Fields = []string{"u.*"}
+		o.Fields = []string{"t.*"}
 	}
 }
 

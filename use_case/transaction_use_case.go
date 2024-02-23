@@ -91,7 +91,7 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 	transaction := model.Transaction{
 		Id:               util.NewUuid(),
 		CashierSessionId: cashierSession.Id,
-		Status:           data_type.TransactionStatusProductPaid,
+		Status:           data_type.TransactionStatusPaid,
 		Total:            0,
 		PaymentAt:        currentTime.NullDateTime(),
 	}

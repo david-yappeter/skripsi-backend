@@ -39,10 +39,11 @@ type RepositoryManager interface {
 	RoleRepository() RoleRepository
 	SupplierRepository() SupplierRepository
 	SupplierTypeRepository() SupplierTypeRepository
-	TransactionRepository() TransactionRepository
-	TransactionItemRepository() TransactionItemRepository
 	TiktokConfigRepository() TiktokConfigRepository
 	TiktokProductRepository() TiktokProductRepository
+	TransactionItemRepository() TransactionItemRepository
+	TransactionPaymentRepository() TransactionPaymentRepository
+	TransactionRepository() TransactionRepository
 	UnitRepository() UnitRepository
 	UserAccessTokenRepository() UserAccessTokenRepository
 	UserRepository() UserRepository
@@ -76,10 +77,11 @@ type repositoryManager struct {
 	roleRepository                RoleRepository
 	supplierRepository            SupplierRepository
 	supplierTypeRepository        SupplierTypeRepository
-	transactionRepository         TransactionRepository
-	transactionItemRepository     TransactionItemRepository
 	tiktokConfigRepository        TiktokConfigRepository
 	tiktokProductRepository       TiktokProductRepository
+	transactionItemRepository     TransactionItemRepository
+	transactionPaymentRepository  TransactionPaymentRepository
+	transactionRepository         TransactionRepository
 	unitRepository                UnitRepository
 	userAccessTokenRepository     UserAccessTokenRepository
 	userRepository                UserRepository
@@ -209,20 +211,24 @@ func (r *repositoryManager) SupplierTypeRepository() SupplierTypeRepository {
 	return r.supplierTypeRepository
 }
 
-func (r *repositoryManager) TransactionRepository() TransactionRepository {
-	return r.transactionRepository
-}
-
-func (r *repositoryManager) TransactionItemRepository() TransactionItemRepository {
-	return r.transactionItemRepository
-}
-
 func (r *repositoryManager) TiktokConfigRepository() TiktokConfigRepository {
 	return r.tiktokConfigRepository
 }
 
 func (r *repositoryManager) TiktokProductRepository() TiktokProductRepository {
 	return r.tiktokProductRepository
+}
+
+func (r *repositoryManager) TransactionItemRepository() TransactionItemRepository {
+	return r.transactionItemRepository
+}
+
+func (r *repositoryManager) TransactionPaymentRepository() TransactionPaymentRepository {
+	return r.transactionPaymentRepository
+}
+
+func (r *repositoryManager) TransactionRepository() TransactionRepository {
+	return r.transactionRepository
 }
 
 func (r *repositoryManager) UnitRepository() UnitRepository {
@@ -340,7 +346,11 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			db,
 			loggerStack,
 		),
-		transactionRepository: NewTransactionRepository(
+		tiktokConfigRepository: NewTiktokConfigRepository(
+			db,
+			loggerStack,
+		),
+		tiktokProductRepository: NewTiktokProductRepository(
 			db,
 			loggerStack,
 		),
@@ -348,11 +358,11 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			db,
 			loggerStack,
 		),
-		tiktokConfigRepository: NewTiktokConfigRepository(
+		transactionPaymentRepository: NewTransactionPaymentRepository(
 			db,
 			loggerStack,
 		),
-		tiktokProductRepository: NewTiktokProductRepository(
+		transactionRepository: NewTransactionRepository(
 			db,
 			loggerStack,
 		),

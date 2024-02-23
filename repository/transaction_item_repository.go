@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 	"myapp/data_type"
 	"myapp/infrastructure"
 	"myapp/model"
@@ -16,8 +15,7 @@ type TransactionItemRepository interface {
 	InsertMany(ctx context.Context, transactionItems []model.TransactionItem, options ...data_type.RepositoryOption) error
 
 	// read
-	Count(ctx context.Context, options ...model.TransactionItemQueryOption) (int, error)
-	Fetch(ctx context.Context, options ...model.TransactionItemQueryOption) ([]model.TransactionItem, error)
+	Count(ctx context.Context) (int, error)
 	Get(ctx context.Context, id string) (*model.TransactionItem, error)
 
 	// update
@@ -61,22 +59,6 @@ func (r *transactionItemRepository) get(ctx context.Context, stmt squirrel.Sqliz
 	return &transactionItem, nil
 }
 
-func (r *transactionItemRepository) prepareQuery(option model.TransactionItemQueryOption) squirrel.SelectBuilder {
-	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s u", model.TransactionItemTableName))
-
-	if option.Phrase != nil {
-		phrase := "%" + *option.Phrase + "%"
-		stmt = stmt.Where(squirrel.Or{
-			squirrel.ILike{"u.name": phrase},
-		})
-	}
-
-	stmt = model.Prepare(stmt, &option)
-
-	return stmt
-}
-
 func (r *transactionItemRepository) Insert(ctx context.Context, transactionItem *model.TransactionItem) error {
 	return defaultInsert(r.db, ctx, transactionItem, "*")
 }
@@ -90,27 +72,11 @@ func (r *transactionItemRepository) InsertMany(ctx context.Context, transactionI
 	return defaultInsertMany(r.db, ctx, arr, "*")
 }
 
-func (r *transactionItemRepository) Count(ctx context.Context, options ...model.TransactionItemQueryOption) (int, error) {
-	option := model.TransactionItemQueryOption{}
-	if len(options) > 0 {
-		option = options[0]
-	}
-	option.IsCount = true
-
-	stmt := r.prepareQuery(option)
+func (r *transactionItemRepository) Count(ctx context.Context) (int, error) {
+	stmt := stmtBuilder.Select("COUNT(*) as count").
+		From(model.TransactionItemTableName)
 
 	return count(r.db, ctx, stmt)
-}
-
-func (r *transactionItemRepository) Fetch(ctx context.Context, options ...model.TransactionItemQueryOption) ([]model.TransactionItem, error) {
-	option := model.TransactionItemQueryOption{}
-	if len(options) > 0 {
-		option = options[0]
-	}
-
-	stmt := r.prepareQuery(option)
-
-	return r.fetch(ctx, stmt)
 }
 
 func (r *transactionItemRepository) Get(ctx context.Context, id string) (*model.TransactionItem, error) {

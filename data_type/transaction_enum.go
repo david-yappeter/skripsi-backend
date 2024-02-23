@@ -4,6 +4,6 @@ package data_type
 type TransactionStatus int // @name TransactionStatusEnum
 
 const (
-	TransactionStatusProductUnpaid TransactionStatus = iota + 1 // UNPAID
-	TransactionStatusProductPaid                                // PAID
+	TransactionStatusUnpaid TransactionStatus = iota + 1 // UNPAID
+	TransactionStatusPaid                                // PAID
 )

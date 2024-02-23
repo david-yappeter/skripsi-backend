@@ -63,13 +63,14 @@ func (r *transactionRepository) get(ctx context.Context, stmt squirrel.Sqlizer) 
 
 func (r *transactionRepository) prepareQuery(option model.TransactionQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s u", model.TransactionTableName))
+		From(fmt.Sprintf("%s t", model.TransactionTableName))
 
-	if option.Phrase != nil {
-		phrase := "%" + *option.Phrase + "%"
-		stmt = stmt.Where(squirrel.Or{
-			squirrel.ILike{"u.name": phrase},
-		})
+	if option.CashierSessionId != nil {
+		stmt = stmt.Where(squirrel.Eq{"t.cashier_session_id": option.CashierSessionId})
+	}
+
+	if option.Status != nil {
+		stmt = stmt.Where(squirrel.Eq{"t.status": option.Status})
 	}
 
 	stmt = model.Prepare(stmt, &option)

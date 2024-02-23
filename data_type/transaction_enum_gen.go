@@ -13,8 +13,8 @@ func _() {
 	// An "invalid array index" compiler error signifies that the constant values have changed.
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
-	_ = x[TransactionStatusProductUnpaid-1]
-	_ = x[TransactionStatusProductPaid-2]
+	_ = x[TransactionStatusUnpaid-1]
+	_ = x[TransactionStatusPaid-2]
 }
 
 const _TransactionStatus_nameReadable = "UNPAID, PAID"
@@ -26,9 +26,9 @@ var _TransactionStatus_index = [...]uint8{0, 6, 10}
 func (i *TransactionStatus) Determine(s string) {
 	switch s {
 	case "UNPAID":
-		*i = TransactionStatusProductUnpaid
+		*i = TransactionStatusUnpaid
 	case "PAID":
-		*i = TransactionStatusProductPaid
+		*i = TransactionStatusPaid
 	default:
 		*i = 0
 	}
@@ -97,14 +97,14 @@ func TransactionStatusP(v TransactionStatus) *TransactionStatus {
 
 func ListTransactionStatus() []TransactionStatus {
 	return []TransactionStatus{
-		TransactionStatusProductUnpaid,
-		TransactionStatusProductPaid,
+		TransactionStatusUnpaid,
+		TransactionStatusPaid,
 	}
 }
 
 func ListTransactionStatusString() []string {
 	return []string{
-		TransactionStatusProductUnpaid.String(),
-		TransactionStatusProductPaid.String(),
+		TransactionStatusUnpaid.String(),
+		TransactionStatusPaid.String(),
 	}
 }

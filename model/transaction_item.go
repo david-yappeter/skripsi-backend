@@ -30,26 +30,3 @@ func (m *TransactionItem) ToMap() map[string]interface{} {
 		"updated_at":      m.UpdatedAt,
 	}
 }
-
-type TransactionItemQueryOption struct {
-	QueryOption
-
-	CartId *string
-	Phrase *string
-}
-
-var _ PrepareOption = &TransactionItemQueryOption{}
-
-func (o *TransactionItemQueryOption) SetDefaultFields() {
-	if len(o.Fields) == 0 {
-		o.Fields = []string{"u.*"}
-	}
-}
-
-func (o *TransactionItemQueryOption) SetDefaultSorts() {
-	if len(o.Sorts) == 0 {
-		o.Sorts = Sorts{
-			{Field: "updated_at", Direction: "desc"},
-		}
-	}
-}
