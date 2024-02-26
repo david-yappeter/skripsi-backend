@@ -33,6 +33,7 @@ type RepositoryManager interface {
 	ProductReceiveItemRepository() ProductReceiveItemRepository
 	ProductReceiveImageRepository() ProductReceiveImageRepository
 	ProductRepository() ProductRepository
+	ProductStockMutationRepository() ProductStockMutationRepository
 	ProductStockRepository() ProductStockRepository
 	ProductUnitRepository() ProductUnitRepository
 	RolePermissionRepository() RolePermissionRepository
@@ -54,38 +55,39 @@ type repositoryManager struct {
 	db          *sqlx.DB
 	loggerStack infrastructure.LoggerStack
 
-	balanceRepository             BalanceRepository
-	cartRepository                CartRepository
-	cartItemRepository            CartItemRepository
-	cashierSessionRepository      CashierSessionRepository
-	customerDebtRepository        CustomerDebtRepository
-	customerPaymentRepository     CustomerPaymentRepository
-	customerRepository            CustomerRepository
-	deliveryOrderRepository       DeliveryOrderRepository
-	deliveryOrderDriverRepository DeliveryOrderDriverRepository
-	deliveryOrderImageRepository  DeliveryOrderImageRepository
-	deliveryOrderItemRepository   DeliveryOrderItemRepository
-	fileRepository                FileRepository
-	permissionRepository          PermissionRepository
-	productReceiveRepository      ProductReceiveRepository
-	productReceiveItemRepository  ProductReceiveItemRepository
-	productReceiveImageRepository ProductReceiveImageRepository
-	productRepository             ProductRepository
-	productStockRepository        ProductStockRepository
-	productUnitRepository         ProductUnitRepository
-	rolePermissionRepository      RolePermissionRepository
-	roleRepository                RoleRepository
-	supplierRepository            SupplierRepository
-	supplierTypeRepository        SupplierTypeRepository
-	tiktokConfigRepository        TiktokConfigRepository
-	tiktokProductRepository       TiktokProductRepository
-	transactionItemRepository     TransactionItemRepository
-	transactionPaymentRepository  TransactionPaymentRepository
-	transactionRepository         TransactionRepository
-	unitRepository                UnitRepository
-	userAccessTokenRepository     UserAccessTokenRepository
-	userRepository                UserRepository
-	userRoleRepository            UserRoleRepository
+	balanceRepository              BalanceRepository
+	cartRepository                 CartRepository
+	cartItemRepository             CartItemRepository
+	cashierSessionRepository       CashierSessionRepository
+	customerDebtRepository         CustomerDebtRepository
+	customerPaymentRepository      CustomerPaymentRepository
+	customerRepository             CustomerRepository
+	deliveryOrderRepository        DeliveryOrderRepository
+	deliveryOrderDriverRepository  DeliveryOrderDriverRepository
+	deliveryOrderImageRepository   DeliveryOrderImageRepository
+	deliveryOrderItemRepository    DeliveryOrderItemRepository
+	fileRepository                 FileRepository
+	permissionRepository           PermissionRepository
+	productReceiveRepository       ProductReceiveRepository
+	productReceiveItemRepository   ProductReceiveItemRepository
+	productReceiveImageRepository  ProductReceiveImageRepository
+	productRepository              ProductRepository
+	productStockMutationRepository ProductStockMutationRepository
+	productStockRepository         ProductStockRepository
+	productUnitRepository          ProductUnitRepository
+	rolePermissionRepository       RolePermissionRepository
+	roleRepository                 RoleRepository
+	supplierRepository             SupplierRepository
+	supplierTypeRepository         SupplierTypeRepository
+	tiktokConfigRepository         TiktokConfigRepository
+	tiktokProductRepository        TiktokProductRepository
+	transactionItemRepository      TransactionItemRepository
+	transactionPaymentRepository   TransactionPaymentRepository
+	transactionRepository          TransactionRepository
+	unitRepository                 UnitRepository
+	userAccessTokenRepository      UserAccessTokenRepository
+	userRepository                 UserRepository
+	userRoleRepository             UserRoleRepository
 }
 
 func (r *repositoryManager) Transaction(
@@ -185,6 +187,10 @@ func (r *repositoryManager) ProductReceiveImageRepository() ProductReceiveImageR
 
 func (r *repositoryManager) ProductRepository() ProductRepository {
 	return r.productRepository
+}
+
+func (r *repositoryManager) ProductStockMutationRepository() ProductStockMutationRepository {
+	return r.productStockMutationRepository
 }
 
 func (r *repositoryManager) ProductStockRepository() ProductStockRepository {
@@ -319,6 +325,10 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		productRepository: NewProductRepository(
+			db,
+			loggerStack,
+		),
+		productStockMutationRepository: NewProductStockMutationRepository(
 			db,
 			loggerStack,
 		),
