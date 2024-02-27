@@ -12,7 +12,7 @@ func init() {
 				created_at timestamp NOT NULL,
 				updated_at timestamp NOT NULL,
 				CONSTRAINT transaction_items_pk PRIMARY KEY (id),
-				CONSTRAINT transaction_items_transactions_fk FOREIGN KEY (transaction_id) REFERENCES transaction (id),
+				CONSTRAINT transaction_items_transactions_fk FOREIGN KEY (transaction_id) REFERENCES transactions (id),
 				CONSTRAINT transaction_items_product_units_fk FOREIGN KEY (product_unit_id) REFERENCES product_units (id)
 			);
 		`,
