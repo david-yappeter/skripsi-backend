@@ -5,14 +5,15 @@ import "myapp/data_type"
 const ProductStockMutationTableName = "product_stock_mutations"
 
 type ProductStockMutation struct {
-	Id            string                             `json:"id"`
-	ProductUnitId string                             `json:"product_unit_id"`
-	Type          data_type.ProductStockMutationType `json:"type"`
-	IdentifierId  string                             `json:"identifier_id"`
-	Qty           float64                            `json:"qty"`
-	ScaleToBase   float64                            `json:"scale_to_base"`
-	BaseQtyLeft   float64                            `json:"base_qty_left"`
-	BaseCostPrice float64                            `json:"base_cost_price"`
+	Id            string                             `db:"id"`
+	ProductUnitId string                             `db:"product_unit_id"`
+	Type          data_type.ProductStockMutationType `db:"type"`
+	IdentifierId  string                             `db:"identifier_id"`
+	Qty           float64                            `db:"qty"`
+	ScaleToBase   float64                            `db:"scale_to_base"`
+	BaseQtyLeft   float64                            `db:"base_qty_left"`
+	BaseCostPrice float64                            `db:"base_cost_price"`
+	MutatedAt     data_type.DateTime                 `db:"mutated_at"`
 
 	Timestamp
 }
@@ -35,6 +36,7 @@ func (m *ProductStockMutation) ToMap() map[string]interface{} {
 		"scale_to_base":   m.ScaleToBase,
 		"base_qty_left":   m.BaseQtyLeft,
 		"base_cost_price": m.BaseCostPrice,
+		"mutated_at":      m.MutatedAt,
 		"created_at":      m.CreatedAt,
 		"updated_at":      m.UpdatedAt,
 	}

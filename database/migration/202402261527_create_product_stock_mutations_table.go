@@ -13,6 +13,7 @@ func init() {
 				scale_to_base decimal(16,2) NOT NULL,
 				base_qty_left decimal(16,2) NOT NULL,
 				base_cost_price decimal(16,2) NOT NULL,
+				mutated_at timestamp NOT NULL,
 				created_at timestamp NOT NULL,
 				updated_at timestamp NOT NULL,
 				CONSTRAINT product_stock_mutations_pk PRIMARY KEY (id),

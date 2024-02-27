@@ -20,6 +20,7 @@ type ProductStockMutationRepository interface {
 	Fetch(ctx context.Context, options ...model.ProductStockMutationQueryOption) ([]model.ProductStockMutation, error)
 	Get(ctx context.Context, id string) (*model.ProductStockMutation, error)
 	GetByTypeAndIdentifierId(ctx context.Context, _type data_type.ProductStockMutationType, identifierId string) (*model.ProductStockMutation, error)
+	GetFIFOByProductUnitIdAndBaseQtyLeftNotZero(ctx context.Context, productUnitId string) (*model.ProductStockMutation, error)
 
 	// update
 	Update(ctx context.Context, productStockMutation *model.ProductStockMutation) error
@@ -127,6 +128,16 @@ func (r *productStockMutationRepository) GetByTypeAndIdentifierId(ctx context.Co
 		From(model.ProductStockMutationTableName).
 		Where(squirrel.Eq{"type": _type}).
 		Where(squirrel.Eq{"identifier_id": identifierId})
+
+	return r.get(ctx, stmt)
+}
+
+func (r *productStockMutationRepository) GetFIFOByProductUnitIdAndBaseQtyLeftNotZero(ctx context.Context, productUnitId string) (*model.ProductStockMutation, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.ProductStockMutationTableName).
+		Where(squirrel.Eq{"product_unit_id": productUnitId}).
+		Where(squirrel.Gt{"base_qty_left": 0}).
+		OrderBy("mutated_at ASC")
 
 	return r.get(ctx, stmt)
 }

@@ -42,6 +42,7 @@ type RepositoryManager interface {
 	SupplierTypeRepository() SupplierTypeRepository
 	TiktokConfigRepository() TiktokConfigRepository
 	TiktokProductRepository() TiktokProductRepository
+	TransactionItemCostRepository() TransactionItemCostRepository
 	TransactionItemRepository() TransactionItemRepository
 	TransactionPaymentRepository() TransactionPaymentRepository
 	TransactionRepository() TransactionRepository
@@ -81,6 +82,7 @@ type repositoryManager struct {
 	supplierTypeRepository         SupplierTypeRepository
 	tiktokConfigRepository         TiktokConfigRepository
 	tiktokProductRepository        TiktokProductRepository
+	transactionItemCostRepository  TransactionItemCostRepository
 	transactionItemRepository      TransactionItemRepository
 	transactionPaymentRepository   TransactionPaymentRepository
 	transactionRepository          TransactionRepository
@@ -225,6 +227,10 @@ func (r *repositoryManager) TiktokProductRepository() TiktokProductRepository {
 	return r.tiktokProductRepository
 }
 
+func (r *repositoryManager) TransactionItemCostRepository() TransactionItemCostRepository {
+	return r.transactionItemCostRepository
+}
+
 func (r *repositoryManager) TransactionItemRepository() TransactionItemRepository {
 	return r.transactionItemRepository
 }
@@ -361,6 +367,10 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		tiktokProductRepository: NewTiktokProductRepository(
+			db,
+			loggerStack,
+		),
+		transactionItemCostRepository: NewTransactionItemCostRepository(
 			db,
 			loggerStack,
 		),

@@ -84,30 +84,13 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 	)
 
 	var (
-		transactionTotal = 0.0
-		transactionItems []model.TransactionItem
+		transaction                    = model.Transaction{}
+		transactionTotal               = 0.0
+		transactionItems               = []model.TransactionItem{}
+		transactionItemCosts           = []model.TransactionItemCost{}
+		productUnitsMapById            = map[string]model.ProductUnit{}
+		productStockMapByProductUnitId = map[string]model.ProductStock{}
 	)
-
-	transaction := model.Transaction{
-		Id:               util.NewUuid(),
-		CashierSessionId: cashierSession.Id,
-		Status:           data_type.TransactionStatusPaid,
-		Total:            0,
-		PaymentAt:        currentTime.NullDateTime(),
-	}
-
-	for _, cartItem := range cartItems {
-		transactionTotal += cartItem.Qty * cartItem.ProductUnit.ScaleToBase * *cartItem.ProductUnit.Product.Price
-
-		transactionItems = append(transactionItems, model.TransactionItem{
-			Id:            util.NewUuid(),
-			TransactionId: transaction.Id,
-			ProductUnitId: cartItem.ProductUnitId,
-			Qty:           cartItem.Qty,
-		})
-	}
-
-	transaction.Total = transactionTotal
 
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
@@ -115,6 +98,92 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 			cartItemRepository := u.repositoryManager.CartItemRepository()
 			transactionRepository := u.repositoryManager.TransactionRepository()
 			transactionItemRepository := u.repositoryManager.TransactionItemRepository()
+			transactionItemCostRepository := u.repositoryManager.TransactionItemCostRepository()
+			productStockRepository := u.repositoryManager.ProductStockRepository()
+			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
+
+			// create transaction
+			transaction = model.Transaction{
+				Id:               util.NewUuid(),
+				CashierSessionId: cashierSession.Id,
+				Status:           data_type.TransactionStatusPaid,
+				Total:            0,
+				PaymentAt:        currentTime.NullDateTime(),
+			}
+
+			// fetch product stock
+			for _, cartItem := range cartItems {
+				productUnit := mustGetProductUnit(ctx, u.repositoryManager, cartItem.ProductUnitId, true)
+				productUnitsMapById[productUnit.Id] = productUnit
+
+				productStock, err := u.repositoryManager.ProductStockRepository().GetByProductId(ctx, productUnit.ProductId)
+				if err != nil {
+					return err
+				}
+
+				productStockMapByProductUnitId[productUnit.Id] = *productStock
+			}
+
+			for _, cartItem := range cartItems {
+				productUnit := productUnitsMapById[cartItem.ProductUnitId]
+
+				// add transaction total
+				transactionTotal += cartItem.Qty * cartItem.ProductUnit.ScaleToBase * *cartItem.ProductUnit.Product.Price
+
+				// create transaction items
+				transactionItem := model.TransactionItem{
+					Id:            util.NewUuid(),
+					TransactionId: transaction.Id,
+					ProductUnitId: cartItem.ProductUnitId,
+					Qty:           cartItem.Qty,
+				}
+				transactionItems = append(transactionItems, transactionItem)
+
+				// deduct product stock
+				currentProductStock := productStockMapByProductUnitId[cartItem.ProductUnitId]
+				currentProductStock.Qty -= cartItem.Qty
+
+				productStockMapByProductUnitId[cartItem.ProductUnitId] = currentProductStock
+
+				// deduct product stock mutation
+				deductQtyLeft := cartItem.Qty
+				for deductQtyLeft > 0 {
+					productStockMutation, err := u.repositoryManager.ProductStockMutationRepository().GetFIFOByProductUnitIdAndBaseQtyLeftNotZero(ctx, cartItem.ProductUnitId)
+					if err != nil {
+						return err
+					}
+
+					if deductQtyLeft > productStockMutation.BaseQtyLeft {
+						transactionItemCosts = append(transactionItemCosts, model.TransactionItemCost{
+							Id:                util.NewUuid(),
+							TransactionItemId: transactionItem.Id,
+							Qty:               productStockMutation.BaseQtyLeft,
+							BaseCostPrice:     productStockMutation.BaseCostPrice,
+							TotalCostPrice:    productStockMutation.BaseCostPrice * productStockMutation.BaseQtyLeft * productUnit.ScaleToBase,
+						})
+
+						deductQtyLeft -= productStockMutation.BaseQtyLeft
+						productStockMutation.BaseQtyLeft = 0
+					} else {
+						transactionItemCosts = append(transactionItemCosts, model.TransactionItemCost{
+							Id:                util.NewUuid(),
+							TransactionItemId: transactionItem.Id,
+							Qty:               deductQtyLeft,
+							BaseCostPrice:     productStockMutation.BaseCostPrice,
+							TotalCostPrice:    productStockMutation.BaseCostPrice * deductQtyLeft * productUnit.ScaleToBase,
+						})
+
+						productStockMutation.BaseQtyLeft -= deductQtyLeft
+					}
+
+					if err := productStockMutationRepository.Update(ctx, productStockMutation); err != nil {
+						return err
+					}
+				}
+			}
+
+			// assign transaction total
+			transaction.Total = transactionTotal
 
 			if err := transactionRepository.Insert(ctx, &transaction); err != nil {
 				return err
@@ -124,12 +193,22 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 				return err
 			}
 
+			if err := transactionItemCostRepository.InsertMany(ctx, transactionItemCosts); err != nil {
+				return err
+			}
+
 			if err := cartItemRepository.DeleteManyByCartId(ctx, cart.Id); err != nil {
 				return err
 			}
 
 			if err := cartRepository.Delete(ctx, cart); err != nil {
 				return err
+			}
+
+			for _, productStock := range productStockMapByProductUnitId {
+				if err := productStockRepository.Update(ctx, &productStock); err != nil {
+					return err
+				}
 			}
 
 			return nil

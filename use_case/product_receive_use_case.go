@@ -149,6 +149,7 @@ func (u *productReceiveUseCase) Create(ctx context.Context, request dto_request.
 
 func (u *productReceiveUseCase) AddItem(ctx context.Context, request dto_request.ProductReceiveAddItemRequest) model.ProductReceive {
 	var (
+		currentDateTime     = util.CurrentDateTime()
 		authUser            = model.MustGetUserCtx(ctx)
 		productReceive      = mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, false)
 		productUnit         = mustGetProductUnitByProductIdAndUnitId(ctx, u.repositoryManager, request.ProductId, request.UnitId, true)
@@ -197,6 +198,7 @@ func (u *productReceiveUseCase) AddItem(ctx context.Context, request dto_request
 		ScaleToBase:   productUnit.ScaleToBase,
 		BaseQtyLeft:   totalSmallestQty,
 		BaseCostPrice: request.PricePerUnit / productUnit.ScaleToBase,
+		MutatedAt:     currentDateTime,
 	}
 
 	panicIfErr(
