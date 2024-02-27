@@ -7,6 +7,8 @@ func init() {
 			CREATE TABLE IF NOT EXISTS product_stock_mutations (
 				id char(36) NOT NULL,
 				product_unit_id char(36) NOT NULL,
+				type varchar(255) NOT NULL,
+				identifier_id varchar(255) NOT NULL,
 				qty decimal(16,2) NOT NULL,
 				scale_to_base decimal(16,2) NOT NULL,
 				base_qty_left decimal(16,2) NOT NULL,

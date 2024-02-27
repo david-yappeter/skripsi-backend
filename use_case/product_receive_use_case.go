@@ -184,13 +184,26 @@ func (u *productReceiveUseCase) AddItem(ctx context.Context, request dto_request
 		ProductUnitId:    productUnit.Id,
 		UserId:           authUser.Id,
 		Qty:              request.Qty,
-		PricePerUnit:     *product.Price,
+		PricePerUnit:     request.PricePerUnit,
+	}
+
+	// add product stock mutation
+	productStockMutation := model.ProductStockMutation{
+		Id:            util.NewUuid(),
+		ProductUnitId: productUnit.Id,
+		Type:          data_type.ProductStockMutationTypeProductReceiveItem,
+		IdentifierId:  productReceiveItem.Id,
+		Qty:           request.Qty,
+		ScaleToBase:   productUnit.ScaleToBase,
+		BaseQtyLeft:   totalSmallestQty,
+		BaseCostPrice: request.PricePerUnit / productUnit.ScaleToBase,
 	}
 
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
 			productReceiveRepository := u.repositoryManager.ProductReceiveRepository()
 			productReceiveItemRepository := u.repositoryManager.ProductReceiveItemRepository()
+			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
 			productStockRepository := u.repositoryManager.ProductStockRepository()
 
 			if isProductStockExist {
@@ -208,6 +221,10 @@ func (u *productReceiveUseCase) AddItem(ctx context.Context, request dto_request
 			}
 
 			if err := productReceiveItemRepository.Insert(ctx, &productReceiveItem); err != nil {
+				return err
+			}
+
+			if err := productStockMutationRepository.Insert(ctx, &productStockMutation); err != nil {
 				return err
 			}
 
@@ -477,11 +494,52 @@ func (u *productReceiveUseCase) DeleteItem(ctx context.Context, request dto_requ
 		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.STATUS.MUST_BE_PENDING"))
 	}
 
-	mustGetProductUnit(ctx, u.repositoryManager, request.ProductUnitId, true)
+	productUnit := mustGetProductUnit(ctx, u.repositoryManager, request.ProductUnitId, true)
+	product := mustGetProduct(ctx, u.repositoryManager, productUnit.ProductId, true)
 	productReceiveItem := mustGetProductReceiveItemByProductReceiveIdAndProductUnitId(ctx, u.repositoryManager, request.ProductReceiveId, request.ProductUnitId, true)
 
+	productStock, err := u.repositoryManager.ProductStockRepository().GetByProductId(ctx, productUnit.ProductId)
+	panicIfErr(err)
+
+	productStockMutation, err := u.repositoryManager.ProductStockMutationRepository().GetByTypeAndIdentifierId(ctx, data_type.ProductStockMutationTypeProductReceiveItem, productReceiveItem.Id)
+	panicIfErr(err)
+
+	// check if product already sold
+	if productStockMutation.BaseQtyLeft != productStockMutation.Qty {
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.PRODUCT_ALREADY_SOLD"))
+	}
+
+	// remove stock
+	productStock.Qty -= productStockMutation.Qty
+
+	// deduct product receive total price
+	productReceive.TotalPrice -= productStockMutation.Qty * *product.Price
+
 	panicIfErr(
-		u.repositoryManager.ProductReceiveItemRepository().Delete(ctx, &productReceiveItem),
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			productReceiveRepository := u.repositoryManager.ProductReceiveRepository()
+			productReceiveItemRepository := u.repositoryManager.ProductReceiveItemRepository()
+			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
+			productStockRepository := u.repositoryManager.ProductStockRepository()
+
+			if err := productReceiveRepository.Update(ctx, &productReceive); err != nil {
+				return err
+			}
+
+			if err := productReceiveItemRepository.Delete(ctx, &productReceiveItem); err != nil {
+				return err
+			}
+
+			if err := productStockMutationRepository.Delete(ctx, productStockMutation); err != nil {
+				return err
+			}
+
+			if err := productStockRepository.Delete(ctx, productStock); err != nil {
+				return err
+			}
+
+			return nil
+		}),
 	)
 
 	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{

@@ -19,6 +19,7 @@ type ProductStockMutationRepository interface {
 	Count(ctx context.Context, options ...model.ProductStockMutationQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.ProductStockMutationQueryOption) ([]model.ProductStockMutation, error)
 	Get(ctx context.Context, id string) (*model.ProductStockMutation, error)
+	GetByTypeAndIdentifierId(ctx context.Context, _type data_type.ProductStockMutationType, identifierId string) (*model.ProductStockMutation, error)
 
 	// update
 	Update(ctx context.Context, productStockMutation *model.ProductStockMutation) error
@@ -117,6 +118,15 @@ func (r *productStockMutationRepository) Get(ctx context.Context, id string) (*m
 	stmt := stmtBuilder.Select("*").
 		From(model.ProductStockMutationTableName).
 		Where(squirrel.Eq{"id": id})
+
+	return r.get(ctx, stmt)
+}
+
+func (r *productStockMutationRepository) GetByTypeAndIdentifierId(ctx context.Context, _type data_type.ProductStockMutationType, identifierId string) (*model.ProductStockMutation, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.ProductStockMutationTableName).
+		Where(squirrel.Eq{"type": _type}).
+		Where(squirrel.Eq{"identifier_id": identifierId})
 
 	return r.get(ctx, stmt)
 }

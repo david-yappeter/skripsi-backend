@@ -11,9 +11,10 @@ type ProductReceiveCreateRequest struct {
 } // @name ProductReceiveCreateRequest
 
 type ProductReceiveAddItemRequest struct {
-	ProductId string  `json:"product_id" validate:"required,not_empty,uuid"`
-	UnitId    string  `json:"unit_id" validate:"required,not_empty,uuid"`
-	Qty       float64 `json:"qty" validate:"required,gt=0"`
+	ProductId    string  `json:"product_id" validate:"required,not_empty,uuid"`
+	UnitId       string  `json:"unit_id" validate:"required,not_empty,uuid"`
+	Qty          float64 `json:"qty" validate:"required,gt=0"`
+	PricePerUnit float64 `json:"price_per_unit" validate:"required,gt=0"`
 
 	ProductReceiveId string `json:"-" swaggerignore:"true"`
 } // @name ProductReceiveAddItemRequest
