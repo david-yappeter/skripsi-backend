@@ -128,6 +128,13 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 	)
 }
 
+func (u *deliveryOrderUseCase) shouldGetDeliveryOrderItemByDeliveryOrderIdAndProductUnitId(ctx context.Context, deliveryOrderId string, productUnitId string) *model.DeliveryOrderItem {
+	deliveryOrderItem, err := u.repositoryManager.DeliveryOrderItemRepository().GetByDeliveryOrderIdAndProductUnitId(ctx, deliveryOrderId, productUnitId)
+	panicIfErr(err, constant.ErrNoData)
+
+	return deliveryOrderItem
+}
+
 func (u *deliveryOrderUseCase) Create(ctx context.Context, request dto_request.DeliveryOrderCreateRequest) model.DeliveryOrder {
 	var (
 		authUser = model.MustGetUserCtx(ctx)
@@ -178,20 +185,31 @@ func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.
 		}
 	}
 
-	// add stock
-	// productStock.Qty -= totalSmallestQty
+	if productStock.Qty < totalSmallestQty {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.PRODUCT_OUT_OF_STOCK"))
+	}
+
+	// deduct product stock
+	productStock.Qty -= totalSmallestQty
 
 	// add total to product receive
 	deliveryOrder.TotalPrice += totalSmallestQty * *product.Price
 
 	// add product receive item
-	deliveryOrderItem := model.DeliveryOrderItem{
-		Id:              util.NewUuid(),
-		DeliveryOrderId: deliveryOrder.Id,
-		ProductUnitId:   productUnit.Id,
-		UserId:          authUser.Id,
-		Qty:             request.Qty,
-		PricePerUnit:    *product.Price,
+	deliveryOrderItem := u.shouldGetDeliveryOrderItemByDeliveryOrderIdAndProductUnitId(ctx, deliveryOrder.Id, productUnit.Id)
+	isNewDeliveryOrderItem := deliveryOrderItem == nil
+
+	if isNewDeliveryOrderItem {
+		deliveryOrderItem = &model.DeliveryOrderItem{
+			Id:              util.NewUuid(),
+			DeliveryOrderId: deliveryOrder.Id,
+			ProductUnitId:   productUnit.Id,
+			UserId:          authUser.Id,
+			Qty:             request.Qty,
+			PricePerUnit:    *product.Price,
+		}
+	} else {
+		deliveryOrderItem.Qty += request.Qty
 	}
 
 	panicIfErr(
@@ -214,8 +232,14 @@ func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.
 				return err
 			}
 
-			if err := deliveryOrderItemRepository.Insert(ctx, &deliveryOrderItem); err != nil {
-				return err
+			if isNewDeliveryOrderItem {
+				if err := deliveryOrderItemRepository.Insert(ctx, deliveryOrderItem); err != nil {
+					return err
+				}
+			} else {
+				if err := deliveryOrderItemRepository.Update(ctx, deliveryOrderItem); err != nil {
+					return err
+				}
 			}
 
 			return nil
@@ -416,8 +440,7 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 
 func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_request.DeliveryOrderMarkOngoingRequest) model.DeliveryOrder {
 	var (
-		toBeRemovedStockByProductId map[string]float64            = nil
-		productStockByProductId     map[string]model.ProductStock = nil
+		deliveryOrderItemCosts = []model.DeliveryOrderItemCost{}
 	)
 
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
@@ -446,37 +469,59 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 	// change status
 	deliveryOrder.Status = data_type.DeliveryOrderStatusOngoing
 
-	// remove stock
-	if len(deliveryOrder.DeliveryOrderItems) > 0 {
-		toBeRemovedStockByProductId = make(map[string]float64)
-		productStockByProductId = make(map[string]model.ProductStock)
-	}
-
-	for _, productReceiveItem := range deliveryOrder.DeliveryOrderItems {
-		productStockByProductId[productReceiveItem.ProductUnit.ProductId] = *productReceiveItem.ProductUnit.ProductStock
-		toBeRemovedStockByProductId[productReceiveItem.ProductUnit.ProductId] += productReceiveItem.Qty * productReceiveItem.ProductUnit.ScaleToBase
-	}
-
-	for productId, removedStock := range toBeRemovedStockByProductId {
-		productStock := productStockByProductId[productId]
-		productStock.Qty -= removedStock
-		productStockByProductId[productId] = productStock
-	}
-
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
 			customerDebtRepository := u.repositoryManager.CustomerDebtRepository()
 			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
-			productStockRepository := u.repositoryManager.ProductStockRepository()
+			deliveryOrderItemCostRepository := u.repositoryManager.DeliveryOrderItemCostRepository()
+			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
+
+			for _, deliveryOrderItem := range deliveryOrder.DeliveryOrderItems {
+				productUnit := mustGetProductUnit(ctx, u.repositoryManager, deliveryOrderItem.ProductUnitId, true)
+
+				deductQtyLeft := deliveryOrderItem.Qty
+
+				for deductQtyLeft > 0 {
+					productStockMutation, err := u.repositoryManager.ProductStockMutationRepository().GetFIFOByProductUnitIdAndBaseQtyLeftNotZero(ctx, deliveryOrderItem.ProductUnitId)
+					if err != nil {
+						return err
+					}
+
+					if deductQtyLeft > productStockMutation.BaseQtyLeft {
+						deliveryOrderItemCosts = append(deliveryOrderItemCosts, model.DeliveryOrderItemCost{
+							Id:                  util.NewUuid(),
+							DeliveryOrderItemId: deliveryOrderItem.Id,
+							Qty:                 deductQtyLeft,
+							BaseCostPrice:       productStockMutation.BaseCostPrice,
+							TotalCostPrice:      productStockMutation.BaseCostPrice * productStockMutation.BaseQtyLeft * productUnit.ScaleToBase,
+						})
+
+						deductQtyLeft -= productStockMutation.BaseQtyLeft
+						productStockMutation.BaseQtyLeft = 0
+					} else {
+						deliveryOrderItemCosts = append(deliveryOrderItemCosts, model.DeliveryOrderItemCost{
+							Id:                  util.NewUuid(),
+							DeliveryOrderItemId: deliveryOrderItem.Id,
+							Qty:                 deductQtyLeft,
+							BaseCostPrice:       productStockMutation.BaseCostPrice,
+							TotalCostPrice:      productStockMutation.BaseCostPrice * deductQtyLeft * productUnit.ScaleToBase,
+						})
+
+						productStockMutation.BaseQtyLeft -= deductQtyLeft
+					}
+
+					if err := productStockMutationRepository.Update(ctx, productStockMutation); err != nil {
+						return err
+					}
+				}
+			}
 
 			if err := deliveryOrderRepository.Update(ctx, &deliveryOrder); err != nil {
 				return err
 			}
 
-			for _, productStock := range productStockByProductId {
-				if err := productStockRepository.Update(ctx, &productStock); err != nil {
-					return err
-				}
+			if err := deliveryOrderItemCostRepository.InsertMany(ctx, deliveryOrderItemCosts); err != nil {
+				return err
 			}
 
 			if err := customerDebtRepository.Insert(ctx, &customerDebt); err != nil {
@@ -578,9 +623,39 @@ func (u *deliveryOrderUseCase) DeleteItem(ctx context.Context, request dto_reque
 
 	mustGetProductUnit(ctx, u.repositoryManager, request.ProductUnitId, true)
 	deliveryOrderItem := mustGetDeliveryOrderItemByDeliveryOrderIdAndProductUnitId(ctx, u.repositoryManager, request.DeliveryOrderId, request.ProductUnitId, true)
+	productUnit := mustGetProductUnit(ctx, u.repositoryManager, deliveryOrderItem.ProductUnitId, true)
+	product := mustGetProduct(ctx, u.repositoryManager, productUnit.ProductId, true)
+
+	totalSmallestQty := deliveryOrderItem.Qty * productUnit.ScaleToBase
+
+	productStock := shouldGetProductStockByProductId(ctx, u.repositoryManager, product.Id)
+
+	// deduct delivery order total
+	deliveryOrder.TotalPrice -= totalSmallestQty * *product.Price
+
+	// add product stock back
+	productStock.Qty += totalSmallestQty
 
 	panicIfErr(
-		u.repositoryManager.DeliveryOrderItemRepository().Delete(ctx, &deliveryOrderItem),
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
+			deliveryOrderItemRepository := u.repositoryManager.DeliveryOrderItemRepository()
+			productStockRepository := u.repositoryManager.ProductStockRepository()
+
+			if err := deliveryOrderRepository.Update(ctx, &deliveryOrder); err != nil {
+				return err
+			}
+
+			if err := deliveryOrderItemRepository.Delete(ctx, &deliveryOrderItem); err != nil {
+				return err
+			}
+
+			if err := productStockRepository.Update(ctx, productStock); err != nil {
+				return err
+			}
+
+			return nil
+		}),
 	)
 
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
