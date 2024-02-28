@@ -18,6 +18,7 @@ type DeliveryOrderItemCostRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.DeliveryOrderItemCostQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.DeliveryOrderItemCostQueryOption) ([]model.DeliveryOrderItemCost, error)
+	FetchByDeliveryOrderItemIds(ctx context.Context, deliveryOrderItemsIds []string) ([]model.DeliveryOrderItemCost, error)
 	Get(ctx context.Context, id string) (*model.DeliveryOrderItemCost, error)
 
 	// update
@@ -109,6 +110,14 @@ func (r *deliveryOrderItemCostRepository) Fetch(ctx context.Context, options ...
 	}
 
 	stmt := r.prepareQuery(option)
+
+	return r.fetch(ctx, stmt)
+}
+
+func (r *deliveryOrderItemCostRepository) FetchByDeliveryOrderItemIds(ctx context.Context, deliveryOrderItemsIds []string) ([]model.DeliveryOrderItemCost, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.DeliveryOrderItemCostTableName).
+		Where(squirrel.Eq{"delivery_order_item_id": deliveryOrderItemsIds})
 
 	return r.fetch(ctx, stmt)
 }

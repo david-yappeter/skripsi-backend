@@ -21,6 +21,7 @@ type deliveryOrdersLoaderParams struct {
 	deliveryOrderItems  bool
 	deliveryOrderImages bool
 
+	deliveryOrderItemCosts    bool
 	deliveryOrderProductStock bool
 }
 
@@ -95,6 +96,7 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 
 	fileLoader := loader.NewFileLoader(u.repositoryManager.FileRepository())
 	productUnitLoader := loader.NewProductUnitLoader(u.repositoryManager.ProductUnitRepository())
+	deliveryOrderItemCostsLoader := loader.NewDeliveryOrderItemCostsLoader(u.repositoryManager.DeliveryOrderItemCostRepository())
 
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
@@ -108,6 +110,12 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 				if option.deliveryOrderItems {
 					for j := range deliveryOrders[i].DeliveryOrderItems {
 						group.Go(productUnitLoader.DeliveryOrderItemFn(&deliveryOrders[i].DeliveryOrderItems[j]))
+					}
+				}
+
+				if option.deliveryOrderItemCosts {
+					for j := range deliveryOrders[i].DeliveryOrderItems {
+						group.Go(deliveryOrderItemCostsLoader.DeliveryOrderItemFn(&deliveryOrders[i].DeliveryOrderItems[j]))
 					}
 				}
 			}
@@ -360,10 +368,10 @@ func (u *deliveryOrderUseCase) Get(ctx context.Context, request dto_request.Deli
 
 func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.DeliveryOrderCancelRequest) model.DeliveryOrder {
 	var (
-		toBeAddedStockByProductId map[string]float64            = make(map[string]float64)
-		productStockByProductId   map[string]model.ProductStock = make(map[string]model.ProductStock)
-		toBeCanceledCustomerDebt  *model.CustomerDebt           = nil
-		err                       error
+		currentDateTime                              = util.CurrentDateTime()
+		toBeCanceledCustomerDebt *model.CustomerDebt = nil
+		productStockMutations                        = []model.ProductStockMutation{}
+		err                      error
 	)
 
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
@@ -386,17 +394,24 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 		// add canceled stock back if already 'OnGoing' status
 		u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
 			deliveryOrderProductStock: true,
+			deliveryOrderItems:        true,
+			deliveryOrderItemCosts:    true,
 		})
 
 		for _, deliveryOrderItem := range deliveryOrder.DeliveryOrderItems {
-			productStockByProductId[deliveryOrderItem.ProductUnit.ProductId] = *deliveryOrderItem.ProductUnit.ProductStock
-			toBeAddedStockByProductId[deliveryOrderItem.ProductUnit.ProductId] += deliveryOrderItem.Qty * deliveryOrderItem.ProductUnit.ScaleToBase
-		}
-
-		for productId, addedStock := range toBeAddedStockByProductId {
-			productStock := productStockByProductId[productId]
-			productStock.Qty += addedStock
-			productStockByProductId[productId] = productStock
+			for _, deliveryOrderItemCost := range deliveryOrderItem.DeliveryOrderItemCosts {
+				productStockMutations = append(productStockMutations, model.ProductStockMutation{
+					Id:            util.NewUuid(),
+					ProductUnitId: deliveryOrderItem.ProductUnitId,
+					Type:          data_type.ProductStockMutationTypeDeliveryOrderItemCostCancel,
+					IdentifierId:  deliveryOrderItemCost.Id,
+					Qty:           deliveryOrderItemCost.Qty,
+					ScaleToBase:   1,
+					BaseQtyLeft:   deliveryOrderItemCost.Qty,
+					BaseCostPrice: deliveryOrderItemCost.BaseCostPrice,
+					MutatedAt:     currentDateTime,
+				})
+			}
 		}
 
 		// cancel customer debt if already 'onGoing' status
@@ -413,16 +428,14 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
 			customerDebtRepository := u.repositoryManager.CustomerDebtRepository()
 			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
-			productStockRepository := u.repositoryManager.ProductStockRepository()
+			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
 
 			if err := deliveryOrderRepository.Update(ctx, &deliveryOrder); err != nil {
 				return err
 			}
 
-			for _, productStock := range productStockByProductId {
-				if err := productStockRepository.Update(ctx, &productStock); err != nil {
-					return err
-				}
+			if err := productStockMutationRepository.InsertMany(ctx, productStockMutations); err != nil {
+				return err
 			}
 
 			if toBeCanceledCustomerDebt != nil {
@@ -477,8 +490,6 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
 
 			for _, deliveryOrderItem := range deliveryOrder.DeliveryOrderItems {
-				productUnit := mustGetProductUnit(ctx, u.repositoryManager, deliveryOrderItem.ProductUnitId, true)
-
 				deductQtyLeft := deliveryOrderItem.Qty
 
 				for deductQtyLeft > 0 {
@@ -493,7 +504,7 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 							DeliveryOrderItemId: deliveryOrderItem.Id,
 							Qty:                 deductQtyLeft,
 							BaseCostPrice:       productStockMutation.BaseCostPrice,
-							TotalCostPrice:      productStockMutation.BaseCostPrice * productStockMutation.BaseQtyLeft * productUnit.ScaleToBase,
+							TotalCostPrice:      productStockMutation.BaseCostPrice * productStockMutation.BaseQtyLeft * productStockMutation.ScaleToBase,
 						})
 
 						deductQtyLeft -= productStockMutation.BaseQtyLeft
@@ -504,7 +515,7 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 							DeliveryOrderItemId: deliveryOrderItem.Id,
 							Qty:                 deductQtyLeft,
 							BaseCostPrice:       productStockMutation.BaseCostPrice,
-							TotalCostPrice:      productStockMutation.BaseCostPrice * deductQtyLeft * productUnit.ScaleToBase,
+							TotalCostPrice:      productStockMutation.BaseCostPrice * deductQtyLeft * productStockMutation.ScaleToBase,
 						})
 
 						productStockMutation.BaseQtyLeft -= deductQtyLeft

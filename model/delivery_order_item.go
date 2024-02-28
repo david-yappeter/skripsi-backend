@@ -11,7 +11,8 @@ type DeliveryOrderItem struct {
 	PricePerUnit    float64 `db:"price_per_unit"`
 	Timestamp
 
-	ProductUnit *ProductUnit `db:"-"`
+	ProductUnit            *ProductUnit            `db:"-"`
+	DeliveryOrderItemCosts []DeliveryOrderItemCost `db:"-"`
 }
 
 func (m *DeliveryOrderItem) TableName() string {

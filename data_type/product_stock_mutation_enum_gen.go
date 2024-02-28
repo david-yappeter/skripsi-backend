@@ -14,18 +14,21 @@ func _() {
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
 	_ = x[ProductStockMutationTypeProductReceiveItem-1]
+	_ = x[ProductStockMutationTypeDeliveryOrderItemCostCancel-2]
 }
 
-const _ProductStockMutationType_nameReadable = "PRODUCT_RECEIVE_ITEM"
+const _ProductStockMutationType_nameReadable = "PRODUCT_RECEIVE_ITEM, DELIVERY_ORDER_ITEM_COST_CANCEL"
 
-const _ProductStockMutationType_name = "PRODUCT_RECEIVE_ITEM"
+const _ProductStockMutationType_name = "PRODUCT_RECEIVE_ITEMDELIVERY_ORDER_ITEM_COST_CANCEL"
 
-var _ProductStockMutationType_index = [...]uint8{0, 20}
+var _ProductStockMutationType_index = [...]uint8{0, 20, 51}
 
 func (i *ProductStockMutationType) Determine(s string) {
 	switch s {
 	case "PRODUCT_RECEIVE_ITEM":
 		*i = ProductStockMutationTypeProductReceiveItem
+	case "DELIVERY_ORDER_ITEM_COST_CANCEL":
+		*i = ProductStockMutationTypeDeliveryOrderItemCostCancel
 	default:
 		*i = 0
 	}
@@ -95,11 +98,13 @@ func ProductStockMutationTypeP(v ProductStockMutationType) *ProductStockMutation
 func ListProductStockMutationType() []ProductStockMutationType {
 	return []ProductStockMutationType{
 		ProductStockMutationTypeProductReceiveItem,
+		ProductStockMutationTypeDeliveryOrderItemCostCancel,
 	}
 }
 
 func ListProductStockMutationTypeString() []string {
 	return []string{
 		ProductStockMutationTypeProductReceiveItem.String(),
+		ProductStockMutationTypeDeliveryOrderItemCostCancel.String(),
 	}
 }

@@ -4,5 +4,6 @@ package data_type
 type ProductStockMutationType int // @name ProductStockMutationTypeEnum
 
 const (
-	ProductStockMutationTypeProductReceiveItem ProductStockMutationType = iota + 1 // PRODUCT_RECEIVE_ITEM
+	ProductStockMutationTypeProductReceiveItem          ProductStockMutationType = iota + 1 // PRODUCT_RECEIVE_ITEM
+	ProductStockMutationTypeDeliveryOrderItemCostCancel                                     // DELIVERY_ORDER_ITEM_COST_CANCEL
 )

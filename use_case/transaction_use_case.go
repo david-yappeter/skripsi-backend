@@ -125,8 +125,6 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 			}
 
 			for _, cartItem := range cartItems {
-				productUnit := productUnitsMapById[cartItem.ProductUnitId]
-
 				// add transaction total
 				transactionTotal += cartItem.Qty * cartItem.ProductUnit.ScaleToBase * *cartItem.ProductUnit.Product.Price
 
@@ -159,7 +157,7 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 							TransactionItemId: transactionItem.Id,
 							Qty:               productStockMutation.BaseQtyLeft,
 							BaseCostPrice:     productStockMutation.BaseCostPrice,
-							TotalCostPrice:    productStockMutation.BaseCostPrice * productStockMutation.BaseQtyLeft * productUnit.ScaleToBase,
+							TotalCostPrice:    productStockMutation.BaseCostPrice * productStockMutation.BaseQtyLeft * productStockMutation.ScaleToBase,
 						})
 
 						deductQtyLeft -= productStockMutation.BaseQtyLeft
@@ -170,7 +168,7 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 							TransactionItemId: transactionItem.Id,
 							Qty:               deductQtyLeft,
 							BaseCostPrice:     productStockMutation.BaseCostPrice,
-							TotalCostPrice:    productStockMutation.BaseCostPrice * deductQtyLeft * productUnit.ScaleToBase,
+							TotalCostPrice:    productStockMutation.BaseCostPrice * deductQtyLeft * productStockMutation.ScaleToBase,
 						})
 
 						productStockMutation.BaseQtyLeft -= deductQtyLeft
