@@ -63,12 +63,12 @@ func (r *customerPaymentRepository) get(ctx context.Context, stmt squirrel.Sqliz
 
 func (r *customerPaymentRepository) prepareQuery(option model.CustomerPaymentQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s u", model.CustomerPaymentTableName))
+		From(fmt.Sprintf("%s cp", model.CustomerPaymentTableName))
 
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
 		stmt = stmt.Where(squirrel.Or{
-			squirrel.ILike{"u.name": phrase},
+			squirrel.ILike{"cp.name": phrase},
 		})
 	}
 

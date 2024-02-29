@@ -18,6 +18,7 @@ type ProductStockMutationRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.ProductStockMutationQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.ProductStockMutationQueryOption) ([]model.ProductStockMutation, error)
+	FetchByTypeAndIdentifierIds(ctx context.Context, _type data_type.ProductStockMutationType, identifierIds []string) ([]model.ProductStockMutation, error)
 	Get(ctx context.Context, id string) (*model.ProductStockMutation, error)
 	GetByTypeAndIdentifierId(ctx context.Context, _type data_type.ProductStockMutationType, identifierId string) (*model.ProductStockMutation, error)
 	GetFIFOByProductUnitIdAndBaseQtyLeftNotZero(ctx context.Context, productUnitId string) (*model.ProductStockMutation, error)
@@ -27,6 +28,7 @@ type ProductStockMutationRepository interface {
 
 	// delete
 	Delete(ctx context.Context, productStockMutation *model.ProductStockMutation) error
+	DeleteManyByIds(ctx context.Context, ids []string) error
 	Truncate(ctx context.Context) error
 }
 
@@ -115,6 +117,15 @@ func (r *productStockMutationRepository) Fetch(ctx context.Context, options ...m
 	return r.fetch(ctx, stmt)
 }
 
+func (r *productStockMutationRepository) FetchByTypeAndIdentifierIds(ctx context.Context, _type data_type.ProductStockMutationType, identifierIds []string) ([]model.ProductStockMutation, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.ProductStockMutationTableName).
+		Where(squirrel.Eq{"type": _type}).
+		Where(squirrel.Eq{"identifier_id": identifierIds})
+
+	return r.fetch(ctx, stmt)
+}
+
 func (r *productStockMutationRepository) Get(ctx context.Context, id string) (*model.ProductStockMutation, error) {
 	stmt := stmtBuilder.Select("*").
 		From(model.ProductStockMutationTableName).
@@ -148,6 +159,13 @@ func (r *productStockMutationRepository) Update(ctx context.Context, productStoc
 
 func (r *productStockMutationRepository) Delete(ctx context.Context, productStockMutation *model.ProductStockMutation) error {
 	return defaultDestroy(r.db, r.loggerStack, ctx, productStockMutation, nil)
+}
+
+func (r *productStockMutationRepository) DeleteManyByIds(ctx context.Context, ids []string) error {
+	whereStmt := squirrel.Eq{
+		"id": ids,
+	}
+	return destroy(r.db, ctx, model.ProductStockMutationTableName, whereStmt)
 }
 
 func (r *productStockMutationRepository) Truncate(ctx context.Context) error {

@@ -11,8 +11,9 @@ type ProductReceiveItem struct {
 	PricePerUnit     float64 `db:"price_per_unit"`
 	Timestamp
 
-	ProductUnit *ProductUnit `db:"-"`
-	User        *User        `db:"-"`
+	ProductUnit          *ProductUnit          `db:"-"`
+	User                 *User                 `db:"-"`
+	ProductStockMutation *ProductStockMutation `db:"-"` /* only available when ProductReceive status 'COMPLETED' */
 }
 
 func (m *ProductReceiveItem) TableName() string {
