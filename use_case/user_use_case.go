@@ -230,5 +230,17 @@ func (u *userUseCase) GetMe(ctx context.Context) model.User {
 		userRoles: true,
 	})
 
+	userRoleIds := []string{}
+	for _, role := range authUser.Roles {
+		userRoleIds = append(userRoleIds, role.Id)
+	}
+
+	authUser.Permissions = []model.Permission{}
+
+	permissions, err := u.repositoryManager.PermissionRepository().FetchByRoleIds(ctx, userRoleIds)
+	panicIfErr(err)
+
+	authUser.Permissions = permissions
+
 	return authUser
 }

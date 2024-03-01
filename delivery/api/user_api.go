@@ -52,7 +52,7 @@ func (a *UserApi) Create() gin.HandlerFunc {
 //	@tags		Users
 //	@Accept		json
 //	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{user=dto_response.UserResponse}}
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{user=dto_response.UserMeResponse}}
 func (a *UserApi) GetMe() gin.HandlerFunc {
 	return a.Authorize(
 		nil,
@@ -64,7 +64,7 @@ func (a *UserApi) GetMe() gin.HandlerFunc {
 				http.StatusOK,
 				dto_response.Response{
 					Data: dto_response.DataResponse{
-						"user": dto_response.NewUserResponse(user),
+						"user": dto_response.NewUserMeResponse(user),
 					},
 				},
 			)
