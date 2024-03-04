@@ -14,7 +14,6 @@ import (
 	"myapp/util"
 	"path"
 
-	gotiktok "github.com/david-yappeter/go-tiktok"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -333,10 +332,17 @@ func (u *productReceiveUseCase) Cancel(ctx context.Context, request dto_request.
 			}
 		}
 
+		// remove stock and remove from tiktok
 		for productId, removedStock := range toBeRemovedStockByProductId {
 			productStock := productStockByProductId[productId]
 			productStock.Qty -= removedStock
 			productStockByProductId[productId] = productStock
+
+			tiktokProduct := shouldGetTiktokProductByProductId(ctx, u.repositoryManager, productId)
+
+			if tiktokProduct != nil {
+				mustUpdateTiktokProductInventory(ctx, u.repositoryManager, tiktokProduct.TiktokProductId, int(productStock.Qty))
+			}
 		}
 	}
 
@@ -412,12 +418,6 @@ func (u *productReceiveUseCase) MarkComplete(ctx context.Context, request dto_re
 		})
 	}
 
-	client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
-
-	if tiktokConfig.AccessToken == nil {
-		panic("TIKTOK_CONFIG.ACCESS_TOKEN_EMPTY")
-	}
-
 	// add stock and sync tiktok stock
 	for productId, addedStock := range toBeAddedStockByProductId {
 		productStock := productStockByProductId[productId]
@@ -427,31 +427,7 @@ func (u *productReceiveUseCase) MarkComplete(ctx context.Context, request dto_re
 		tiktokProduct := shouldGetTiktokProductByProductId(ctx, u.repositoryManager, productId)
 
 		if tiktokProduct != nil {
-			tiktokProductDetail := mustGetTiktokProductDetail(ctx, u.repositoryManager, tiktokProduct.TiktokProductId)
-
-			_, err := client.UpdateProductInventory(
-				ctx,
-				gotiktok.CommonParam{
-					AccessToken: *tiktokConfig.AccessToken,
-					ShopCipher:  tiktokConfig.ShopCipher,
-					ShopId:      tiktokConfig.ShopId,
-				},
-				tiktokProduct.TiktokProductId,
-				gotiktok.UpdateProductInventoryRequest{
-					Skus: []gotiktok.UpdateProductInventoryRequestSku{
-						{
-							Id: tiktokProductDetail.Skus[0].Id,
-							Inventory: []gotiktok.UpdateProductInventoryRequestSkuInventory{
-								{
-									WarehouseId: tiktokProductDetail.Skus[0].Inventory[0].WarehouseId,
-									Quantity:    int(productStock.Qty),
-								},
-							},
-						},
-					},
-				},
-			)
-			panicIfErr(err)
+			mustUpdateTiktokProductInventory(ctx, u.repositoryManager, tiktokProduct.TiktokProductId, int(productStock.Qty))
 		}
 
 	}
