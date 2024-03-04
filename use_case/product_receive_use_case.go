@@ -14,6 +14,7 @@ import (
 	"myapp/util"
 	"path"
 
+	gotiktok "github.com/david-yappeter/go-tiktok"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -116,6 +117,7 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 		}),
 	)
 
+	productLoader := loader.NewProductLoader(u.repositoryManager.ProductRepository())
 	productStockLoader := loader.NewProductStockLoader(u.repositoryManager.ProductStockRepository())
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
@@ -123,6 +125,7 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 				if option.productReceiveItems && option.productReceiveProductStock {
 					for j := range productReceives[i].ProductReceiveItems {
 						group.Go(productStockLoader.ProductUnitFn(productReceives[i].ProductReceiveItems[j].ProductUnit))
+						group.Go(productLoader.ProductUnitFn(productReceives[i].ProductReceiveItems[j].ProductUnit))
 					}
 				}
 			}
@@ -159,8 +162,6 @@ func (u *productReceiveUseCase) AddItem(ctx context.Context, request dto_request
 		productReceive = mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, false)
 		productUnit    = mustGetProductUnitByProductIdAndUnitId(ctx, u.repositoryManager, request.ProductId, request.UnitId, true)
 		product        = mustGetProduct(ctx, u.repositoryManager, request.ProductId, false)
-
-		totalSmallestQty = request.Qty * productUnit.ScaleToBase
 	)
 
 	if !product.IsActive {
@@ -168,7 +169,7 @@ func (u *productReceiveUseCase) AddItem(ctx context.Context, request dto_request
 	}
 
 	// add total to product receive
-	productReceive.TotalPrice += totalSmallestQty * *product.Price
+	productReceive.TotalPrice += request.Qty * request.PricePerUnit
 
 	// add product receive item
 	productReceiveItem := model.ProductReceiveItem{
@@ -278,6 +279,11 @@ func (u *productReceiveUseCase) Fetch(ctx context.Context, request dto_request.P
 
 func (u *productReceiveUseCase) Get(ctx context.Context, request dto_request.ProductReceiveGetRequest) model.ProductReceive {
 	productReceive := mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, true)
+
+	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
+		productReceiveItems:        true,
+		productReceiveProductStock: true,
+	})
 
 	return productReceive
 }
@@ -406,10 +412,48 @@ func (u *productReceiveUseCase) MarkComplete(ctx context.Context, request dto_re
 		})
 	}
 
+	client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
+
+	if tiktokConfig.AccessToken == nil {
+		panic("TIKTOK_CONFIG.ACCESS_TOKEN_EMPTY")
+	}
+
+	// add stock and sync tiktok stock
 	for productId, addedStock := range toBeAddedStockByProductId {
 		productStock := productStockByProductId[productId]
 		productStock.Qty += addedStock
 		productStockByProductId[productId] = productStock
+
+		tiktokProduct := shouldGetTiktokProductByProductId(ctx, u.repositoryManager, productId)
+
+		if tiktokProduct != nil {
+			tiktokProductDetail := mustGetTiktokProductDetail(ctx, u.repositoryManager, tiktokProduct.TiktokProductId)
+
+			_, err := client.UpdateProductInventory(
+				ctx,
+				gotiktok.CommonParam{
+					AccessToken: *tiktokConfig.AccessToken,
+					ShopCipher:  tiktokConfig.ShopCipher,
+					ShopId:      tiktokConfig.ShopId,
+				},
+				tiktokProduct.TiktokProductId,
+				gotiktok.UpdateProductInventoryRequest{
+					Skus: []gotiktok.UpdateProductInventoryRequestSku{
+						{
+							Id: tiktokProductDetail.Skus[0].Id,
+							Inventory: []gotiktok.UpdateProductInventoryRequestSkuInventory{
+								{
+									WarehouseId: tiktokProductDetail.Skus[0].Inventory[0].WarehouseId,
+									Quantity:    int(productStock.Qty),
+								},
+							},
+						},
+					},
+				},
+			)
+			panicIfErr(err)
+		}
+
 	}
 
 	productReceive.Status = data_type.ProductReceiveStatusCompleted
@@ -498,8 +542,14 @@ func (u *productReceiveUseCase) DeleteItem(ctx context.Context, request dto_requ
 		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.STATUS.MUST_BE_PENDING"))
 	}
 
-	mustGetProductUnit(ctx, u.repositoryManager, request.ProductUnitId, true)
-	productReceiveItem := mustGetProductReceiveItemByProductReceiveIdAndProductUnitId(ctx, u.repositoryManager, request.ProductReceiveId, request.ProductUnitId, true)
+	productReceiveItem := mustGetProductReceiveItem(ctx, u.repositoryManager, request.ProductReceiveItemId, true)
+
+	if productReceiveItem.ProductReceiveId != productReceive.Id {
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE_ITEM.NOT_FOUND"))
+	}
+
+	// deduct total from product_receive
+	productReceive.TotalPrice -= productReceiveItem.Qty * productReceiveItem.PricePerUnit
 
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {

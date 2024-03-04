@@ -307,12 +307,12 @@ func (a *ProductReceiveApi) Delete() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/product-receives/{id}/items/{product_unit_id} [delete]
+//	@Router		/product-receives/{id}/items/{product_receive_item_id} [delete]
 //	@Summary	Delete Item
 //	@tags		Product Receives
 //	@Accept		json
 //	@Param		id											path	string										true	"Id"
-//	@Param		product_unit_id								path	string										true	"Product Unit Id"
+//	@Param		product_receive_item_id								path	string										true	"Product Receive Item Id"
 //	@Param		dto_request.ProductReceiveDeleteItemRequest	body	dto_request.ProductReceiveDeleteItemRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_receive=dto_response.ProductReceiveResponse}}
@@ -321,11 +321,11 @@ func (a *ProductReceiveApi) DeleteItem() gin.HandlerFunc {
 		data_type.PermissionP(data_type.PermissionProductReceiveDeleteItem),
 		func(ctx apiContext) {
 			id := ctx.getUuidParam("id")
-			productUnitId := ctx.getUuidParam("product_unit_id")
+			productReceiveItemId := ctx.getUuidParam("product_receive_item_id")
 			var request dto_request.ProductReceiveDeleteItemRequest
 			ctx.mustBind(&request)
 			request.ProductReceiveId = id
-			request.ProductUnitId = productUnitId
+			request.ProductReceiveItemId = productReceiveItemId
 
 			productReceive := a.productReceiveUseCase.DeleteItem(ctx.context(), request)
 
@@ -395,6 +395,6 @@ func RegisterProductReceiveApi(router gin.IRouter, useCaseManager use_case.UseCa
 	routerGroup.PATCH("/:id/cancel", api.Cancel())
 	routerGroup.PATCH("/:id/completed", api.MarkComplete())
 
-	routerGroup.DELETE("/:id/items/:product_unit_id", api.DeleteItem())
+	routerGroup.DELETE("/:id/items/:product_receive_item_id", api.DeleteItem())
 	routerGroup.DELETE("/:id/images/:file_id", api.DeleteImage())
 }

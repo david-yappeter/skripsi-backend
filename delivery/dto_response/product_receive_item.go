@@ -8,8 +8,8 @@ type ProductReceiveItemResponse struct {
 	Id               string  `json:"id"`
 	ProductReceiveId string  `json:"product_receive_id"`
 	ProductUnitId    string  `json:"product_unit_id"`
-	Qty              float64 `db:"qty"`
-	PricePerUnit     float64 `db:"price_per_unit"`
+	Qty              float64 `json:"qty"`
+	PricePerUnit     float64 `json:"price_per_unit"`
 	Timestamp
 
 	ProductUnit *ProductUnitResponse `json:"product_unit" extensions:"x-nullable"`

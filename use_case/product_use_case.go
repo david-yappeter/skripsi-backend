@@ -203,8 +203,7 @@ func (u *productUseCase) Get(ctx context.Context, request dto_request.ProductGet
 
 func (u *productUseCase) Update(ctx context.Context, request dto_request.ProductUpdateRequest) model.Product {
 	product := mustGetProduct(ctx, u.repositoryManager, request.ProductId, true)
-	tiktokProduct, err := u.repositoryManager.TiktokProductRepository().GetByProductId(ctx, product.Id)
-	panicIfErr(err)
+	tiktokProduct := shouldGetTiktokProductByProductId(ctx, u.repositoryManager, product.Id)
 
 	if product.Name != request.Name {
 		u.mustValidateNameNotDuplicate(ctx, request.Name)
@@ -214,8 +213,8 @@ func (u *productUseCase) Update(ctx context.Context, request dto_request.Product
 		panic(dto_response.NewBadRequestErrorResponse("ACTIVE_PRODUCT.MUST_HAVE_PRICE"))
 	}
 
-	// update product price in ecommerce
-	if product.Price != request.Price && request.Price != nil {
+	// update product price in tiktok
+	if tiktokProduct != nil && request.Price != nil && (product.Price == nil || *product.Price != *request.Price) {
 		tiktokProductDetail := mustGetTiktokProductDetail(ctx, u.repositoryManager, tiktokProduct.TiktokProductId)
 
 		client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
@@ -247,7 +246,8 @@ func (u *productUseCase) Update(ctx context.Context, request dto_request.Product
 		panicIfErr(err)
 	}
 
-	if product.IsActive != request.IsActive && !request.IsActive {
+	// deactivate tiktok product
+	if tiktokProduct != nil && product.IsActive != request.IsActive && !request.IsActive {
 		client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
 
 		if tiktokConfig.AccessToken == nil {

@@ -39,7 +39,7 @@ func (l *ProductStockLoader) ProductFn(product *model.Product) func() error {
 
 func (l *ProductStockLoader) ProductUnitFn(productUnit *model.ProductUnit) func() error {
 	return func() error {
-		productStock, err := l.loadByProductId(productUnit.Id)
+		productStock, err := l.loadByProductId(productUnit.ProductId)
 		if err != nil {
 			return err
 		}
