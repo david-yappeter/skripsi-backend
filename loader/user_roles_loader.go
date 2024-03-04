@@ -2,7 +2,6 @@ package loader
 
 import (
 	"context"
-	"myapp/constant"
 	"myapp/model"
 	"myapp/repository"
 
@@ -64,9 +63,6 @@ func NewUserRolesLoader(userRoleRepository repository.UserRoleRepository) *UserR
 			}
 
 			result := &dataloader.Result{Data: userRoles, Error: nil}
-			if userRoles == nil {
-				result.Error = constant.ErrNoData
-			}
 			results[idx] = result
 		}
 

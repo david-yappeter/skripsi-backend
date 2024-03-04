@@ -2,7 +2,6 @@ package loader
 
 import (
 	"context"
-	"myapp/constant"
 	"myapp/model"
 	"myapp/repository"
 
@@ -64,9 +63,6 @@ func NewDeliveryOrderImagesLoader(deliveryOrderImageRepository repository.Delive
 			}
 
 			result := &dataloader.Result{Data: deliveryOrderImages, Error: nil}
-			if deliveryOrderImages == nil {
-				result.Error = constant.ErrNoData
-			}
 			results[idx] = result
 		}
 

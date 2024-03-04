@@ -2,7 +2,6 @@ package loader
 
 import (
 	"context"
-	"myapp/constant"
 	"myapp/model"
 	"myapp/repository"
 
@@ -10,11 +9,11 @@ import (
 )
 
 type ProductReceiveImagesLoader struct {
-	loader dataloader.Loader
+	loaderByProductReceiveId dataloader.Loader
 }
 
-func (l *ProductReceiveImagesLoader) load(id string) ([]model.ProductReceiveImage, error) {
-	thunk := l.loader.Load(context.TODO(), dataloader.StringKey(id))
+func (l *ProductReceiveImagesLoader) loadByProductReceiveId(id string) ([]model.ProductReceiveImage, error) {
+	thunk := l.loaderByProductReceiveId.Load(context.TODO(), dataloader.StringKey(id))
 
 	result, err := thunk()
 	if err != nil {
@@ -27,7 +26,7 @@ func (l *ProductReceiveImagesLoader) load(id string) ([]model.ProductReceiveImag
 func (l *ProductReceiveImagesLoader) ProductReceiveFn(productReceive *model.ProductReceive) func() error {
 	return func() error {
 		if productReceive != nil {
-			productReceiveImages, err := l.load(productReceive.Id)
+			productReceiveImages, err := l.loadByProductReceiveId(productReceive.Id)
 			if err != nil {
 				return err
 			}
@@ -40,20 +39,20 @@ func (l *ProductReceiveImagesLoader) ProductReceiveFn(productReceive *model.Prod
 }
 
 func NewProductReceiveImagesLoader(productReceiveImageRepository repository.ProductReceiveImageRepository) *ProductReceiveImagesLoader {
-	batchFn := func(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
+	batchByProductReceiveIdFn := func(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
 		ids := make([]string, len(keys))
 		for idx, k := range keys {
 			ids[idx] = k.String()
 		}
 
-		productReceives, err := productReceiveImageRepository.FetchByProductReceiveIds(ctx, ids)
+		productReceiveImages, err := productReceiveImageRepository.FetchByProductReceiveIds(ctx, ids)
 		if err != nil {
 			panic(err)
 		}
 
 		productReceiveImagesByProductReceiveId := map[string][]model.ProductReceiveImage{}
-		for _, productReceive := range productReceives {
-			productReceiveImagesByProductReceiveId[productReceive.Id] = append(productReceiveImagesByProductReceiveId[productReceive.Id], productReceive)
+		for _, productReceiveImage := range productReceiveImages {
+			productReceiveImagesByProductReceiveId[productReceiveImage.ProductReceiveId] = append(productReceiveImagesByProductReceiveId[productReceiveImage.ProductReceiveId], productReceiveImage)
 		}
 
 		results := make([]*dataloader.Result, len(keys))
@@ -64,9 +63,6 @@ func NewProductReceiveImagesLoader(productReceiveImageRepository repository.Prod
 			}
 
 			result := &dataloader.Result{Data: productReceiveImages, Error: nil}
-			if productReceiveImages == nil {
-				result.Error = constant.ErrNoData
-			}
 			results[idx] = result
 		}
 
@@ -74,6 +70,6 @@ func NewProductReceiveImagesLoader(productReceiveImageRepository repository.Prod
 	}
 
 	return &ProductReceiveImagesLoader{
-		loader: NewDataloader(batchFn),
+		loaderByProductReceiveId: NewDataloader(batchByProductReceiveIdFn),
 	}
 }
