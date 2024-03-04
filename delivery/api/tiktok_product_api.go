@@ -235,6 +235,37 @@ func (a *TiktokProductApi) Get() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/tiktok-products/{id} [get]
+//	@Summary	Get
+//	@tags		Tiktok Products
+//	@Accept		json
+//	@Param		id	path	string	true	"Product Id"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{tiktok_product=dto_response.TiktokPlatformProductResponse}}
+func (a *TiktokProductApi) Update() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionTiktokProductUpdate),
+		func(ctx apiContext) {
+			productId := ctx.getParam("id")
+			var request dto_request.TiktokProductGetRequest
+			request.ProductId = productId
+
+			a.tiktokProductUseCase.Update(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"tiktok_product": dto_response.NewTiktokPlatformProductResponse(product),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/tiktok-products/recommended-category [post]
 //	@Summary	Recommended Category
 //	@tags		Tiktok Products
@@ -339,6 +370,7 @@ func RegisterTiktokProductApi(router gin.IRouter, useCaseManager use_case.UseCas
 	routerGroup.POST("/categories/:category_id/rules", api.GetCategoryRules())
 	routerGroup.POST("/categories/:category_id/attributes", api.GetCategoryAttributes())
 	routerGroup.GET("/:id", api.Get())
+	routerGroup.PUT("/:id", api.Update())
 	routerGroup.POST("/recommended-category", api.RecommendedCategory())
 	routerGroup.PATCH("/:id/activate", api.Activate())
 	routerGroup.PATCH("/:id/deactivate", api.Deactivate())

@@ -32,6 +32,7 @@ type TiktokProductUseCase interface {
 	// update
 	Activate(ctx context.Context, request dto_request.TiktokProductActivateRequest)
 	Deactivate(ctx context.Context, request dto_request.TiktokProductDeactivateRequest)
+	Update(ctx context.Context, request dto_request.TiktokProductUpdateRequest)
 }
 
 type tiktokProductUseCase struct {
@@ -615,4 +616,53 @@ func (u *tiktokProductUseCase) Deactivate(ctx context.Context, request dto_reque
 	panicIfErr(
 		u.repositoryManager.TiktokProductRepository().Update(ctx, tiktokProduct),
 	)
+}
+
+func (u *tiktokProductUseCase) Update(ctx context.Context, request dto_request.TiktokProductUpdateRequest) {
+	tiktokProduct, err := u.repositoryManager.TiktokProductRepository().GetByProductId(ctx, request.ProductId)
+	panicIfErr(err)
+
+	var (
+		mainImages []gotiktok.UpdateProductRequestMainImage = nil
+		skus       []gotiktok.UpdateProductRequestSku       = nil
+	)
+
+	client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
+
+	if tiktokConfig.AccessToken == nil {
+		panic("TIKTOK_CONFIG.ACCESS_TOKEN_EMPTY")
+	}
+
+	_, err = client.UpdateProduct(
+		ctx,
+		gotiktok.CommonParam{
+			AccessToken: *tiktokConfig.AccessToken,
+			ShopCipher:  tiktokConfig.ShopCipher,
+			ShopId:      tiktokConfig.ShopId,
+		},
+		tiktokProduct.TiktokProductId,
+		gotiktok.UpdateProductRequest{
+			Description:       request.Description,
+			CategoryId:        request.CategoryId,
+			BrandId:           request.BrandId,
+			MainImages:        mainImages,
+			Skus:              skus,
+			Title:             request.Title,
+			IsCodAllowed:      false,
+			Certifications:    nil,
+			PackageWeight:     gotiktok.UpdateProductRequestPackageWeight{},
+			ProductAttributes: []gotiktok.UpdateProductRequestProductAttribute{},
+			SizeChart:         &gotiktok.UpdateProductRequestSizeChart{},
+			PackageDimensions: []gotiktok.UpdateProductRequestPackageDimension{},
+			ExternalProductId: nil,
+			DeliveryOptionIds: nil,
+			Video:             nil,
+		},
+	)
+	panicIfErr(err)
+
+	// tiktokProduct.Status = data_type.TiktokProductStatusInActive
+	// panicIfErr(
+	// 	u.repositoryManager.TiktokProductRepository().Update(ctx, tiktokProduct),
+	// )
 }

@@ -117,6 +117,7 @@ const (
 	PermissionTiktokProductGetCategoryRules      // TIKTOK_PRODUCT_GET_RULES
 	PermissionTiktokProductGetCategoryAttributes // TIKTOK_PRODUCT_GET_CATEGORY_ATTRIBUTES
 	PermissionTiktokProductGet                   // TIKTOK_PRODUCT_GET
+	PermissionTiktokProductUpdate                // TIKTOK_PRODUCT_UPDATE
 	PermissionTiktokProductRecommendedCategory   // TIKTOK_PRODUCT_RECOMMENDED_CATEGORY
 	PermissionTiktokProductActivate              // TIKTOK_PRODUCT_RECOMMENDED_ACTIVATE
 	PermissionTiktokProductDeactivate            // TIKTOK_PRODUCT_RECOMMENDED_DEACTIVATE

@@ -46,6 +46,10 @@ type TiktokProductGetRequest struct {
 	ProductId string `json:"-" swaggerignore:"true"`
 } // @name TiktokProductGetRequest
 
+type TiktokProductUpdateRequest struct {
+	ProductId string `json:"-" swaggerignore:"true"`
+} // @name TiktokProductUpdateRequest
+
 type TiktokProductRecommendedCategoryRequest struct {
 	ProductTitle string   `json:"product_title" validate:"required,not_empty"`
 	Description  *string  `json:"description" validate:"omitempty,not_empty"`
