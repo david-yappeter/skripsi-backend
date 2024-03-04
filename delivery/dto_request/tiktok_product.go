@@ -53,9 +53,9 @@ type TiktokProductRecommendedCategoryRequest struct {
 } // @name TiktokProductRecommendCategoryRequest
 
 type TiktokProductActivateRequest struct {
-	Id string `json:"-" swaggerignore:"true"`
+	ProductId string `json:"-" swaggerignore:"true"`
 } // @name TiktokProductActivateRequest
 
 type TiktokProductDeactivateRequest struct {
-	Id string `json:"-" swaggerignore:"true"`
+	ProductId string `json:"-" swaggerignore:"true"`
 } // @name TiktokProductDeactivateRequest

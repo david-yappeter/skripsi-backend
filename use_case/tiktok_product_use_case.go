@@ -366,6 +366,9 @@ func (u *tiktokProductUseCase) GetCategoryAttributes(ctx context.Context, reques
 }
 
 func (u *tiktokProductUseCase) Get(ctx context.Context, request dto_request.TiktokProductGetRequest) model.TiktokPlatformProduct {
+	tiktokProduct, err := u.repositoryManager.TiktokProductRepository().GetByProductId(ctx, request.ProductId)
+	panicIfErr(err)
+
 	client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
 
 	if tiktokConfig.AccessToken == nil {
@@ -379,7 +382,7 @@ func (u *tiktokProductUseCase) Get(ctx context.Context, request dto_request.Tikt
 			ShopCipher:  tiktokConfig.ShopCipher,
 			ShopId:      tiktokConfig.ShopId,
 		},
-		request.ProductId,
+		tiktokProduct.TiktokProductId,
 	)
 	panicIfErr(err)
 
@@ -557,7 +560,8 @@ func (u *tiktokProductUseCase) RecommendedCategory(ctx context.Context, request 
 }
 
 func (u *tiktokProductUseCase) Activate(ctx context.Context, request dto_request.TiktokProductActivateRequest) {
-	tiktokProduct := mustGetTiktokProduct(ctx, u.repositoryManager, request.Id, false)
+	tiktokProduct, err := u.repositoryManager.TiktokProductRepository().GetByProductId(ctx, request.ProductId)
+	panicIfErr(err)
 
 	client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
 
@@ -565,7 +569,7 @@ func (u *tiktokProductUseCase) Activate(ctx context.Context, request dto_request
 		panic("TIKTOK_CONFIG.ACCESS_TOKEN_EMPTY")
 	}
 
-	_, err := client.ActivateProduct(
+	_, err = client.ActivateProduct(
 		ctx,
 		gotiktok.CommonParam{
 			AccessToken: *tiktokConfig.AccessToken,
@@ -573,19 +577,20 @@ func (u *tiktokProductUseCase) Activate(ctx context.Context, request dto_request
 			ShopId:      tiktokConfig.ShopId,
 		},
 		gotiktok.ActivateProductRequest{
-			ProductIds: []string{request.Id},
+			ProductIds: []string{tiktokProduct.TiktokProductId},
 		},
 	)
 	panicIfErr(err)
 
 	tiktokProduct.Status = data_type.TiktokProductStatusActive
 	panicIfErr(
-		u.repositoryManager.TiktokProductRepository().Update(ctx, &tiktokProduct),
+		u.repositoryManager.TiktokProductRepository().Update(ctx, tiktokProduct),
 	)
 }
 
 func (u *tiktokProductUseCase) Deactivate(ctx context.Context, request dto_request.TiktokProductDeactivateRequest) {
-	tiktokProduct := mustGetTiktokProduct(ctx, u.repositoryManager, request.Id, false)
+	tiktokProduct, err := u.repositoryManager.TiktokProductRepository().GetByProductId(ctx, request.ProductId)
+	panicIfErr(err)
 
 	client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
 
@@ -593,7 +598,7 @@ func (u *tiktokProductUseCase) Deactivate(ctx context.Context, request dto_reque
 		panic("TIKTOK_CONFIG.ACCESS_TOKEN_EMPTY")
 	}
 
-	_, err := client.DeactivateProduct(
+	_, err = client.DeactivateProduct(
 		ctx,
 		gotiktok.CommonParam{
 			AccessToken: *tiktokConfig.AccessToken,
@@ -601,13 +606,13 @@ func (u *tiktokProductUseCase) Deactivate(ctx context.Context, request dto_reque
 			ShopId:      tiktokConfig.ShopId,
 		},
 		gotiktok.DeactivateProductRequest{
-			ProductIds: []string{request.Id},
+			ProductIds: []string{tiktokProduct.TiktokProductId},
 		},
 	)
 	panicIfErr(err)
 
 	tiktokProduct.Status = data_type.TiktokProductStatusInActive
 	panicIfErr(
-		u.repositoryManager.TiktokProductRepository().Update(ctx, &tiktokProduct),
+		u.repositoryManager.TiktokProductRepository().Update(ctx, tiktokProduct),
 	)
 }

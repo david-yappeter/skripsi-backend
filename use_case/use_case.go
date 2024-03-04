@@ -338,3 +338,25 @@ func mustGetTiktokClient(ctx context.Context, repositoryManager repository.Repos
 	panicIfErr(err)
 	return client, tiktokConfig
 }
+
+func mustGetTiktokProductDetail(ctx context.Context, repositoryManager repository.RepositoryManager, tiktokProductId string) gotiktok.ProductDetailData {
+
+	client, tiktokConfig := mustGetTiktokClient(ctx, repositoryManager)
+
+	if tiktokConfig.AccessToken == nil {
+		panic("TIKTOK_CONFIG.ACCESS_TOKEN_EMPTY")
+	}
+
+	resp, err := client.GetProductDetail(
+		ctx,
+		gotiktok.CommonParam{
+			AccessToken: *tiktokConfig.AccessToken,
+			ShopCipher:  tiktokConfig.ShopCipher,
+			ShopId:      tiktokConfig.ShopId,
+		},
+		tiktokProductId,
+	)
+	panicIfErr(err)
+
+	return resp
+}

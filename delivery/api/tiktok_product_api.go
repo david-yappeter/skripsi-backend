@@ -208,7 +208,7 @@ func (a *TiktokProductApi) GetCategoryAttributes() gin.HandlerFunc {
 //	@Summary	Get
 //	@tags		Tiktok Products
 //	@Accept		json
-//	@Param		id	path	string	true	"Tiktok Category Id"
+//	@Param		id	path	string	true	"Product Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{tiktok_product=dto_response.TiktokPlatformProductResponse}}
 func (a *TiktokProductApi) Get() gin.HandlerFunc {
@@ -269,6 +269,7 @@ func (a *TiktokProductApi) RecommendedCategory() gin.HandlerFunc {
 //	@Summary	Activate Tiktok Product
 //	@tags		Tiktok Products
 //	@Accept		json
+//	@Param		id path string true "Product Id"
 //	@Param		dto_request.TiktokProductActivateRequest	body	dto_request.TiktokProductActivateRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.SuccessResponse
@@ -279,7 +280,7 @@ func (a *TiktokProductApi) Activate() gin.HandlerFunc {
 			id := ctx.getParam("id")
 			var request dto_request.TiktokProductActivateRequest
 			ctx.mustBind(&request)
-			request.Id = id
+			request.ProductId = id
 
 			a.tiktokProductUseCase.Activate(ctx.context(), request)
 
@@ -299,6 +300,7 @@ func (a *TiktokProductApi) Activate() gin.HandlerFunc {
 //	@Summary	Deactivate Tiktok Product
 //	@tags		Tiktok Products
 //	@Accept		json
+//	@Param		id path string true "Product Id"
 //	@Param		dto_request.TiktokProductDeactivateRequest	body	dto_request.TiktokProductDeactivateRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.SuccessResponse
@@ -309,7 +311,7 @@ func (a *TiktokProductApi) Deactivate() gin.HandlerFunc {
 			id := ctx.getParam("id")
 			var request dto_request.TiktokProductDeactivateRequest
 			ctx.mustBind(&request)
-			request.Id = id
+			request.ProductId = id
 
 			a.tiktokProductUseCase.Deactivate(ctx.context(), request)
 

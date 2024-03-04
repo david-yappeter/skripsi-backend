@@ -14,6 +14,7 @@ import (
 	"myapp/util"
 	"path"
 
+	gotiktok "github.com/david-yappeter/go-tiktok"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -202,6 +203,8 @@ func (u *productUseCase) Get(ctx context.Context, request dto_request.ProductGet
 
 func (u *productUseCase) Update(ctx context.Context, request dto_request.ProductUpdateRequest) model.Product {
 	product := mustGetProduct(ctx, u.repositoryManager, request.ProductId, true)
+	tiktokProduct, err := u.repositoryManager.TiktokProductRepository().GetByProductId(ctx, product.Id)
+	panicIfErr(err)
 
 	if product.Name != request.Name {
 		u.mustValidateNameNotDuplicate(ctx, request.Name)
@@ -209,6 +212,60 @@ func (u *productUseCase) Update(ctx context.Context, request dto_request.Product
 
 	if request.IsActive && request.Price == nil {
 		panic(dto_response.NewBadRequestErrorResponse("ACTIVE_PRODUCT.MUST_HAVE_PRICE"))
+	}
+
+	// update product price in ecommerce
+	if product.Price != request.Price && request.Price != nil {
+		tiktokProductDetail := mustGetTiktokProductDetail(ctx, u.repositoryManager, tiktokProduct.TiktokProductId)
+
+		client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
+
+		if tiktokConfig.AccessToken == nil {
+			panic("TIKTOK_CONFIG.ACCESS_TOKEN_EMPTY")
+		}
+
+		_, err := client.UpdateProductPrice(
+			ctx,
+			gotiktok.CommonParam{
+				AccessToken: *tiktokConfig.AccessToken,
+				ShopCipher:  tiktokConfig.ShopCipher,
+				ShopId:      tiktokConfig.ShopId,
+			},
+			tiktokProduct.TiktokProductId,
+			gotiktok.UpdateProductPriceRequest{
+				Skus: []gotiktok.UpdateProductPriceRequestSku{
+					{
+						Id: tiktokProductDetail.Skus[0].Id,
+						Price: gotiktok.UpdateProductPriceRequestSkuPrice{
+							Amount:   fmt.Sprintf("%f", *request.Price),
+							Currency: "IDR",
+						},
+					},
+				},
+			},
+		)
+		panicIfErr(err)
+	}
+
+	if product.IsActive != request.IsActive && !request.IsActive {
+		client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
+
+		if tiktokConfig.AccessToken == nil {
+			panic("TIKTOK_CONFIG.ACCESS_TOKEN_EMPTY")
+		}
+
+		_, err := client.DeactivateProduct(
+			ctx,
+			gotiktok.CommonParam{
+				AccessToken: *tiktokConfig.AccessToken,
+				ShopCipher:  tiktokConfig.ShopCipher,
+				ShopId:      tiktokConfig.ShopId,
+			},
+			gotiktok.DeactivateProductRequest{
+				ProductIds: []string{tiktokProduct.TiktokProductId},
+			},
+		)
+		panicIfErr(err)
 	}
 
 	product.Name = request.Name
