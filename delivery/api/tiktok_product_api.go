@@ -215,7 +215,7 @@ func (a *TiktokProductApi) Get() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionTiktokProductGet),
 		func(ctx apiContext) {
-			productId := ctx.getParam("id")
+			productId := ctx.getUuidParam("id")
 			var request dto_request.TiktokProductGetRequest
 			request.ProductId = productId
 
@@ -235,29 +235,28 @@ func (a *TiktokProductApi) Get() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/tiktok-products/{id} [get]
-//	@Summary	Get
+//	@Router		/tiktok-products/{id} [put]
+//	@Summary	Update
 //	@tags		Tiktok Products
 //	@Accept		json
 //	@Param		id	path	string	true	"Product Id"
 //	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{tiktok_product=dto_response.TiktokPlatformProductResponse}}
+//	@Success	200	{object}	dto_response.SuccessResponse
 func (a *TiktokProductApi) Update() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionTiktokProductUpdate),
 		func(ctx apiContext) {
-			productId := ctx.getParam("id")
-			var request dto_request.TiktokProductGetRequest
+			productId := ctx.getUuidParam("id")
+			var request dto_request.TiktokProductUpdateRequest
+			ctx.mustBind(&request)
 			request.ProductId = productId
 
 			a.tiktokProductUseCase.Update(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
-				dto_response.Response{
-					Data: dto_response.DataResponse{
-						"tiktok_product": dto_response.NewTiktokPlatformProductResponse(product),
-					},
+				dto_response.SuccessResponse{
+					Message: "OK",
 				},
 			)
 		},
@@ -308,7 +307,7 @@ func (a *TiktokProductApi) Activate() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionTiktokProductActivate),
 		func(ctx apiContext) {
-			id := ctx.getParam("id")
+			id := ctx.getUuidParam("id")
 			var request dto_request.TiktokProductActivateRequest
 			ctx.mustBind(&request)
 			request.ProductId = id
@@ -339,7 +338,7 @@ func (a *TiktokProductApi) Deactivate() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionTiktokProductDeactivate),
 		func(ctx apiContext) {
-			id := ctx.getParam("id")
+			id := ctx.getUuidParam("id")
 			var request dto_request.TiktokProductDeactivateRequest
 			ctx.mustBind(&request)
 			request.ProductId = id

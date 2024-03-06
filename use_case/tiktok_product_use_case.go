@@ -32,7 +32,7 @@ type TiktokProductUseCase interface {
 	// update
 	Activate(ctx context.Context, request dto_request.TiktokProductActivateRequest)
 	Deactivate(ctx context.Context, request dto_request.TiktokProductDeactivateRequest)
-	Update(ctx context.Context, request dto_request.TiktokProductUpdateRequest)
+	Update(ctx context.Context, request dto_request.TiktokProductUpdateRequest) model.TiktokProduct
 }
 
 type tiktokProductUseCase struct {
@@ -618,19 +618,62 @@ func (u *tiktokProductUseCase) Deactivate(ctx context.Context, request dto_reque
 	)
 }
 
-func (u *tiktokProductUseCase) Update(ctx context.Context, request dto_request.TiktokProductUpdateRequest) {
+func (u *tiktokProductUseCase) Update(ctx context.Context, request dto_request.TiktokProductUpdateRequest) model.TiktokProduct {
 	tiktokProduct, err := u.repositoryManager.TiktokProductRepository().GetByProductId(ctx, request.ProductId)
 	panicIfErr(err)
 
-	var (
-		mainImages []gotiktok.UpdateProductRequestMainImage = nil
-		skus       []gotiktok.UpdateProductRequestSku       = nil
+	product := mustGetProduct(ctx, u.repositoryManager, request.ProductId, true)
+
+	if !product.IsActive {
+		panic("TIKTOK_PRODUCT.PRODUCT_MUST_BE_ACTIVE")
+	}
+
+	// check product have stock
+	productStockLoader := loader.NewProductStockLoader(u.repositoryManager.ProductStockRepository())
+
+	panicIfErr(
+		util.Await(func(group *errgroup.Group) {
+			group.Go(productStockLoader.ProductFn(&product))
+		}),
 	)
+
+	if product.ProductStock == nil {
+		panic("TIKTOK_PRODUCT.PRODUCT_MUST_HAVE_STOCK")
+	}
 
 	client, tiktokConfig := mustGetTiktokClient(ctx, u.repositoryManager)
 
 	if tiktokConfig.AccessToken == nil {
 		panic("TIKTOK_CONFIG.ACCESS_TOKEN_EMPTY")
+	}
+
+	// images
+	uriImages := []gotiktok.UpdateProductRequestMainImage{}
+	for _, uri := range request.ImagesUri {
+		uriImages = append(uriImages, gotiktok.UpdateProductRequestMainImage{
+			Uri: uri,
+		})
+	}
+
+	// package dimension
+	var packageDimension *gotiktok.UpdateProductRequestPackageDimension = nil
+	if request.DimensionUnit != nil {
+		packageDimension = &gotiktok.UpdateProductRequestPackageDimension{
+			Height: fmt.Sprintf("%+v", *request.DimensionHeight),
+			Length: fmt.Sprintf("%+v", *request.DimensionLength),
+			Width:  fmt.Sprintf("%+v", *request.DimensionWidth),
+			Unit:   request.DimensionUnit.String(),
+		}
+	}
+
+	// size chart
+	var sizeChart *gotiktok.UpdateProductRequestSizeChart = nil
+	if request.SizeChartUri != nil {
+		sizeChart = &gotiktok.UpdateProductRequestSizeChart{
+			Image: &gotiktok.UpdateProductRequestSizeChartImage{
+				Uri: *request.SizeChartUri,
+			},
+		}
 	}
 
 	_, err = client.UpdateProduct(
@@ -642,18 +685,35 @@ func (u *tiktokProductUseCase) Update(ctx context.Context, request dto_request.T
 		},
 		tiktokProduct.TiktokProductId,
 		gotiktok.UpdateProductRequest{
-			Description:       request.Description,
-			CategoryId:        request.CategoryId,
-			BrandId:           request.BrandId,
-			MainImages:        mainImages,
-			Skus:              skus,
-			Title:             request.Title,
-			IsCodAllowed:      false,
-			Certifications:    nil,
-			PackageWeight:     gotiktok.UpdateProductRequestPackageWeight{},
-			ProductAttributes: []gotiktok.UpdateProductRequestProductAttribute{},
-			SizeChart:         &gotiktok.UpdateProductRequestSizeChart{},
-			PackageDimensions: []gotiktok.UpdateProductRequestPackageDimension{},
+			Description: request.Description,
+			CategoryId:  request.CategoryId,
+			BrandId:     request.BrandId,
+			MainImages:  uriImages,
+			Skus: []gotiktok.UpdateProductRequestSku{
+				{
+					Inventory: []gotiktok.UpdateProductRequestSkuInventory{
+						{
+							WarehouseId: tiktokConfig.WarehouseId,
+							Quantity:    int(product.ProductStock.Qty),
+						},
+					},
+					SellerSku: &product.Id,
+					Price: gotiktok.UpdateProductRequestSkuPrice{
+						Amount:   fmt.Sprintf("%+v", *product.Price),
+						Currency: "IDR",
+					},
+				},
+			},
+			Title:          request.Title,
+			IsCodAllowed:   false,
+			Certifications: nil,
+			PackageWeight: gotiktok.UpdateProductRequestPackageWeight{
+				Unit:  request.WeightUnit.String(),
+				Value: fmt.Sprintf("%+v", request.Weight),
+			},
+			ProductAttributes: request.Attributes,
+			SizeChart:         sizeChart,
+			PackageDimensions: packageDimension,
 			ExternalProductId: nil,
 			DeliveryOptionIds: nil,
 			Video:             nil,
@@ -661,8 +721,5 @@ func (u *tiktokProductUseCase) Update(ctx context.Context, request dto_request.T
 	)
 	panicIfErr(err)
 
-	// tiktokProduct.Status = data_type.TiktokProductStatusInActive
-	// panicIfErr(
-	// 	u.repositoryManager.TiktokProductRepository().Update(ctx, tiktokProduct),
-	// )
+	return *tiktokProduct
 }

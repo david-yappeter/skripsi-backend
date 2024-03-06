@@ -33,6 +33,10 @@ github.com/david-yappeter/go-tiktok v0.1.19 h1:gEJBZtK8MDL0nfvT3GdjAbBopjt+bCHSe
 github.com/david-yappeter/go-tiktok v0.1.19/go.mod h1:9LYJviEI1DdubuRxwLq9Tn1OJ69KN9N0nSYS1hOfOPk=
 github.com/david-yappeter/go-tiktok v0.1.20 h1:JvGIa2FKFvYTWFNFCSuOTf+Sk0P3/d2wT/l9tkaWweU=
 github.com/david-yappeter/go-tiktok v0.1.20/go.mod h1:9LYJviEI1DdubuRxwLq9Tn1OJ69KN9N0nSYS1hOfOPk=
+github.com/david-yappeter/go-tiktok v0.1.21 h1:72g/ku5TmlG0sNN0oN7SwXnGHtaFBHcxmSm6LCw0k+4=
+github.com/david-yappeter/go-tiktok v0.1.21/go.mod h1:9LYJviEI1DdubuRxwLq9Tn1OJ69KN9N0nSYS1hOfOPk=
+github.com/david-yappeter/go-tiktok v0.1.22 h1:tkjCvIoEml7v8JqnMrAFMp+ehrykjo7BBIyWZogD37c=
+github.com/david-yappeter/go-tiktok v0.1.22/go.mod h1:9LYJviEI1DdubuRxwLq9Tn1OJ69KN9N0nSYS1hOfOPk=
 github.com/dhui/dktest v0.3.16 h1:i6gq2YQEtcrjKbeJpBkWjE8MmLZPYllcjOFbTZuPDnw=
 github.com/docker/distribution v2.8.2+incompatible h1:T3de5rq0dB1j30rp0sA2rER+m322EBzniBPB6ZIzuh8=
 github.com/docker/docker v20.10.24+incompatible h1:Ugvxm7a8+Gz6vqQYQQ2W7GYq5EUPaAiuPgIfVyI3dYE=
