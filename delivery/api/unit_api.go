@@ -177,6 +177,41 @@ func (a *UnitApi) Delete() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/units/options/product-unit-form [post]
+//	@Summary	Option for product unit form
+//	@tags		Units
+//	@Accept		json
+//	@Param		dto_request.UnitOptionForProductUnitFormRequest	body	dto_request.UnitOptionForProductUnitFormRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.UnitResponse}}
+func (a *UnitApi) OptionForProductUnitForm() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionUnitOptionForProductUnitForm),
+		func(ctx apiContext) {
+			var request dto_request.UnitOptionForProductUnitFormRequest
+			ctx.mustBind(&request)
+
+			units, total := a.unitUseCase.OptionForProductUnitForm(ctx.context(), request)
+
+			nodes := util.ConvertArray(units, dto_response.NewUnitResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Total: total,
+						Nodes: nodes,
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterUnitApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := UnitApi{
 		api:         newApi(useCaseManager),
@@ -189,4 +224,7 @@ func RegisterUnitApi(router gin.IRouter, useCaseManager use_case.UseCaseManager)
 	routerGroup.GET("/:id", api.Get())
 	routerGroup.PUT("/:id", api.Update())
 	routerGroup.DELETE("/:id", api.Delete())
+
+	optionRouterGroup := routerGroup.Group("/options")
+	optionRouterGroup.POST("/product-unit-form", api.OptionForProductUnitForm())
 }

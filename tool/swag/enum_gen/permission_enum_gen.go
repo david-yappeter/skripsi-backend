@@ -116,6 +116,7 @@ func init() {
 				"UNIT_GET",
 				"UNIT_UPDATE",
 				"UNIT_DELETE",
+				"UNIT_OPTION_FOR_PRODUCT_UNIT_FORM",
 			},
 		},
 	}

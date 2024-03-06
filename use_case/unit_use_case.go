@@ -22,6 +22,9 @@ type UnitUseCase interface {
 
 	//  delete
 	Delete(ctx context.Context, request dto_request.UnitDeleteRequest)
+
+	// option
+	OptionForProductUnitForm(ctx context.Context, request dto_request.UnitOptionForProductUnitFormRequest) ([]model.Unit, int)
 }
 
 type unitUseCase struct {
@@ -115,4 +118,28 @@ func (u *unitUseCase) Delete(ctx context.Context, request dto_request.UnitDelete
 	panicIfErr(
 		u.repositoryManager.UnitRepository().Delete(ctx, &unit),
 	)
+}
+
+func (u *unitUseCase) OptionForProductUnitForm(ctx context.Context, request dto_request.UnitOptionForProductUnitFormRequest) ([]model.Unit, int) {
+	product := mustGetProduct(ctx, u.repositoryManager, request.ProductId, true)
+
+	queryOption := model.UnitQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts{
+				{Field: "name", Direction: "asc"},
+			},
+		),
+		ProductIdNotExist: &product.Id,
+		Phrase:            request.Phrase,
+	}
+
+	units, err := u.repositoryManager.UnitRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.UnitRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	return units, total
 }

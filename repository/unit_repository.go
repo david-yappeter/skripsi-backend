@@ -73,6 +73,16 @@ func (r *unitRepository) prepareQuery(option model.UnitQueryOption) squirrel.Sel
 		})
 	}
 
+	if option.ProductIdNotExist != nil {
+		stmt = stmt.Where(
+			stmtBuilder.Select("1").
+				From(fmt.Sprintf("%s pu", model.ProductUnitTableName)).
+				Where(squirrel.Eq{"pu.product_id": option.ProductIdNotExist}).
+				Where(squirrel.Expr("u.id = pu.unit_id")).
+				Prefix("NOT EXISTS (").Suffix(")"),
+		)
+	}
+
 	stmt = model.Prepare(stmt, &option)
 
 	return stmt

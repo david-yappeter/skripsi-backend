@@ -30,3 +30,9 @@ type UnitUpdateRequest struct {
 type UnitDeleteRequest struct {
 	UnitId string `json:"-" swaggerignore:"true"`
 } // @name UnitDeleteRequest
+
+type UnitOptionForProductUnitFormRequest struct {
+	PaginationRequest
+	ProductId string  `json:"product_id" validate:"required,not_empty,uuid"`
+	Phrase    *string `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name UnitOptionForProductUnitFormRequest
