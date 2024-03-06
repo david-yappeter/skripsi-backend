@@ -273,11 +273,6 @@ func NewRouter(container *manager.Container) *gin.Engine {
 	)
 
 	router.ForwardedByClientIP = false
-	if global.IsProduction() {
-		router.TrustedPlatform = "CloudFront-Viewer-Address"
-	} else {
-		router.TrustedPlatform = "X-GWS-IP"
-	}
 
 	registerMiddlewares(router, container)
 
