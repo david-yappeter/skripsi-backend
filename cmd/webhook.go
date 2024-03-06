@@ -1,3 +1,5 @@
+//go:build tools
+
 package cmd
 
 import (
