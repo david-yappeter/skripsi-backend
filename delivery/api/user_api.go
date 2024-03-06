@@ -5,6 +5,7 @@ import (
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
 	"myapp/use_case"
+	"myapp/util"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -47,6 +48,41 @@ func (a *UserApi) Create() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/users [post]
+//	@Summary	Fetch
+//	@tags		Users
+//	@Accept		json
+//	@Param		dto_request.UserFetchRequest	body	dto_request.UserFetchRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.UserResponse}}
+func (a *UserApi) Fetch() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionUserFetch),
+		func(ctx apiContext) {
+			var request dto_request.UserFetchRequest
+			ctx.mustBind(&request)
+
+			users, total := a.userUseCase.Fetch(ctx.context(), request)
+
+			nodes := util.ConvertArray(users, dto_response.NewUserResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Nodes: nodes,
+						Total: total,
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/users/me [post]
 //	@Summary	Get Me
 //	@tags		Users
@@ -65,6 +101,37 @@ func (a *UserApi) GetMe() gin.HandlerFunc {
 				dto_response.Response{
 					Data: dto_response.DataResponse{
 						"user": dto_response.NewUserMeResponse(user),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/users/{id} [get]
+//	@Summary	Get
+//	@tags		Users
+//	@Accept		json
+//	@Param		id	path	string	true	"User Id"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{user=dto_response.UserResponse}}
+func (a *UserApi) Get() gin.HandlerFunc {
+	return a.Authorize(
+		nil,
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.UserGetRequest
+			request.UserId = id
+
+			user := a.userUseCase.Get(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"user": dto_response.NewUserResponse(user),
 					},
 				},
 			)
@@ -279,7 +346,9 @@ func RegisterUserApi(router gin.IRouter, useCaseManager use_case.UseCaseManager)
 
 	routerGroup := router.Group("/users")
 	routerGroup.POST("", api.Create())
+	routerGroup.POST("/filter", api.Fetch())
 	routerGroup.POST("/me", api.GetMe())
+	routerGroup.GET("/:id", api.Get())
 	routerGroup.PUT("/:id", api.Update())
 	routerGroup.PATCH("/:id", api.UpdatePassword())
 	routerGroup.PATCH("/:id/active", api.UpdateActive())

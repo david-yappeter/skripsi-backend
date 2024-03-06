@@ -69,20 +69,27 @@ func (r *userRepository) prepareQuery(option model.UserQueryOption) squirrel.Sel
 	stmt := stmtBuilder.Select().
 		From(fmt.Sprintf("%s u", model.UserTableName))
 
-	andStatements := squirrel.And{}
-
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
-		andStatements = append(
-			andStatements,
-			squirrel.Or{
-				squirrel.ILike{"u.name": phrase},
-				squirrel.ILike{"u.username": phrase},
-			},
-		)
+		stmt = stmt.Where(squirrel.Or{
+			squirrel.ILike{"u.name": phrase},
+			squirrel.ILike{"u.username": phrase},
+		})
 	}
 
-	stmt = stmt.Where(andStatements)
+	if option.IsActive != nil {
+		stmt = stmt.Where(squirrel.Eq{"is_active": option.IsActive})
+	}
+
+	if len(option.RoleIds) > 0 {
+		stmt = stmt.Where(
+			stmtBuilder.Select("1").
+				From(fmt.Sprintf("%s ur", model.UserRoleTableName)).
+				Where("u.id = ur.user_id").
+				Where(squirrel.Eq{"ur.role_id": option.RoleIds}).
+				Prefix("EXISTS (").Suffix(")"),
+		)
+	}
 
 	stmt = model.Prepare(stmt, &option)
 

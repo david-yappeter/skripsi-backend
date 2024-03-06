@@ -312,7 +312,7 @@ func (a *ProductReceiveApi) Delete() gin.HandlerFunc {
 //	@tags		Product Receives
 //	@Accept		json
 //	@Param		id											path	string										true	"Id"
-//	@Param		product_receive_item_id								path	string										true	"Product Receive Item Id"
+//	@Param		product_receive_item_id						path	string										true	"Product Receive Item Id"
 //	@Param		dto_request.ProductReceiveDeleteItemRequest	body	dto_request.ProductReceiveDeleteItemRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_receive=dto_response.ProductReceiveResponse}}

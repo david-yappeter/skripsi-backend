@@ -64,6 +64,8 @@ func GetRoleSuperPermissions() []Permission {
 
 		// user
 		PermissionUserCreate,
+		PermissionUserFetch,
+		PermissionUserGet,
 		PermissionUserUpdate,
 		PermissionUserUpdatePassword,
 		PermissionUserUpdateActive,

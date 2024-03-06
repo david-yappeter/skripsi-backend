@@ -23,6 +23,10 @@ type UserUseCase interface {
 	Create(ctx context.Context, request dto_request.UserCreateRequest) model.User
 	AddRole(ctx context.Context, request dto_request.UserAddRoleRequest) model.User
 
+	// read
+	Fetch(ctx context.Context, request dto_request.UserFetchRequest) ([]model.User, int)
+	Get(ctx context.Context, request dto_request.UserGetRequest) model.User
+
 	//  update
 	Update(ctx context.Context, request dto_request.UserUpdateRequest) model.User
 	UpdatePassword(ctx context.Context, request dto_request.UserUpdatePasswordRequest) model.User
@@ -128,6 +132,39 @@ func (u *userUseCase) AddRole(ctx context.Context, request dto_request.UserAddRo
 	panicIfErr(
 		u.repositoryManager.UserRoleRepository().InsertMany(ctx, []model.UserRole{*userRole}),
 	)
+
+	u.mustLoadUsersData(ctx, []*model.User{&user}, userLoaderParams{
+		userRoles: true,
+	})
+
+	return user
+}
+
+func (u *userUseCase) Fetch(ctx context.Context, request dto_request.UserFetchRequest) ([]model.User, int) {
+	queryOption := model.UserQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts(request.Sorts),
+		),
+		Phrase: request.Phrase,
+	}
+
+	users, err := u.repositoryManager.UserRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.UserRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	u.mustLoadUsersData(ctx, util.SliceValueToSlicePointer(users), userLoaderParams{
+		userRoles: true,
+	})
+
+	return users, total
+}
+
+func (u *userUseCase) Get(ctx context.Context, request dto_request.UserGetRequest) model.User {
+	user := mustGetUser(ctx, u.repositoryManager, request.UserId, false)
 
 	u.mustLoadUsersData(ctx, []*model.User{&user}, userLoaderParams{
 		userRoles: true,

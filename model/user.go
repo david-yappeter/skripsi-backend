@@ -38,7 +38,9 @@ func (m *User) ToMap() map[string]interface{} {
 type UserQueryOption struct {
 	QueryOption
 
-	Phrase *string
+	Phrase   *string
+	IsActive *bool
+	RoleIds  []string
 }
 
 var _ PrepareOption = &UserQueryOption{}

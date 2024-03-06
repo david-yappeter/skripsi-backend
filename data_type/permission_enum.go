@@ -127,6 +127,8 @@ const (
 
 	// user
 	PermissionUserCreate         // USER_CREATE
+	PermissionUserFetch          // USER_FETCH
+	PermissionUserGet            // USER_GET
 	PermissionUserUpdate         // USER_UPDATE
 	PermissionUserUpdatePassword // USER_UPDATE_PASSWORD
 	PermissionUserUpdateActive   // USER_UPDATE_ACTIVE
