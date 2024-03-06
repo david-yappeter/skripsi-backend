@@ -13,7 +13,8 @@ type ProductResponse struct {
 	IsActive    bool     `json:"is_active"`
 	Timestamp
 
-	Stock *ProductStockResponse `json:"stock"`
+	ProductUnits []ProductUnitResponse `json:"product_units"`
+	Stock        *ProductStockResponse `json:"stock" extensions:"x-nulalble"`
 } // @name ProductResponse
 
 func NewProductResponse(product model.Product) ProductResponse {
@@ -24,6 +25,10 @@ func NewProductResponse(product model.Product) ProductResponse {
 		Price:       product.Price,
 		IsActive:    product.IsActive,
 		Timestamp:   Timestamp(product.Timestamp),
+	}
+
+	for _, productUnit := range product.ProductUnits {
+		r.ProductUnits = append(r.ProductUnits, NewProductUnitResponse(productUnit))
 	}
 
 	if product.ProductStock != nil {

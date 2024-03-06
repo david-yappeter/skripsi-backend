@@ -13,6 +13,7 @@ type Product struct {
 
 	ProductStock  *ProductStock  `db:"-"`
 	TiktokProduct *TiktokProduct `db:"-"`
+	ProductUnits  []ProductUnit  `db:"-"`
 }
 
 func (m *Product) TableName() string {

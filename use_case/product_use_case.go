@@ -21,6 +21,7 @@ import (
 type productLoaderParams struct {
 	productStock  bool
 	tiktokProduct bool
+	productUnits  bool
 }
 
 type ProductUseCase interface {
@@ -84,6 +85,7 @@ func (u *productUseCase) mustValidateAllowDeleteProduct(ctx context.Context, pro
 func (u *productUseCase) mustLoadProductDatas(ctx context.Context, products []*model.Product, option productLoaderParams) {
 	productStockLoader := loader.NewProductStockLoader(u.repositoryManager.ProductStockRepository())
 	tiktokProductLoader := loader.NewTiktokProductLoader(u.repositoryManager.TiktokProductRepository())
+	productUnitsLoader := loader.NewProductUnitsLoader(u.repositoryManager.ProductUnitRepository())
 
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
@@ -94,6 +96,10 @@ func (u *productUseCase) mustLoadProductDatas(ctx context.Context, products []*m
 
 				if option.tiktokProduct {
 					group.Go(tiktokProductLoader.ProductFn(products[i]))
+				}
+
+				if option.productUnits {
+					group.Go(productUnitsLoader.ProductFn(products[i]))
 				}
 			}
 		}),
@@ -196,6 +202,7 @@ func (u *productUseCase) Get(ctx context.Context, request dto_request.ProductGet
 	u.mustLoadProductDatas(ctx, []*model.Product{&product}, productLoaderParams{
 		productStock:  true,
 		tiktokProduct: true,
+		productUnits:  true,
 	})
 
 	return product
