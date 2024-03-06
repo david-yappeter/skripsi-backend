@@ -227,6 +227,8 @@ func registerRoutes(router gin.IRouter, useCaseManager use_case.UseCaseManager) 
 	RegisterUserApi(router, useCaseManager)
 
 	RegisterAuthApi(router, useCaseManager)
+
+	RegisterWebhookApi(router, useCaseManager)
 }
 
 func NewRouter(container *manager.Container) *gin.Engine {
