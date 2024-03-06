@@ -14,7 +14,7 @@ func init() {
 }
 
 func newWebhookCommand() *cobra.Command {
-	cmd := cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "webhook",
 		Short: "Start the webhook http server",
 		Run: func(_ *cobra.Command, _ []string) {
@@ -35,5 +35,5 @@ func newWebhookCommand() *cobra.Command {
 		},
 	}
 
-	return &cmd
+	return cmd
 }
