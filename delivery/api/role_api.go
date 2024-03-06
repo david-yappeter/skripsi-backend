@@ -56,5 +56,7 @@ func RegisterRoleApi(router gin.IRouter, useCaseManager use_case.UseCaseManager)
 	}
 
 	routerGroup := router.Group("/roles")
-	routerGroup.POST("/options/user-form", api.OptionForUserForm())
+
+	optionRouterGroup := routerGroup.Group("/options")
+	optionRouterGroup.POST("/user-form", api.OptionForUserForm())
 }
