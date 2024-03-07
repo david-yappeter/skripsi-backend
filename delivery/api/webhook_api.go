@@ -2,7 +2,7 @@ package api
 
 import (
 	"fmt"
-	"io/ioutil"
+	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
 	"myapp/use_case"
 	"net/http"
@@ -18,13 +18,10 @@ type WebhookApi struct {
 func (a *WebhookApi) Webhook() gin.HandlerFunc {
 	return a.Guest(
 		func(ctx apiContext) {
+			var request dto_request.TiktokWebhookBaseRequest[dto_request.WebhookOrderStatusChangeRequest]
+			ctx.mustBind(&request)
 
-			reqBody, err := ioutil.ReadAll(ctx.ginCtx.Request.Body)
-			if err != nil {
-				panic(err)
-			}
-
-			fmt.Printf("AAAA \n%+v\n\n", string(reqBody))
+			fmt.Printf("AAAA \n%+v\n\n", request)
 
 			ctx.json(
 				http.StatusOK,
