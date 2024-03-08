@@ -67,18 +67,18 @@ func (r *productProductUnitRepository) get(ctx context.Context, stmt squirrel.Sq
 
 func (r *productProductUnitRepository) prepareQuery(option model.ProductUnitQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s u", model.ProductUnitTableName))
+		From(fmt.Sprintf("%s pu", model.ProductUnitTableName))
 
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
 		stmt = stmt.Where(squirrel.Or{
-			squirrel.ILike{"u.name": phrase},
+			squirrel.ILike{"pu.name": phrase},
 		})
 	}
 
 	if len(option.ExcludeIds) > 0 {
 		stmt = stmt.Where(squirrel.NotEq{
-			"id": option.ExcludeIds,
+			"pu.id": option.ExcludeIds,
 		})
 	}
 

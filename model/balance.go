@@ -43,7 +43,7 @@ var _ PrepareOption = &BalanceQueryOption{}
 
 func (o *BalanceQueryOption) SetDefaultFields() {
 	if len(o.Fields) == 0 {
-		o.Fields = []string{"u.*"}
+		o.Fields = []string{"b.*"}
 	}
 }
 

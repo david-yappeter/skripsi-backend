@@ -69,7 +69,7 @@ func (r *deliveryOrderItemCostRepository) prepareQuery(option model.DeliveryOrde
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
 		stmt = stmt.Where(squirrel.Or{
-			squirrel.ILike{"u.name": phrase},
+			squirrel.ILike{"doic.name": phrase},
 		})
 	}
 

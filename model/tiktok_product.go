@@ -58,7 +58,7 @@ var _ PrepareOption = &TiktokProductQueryOption{}
 
 func (o *TiktokProductQueryOption) SetDefaultFields() {
 	if len(o.Fields) == 0 {
-		o.Fields = []string{"u.*"}
+		o.Fields = []string{"tp.*"}
 	}
 }
 

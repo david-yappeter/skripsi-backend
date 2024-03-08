@@ -45,7 +45,7 @@ var _ PrepareOption = &CustomerQueryOption{}
 
 func (o *CustomerQueryOption) SetDefaultFields() {
 	if len(o.Fields) == 0 {
-		o.Fields = []string{"u.*"}
+		o.Fields = []string{"c.*"}
 	}
 }
 

@@ -67,21 +67,14 @@ func (r *productStockRepository) get(ctx context.Context, stmt squirrel.Sqlizer)
 
 func (r *productStockRepository) prepareQuery(option model.ProductStockQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s u", model.ProductStockTableName))
-
-	andStatements := squirrel.And{}
+		From(fmt.Sprintf("%s ps", model.ProductStockTableName))
 
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
-		andStatements = append(
-			andStatements,
-			squirrel.Or{
-				squirrel.ILike{"u.name": phrase},
-			},
-		)
+		stmt = stmt.Where(squirrel.Or{
+			squirrel.ILike{"ps.name": phrase},
+		})
 	}
-
-	stmt = stmt.Where(andStatements)
 
 	stmt = model.Prepare(stmt, &option)
 

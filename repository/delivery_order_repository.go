@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"myapp/data_type"
 	"myapp/infrastructure"
 	"myapp/model"
@@ -63,18 +64,18 @@ func (r *deliveryOrderRepository) get(ctx context.Context, stmt squirrel.Sqlizer
 
 func (r *deliveryOrderRepository) prepareQuery(option model.DeliveryOrderQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(model.DeliveryOrderTableName)
+		From(fmt.Sprintf("%s do", model.DeliveryOrderTableName))
 
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
 		stmt = stmt.Where(squirrel.Or{
-			squirrel.ILike{"name": phrase},
+			squirrel.ILike{"do.name": phrase},
 		})
 	}
 
 	if option.CustomerId != nil {
 		stmt = stmt.Where(squirrel.Eq{
-			"customer_id": option.CustomerId,
+			"do.customer_id": option.CustomerId,
 		})
 	}
 

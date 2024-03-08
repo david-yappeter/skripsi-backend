@@ -63,21 +63,14 @@ func (r *balanceRepository) get(ctx context.Context, stmt squirrel.Sqlizer) (*mo
 
 func (r *balanceRepository) prepareQuery(option model.BalanceQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s u", model.BalanceTableName))
-
-	andStatements := squirrel.And{}
+		From(fmt.Sprintf("%s b", model.BalanceTableName))
 
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
-		andStatements = append(
-			andStatements,
-			squirrel.Or{
-				squirrel.ILike{"u.name": phrase},
-			},
-		)
+		stmt = stmt.Where(squirrel.Or{
+			squirrel.ILike{"b.name": phrase},
+		})
 	}
-
-	stmt = stmt.Where(andStatements)
 
 	stmt = model.Prepare(stmt, &option)
 

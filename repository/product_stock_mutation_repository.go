@@ -67,12 +67,12 @@ func (r *productStockMutationRepository) get(ctx context.Context, stmt squirrel.
 
 func (r *productStockMutationRepository) prepareQuery(option model.ProductStockMutationQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s u", model.ProductStockMutationTableName))
+		From(fmt.Sprintf("%s psm", model.ProductStockMutationTableName))
 
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
 		stmt = stmt.Where(squirrel.Or{
-			squirrel.ILike{"u.name": phrase},
+			squirrel.ILike{"psm.name": phrase},
 		})
 	}
 

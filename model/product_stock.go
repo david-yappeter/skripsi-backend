@@ -39,7 +39,7 @@ var _ PrepareOption = &ProductStockQueryOption{}
 
 func (o *ProductStockQueryOption) SetDefaultFields() {
 	if len(o.Fields) == 0 {
-		o.Fields = []string{"u.*"}
+		o.Fields = []string{"ps.*"}
 	}
 }
 

@@ -42,7 +42,7 @@ var _ PrepareOption = &CartItemQueryOption{}
 
 func (o *CartItemQueryOption) SetDefaultFields() {
 	if len(o.Fields) == 0 {
-		o.Fields = []string{"u.*"}
+		o.Fields = []string{"ci.*"}
 	}
 }
 

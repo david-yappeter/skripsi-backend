@@ -54,7 +54,7 @@ var _ PrepareOption = &SupplierQueryOption{}
 
 func (o *SupplierQueryOption) SetDefaultFields() {
 	if len(o.Fields) == 0 {
-		o.Fields = []string{"u.*"}
+		o.Fields = []string{"s.*"}
 	}
 }
 

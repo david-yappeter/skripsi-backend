@@ -51,7 +51,7 @@ var _ PrepareOption = &ProductReceiveQueryOption{}
 
 func (o *ProductReceiveQueryOption) SetDefaultFields() {
 	if len(o.Fields) == 0 {
-		o.Fields = []string{"u.*"}
+		o.Fields = []string{"pr.*"}
 	}
 }
 

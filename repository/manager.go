@@ -41,6 +41,8 @@ type RepositoryManager interface {
 	ProductUnitRepository() ProductUnitRepository
 	RolePermissionRepository() RolePermissionRepository
 	RoleRepository() RoleRepository
+	ShopOrderRepository() ShopOrderRepository
+	ShopOrderItemRepository() ShopOrderItemRepository
 	SupplierRepository() SupplierRepository
 	SupplierTypeRepository() SupplierTypeRepository
 	TiktokConfigRepository() TiktokConfigRepository
@@ -84,6 +86,8 @@ type repositoryManager struct {
 	productUnitRepository           ProductUnitRepository
 	rolePermissionRepository        RolePermissionRepository
 	roleRepository                  RoleRepository
+	shopOrderRepository             ShopOrderRepository
+	shopOrderItemRepository         ShopOrderItemRepository
 	supplierRepository              SupplierRepository
 	supplierTypeRepository          SupplierTypeRepository
 	tiktokConfigRepository          TiktokConfigRepository
@@ -227,6 +231,14 @@ func (r *repositoryManager) RolePermissionRepository() RolePermissionRepository 
 
 func (r *repositoryManager) RoleRepository() RoleRepository {
 	return r.roleRepository
+}
+
+func (r *repositoryManager) ShopOrderRepository() ShopOrderRepository {
+	return r.shopOrderRepository
+}
+
+func (r *repositoryManager) ShopOrderItemRepository() ShopOrderItemRepository {
+	return r.shopOrderItemRepository
 }
 
 func (r *repositoryManager) SupplierRepository() SupplierRepository {
@@ -381,6 +393,14 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		roleRepository: NewRoleRepository(
+			db,
+			loggerStack,
+		),
+		shopOrderRepository: NewShopOrderRepository(
+			db,
+			loggerStack,
+		),
+		shopOrderItemRepository: NewShopOrderItemRepository(
 			db,
 			loggerStack,
 		),

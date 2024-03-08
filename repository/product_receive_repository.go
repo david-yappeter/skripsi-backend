@@ -63,21 +63,14 @@ func (r *productReceiveRepository) get(ctx context.Context, stmt squirrel.Sqlize
 
 func (r *productReceiveRepository) prepareQuery(option model.ProductReceiveQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s u", model.ProductReceiveTableName))
-
-	andStatements := squirrel.And{}
+		From(fmt.Sprintf("%s pr", model.ProductReceiveTableName))
 
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
-		andStatements = append(
-			andStatements,
-			squirrel.Or{
-				squirrel.ILike{"u.name": phrase},
-			},
-		)
+		stmt = stmt.Where(squirrel.Or{
+			squirrel.ILike{"pr.name": phrase},
+		})
 	}
-
-	stmt = stmt.Where(andStatements)
 
 	stmt = model.Prepare(stmt, &option)
 

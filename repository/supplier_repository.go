@@ -65,33 +65,26 @@ func (r *supplierRepository) get(ctx context.Context, stmt squirrel.Sqlizer) (*m
 
 func (r *supplierRepository) prepareQuery(option model.SupplierQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s u", model.SupplierTableName))
-
-	andStatements := squirrel.And{}
+		From(fmt.Sprintf("%s s", model.SupplierTableName))
 
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
-		andStatements = append(
-			andStatements,
-			squirrel.Or{
-				squirrel.ILike{"u.name": phrase},
-			},
-		)
+		stmt = stmt.Where(squirrel.Or{
+			squirrel.ILike{"s.name": phrase},
+		})
 	}
 
 	if option.IsActive != nil {
 		stmt = stmt.Where(
-			squirrel.Eq{"is_active": option.IsActive},
+			squirrel.Eq{"s.is_active": option.IsActive},
 		)
 	}
 
 	if len(option.SupplierTypeIds) > 0 {
 		stmt = stmt.Where(
-			squirrel.Eq{"supplier_type_id": option.SupplierTypeIds},
+			squirrel.Eq{"s.supplier_type_id": option.SupplierTypeIds},
 		)
 	}
-
-	stmt = stmt.Where(andStatements)
 
 	stmt = model.Prepare(stmt, &option)
 

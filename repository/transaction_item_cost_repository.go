@@ -63,12 +63,12 @@ func (r *transactionItemCostRepository) get(ctx context.Context, stmt squirrel.S
 
 func (r *transactionItemCostRepository) prepareQuery(option model.TransactionItemCostQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s u", model.TransactionItemCostTableName))
+		From(fmt.Sprintf("%s tic", model.TransactionItemCostTableName))
 
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
 		stmt = stmt.Where(squirrel.Or{
-			squirrel.ILike{"u.name": phrase},
+			squirrel.ILike{"tic.name": phrase},
 		})
 	}
 

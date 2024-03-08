@@ -66,12 +66,12 @@ func (r *tiktokProductRepository) get(ctx context.Context, stmt squirrel.Sqlizer
 
 func (r *tiktokProductRepository) prepareQuery(option model.TiktokProductQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s u", model.TiktokProductTableName))
+		From(fmt.Sprintf("%s tp", model.TiktokProductTableName))
 
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
 		stmt = stmt.Where(squirrel.Or{
-			squirrel.ILike{"u.name": phrase},
+			squirrel.ILike{"tp.name": phrase},
 		})
 	}
 

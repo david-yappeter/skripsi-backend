@@ -64,12 +64,12 @@ func (r *cashierSessionRepository) get(ctx context.Context, stmt squirrel.Sqlize
 
 func (r *cashierSessionRepository) prepareQuery(option model.CashierSessionQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s u", model.CashierSessionTableName))
+		From(fmt.Sprintf("%s cs", model.CashierSessionTableName))
 
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
 		stmt = stmt.Where(squirrel.Or{
-			squirrel.ILike{"u.name": phrase},
+			squirrel.ILike{"cs.name": phrase},
 		})
 	}
 

@@ -64,12 +64,12 @@ func (r *cartRepository) get(ctx context.Context, stmt squirrel.Sqlizer) (*model
 
 func (r *cartRepository) prepareQuery(option model.CartQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s u", model.CartTableName))
+		From(fmt.Sprintf("%s c", model.CartTableName))
 
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
 		stmt = stmt.Where(squirrel.Or{
-			squirrel.ILike{"u.name": phrase},
+			squirrel.ILike{"c.name": phrase},
 		})
 	}
 

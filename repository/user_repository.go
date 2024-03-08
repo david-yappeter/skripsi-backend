@@ -78,7 +78,7 @@ func (r *userRepository) prepareQuery(option model.UserQueryOption) squirrel.Sel
 	}
 
 	if option.IsActive != nil {
-		stmt = stmt.Where(squirrel.Eq{"is_active": option.IsActive})
+		stmt = stmt.Where(squirrel.Eq{"u.is_active": option.IsActive})
 	}
 
 	if len(option.RoleIds) > 0 {
