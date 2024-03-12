@@ -3,7 +3,16 @@ package util
 import (
 	"fmt"
 	"math"
+	"strconv"
 )
+
+func MustParseFloat64(s string) float64 {
+	v, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		panic(err)
+	}
+	return v
+}
 
 func Float64P(i float64) *float64 {
 	return &i

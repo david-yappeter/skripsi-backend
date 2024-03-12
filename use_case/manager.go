@@ -28,6 +28,7 @@ type UseCaseManager interface {
 	TransactionUseCase() TransactionUseCase
 	UnitUseCase() UnitUseCase
 	UserUseCase() UserUseCase
+	WebhookUseCase() WebhookUseCase
 }
 
 type useCaseManager struct {
@@ -51,6 +52,7 @@ type useCaseManager struct {
 	transactionUseCase    TransactionUseCase
 	unitUseCase           UnitUseCase
 	userUseCase           UserUseCase
+	webhookUseCase        WebhookUseCase
 }
 
 func (u *useCaseManager) AuthUseCase() AuthUseCase {
@@ -133,6 +135,10 @@ func (u *useCaseManager) UserUseCase() UserUseCase {
 	return u.userUseCase
 }
 
+func (u *useCaseManager) WebhookUseCase() WebhookUseCase {
+	return u.webhookUseCase
+}
+
 func NewUseCaseManager(
 	repositoryManager repository.RepositoryManager,
 	filesystemManager filesystemInternal.FilesystemManager,
@@ -207,6 +213,9 @@ func NewUseCaseManager(
 			repositoryManager,
 		),
 		userUseCase: NewUserUseCase(
+			repositoryManager,
+		),
+		webhookUseCase: NewWebhookUseCase(
 			repositoryManager,
 		),
 	}

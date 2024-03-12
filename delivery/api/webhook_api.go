@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
 	"myapp/use_case"
@@ -12,7 +11,7 @@ import (
 
 type WebhookApi struct {
 	api
-	authUseCase use_case.AuthUseCase
+	webhookUseCase use_case.WebhookUseCase
 }
 
 func (a *WebhookApi) Webhook() gin.HandlerFunc {
@@ -21,7 +20,7 @@ func (a *WebhookApi) Webhook() gin.HandlerFunc {
 			var request dto_request.TiktokWebhookBaseRequest[dto_request.WebhookOrderStatusChangeRequest]
 			ctx.mustBind(&request)
 
-			fmt.Printf("AAAA \n%+v\n\n", request)
+			a.webhookUseCase.OrderStatusChange(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -35,8 +34,8 @@ func (a *WebhookApi) Webhook() gin.HandlerFunc {
 
 func RegisterWebhookApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := WebhookApi{
-		api:         newApi(useCaseManager),
-		authUseCase: useCaseManager.AuthUseCase(),
+		api:            newApi(useCaseManager),
+		webhookUseCase: useCaseManager.WebhookUseCase(),
 	}
 
 	router.POST("/webhook", api.Webhook())

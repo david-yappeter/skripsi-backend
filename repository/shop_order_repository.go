@@ -19,6 +19,7 @@ type ShopOrderRepository interface {
 	Count(ctx context.Context, options ...model.ShopOrderQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.ShopOrderQueryOption) ([]model.ShopOrder, error)
 	Get(ctx context.Context, id string) (*model.ShopOrder, error)
+	GetByPlatformTypeAndPlatformIdentifierId(ctx context.Context, platformType data_type.ShopOrderPlatformType, platformIdentifier string) (*model.ShopOrder, error)
 
 	// update
 	Update(ctx context.Context, shopOrder *model.ShopOrder) error
@@ -117,6 +118,15 @@ func (r *shopOrderRepository) Get(ctx context.Context, id string) (*model.ShopOr
 	stmt := stmtBuilder.Select("*").
 		From(model.ShopOrderTableName).
 		Where(squirrel.Eq{"id": id})
+
+	return r.get(ctx, stmt)
+}
+
+func (r *shopOrderRepository) GetByPlatformTypeAndPlatformIdentifierId(ctx context.Context, platformType data_type.ShopOrderPlatformType, platformIdentifier string) (*model.ShopOrder, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.ShopOrderTableName).
+		Where(squirrel.Eq{"platform_type": platformType}).
+		Where(squirrel.Eq{"platform_identifier": platformIdentifier})
 
 	return r.get(ctx, stmt)
 }

@@ -59,3 +59,16 @@ func AppendIfNotNil[T any](arr []T, v *T) []T {
 
 	return arr
 }
+
+func ExistInArray[T comparable](arr []T, v T) bool {
+	isExist := false
+
+	for i := range arr {
+		if arr[i] == v {
+			isExist = true
+			break
+		}
+	}
+
+	return isExist
+}

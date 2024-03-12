@@ -7,6 +7,7 @@ type ShopOrderItem struct {
 	ShopOrderId       string  `db:"shop_order_id"`
 	ProductUnitId     string  `db:"product_unit_id"`
 	PlatformProductId string  `db:"platform_product_id"`
+	ImageLink         *string `db:"image_link"`
 	Quantity          float64 `db:"quantity"`
 	OriginalPrice     float64 `db:"original_price"`
 	SalePrice         float64 `db:"sale_price"`
@@ -28,6 +29,7 @@ func (m *ShopOrderItem) ToMap() map[string]interface{} {
 		"shop_order_id":       m.ShopOrderId,
 		"product_unit_id":     m.ProductUnitId,
 		"platform_product_id": m.PlatformProductId,
+		"image_link":          m.ImageLink,
 		"quantity":            m.Quantity,
 		"original_price":      m.OriginalPrice,
 		"sale_price":          m.SalePrice,

@@ -10,6 +10,7 @@ func init() {
 				product_unit_id char(36) NOT NULL,
 				tracking_number varchar(255) NOT NULL,
 				platform_product_id varchar(255) NOT NULL,
+				image_link varchar(255) NULL,
 				quantity decimal(16,2) NOT NULL,
 				original_price decimal(16,2) NOT NULL,
 				sale_price decimal(16,2) NOT NULL,

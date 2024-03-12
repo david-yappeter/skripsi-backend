@@ -8,6 +8,7 @@ import (
 	validatorInternal "myapp/internal/gin/validator"
 	"myapp/model"
 	"myapp/repository"
+	"sync"
 )
 
 const (
@@ -24,6 +25,8 @@ const (
 )
 
 var (
+	webhookMutexes = make(map[string]*sync.Mutex, 0)
+
 	Validator validatorInternal.Validator = validatorInternal.New()
 
 	extensions = map[string][]string{
@@ -326,4 +329,17 @@ func shouldGetProductStockByProductId(ctx context.Context, repositoryManager rep
 	productStock, err := repositoryManager.ProductStockRepository().GetByProductId(ctx, productId)
 	panicIfErr(err, constant.ErrNoData)
 	return productStock
+}
+
+func execWebhookMutex(fn func()) {
+	m, exist := webhookMutexes["single"]
+	if !exist {
+		m = new(sync.Mutex)
+		webhookMutexes["single"] = m
+	}
+
+	m.Lock()
+	defer m.Unlock()
+
+	fn()
 }
