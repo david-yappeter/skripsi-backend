@@ -15,7 +15,7 @@ type ShopOrder struct {
 	RecipientPhoneNumber      string                            `db:"recipient_phone_number"`
 	ShippingFee               float64                           `db:"shipping_fee"`
 	TotalOriginalProductPrice float64                           `db:"total_original_product_price"`
-	SubTotal                  float64                           `db:"sub_total"`
+	Subtotal                  float64                           `db:"subtotal"`
 	Tax                       float64                           `db:"tax"`
 	TotalAmount               float64                           `db:"total_amount"`
 
@@ -42,7 +42,7 @@ func (m *ShopOrder) ToMap() map[string]interface{} {
 		"recipient_phone_number":       m.RecipientPhoneNumber,
 		"shipping_fee":                 m.ShippingFee,
 		"total_original_product_price": m.TotalOriginalProductPrice,
-		"sub_total":                    m.SubTotal,
+		"subtotal":                     m.Subtotal,
 		"tax":                          m.Tax,
 		"total_amount":                 m.TotalAmount,
 		"created_at":                   m.CreatedAt,
