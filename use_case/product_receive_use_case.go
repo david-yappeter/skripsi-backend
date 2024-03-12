@@ -138,6 +138,8 @@ func (u *productReceiveUseCase) Create(ctx context.Context, request dto_request.
 		currentDate = util.CurrentDate()
 	)
 
+	mustGetSupplier(ctx, u.repositoryManager, request.SupplierId, true)
+
 	productReceive := model.ProductReceive{
 		Id:            util.NewUuid(),
 		SupplierId:    request.SupplierId,

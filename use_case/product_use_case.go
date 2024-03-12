@@ -118,6 +118,13 @@ func (u *productUseCase) Create(ctx context.Context, request dto_request.Product
 		IsActive:    false,
 	}
 
+	// product stock
+	productStock := model.ProductStock{
+		Id:        util.NewUuid(),
+		ProductId: product.Id,
+		Qty:       0,
+	}
+
 	// upload image file
 	imageFile := model.File{
 		Id:   util.NewUuid(),
@@ -141,12 +148,17 @@ func (u *productUseCase) Create(ctx context.Context, request dto_request.Product
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
 			fileRepository := u.repositoryManager.FileRepository()
 			productRepository := u.repositoryManager.ProductRepository()
+			productStockRepository := u.repositoryManager.ProductStockRepository()
 
 			if err := fileRepository.Insert(ctx, &imageFile); err != nil {
 				return err
 			}
 
 			if err := productRepository.Insert(ctx, &product); err != nil {
+				return err
+			}
+
+			if err := productStockRepository.Insert(ctx, &productStock); err != nil {
 				return err
 			}
 
@@ -292,6 +304,7 @@ func (u *productUseCase) Update(ctx context.Context, request dto_request.Product
 
 	u.mustLoadProductDatas(ctx, []*model.Product{&product}, productLoaderParams{
 		productStock: true,
+		productUnits: true,
 	})
 
 	return product
