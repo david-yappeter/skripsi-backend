@@ -285,6 +285,7 @@ func RegisterProductApi(router gin.IRouter, useCaseManager use_case.UseCaseManag
 
 	routerGroup := router.Group("/products")
 	routerGroup.POST("", api.Create())
+	routerGroup.POST("/upload", api.Upload())
 	routerGroup.POST("/filter", api.Fetch())
 	routerGroup.GET("/:id", api.Get())
 	routerGroup.PUT("/:id", api.Update())
