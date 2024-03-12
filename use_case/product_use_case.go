@@ -211,6 +211,12 @@ func (u *productUseCase) Get(ctx context.Context, request dto_request.ProductGet
 func (u *productUseCase) Update(ctx context.Context, request dto_request.ProductUpdateRequest) model.Product {
 	product := mustGetProduct(ctx, u.repositoryManager, request.ProductId, true)
 	tiktokProduct := shouldGetTiktokProductByProductId(ctx, u.repositoryManager, product.Id)
+	isProductUnitsExist, err := u.repositoryManager.ProductUnitRepository().IsExistByProductId(ctx, product.Id)
+	panicIfErr(err)
+
+	if request.IsActive && isProductUnitsExist {
+		panic(dto_response.NewBadRequestErrorResponse("ACTIVE_PRODUCT.MUST_HAVE_AN_UNIT"))
+	}
 
 	if product.Name != request.Name {
 		u.mustValidateNameNotDuplicate(ctx, request.Name)

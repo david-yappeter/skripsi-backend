@@ -23,6 +23,7 @@ type ProductUnitRepository interface {
 	Get(ctx context.Context, id string) (*model.ProductUnit, error)
 	GetByProductIdAndUnitId(ctx context.Context, productId string, unitId string) (*model.ProductUnit, error)
 	GetBaseProductUnitByProductId(ctx context.Context, productId string) (*model.ProductUnit, error)
+	IsExistByProductId(ctx context.Context, productId string) (bool, error)
 	IsExistByProductIdAndUnitId(ctx context.Context, productId string, unitId string) (bool, error)
 
 	// update
@@ -164,6 +165,17 @@ func (r *productProductUnitRepository) GetBaseProductUnitByProductId(ctx context
 		Where(squirrel.Eq{"to_unit_id": nil})
 
 	return r.get(ctx, stmt)
+}
+
+func (r *productProductUnitRepository) IsExistByProductId(ctx context.Context, productId string) (bool, error) {
+	stmt := stmtBuilder.Select().Column(
+		stmtBuilder.Select("1").
+			From(model.ProductUnitTableName).
+			Where(squirrel.Eq{"product_id": productId}).
+			Prefix("EXISTS (").Suffix(")"),
+	)
+
+	return isExist(r.db, ctx, stmt)
 }
 
 func (r *productProductUnitRepository) IsExistByProductIdAndUnitId(ctx context.Context, productId string, unitId string) (bool, error) {
