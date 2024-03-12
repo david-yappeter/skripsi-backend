@@ -214,7 +214,7 @@ func (u *productUseCase) Update(ctx context.Context, request dto_request.Product
 	isProductUnitsExist, err := u.repositoryManager.ProductUnitRepository().IsExistByProductId(ctx, product.Id)
 	panicIfErr(err)
 
-	if request.IsActive && isProductUnitsExist {
+	if request.IsActive && !isProductUnitsExist {
 		panic(dto_response.NewBadRequestErrorResponse("ACTIVE_PRODUCT.MUST_HAVE_AN_UNIT"))
 	}
 
