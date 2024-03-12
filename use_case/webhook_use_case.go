@@ -62,18 +62,32 @@ func (u *webhookUseCase) OrderStatusChange(ctx context.Context, request dto_requ
 		isNewOrderData := shopOrder == nil
 
 		if !isNewOrderData {
+			var trackingNumber *string = nil
+			if orderDetail.TrackingNumber != "" {
+				trackingNumber = &orderDetail.TrackingNumber
+			}
+
 			nextStatus := data_type.DetermineOrderTrackingStatusByString(orderDetail.Status)
 			if shopOrder.TrackingStatus.IsNextStatusValid(nextStatus) {
 				shopOrder.TrackingStatus = nextStatus
 			}
+			shopOrder.TrackingNumber = trackingNumber
+			shopOrder.RecipientName = orderDetail.RecipientAddress.Name
+			shopOrder.RecipientFullAddress = orderDetail.RecipientAddress.FullAddress
+			shopOrder.RecipientPhoneNumber = orderDetail.RecipientAddress.PhoneNumber
 		} else {
+			var trackingNumber *string = nil
+			if orderDetail.TrackingNumber != "" {
+				trackingNumber = &orderDetail.TrackingNumber
+			}
+
 			shopOrder = &model.ShopOrder{
 				Id:                        util.NewUuid(),
-				TrackingNumber:            &orderDetail.TrackingNumber,
+				TrackingNumber:            trackingNumber,
 				PlatformIdentifier:        orderDetail.Id,
 				PlatformType:              data_type.ShopOrderPlatformTypeTiktokShop,
 				TrackingStatus:            data_type.DetermineOrderTrackingStatusByString(orderDetail.Status),
-				RecipientName:             "",
+				RecipientName:             orderDetail.RecipientAddress.Name,
 				RecipientFullAddress:      orderDetail.RecipientAddress.FullAddress,
 				RecipientPhoneNumber:      orderDetail.RecipientAddress.PhoneNumber,
 				ShippingFee:               util.MustParseFloat64(orderDetail.Payment.ShippingFee),
