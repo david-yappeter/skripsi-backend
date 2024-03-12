@@ -67,7 +67,7 @@ func (u *tiktokProductUseCase) Create(ctx context.Context, request dto_request.T
 
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
-			group.Go(productStockLoader.ProductFn(&product))
+			group.Go(productStockLoader.ProductFnNotStrict(&product))
 		}),
 	)
 
@@ -633,7 +633,7 @@ func (u *tiktokProductUseCase) Update(ctx context.Context, request dto_request.T
 
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
-			group.Go(productStockLoader.ProductFn(&product))
+			group.Go(productStockLoader.ProductFnNotStrict(&product))
 		}),
 	)
 

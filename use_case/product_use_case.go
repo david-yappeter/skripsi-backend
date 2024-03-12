@@ -91,11 +91,11 @@ func (u *productUseCase) mustLoadProductDatas(ctx context.Context, products []*m
 		util.Await(func(group *errgroup.Group) {
 			for i := range products {
 				if option.productStock {
-					group.Go(productStockLoader.ProductFn(products[i]))
+					group.Go(productStockLoader.ProductFnNotStrict(products[i]))
 				}
 
 				if option.tiktokProduct {
-					group.Go(tiktokProductLoader.ProductFn(products[i]))
+					group.Go(tiktokProductLoader.ProductFnNotStrict(products[i]))
 				}
 
 				if option.productUnits {

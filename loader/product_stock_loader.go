@@ -24,10 +24,10 @@ func (l *ProductStockLoader) loadByProductId(id string) (*model.ProductStock, er
 	return result.(*model.ProductStock), nil
 }
 
-func (l *ProductStockLoader) ProductFn(product *model.Product) func() error {
+func (l *ProductStockLoader) ProductFnNotStrict(product *model.Product) func() error {
 	return func() error {
 		productStock, err := l.loadByProductId(product.Id)
-		if err != nil {
+		if err != nil && err != constant.ErrNoData {
 			return err
 		}
 

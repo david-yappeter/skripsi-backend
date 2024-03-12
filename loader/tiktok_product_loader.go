@@ -24,10 +24,10 @@ func (l *TiktokProductLoader) loadByProductId(id string) (*model.TiktokProduct, 
 	return result.(*model.TiktokProduct), nil
 }
 
-func (l *TiktokProductLoader) ProductFn(product *model.Product) func() error {
+func (l *TiktokProductLoader) ProductFnNotStrict(product *model.Product) func() error {
 	return func() error {
 		tiktokProduct, err := l.loadByProductId(product.Id)
-		if err != nil {
+		if err != nil && err != constant.ErrNoData {
 			return err
 		}
 
