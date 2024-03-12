@@ -2,6 +2,7 @@ package use_case
 
 import (
 	"context"
+	"fmt"
 	"myapp/constant"
 	"myapp/data_type"
 	"myapp/delivery/dto_request"
@@ -60,6 +61,8 @@ func (u *webhookUseCase) OrderStatusChange(ctx context.Context, request dto_requ
 		panicIfErr(err, constant.ErrNoData)
 
 		isNewOrderData := shopOrder == nil
+
+		fmt.Printf("IS NEW ORDER DATA: %+v\n\n%+v\n\n", isNewOrderData, orderDetail.LineItems)
 
 		if !isNewOrderData {
 			var trackingNumber *string = nil
