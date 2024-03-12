@@ -6,7 +6,7 @@ const ShopOrderTableName = "shop_orders"
 
 type ShopOrder struct {
 	Id                        string                            `db:"id"`
-	TrackingNumber            string                            `db:"tracking_number"`
+	TrackingNumber            *string                           `db:"tracking_number"`
 	PlatformIdentifier        string                            `db:"platform_identifier"`
 	PlatformType              data_type.ShopOrderPlatformType   `db:"platform_type"`
 	TrackingStatus            data_type.ShopOrderTrackingStatus `db:"tracking_status"`
