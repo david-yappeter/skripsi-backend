@@ -69,7 +69,7 @@ func (u *webhookUseCase) OrderStatusChange(ctx context.Context, request dto_requ
 		} else {
 			shopOrder = &model.ShopOrder{
 				Id:                        util.NewUuid(),
-				TrackingNumber:            orderDetail.TrackingNumber,
+				TrackingNumber:            &orderDetail.TrackingNumber,
 				PlatformIdentifier:        orderDetail.Id,
 				PlatformType:              data_type.ShopOrderPlatformTypeTiktokShop,
 				TrackingStatus:            data_type.DetermineOrderTrackingStatusByString(orderDetail.Status),
