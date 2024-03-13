@@ -1,6 +1,9 @@
 package dto_response
 
-import "myapp/model"
+import (
+	"myapp/model"
+	"myapp/util"
+)
 
 type ProductUnitResponse struct {
 	Id          string  `json:"id"`
@@ -11,6 +14,9 @@ type ProductUnitResponse struct {
 	ScaleToBase float64 `json:"scale_to_base"`
 
 	Timestamp
+
+	Product *ProductResponse `json:"product" extensions:"x-nullable"`
+	Unit    *UnitResponse    `json:"unit" extensions:"x-nullable"`
 } // @name ProductUnitResponse
 
 func NewProductUnitResponse(productUnit model.ProductUnit) ProductUnitResponse {
@@ -22,6 +28,14 @@ func NewProductUnitResponse(productUnit model.ProductUnit) ProductUnitResponse {
 		Scale:       productUnit.Scale,
 		ScaleToBase: productUnit.ScaleToBase,
 		Timestamp:   Timestamp(productUnit.Timestamp),
+	}
+
+	if productUnit.Product != nil {
+		r.Product = util.Pointer(NewProductResponse(*productUnit.Product))
+	}
+
+	if productUnit.Unit != nil {
+		r.Unit = util.Pointer(NewUnitResponse(*productUnit.Unit))
 	}
 
 	return r

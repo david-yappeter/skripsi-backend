@@ -18,6 +18,7 @@ type UnitRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.UnitQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.UnitQueryOption) ([]model.Unit, error)
+	FetchByIds(ctx context.Context, ids []string) ([]model.Unit, error)
 	Get(ctx context.Context, id string) (*model.Unit, error)
 	IsExistByName(ctx context.Context, name string) (bool, error)
 
@@ -120,6 +121,14 @@ func (r *unitRepository) Fetch(ctx context.Context, options ...model.UnitQueryOp
 	}
 
 	stmt := r.prepareQuery(option)
+
+	return r.fetch(ctx, stmt)
+}
+
+func (r *unitRepository) FetchByIds(ctx context.Context, ids []string) ([]model.Unit, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.UnitTableName).
+		Where(squirrel.Eq{"id": ids})
 
 	return r.fetch(ctx, stmt)
 }

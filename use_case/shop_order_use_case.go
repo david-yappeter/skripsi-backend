@@ -60,6 +60,7 @@ func (u *shopOrderUseCase) mustLoadShopOrderData(ctx context.Context, shopOrders
 	)
 
 	productLoader := loader.NewProductLoader(u.repositoryManager.ProductRepository())
+	unitLoader := loader.NewUnitLoader(u.repositoryManager.UnitRepository())
 
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
@@ -67,6 +68,7 @@ func (u *shopOrderUseCase) mustLoadShopOrderData(ctx context.Context, shopOrders
 				for i := range shopOrders {
 					for j := range shopOrders[i].ShopOrderItems {
 						group.Go(productLoader.ProductUnitFn(shopOrders[i].ShopOrderItems[j].ProductUnit))
+						group.Go(unitLoader.ProductUnitFn(shopOrders[i].ShopOrderItems[j].ProductUnit))
 					}
 				}
 			}
