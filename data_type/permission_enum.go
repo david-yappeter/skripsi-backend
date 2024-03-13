@@ -107,11 +107,12 @@ const (
 	PermissionSupplierOptionForProductReceiveForm // SUPPLIER_OPTION_FOR_PRODUCT_RECEIVE_FORM
 
 	// supplier type
-	PermissionSupplierTypeCreate // SUPPLIER_TYPE_CREATE
-	PermissionSupplierTypeFetch  // SUPPLIER_TYPE_FETCH
-	PermissionSupplierTypeGet    // SUPPLIER_TYPE_GET
-	PermissionSupplierTypeUpdate // SUPPLIER_TYPE_UPDATE
-	PermissionSupplierTypeDelete // SUPPLIER_TYPE_DELETE
+	PermissionSupplierTypeCreate                // SUPPLIER_TYPE_CREATE
+	PermissionSupplierTypeFetch                 // SUPPLIER_TYPE_FETCH
+	PermissionSupplierTypeGet                   // SUPPLIER_TYPE_GET
+	PermissionSupplierTypeUpdate                // SUPPLIER_TYPE_UPDATE
+	PermissionSupplierTypeDelete                // SUPPLIER_TYPE_DELETE
+	PermissionSupplierTypeOptionForSupplierForm // SUPPLIER_TYPE_OPTION_FOR_SUPPLIER_FORM
 
 	// tiktok product
 	PermissionTiktokProductCreate                // TIKTOK_PRODUCT_CREATE

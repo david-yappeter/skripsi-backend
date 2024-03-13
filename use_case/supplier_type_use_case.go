@@ -22,6 +22,9 @@ type SupplierTypeUseCase interface {
 
 	// delete
 	Delete(ctx context.Context, request dto_request.SupplierTypeDeleteRequest)
+
+	// option
+	OptionForSupplierForm(ctx context.Context, request dto_request.SupplierTypeOptionForSupplierFormRequest) ([]model.SupplierType, int)
 }
 
 type supplierTypeUseCase struct {
@@ -120,4 +123,23 @@ func (u *supplierTypeUseCase) Delete(ctx context.Context, request dto_request.Su
 	panicIfErr(
 		u.repositoryManager.SupplierTypeRepository().Delete(ctx, &supplierType),
 	)
+}
+
+func (u *supplierTypeUseCase) OptionForSupplierForm(ctx context.Context, request dto_request.SupplierTypeOptionForSupplierFormRequest) ([]model.SupplierType, int) {
+	queryOption := model.SupplierTypeQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts(request.Sorts),
+		),
+		Phrase: request.Phrase,
+	}
+
+	supplierTypes, err := u.repositoryManager.SupplierTypeRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.SupplierTypeRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	return supplierTypes, total
 }

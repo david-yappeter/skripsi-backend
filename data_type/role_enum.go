@@ -62,6 +62,7 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionSupplierTypeGet,
 		PermissionSupplierTypeUpdate,
 		PermissionSupplierTypeDelete,
+		PermissionSupplierTypeOptionForSupplierForm,
 
 		// role
 		PermissionRoleOptionForUserForm,
@@ -161,6 +162,7 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionSupplierTypeGet,
 		PermissionSupplierTypeUpdate,
 		PermissionSupplierTypeDelete,
+		PermissionSupplierTypeOptionForSupplierForm,
 
 		// shop order
 		PermissionShopOrderFetch,

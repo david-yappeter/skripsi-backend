@@ -57,7 +57,7 @@ func (a *SupplierTypeApi) Create() gin.HandlerFunc {
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.SupplierTypeResponse}}
 func (a *SupplierTypeApi) Fetch() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionSupplierTypeCreate),
+		data_type.PermissionP(data_type.PermissionSupplierTypeFetch),
 		func(ctx apiContext) {
 			var request dto_request.SupplierTypeFetchRequest
 			ctx.mustBind(&request)
@@ -177,6 +177,41 @@ func (a *SupplierTypeApi) Delete() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/supplier-types/options/supplier-form [post]
+//	@Summary	Option for Supplier Form
+//	@tags		Suppliers
+//	@Accept		json
+//	@Param		dto_request.SupplierTypeOptionForSupplierFormRequest	body	dto_request.SupplierTypeOptionForSupplierFormRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.SupplierTypeResponse}}
+func (a *SupplierTypeApi) OptionForSupplierForm() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionSupplierTypeOptionForSupplierForm),
+		func(ctx apiContext) {
+			var request dto_request.SupplierTypeOptionForSupplierFormRequest
+			ctx.mustBind(&request)
+
+			supplierTypes, total := a.supplierTypeUseCase.OptionForSupplierForm(ctx.context(), request)
+
+			nodes := util.ConvertArray(supplierTypes, dto_response.NewSupplierTypeResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Total: total,
+						Nodes: nodes,
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterSupplierTypeApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := SupplierTypeApi{
 		api:                 newApi(useCaseManager),
@@ -189,4 +224,7 @@ func RegisterSupplierTypeApi(router gin.IRouter, useCaseManager use_case.UseCase
 	routerGroup.GET("/:id", api.Get())
 	routerGroup.PUT("/:id", api.Update())
 	routerGroup.DELETE("/:id", api.Delete())
+
+	optionRouterGroup := routerGroup.Group("/options")
+	optionRouterGroup.POST("/supplier-form", api.OptionForSupplierForm())
 }
