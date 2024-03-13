@@ -23,13 +23,14 @@ func (m *Balance) TableIds() []string {
 
 func (m *Balance) ToMap() map[string]interface{} {
 	return map[string]interface{}{
-		"id":           m.Id,
-		"account_name": m.AccountName,
-		"bank_name":    m.BankName,
-		"name":         m.Name,
-		"amount":       m.Amount,
-		"created_at":   m.CreatedAt,
-		"updated_at":   m.UpdatedAt,
+		"id":             m.Id,
+		"account_number": m.AccountNumber,
+		"account_name":   m.AccountName,
+		"bank_name":      m.BankName,
+		"name":           m.Name,
+		"amount":         m.Amount,
+		"created_at":     m.CreatedAt,
+		"updated_at":     m.UpdatedAt,
 	}
 }
 

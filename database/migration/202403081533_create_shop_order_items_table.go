@@ -8,7 +8,6 @@ func init() {
 				id char(36) NOT NULL,
 				shop_order_id char(36) NOT NULL,
 				product_unit_id char(36) NOT NULL,
-				tracking_number varchar(255) NOT NULL,
 				platform_product_id varchar(255) NOT NULL,
 				image_link varchar(255) NULL,
 				quantity decimal(16,2) NOT NULL,

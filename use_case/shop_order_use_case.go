@@ -2,13 +2,12 @@ package use_case
 
 import (
 	"context"
-	"myapp/delivery/dto_request"
+	"myapp/model"
 	"myapp/repository"
 )
 
 type ShopOrderItemUseCase interface {
-	// webhook
-	WebhookOrderStatusChange(ctx context.Context, request dto_request.TiktokWebhookBaseRequest[dto_request.WebhookOrderStatusChangeRequest])
+	Fetch(ctx context.Context) ([]model.ShopOrder, int)
 }
 
 type shopOrderItemUseCase struct {
@@ -23,6 +22,7 @@ func NewShopOrderItemUseCase(
 	}
 }
 
-func (u *shopOrderItemUseCase) WebhookOrderStatusChange(ctx context.Context, request dto_request.TiktokWebhookBaseRequest[dto_request.WebhookOrderStatusChangeRequest]) {
-	
+func (u *shopOrderItemUseCase) Fetch(ctx context.Context) ([]model.ShopOrder, int) {
+
+	return []model.ShopOrder, 0
 }
