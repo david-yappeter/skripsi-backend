@@ -13,6 +13,8 @@ type ShopOrderItem struct {
 	SalePrice         float64 `db:"sale_price"`
 
 	Timestamp
+
+	ProductUnit *ProductUnit `db:"-"`
 }
 
 func (m *ShopOrderItem) TableName() string {

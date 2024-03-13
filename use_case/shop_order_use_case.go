@@ -37,8 +37,38 @@ func (u *shopOrderUseCase) mustLoadShopOrderData(ctx context.Context, shopOrders
 
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
-			for i := range shopOrders {
-				group.Go(shopOrderItemsLoader.ShopOrderFn(shopOrders[i]))
+			if option.shopOrderItems {
+				for i := range shopOrders {
+					group.Go(shopOrderItemsLoader.ShopOrderFn(shopOrders[i]))
+				}
+			}
+		}),
+	)
+
+	productUnitLoader := loader.NewProductUnitLoader(u.repositoryManager.ProductUnitRepository())
+
+	panicIfErr(
+		util.Await(func(group *errgroup.Group) {
+			if option.shopOrderItems {
+				for i := range shopOrders {
+					for j := range shopOrders[i].ShopOrderItems {
+						group.Go(productUnitLoader.ShopOrderItemFn(&shopOrders[i].ShopOrderItems[j]))
+					}
+				}
+			}
+		}),
+	)
+
+	productLoader := loader.NewProductLoader(u.repositoryManager.ProductRepository())
+
+	panicIfErr(
+		util.Await(func(group *errgroup.Group) {
+			if option.shopOrderItems {
+				for i := range shopOrders {
+					for j := range shopOrders[i].ShopOrderItems {
+						group.Go(productLoader.ProductUnitFn(shopOrders[i].ShopOrderItems[j].ProductUnit))
+					}
+				}
 			}
 		}),
 	)

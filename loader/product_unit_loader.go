@@ -63,6 +63,19 @@ func (l *ProductUnitLoader) CartItemFn(cartItem *model.CartItem) func() error {
 	}
 }
 
+func (l *ProductUnitLoader) ShopOrderItemFn(shopOrderItem *model.ShopOrderItem) func() error {
+	return func() error {
+		productUnit, err := l.load(shopOrderItem.ProductUnitId)
+		if err != nil {
+			return err
+		}
+
+		shopOrderItem.ProductUnit = productUnit
+
+		return nil
+	}
+}
+
 func NewProductUnitLoader(productUnitRepository repository.ProductUnitRepository) *ProductUnitLoader {
 	batchFn := func(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
 		ids := make([]string, len(keys))

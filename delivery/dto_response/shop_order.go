@@ -21,6 +21,8 @@ type ShopOrderResponse struct {
 	TotalAmount               float64                           `json:"total_amount"`
 
 	Timestamp
+
+	Items []ShopOrderItemResponse `json:"items" extensions:"x-nullable"`
 } // @name ShopOrderResponse
 
 func NewShopOrderResponse(shopOrder model.ShopOrder) ShopOrderResponse {
@@ -39,6 +41,10 @@ func NewShopOrderResponse(shopOrder model.ShopOrder) ShopOrderResponse {
 		Tax:                       shopOrder.Tax,
 		TotalAmount:               shopOrder.TotalAmount,
 		Timestamp:                 Timestamp(shopOrder.Timestamp),
+	}
+
+	for _, shopOrderItem := range shopOrder.ShopOrderItems {
+		r.Items = append(r.Items, NewShopOrderItemResponse(shopOrderItem))
 	}
 
 	return r
