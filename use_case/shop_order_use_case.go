@@ -24,5 +24,5 @@ func NewShopOrderItemUseCase(
 
 func (u *shopOrderItemUseCase) Fetch(ctx context.Context) ([]model.ShopOrder, int) {
 
-	return []model.ShopOrder, 0
+	return []model.ShopOrder{}, 0
 }
