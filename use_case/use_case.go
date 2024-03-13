@@ -319,6 +319,12 @@ func mustGetTiktokProductByProductId(ctx context.Context, repositoryManager repo
 	return *tiktokProduct
 }
 
+func mustGetShopOrder(ctx context.Context, repositoryManager repository.RepositoryManager, shopOrderId string, isValidate bool) model.ShopOrder {
+	shopOrder, err := repositoryManager.ShopOrderRepository().Get(ctx, shopOrderId)
+	panicIfRepositoryError(err, "SHOP_ORDER.NOT_FOUND", isValidate)
+	return *shopOrder
+}
+
 func shouldGetTiktokProductByProductId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string) *model.TiktokProduct {
 	tiktokProduct, err := repositoryManager.TiktokProductRepository().GetByProductId(ctx, productId)
 	panicIfErr(err, constant.ErrNoData)

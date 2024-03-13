@@ -45,6 +45,10 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionBalanceUpdate,
 		PermissionBalanceDelete,
 
+		// shop order
+		PermissionShopOrderFetch,
+		PermissionShopOrderGet,
+
 		// supplier
 		PermissionSupplierCreate,
 		PermissionSupplierFetch,
@@ -157,6 +161,10 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionSupplierTypeGet,
 		PermissionSupplierTypeUpdate,
 		PermissionSupplierTypeDelete,
+
+		// shop order
+		PermissionShopOrderFetch,
+		PermissionShopOrderGet,
 
 		// supplier
 		PermissionSupplierCreate,

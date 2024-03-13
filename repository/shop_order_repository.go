@@ -69,8 +69,18 @@ func (r *shopOrderRepository) prepareQuery(option model.ShopOrderQueryOption) sq
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
 		stmt = stmt.Where(squirrel.Or{
-			squirrel.ILike{"so.name": phrase},
+			squirrel.ILike{"so.tracking_number": phrase},
+			squirrel.ILike{"so.recipient_name": phrase},
+			squirrel.ILike{"so.recipient_phone_number": phrase},
 		})
+	}
+
+	if option.PlatformType != nil {
+		stmt = stmt.Where(squirrel.Eq{"so.platform_type": option.PlatformType})
+	}
+
+	if option.TrackingStatus != nil {
+		stmt = stmt.Where(squirrel.Eq{"so.tracking_status": option.TrackingStatus})
 	}
 
 	stmt = model.Prepare(stmt, &option)

@@ -20,6 +20,8 @@ type ShopOrder struct {
 	TotalAmount               float64                           `db:"total_amount"`
 
 	Timestamp
+
+	ShopOrderItems []ShopOrderItem `db:"-"`
 }
 
 func (m *ShopOrder) TableName() string {
@@ -53,7 +55,9 @@ func (m *ShopOrder) ToMap() map[string]interface{} {
 type ShopOrderQueryOption struct {
 	QueryOption
 
-	Phrase *string
+	TrackingStatus *data_type.ShopOrderTrackingStatus
+	PlatformType   *data_type.ShopOrderPlatformType
+	Phrase         *string
 }
 
 var _ PrepareOption = &ShopOrderQueryOption{}

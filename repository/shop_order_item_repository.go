@@ -18,6 +18,7 @@ type ShopOrderItemRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.ShopOrderItemQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.ShopOrderItemQueryOption) ([]model.ShopOrderItem, error)
+	FetchByShopOrderIds(ctx context.Context, shopOrderIds []string) ([]model.ShopOrderItem, error)
 	Get(ctx context.Context, id string) (*model.ShopOrderItem, error)
 
 	// update
@@ -109,6 +110,14 @@ func (r *shopOrderItemRepository) Fetch(ctx context.Context, options ...model.Sh
 	}
 
 	stmt := r.prepareQuery(option)
+
+	return r.fetch(ctx, stmt)
+}
+
+func (r *shopOrderItemRepository) FetchByShopOrderIds(ctx context.Context, shopOrderIds []string) ([]model.ShopOrderItem, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.ShopOrderItemTableName).
+		Where(squirrel.Eq{"shop_order_id": shopOrderIds})
 
 	return r.fetch(ctx, stmt)
 }

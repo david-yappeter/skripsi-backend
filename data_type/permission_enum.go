@@ -94,6 +94,10 @@ const (
 	// role
 	PermissionRoleOptionForUserForm // ROLE_OPTION_FOR_USER_FORM
 
+	// shop order
+	PermissionShopOrderFetch // SHOP_ORDER_FETCH
+	PermissionShopOrderGet   // SHOP_ORDER_GET
+
 	// supplier
 	PermissionSupplierCreate                      // SUPPLIER_CREATE
 	PermissionSupplierFetch                       // SUPPLIER_FETCH
