@@ -22,6 +22,9 @@ type CustomerTypeUseCase interface {
 
 	//  delete
 	Delete(ctx context.Context, request dto_request.CustomerTypeDeleteRequest)
+
+	// option
+	OptionForCustomerForm(ctx context.Context, request dto_request.CustomerTypeOptionForCustomerFormRequest) ([]model.CustomerType, int)
 }
 
 type customerTypeUseCase struct {
@@ -120,4 +123,23 @@ func (u *customerTypeUseCase) Delete(ctx context.Context, request dto_request.Cu
 	panicIfErr(
 		u.repositoryManager.CustomerTypeRepository().Delete(ctx, &customerType),
 	)
+}
+
+func (u *customerTypeUseCase) OptionForCustomerForm(ctx context.Context, request dto_request.CustomerTypeOptionForCustomerFormRequest) ([]model.CustomerType, int) {
+	queryOption := model.CustomerTypeQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts(request.Sorts),
+		),
+		Phrase: request.Phrase,
+	}
+
+	customerTypes, err := u.repositoryManager.CustomerTypeRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.CustomerTypeRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	return customerTypes, total
 }

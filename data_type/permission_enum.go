@@ -45,6 +45,7 @@ const (
 	PermissionCustomerTypeGet    // CUSTOMER_TYPE_GET
 	PermissionCustomerTypeUpdate // CUSTOMER_TYPE_UPDATE
 	PermissionCustomerTypeDelete // CUSTOMER_TYPE_DELETE
+	PermissionCustomerTypeOptionForCustomerForm // CUSTOMER_TYPE_OPTION_FOR_CUSTOMER_FORM
 
 	// delivery order
 	PermissionDeliveryOrderCreate        // DELIVERY_ORDER_CREATE

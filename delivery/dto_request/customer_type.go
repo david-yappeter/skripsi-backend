@@ -13,7 +13,7 @@ type CustomerTypeFetchSorts []struct {
 type CustomerTypeFetchRequest struct {
 	PaginationRequest
 	Sorts  CustomerTypeFetchSorts `json:"sorts" validate:"unique=Field,dive"`
-	Phrase *string        `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+	Phrase *string                `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name CustomerTypeFetchRequest
 
 type CustomerTypeGetRequest struct {
@@ -30,3 +30,14 @@ type CustomerTypeUpdateRequest struct {
 type CustomerTypeDeleteRequest struct {
 	CustomerTypeId string `json:"-" swaggerignore:"true"`
 } // @name CustomerTypeDeleteRequest
+
+type CustomerTypeOptionForCustomerFormSorts []struct {
+	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
+	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
+} // @name CustomerTypeOptionForCustomerFormSorts
+
+type CustomerTypeOptionForCustomerFormRequest struct {
+	PaginationRequest
+	Sorts  CustomerTypeOptionForCustomerFormSorts `json:"sorts" validate:"unique=Field,dive"`
+	Phrase *string                                `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name CustomerTypeOptionForCustomerFormRequest

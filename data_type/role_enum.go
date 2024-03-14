@@ -104,6 +104,7 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionCustomerTypeGet,
 		PermissionCustomerTypeUpdate,
 		PermissionCustomerTypeDelete,
+		PermissionCustomerTypeOptionForCustomerForm,
 
 		// customer debt
 		PermissionCustomerDebtUploadImage,
