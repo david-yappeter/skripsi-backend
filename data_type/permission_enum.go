@@ -39,6 +39,13 @@ const (
 	PermissionCustomerDebtGet         // CUSTOMER_DEBT_GET
 	PermissionCustomerDebtPayment     // CUSTOMER_DEBT_PAYMENT
 
+	// customer type
+	PermissionCustomerTypeCreate // CUSTOMER_TYPE_CREATE
+	PermissionCustomerTypeFetch  // CUSTOMER_TYPE_FETCH
+	PermissionCustomerTypeGet    // CUSTOMER_TYPE_GET
+	PermissionCustomerTypeUpdate // CUSTOMER_TYPE_UPDATE
+	PermissionCustomerTypeDelete // CUSTOMER_TYPE_DELETE
+
 	// delivery order
 	PermissionDeliveryOrderCreate        // DELIVERY_ORDER_CREATE
 	PermissionDeliveryOrderUpload        // DELIVERY_ORDER_UPLOAD

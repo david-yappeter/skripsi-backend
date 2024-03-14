@@ -98,6 +98,13 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionCustomerDelete,
 		PermissionCustomerOptionForDeliveryOrderForm,
 
+		// customer type
+		PermissionCustomerTypeCreate,
+		PermissionCustomerTypeFetch,
+		PermissionCustomerTypeGet,
+		PermissionCustomerTypeUpdate,
+		PermissionCustomerTypeDelete,
+
 		// customer debt
 		PermissionCustomerDebtUploadImage,
 		PermissionCustomerDebtFetch,

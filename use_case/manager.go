@@ -14,6 +14,7 @@ type UseCaseManager interface {
 	CashierSessionUseCase() CashierSessionUseCase
 	CustomerUseCase() CustomerUseCase
 	CustomerDebtUseCase() CustomerDebtUseCase
+	CustomerTypeUseCase() CustomerTypeUseCase
 	DeliveryOrderUseCase() DeliveryOrderUseCase
 	PermissionUseCase() PermissionUseCase
 	ProductUseCase() ProductUseCase
@@ -39,6 +40,7 @@ type useCaseManager struct {
 	cashierSessionUseCase CashierSessionUseCase
 	customerUseCase       CustomerUseCase
 	customerDebtUseCase   CustomerDebtUseCase
+	customerTypeUseCase   CustomerTypeUseCase
 	deliveryOrderUseCase  DeliveryOrderUseCase
 	permissionUseCase     PermissionUseCase
 	productUseCase        ProductUseCase
@@ -79,6 +81,10 @@ func (u *useCaseManager) CustomerUseCase() CustomerUseCase {
 
 func (u *useCaseManager) CustomerDebtUseCase() CustomerDebtUseCase {
 	return u.customerDebtUseCase
+}
+
+func (u *useCaseManager) CustomerTypeUseCase() CustomerTypeUseCase {
+	return u.customerTypeUseCase
 }
 
 func (u *useCaseManager) DeliveryOrderUseCase() DeliveryOrderUseCase {
@@ -172,6 +178,9 @@ func NewUseCaseManager(
 			repositoryManager,
 			filesystemManager.Main(),
 			filesystemManager.Tmp(),
+		),
+		customerTypeUseCase: NewCustomerTypeUseCase(
+			repositoryManager,
 		),
 		deliveryOrderUseCase: NewDeliveryOrderUseCase(
 			repositoryManager,
