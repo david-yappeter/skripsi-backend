@@ -101,8 +101,8 @@ func (u *userUseCase) Create(ctx context.Context, request dto_request.UserCreate
 	user := model.User{
 		Id:       util.NewUuid(),
 		Username: request.Username,
-		Name:     u.mustGetHashedPassword(request.Password),
-		Password: request.Password,
+		Name:     request.Name,
+		Password: u.mustGetHashedPassword(request.Password),
 		IsActive: request.IsActive,
 	}
 
