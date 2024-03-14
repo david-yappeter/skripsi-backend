@@ -83,6 +83,12 @@ func (r *customerRepository) prepareQuery(option model.CustomerQueryOption) squi
 		})
 	}
 
+	if option.CustomerTypeId != nil {
+		stmt = stmt.Where(squirrel.Eq{
+			"c.customer_type_id": option.CustomerTypeId,
+		})
+	}
+
 	stmt = model.Prepare(stmt, &option)
 
 	return stmt

@@ -43,13 +43,18 @@ func (u *customerUseCase) mustValidateAllowDeleteCustomer(ctx context.Context, c
 }
 
 func (u *customerUseCase) Create(ctx context.Context, request dto_request.CustomerCreateRequest) model.Customer {
+	if request.CustomerTypeId != nil {
+		mustGetCustomerType(ctx, u.repositoryManager, *request.CustomerTypeId, true)
+	}
+
 	customer := model.Customer{
-		Id:       util.NewUuid(),
-		Name:     request.Name,
-		Email:    request.Email,
-		Address:  request.Address,
-		Phone:    request.Phone,
-		IsActive: request.IsActive,
+		Id:             util.NewUuid(),
+		CustomerTypeId: request.CustomerTypeId,
+		Name:           request.Name,
+		Email:          request.Email,
+		Address:        request.Address,
+		Phone:          request.Phone,
+		IsActive:       request.IsActive,
 	}
 
 	panicIfErr(
@@ -88,6 +93,11 @@ func (u *customerUseCase) Get(ctx context.Context, request dto_request.CustomerG
 func (u *customerUseCase) Update(ctx context.Context, request dto_request.CustomerUpdateRequest) model.Customer {
 	customer := mustGetCustomer(ctx, u.repositoryManager, request.CustomerId, true)
 
+	if customer.CustomerTypeId != nil {
+		mustGetCustomerType(ctx, u.repositoryManager, *request.CustomerTypeId, true)
+	}
+
+	customer.CustomerTypeId = request.CustomerTypeId
 	customer.Name = request.Name
 	customer.Email = request.Email
 	customer.Address = request.Address

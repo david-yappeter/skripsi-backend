@@ -1,11 +1,12 @@
 package dto_request
 
 type CustomerCreateRequest struct {
-	Name     string  `json:"name" validate:"required,not_empty"`
-	Email    string  `json:"email" validate:"required,not_empty,email"`
-	Address  *string `json:"address" validate:"required,not_empty" extensions:"x-nullable"`
-	Phone    string  `json:"phone" validate:"required,not_empty,e164"`
-	IsActive bool    `json:"is_active"`
+	CustomerTypeId *string `json:"customer_type_Id" validate:"omitempty,not_empty,uuid"`
+	Name           string  `json:"name" validate:"required,not_empty"`
+	Email          string  `json:"email" validate:"required,not_empty,email"`
+	Address        *string `json:"address" validate:"required,not_empty" extensions:"x-nullable"`
+	Phone          string  `json:"phone" validate:"required,not_empty,e164"`
+	IsActive       bool    `json:"is_active"`
 } // @name CustomerCreateRequest
 
 type CustomerFetchSorts []struct {
@@ -25,11 +26,12 @@ type CustomerGetRequest struct {
 } // @name CustomerGetRequest
 
 type CustomerUpdateRequest struct {
-	Name     string  `json:"name" validate:"required,not_empty"`
-	Email    string  `json:"email" validate:"required,not_empty,email"`
-	Address  *string `json:"address" validate:"required,not_empty" extensions:"x-nullable"`
-	Phone    string  `json:"phone" validate:"required,not_empty,e164"`
-	IsActive bool    `json:"is_active"`
+	CustomerTypeId *string `json:"customer_type_Id" validate:"omitempty,not_empty,uuid"`
+	Name           string  `json:"name" validate:"required,not_empty"`
+	Email          string  `json:"email" validate:"required,not_empty,email"`
+	Address        *string `json:"address" validate:"required,not_empty" extensions:"x-nullable"`
+	Phone          string  `json:"phone" validate:"required,not_empty,e164"`
+	IsActive       bool    `json:"is_active"`
 
 	CustomerId string `json:"-" swaggerignore:"true"`
 } // @name CustomerUpdateRequest
