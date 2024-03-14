@@ -48,7 +48,7 @@ func (a *UserApi) Create() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/users [post]
+//	@Router		/users/filter [post]
 //	@Summary	Fetch
 //	@tags		Users
 //	@Accept		json
