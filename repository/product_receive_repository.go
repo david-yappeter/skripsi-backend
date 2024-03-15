@@ -123,9 +123,12 @@ func (r *productReceiveRepository) Get(ctx context.Context, id string) (*model.P
 }
 
 func (r *productReceiveRepository) IsExistBySupplierId(ctx context.Context, supplierId string) (bool, error) {
-	stmt := stmtBuilder.Select("*").
-		From(model.ProductReceiveTableName).
-		Where(squirrel.Eq{"supplier_id": supplierId})
+	stmt := stmtBuilder.Select().Column(
+		stmtBuilder.Select("1").
+			From(model.ProductReceiveTableName).
+			Where(squirrel.Eq{"supplier_id": supplierId}).
+			Prefix("EXISTS (").Suffix(")"),
+	)
 
 	return isExist(r.db, ctx, stmt)
 }
