@@ -331,6 +331,18 @@ func mustGetCustomerType(ctx context.Context, repositoryManager repository.Repos
 	return *customerType
 }
 
+func mustGetCustomerTypeDiscount(ctx context.Context, repositoryManager repository.RepositoryManager, customerTypeDiscountId string, isValidate bool) model.CustomerTypeDiscount {
+	customerTypeDiscount, err := repositoryManager.CustomerTypeDiscountRepository().Get(ctx, customerTypeDiscountId)
+	panicIfRepositoryError(err, "CUSTOMER_TYPE_DISCOUNT.NOT_FOUND", isValidate)
+	return *customerTypeDiscount
+}
+
+func mustGetCustomerTypeDiscountByCustomerTypeIdAndProductId(ctx context.Context, repositoryManager repository.RepositoryManager, customerTypeId string, productId string, isValidate bool) model.CustomerTypeDiscount {
+	customerTypeDiscount, err := repositoryManager.CustomerTypeDiscountRepository().GetByCustomerTypeIdAndProductId(ctx, customerTypeId, productId)
+	panicIfRepositoryError(err, "CUSTOMER_TYPE_DISCOUNT.NOT_FOUND", isValidate)
+	return *customerTypeDiscount
+}
+
 func shouldGetTiktokProductByProductId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string) *model.TiktokProduct {
 	tiktokProduct, err := repositoryManager.TiktokProductRepository().GetByProductId(ctx, productId)
 	panicIfErr(err, constant.ErrNoData)

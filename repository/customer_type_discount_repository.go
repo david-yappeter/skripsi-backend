@@ -18,6 +18,7 @@ type CustomerTypeDiscountRepository interface {
 	FetchByIds(ctx context.Context, ids []string) ([]model.CustomerTypeDiscount, error)
 	FetchByCustomerTypeIds(ctx context.Context, customerTypeIds []string) ([]model.CustomerTypeDiscount, error)
 	Get(ctx context.Context, id string) (*model.CustomerTypeDiscount, error)
+	GetByCustomerTypeIdAndProductId(ctx context.Context, customerTypeId string, productId string) (*model.CustomerTypeDiscount, error)
 
 	// update
 	Update(ctx context.Context, customerTypeDiscount *model.CustomerTypeDiscount) error
@@ -93,6 +94,15 @@ func (r *customerTypeDiscountRepository) Get(ctx context.Context, id string) (*m
 	stmt := stmtBuilder.Select("*").
 		From(model.CustomerTypeDiscountTableName).
 		Where(squirrel.Eq{"id": id})
+
+	return r.get(ctx, stmt)
+}
+
+func (r *customerTypeDiscountRepository) GetByCustomerTypeIdAndProductId(ctx context.Context, customerTypeId string, productId string) (*model.CustomerTypeDiscount, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.CustomerTypeDiscountTableName).
+		Where(squirrel.Eq{"customer_type_id": customerTypeId}).
+		Where(squirrel.Eq{"product_id": productId})
 
 	return r.get(ctx, stmt)
 }

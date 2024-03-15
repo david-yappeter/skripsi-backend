@@ -212,6 +212,101 @@ func (a *CustomerTypeApi) OptionForCustomerForm() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/customer-types/{id}/discount [post]
+//	@Summary	Add Discount
+//	@tags		Customer Types
+//	@Accept		json
+//	@Param		id											path	string										true	"Customer Type Id"
+//	@Param		dto_request.CustomerTypeAddDiscountRequest	body	dto_request.CustomerTypeAddDiscountRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{customer_type=dto_response.CustomerTypeResponse}}
+func (a *CustomerTypeApi) AddDiscount() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCustomerTypeAddDiscount),
+		func(ctx apiContext) {
+			var request dto_request.CustomerTypeAddDiscountRequest
+			ctx.mustBind(&request)
+
+			customerType := a.customerTypeUseCase.AddDiscount(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"customer_type": dto_response.NewCustomerTypeResponse(customerType),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/customer-types/{id}/discount/{product_id} [put]
+//	@Summary	Update Discount
+//	@tags		Customer Types
+//	@Accept		json
+//	@Param		id												path	string											true	"Customer Type Id"
+//	@Param		product_id										path	string											true	"Product Id"
+//	@Param		dto_request.CustomerTypeUpdateDiscountRequest	body	dto_request.CustomerTypeUpdateDiscountRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{customer_type=dto_response.CustomerTypeResponse}}
+func (a *CustomerTypeApi) UpdateDiscount() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCustomerTypeUpdateDiscount),
+		func(ctx apiContext) {
+			var request dto_request.CustomerTypeUpdateDiscountRequest
+			ctx.mustBind(&request)
+
+			customerType := a.customerTypeUseCase.UpdateDiscount(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"customer_type": dto_response.NewCustomerTypeResponse(customerType),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/customer-types/{id}/discount/{product_id} [delete]
+//	@Summary	Delete Discount
+//	@tags		Customer Types
+//	@Accept		json
+//	@Param		id												path	string											true	"Customer Type Id"
+//	@Param		product_id										path	string											true	"Product Id"
+//	@Param		dto_request.CustomerTypeDeleteDiscountRequest	body	dto_request.CustomerTypeDeleteDiscountRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{customer_type=dto_response.CustomerTypeResponse}}
+func (a *CustomerTypeApi) DeleteDiscount() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCustomerTypeDeleteDiscount),
+		func(ctx apiContext) {
+			var request dto_request.CustomerTypeDeleteDiscountRequest
+			ctx.mustBind(&request)
+
+			customerType := a.customerTypeUseCase.DeleteDiscount(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"customer_type": dto_response.NewCustomerTypeResponse(customerType),
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterCustomerTypeApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := CustomerTypeApi{
 		api:                 newApi(useCaseManager),
@@ -224,6 +319,9 @@ func RegisterCustomerTypeApi(router gin.IRouter, useCaseManager use_case.UseCase
 	routerGroup.GET("/:id", api.Get())
 	routerGroup.PUT("/:id", api.Update())
 	routerGroup.DELETE("/:id", api.Delete())
+	routerGroup.POST("/:id/discount", api.AddDiscount())
+	routerGroup.PUT("/:id/discount/:product_id", api.UpdateDiscount())
+	routerGroup.DELETE("/:id/discount/:product_id", api.DeleteDiscount())
 
 	optionRouterGroup := routerGroup.Group("/options")
 	optionRouterGroup.POST("/customer-form", api.OptionForCustomerForm())

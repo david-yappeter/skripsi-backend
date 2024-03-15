@@ -19,6 +19,7 @@ type customerTypeLoaderParams struct {
 type CustomerTypeUseCase interface {
 	//  create
 	Create(ctx context.Context, request dto_request.CustomerTypeCreateRequest) model.CustomerType
+	AddDiscount(ctx context.Context, request dto_request.CustomerTypeAddDiscountRequest) model.CustomerType
 
 	//  read
 	Fetch(ctx context.Context, request dto_request.CustomerTypeFetchRequest) ([]model.CustomerType, int)
@@ -26,9 +27,11 @@ type CustomerTypeUseCase interface {
 
 	//  update
 	Update(ctx context.Context, request dto_request.CustomerTypeUpdateRequest) model.CustomerType
+	UpdateDiscount(ctx context.Context, request dto_request.CustomerTypeUpdateDiscountRequest) model.CustomerType
 
 	//  delete
 	Delete(ctx context.Context, request dto_request.CustomerTypeDeleteRequest)
+	DeleteDiscount(ctx context.Context, request dto_request.CustomerTypeDeleteDiscountRequest) model.CustomerType
 
 	// option
 	OptionForCustomerForm(ctx context.Context, request dto_request.CustomerTypeOptionForCustomerFormRequest) ([]model.CustomerType, int)
@@ -108,6 +111,30 @@ func (u *customerTypeUseCase) Create(ctx context.Context, request dto_request.Cu
 	return customerType
 }
 
+func (u *customerTypeUseCase) AddDiscount(ctx context.Context, request dto_request.CustomerTypeAddDiscountRequest) model.CustomerType {
+	customerType := mustGetCustomerType(ctx, u.repositoryManager, request.CustomerTypeId, false)
+	product := mustGetProduct(ctx, u.repositoryManager, request.ProductId, true)
+
+	customerTypeDiscount := model.CustomerTypeDiscount{
+		Id:                 util.NewUuid(),
+		ProductId:          product.Id,
+		CustomerTypeId:     customerType.Id,
+		IsActive:           request.IsActive,
+		DiscountPercentage: request.DiscountPercentage,
+		DiscountAmount:     request.DiscountAmount,
+	}
+
+	panicIfErr(
+		u.repositoryManager.CustomerTypeDiscountRepository().Insert(ctx, &customerTypeDiscount),
+	)
+
+	u.mustLoadCustomerTypesData(ctx, []*model.CustomerType{&customerType}, customerTypeLoaderParams{
+		customerTypeDiscounts: true,
+	})
+
+	return customerType
+}
+
 func (u *customerTypeUseCase) Fetch(ctx context.Context, request dto_request.CustomerTypeFetchRequest) ([]model.CustomerType, int) {
 	queryOption := model.CustomerTypeQueryOption{
 		QueryOption: model.NewQueryOptionWithPagination(
@@ -158,6 +185,26 @@ func (u *customerTypeUseCase) Update(ctx context.Context, request dto_request.Cu
 	return customerType
 }
 
+func (u *customerTypeUseCase) UpdateDiscount(ctx context.Context, request dto_request.CustomerTypeUpdateDiscountRequest) model.CustomerType {
+	customerType := mustGetCustomerType(ctx, u.repositoryManager, request.CustomerTypeId, false)
+	product := mustGetProduct(ctx, u.repositoryManager, request.ProductId, false)
+	customerTypeDiscount := mustGetCustomerTypeDiscountByCustomerTypeIdAndProductId(ctx, u.repositoryManager, customerType.Id, product.Id, false)
+
+	customerTypeDiscount.IsActive = request.IsActive
+	customerTypeDiscount.DiscountAmount = request.DiscountAmount
+	customerTypeDiscount.DiscountPercentage = request.DiscountPercentage
+
+	panicIfErr(
+		u.repositoryManager.CustomerTypeDiscountRepository().Update(ctx, &customerTypeDiscount),
+	)
+
+	u.mustLoadCustomerTypesData(ctx, []*model.CustomerType{&customerType}, customerTypeLoaderParams{
+		customerTypeDiscounts: true,
+	})
+
+	return customerType
+}
+
 func (u *customerTypeUseCase) Delete(ctx context.Context, request dto_request.CustomerTypeDeleteRequest) {
 	customerType := mustGetCustomerType(ctx, u.repositoryManager, request.CustomerTypeId, true)
 
@@ -166,6 +213,22 @@ func (u *customerTypeUseCase) Delete(ctx context.Context, request dto_request.Cu
 	panicIfErr(
 		u.repositoryManager.CustomerTypeRepository().Delete(ctx, &customerType),
 	)
+}
+
+func (u *customerTypeUseCase) DeleteDiscount(ctx context.Context, request dto_request.CustomerTypeDeleteDiscountRequest) model.CustomerType {
+	customerType := mustGetCustomerType(ctx, u.repositoryManager, request.CustomerTypeId, false)
+	product := mustGetProduct(ctx, u.repositoryManager, request.ProductId, false)
+	customerTypeDiscount := mustGetCustomerTypeDiscountByCustomerTypeIdAndProductId(ctx, u.repositoryManager, customerType.Id, product.Id, false)
+
+	panicIfErr(
+		u.repositoryManager.CustomerTypeDiscountRepository().Delete(ctx, &customerTypeDiscount),
+	)
+
+	u.mustLoadCustomerTypesData(ctx, []*model.CustomerType{&customerType}, customerTypeLoaderParams{
+		customerTypeDiscounts: true,
+	})
+
+	return customerType
 }
 
 func (u *customerTypeUseCase) OptionForCustomerForm(ctx context.Context, request dto_request.CustomerTypeOptionForCustomerFormRequest) ([]model.CustomerType, int) {

@@ -40,12 +40,15 @@ const (
 	PermissionCustomerDebtPayment     // CUSTOMER_DEBT_PAYMENT
 
 	// customer type
-	PermissionCustomerTypeCreate // CUSTOMER_TYPE_CREATE
-	PermissionCustomerTypeFetch  // CUSTOMER_TYPE_FETCH
-	PermissionCustomerTypeGet    // CUSTOMER_TYPE_GET
-	PermissionCustomerTypeUpdate // CUSTOMER_TYPE_UPDATE
-	PermissionCustomerTypeDelete // CUSTOMER_TYPE_DELETE
+	PermissionCustomerTypeCreate                // CUSTOMER_TYPE_CREATE
+	PermissionCustomerTypeFetch                 // CUSTOMER_TYPE_FETCH
+	PermissionCustomerTypeGet                   // CUSTOMER_TYPE_GET
+	PermissionCustomerTypeUpdate                // CUSTOMER_TYPE_UPDATE
+	PermissionCustomerTypeDelete                // CUSTOMER_TYPE_DELETE
 	PermissionCustomerTypeOptionForCustomerForm // CUSTOMER_TYPE_OPTION_FOR_CUSTOMER_FORM
+	PermissionCustomerTypeAddDiscount           // CUSTOMER_TYPE_OPTION_ADD_DISCOUNT
+	PermissionCustomerTypeUpdateDiscount        // CUSTOMER_TYPE_OPTION_UPDATE_DISCOUNT
+	PermissionCustomerTypeDeleteDiscount        // CUSTOMER_TYPE_OPTION_DELETE_DISCOUNT
 
 	// delivery order
 	PermissionDeliveryOrderCreate        // DELIVERY_ORDER_CREATE
