@@ -34,6 +34,7 @@ type RepositoryManager interface {
 	DeliveryOrderItemRepository() DeliveryOrderItemRepository
 	FileRepository() FileRepository
 	PermissionRepository() PermissionRepository
+	ProductDiscountRepository() ProductDiscountRepository
 	ProductReceiveRepository() ProductReceiveRepository
 	ProductReceiveItemRepository() ProductReceiveItemRepository
 	ProductReceiveImageRepository() ProductReceiveImageRepository
@@ -81,6 +82,7 @@ type repositoryManager struct {
 	deliveryOrderItemRepository     DeliveryOrderItemRepository
 	fileRepository                  FileRepository
 	permissionRepository            PermissionRepository
+	productDiscountRepository       ProductDiscountRepository
 	productReceiveRepository        ProductReceiveRepository
 	productReceiveItemRepository    ProductReceiveItemRepository
 	productReceiveImageRepository   ProductReceiveImageRepository
@@ -207,6 +209,10 @@ func (r *repositoryManager) FileRepository() FileRepository {
 
 func (r *repositoryManager) PermissionRepository() PermissionRepository {
 	return r.permissionRepository
+}
+
+func (r *repositoryManager) ProductDiscountRepository() ProductDiscountRepository {
+	return r.productDiscountRepository
 }
 
 func (r *repositoryManager) ProductReceiveRepository() ProductReceiveRepository {
@@ -377,6 +383,10 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		permissionRepository: NewPermissionRepository(
+			db,
+			loggerStack,
+		),
+		productDiscountRepository: NewProductDiscountRepository(
 			db,
 			loggerStack,
 		),

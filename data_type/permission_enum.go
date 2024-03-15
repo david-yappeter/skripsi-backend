@@ -77,6 +77,11 @@ const (
 	PermissionProductOptionForDeliveryOrderForm  // PRODUCT_OPTION_FOR_DELIVERY_ORDER_FORM
 	PermissionProductOptionForCustomerTypeForm   // PRODUCT_OPTION_FOR_CUSTOMER_TYPE_FORM
 
+	// product discount
+	PermissionProductDiscountCreate // PRODUCT_DISCOUNT_CREATE
+	PermissionProductDiscountUpdate // PRODUCT_DISCOUNT_UPDATE
+	PermissionProductDiscountDelete // PRODUCT_DISCOUNT_DELETE
+
 	// product receive
 	PermissionProductReceiveCreate       // PRODUCT_RECEIVE_CREATE
 	PermissionProductReceiveUpload       // PRODUCT_RECEIVE_UPLOAD

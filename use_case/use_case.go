@@ -215,6 +215,12 @@ func mustGetProductUnitByProductIdAndUnitId(ctx context.Context, repositoryManag
 	return *productUnit
 }
 
+func mustGetProductDiscount(ctx context.Context, repositoryManager repository.RepositoryManager, productDiscountId string, isValidate bool) model.ProductDiscount {
+	productDiscount, err := repositoryManager.ProductDiscountRepository().Get(ctx, productDiscountId)
+	panicIfRepositoryError(err, "PRODUCT_DISCOUNT.NOT_FOUND", isValidate)
+	return *productDiscount
+}
+
 func mustGetFile(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.File {
 	file, err := repositoryManager.FileRepository().Get(ctx, id)
 	panicIfRepositoryError(err, "FILE.NOT_FOUND", isValidate)
