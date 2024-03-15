@@ -44,7 +44,6 @@ type UserAddRoleRequest struct {
 } // @name UserAddRoleRequest
 
 type UserDeleteRoleRequest struct {
-	RoleId string `json:"role_id" validate:"required,not_empty,uuid"`
-
+	RoleId string `json:"-" swaggerignore:"true"`
 	UserId string `json:"-" swaggerignore:"true"`
 } // @name UserDeleteRoleRequest

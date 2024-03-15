@@ -246,7 +246,6 @@ func (a *UserApi) AddRole() gin.HandlerFunc {
 //	@Accept		json
 //	@Param		id									path	string								true	"Id"
 //	@Param		role_id								path	string								true	"Role Id"
-//	@Param		dto_request.UserDeleteRoleRequest	body	dto_request.UserDeleteRoleRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{user=dto_response.UserResponse}}
 func (a *UserApi) DeleteRole() gin.HandlerFunc {
@@ -257,7 +256,6 @@ func (a *UserApi) DeleteRole() gin.HandlerFunc {
 			roleId := ctx.getUuidParam("role_id")
 
 			var request dto_request.UserDeleteRoleRequest
-			ctx.mustBind(&request)
 
 			request.UserId = id
 			request.RoleId = roleId
