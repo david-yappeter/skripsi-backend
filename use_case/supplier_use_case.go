@@ -47,12 +47,17 @@ func (u *supplierUseCase) mustValidateCodeNotDuplicate(ctx context.Context, code
 	panicIfErr(err)
 
 	if isExist {
-		panic(dto_response.NewBadRequestErrorResponse("SUPPLIER_TYPE.CODE.ALREADY_EXIST"))
+		panic(dto_response.NewBadRequestErrorResponse("SUPPLIER.CODE.ALREADY_EXIST"))
 	}
 }
 
 func (u *supplierUseCase) mustValidateAllowDeleteSupplier(ctx context.Context, supplierId string) {
+	isExist, err := u.repositoryManager.ProductReceiveRepository().IsExistBySupplierId(ctx, supplierId)
+	panicIfErr(err)
 
+	if isExist {
+		panic(dto_response.NewBadRequestErrorResponse("SUPPLIER.IN_USED_BY_PRODUCT_RECEIVE"))
+	}
 }
 
 func (u *supplierUseCase) mustLoadSupplierDatas(ctx context.Context, suppliers []*model.Supplier) {
