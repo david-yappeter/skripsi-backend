@@ -26,9 +26,7 @@ type UserRepository interface {
 	IsExistByUsername(ctx context.Context, username string) (bool, error)
 
 	// update
-	UpdateName(ctx context.Context, user *model.User) error
-	UpdateIsActive(ctx context.Context, user *model.User) error
-	UpdatePassword(ctx context.Context, user *model.User) error
+	Update(ctx context.Context, user *model.User) error
 
 	// delete
 	Truncate(ctx context.Context) error
@@ -180,16 +178,8 @@ func (r *userRepository) IsExistByUsername(ctx context.Context, username string)
 	return isExist, nil
 }
 
-func (r *userRepository) UpdateName(ctx context.Context, user *model.User) error {
-	return defaultUpdate(r.db, ctx, user, "name", nil)
-}
-
-func (r *userRepository) UpdateIsActive(ctx context.Context, user *model.User) error {
-	return defaultUpdate(r.db, ctx, user, "is_active", nil)
-}
-
-func (r *userRepository) UpdatePassword(ctx context.Context, user *model.User) error {
-	return defaultUpdate(r.db, ctx, user, "password", nil)
+func (r *userRepository) Update(ctx context.Context, user *model.User) error {
+	return defaultUpdate(r.db, ctx, user, "*", nil)
 }
 
 func (r *userRepository) Truncate(ctx context.Context) error {

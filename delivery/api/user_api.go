@@ -205,68 +205,6 @@ func (a *UserApi) UpdatePassword() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/users/{id}/active [patch]
-//	@Summary	Update Active
-//	@tags		Users
-//	@Accept		json
-//	@Param		dto_request.UserUpdateActiveRequest	body	dto_request.UserUpdateActiveRequest	true	"Body Request"
-//	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{user=dto_response.UserResponse}}
-func (a *UserApi) UpdateActive() gin.HandlerFunc {
-	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionUserUpdateActive),
-		func(ctx apiContext) {
-			id := ctx.getUuidParam("id")
-			var request dto_request.UserUpdateActiveRequest
-			request.UserId = id
-
-			user := a.userUseCase.UpdateActive(ctx.context(), request)
-
-			ctx.json(
-				http.StatusOK,
-				dto_response.Response{
-					Data: dto_response.DataResponse{
-						"user": dto_response.NewUserResponse(user),
-					},
-				},
-			)
-		},
-	)
-}
-
-// API:
-//
-//	@Router		/users/{id}/inactive [patch]
-//	@Summary	Update InActive
-//	@tags		Users
-//	@Accept		json
-//	@Param		dto_request.UserUpdateInActiveRequest	body	dto_request.UserUpdateInActiveRequest	true	"Body Request"
-//	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{user=dto_response.UserResponse}}
-func (a *UserApi) UpdateInActive() gin.HandlerFunc {
-	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionUserUpdateInActive),
-		func(ctx apiContext) {
-			id := ctx.getUuidParam("id")
-			var request dto_request.UserUpdateInActiveRequest
-			request.UserId = id
-
-			user := a.userUseCase.UpdateInActive(ctx.context(), request)
-
-			ctx.json(
-				http.StatusOK,
-				dto_response.Response{
-					Data: dto_response.DataResponse{
-						"user": dto_response.NewUserResponse(user),
-					},
-				},
-			)
-		},
-	)
-}
-
-// API:
-//
 //	@Router		/users/{id}/roles [post]
 //	@Summary	Add Role
 //	@tags		Users
@@ -351,8 +289,6 @@ func RegisterUserApi(router gin.IRouter, useCaseManager use_case.UseCaseManager)
 	routerGroup.GET("/:id", api.Get())
 	routerGroup.PUT("/:id", api.Update())
 	routerGroup.PATCH("/:id", api.UpdatePassword())
-	routerGroup.PATCH("/:id/active", api.UpdateActive())
-	routerGroup.PATCH("/:id/inactive", api.UpdateInActive())
 
 	routerGroup.POST("/:id/roles", api.AddRole())
 	routerGroup.DELETE("/:id/roles/:role_id", api.DeleteRole())

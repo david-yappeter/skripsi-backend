@@ -25,7 +25,8 @@ type UserGetRequest struct {
 } // @name UserGetRequest
 
 type UserUpdateRequest struct {
-	Name string `json:"name" validate:"required,not_empty,max=255"`
+	Name     string `json:"name" validate:"required,not_empty,max=255"`
+	IsActive bool   `json:"is_active"`
 
 	UserId string `json:"-" swaggerignore:"true"`
 } // @name UserUpdateRequest
@@ -35,14 +36,6 @@ type UserUpdatePasswordRequest struct {
 
 	UserId string `json:"-" swaggerignore:"true"`
 } // @name UserUpdatePasswordRequest
-
-type UserUpdateActiveRequest struct {
-	UserId string `json:"-" swaggerignore:"true"`
-} // @name UserUpdateActiveRequest
-
-type UserUpdateInActiveRequest struct {
-	UserId string `json:"-" swaggerignore:"true"`
-} // @name UserUpdateInActiveRequest
 
 type UserAddRoleRequest struct {
 	RoleId string `json:"role_id" validate:"required,not_empty,uuid"`

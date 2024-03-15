@@ -30,8 +30,6 @@ type UserUseCase interface {
 	//  update
 	Update(ctx context.Context, request dto_request.UserUpdateRequest) model.User
 	UpdatePassword(ctx context.Context, request dto_request.UserUpdatePasswordRequest) model.User
-	UpdateActive(ctx context.Context, request dto_request.UserUpdateActiveRequest) model.User
-	UpdateInActive(ctx context.Context, request dto_request.UserUpdateInActiveRequest) model.User
 
 	//  delete
 	DeleteRole(ctx context.Context, request dto_request.UserDeleteRoleRequest) model.User
@@ -178,13 +176,12 @@ func (u *userUseCase) Get(ctx context.Context, request dto_request.UserGetReques
 func (u *userUseCase) Update(ctx context.Context, request dto_request.UserUpdateRequest) model.User {
 	user := mustGetUser(ctx, u.repositoryManager, request.UserId, false)
 
-	if user.Name != request.Name {
-		user.Name = request.Name
+	user.Name = request.Name
+	user.IsActive = request.IsActive
 
-		panicIfErr(
-			u.repositoryManager.UserRepository().UpdateName(ctx, &user),
-		)
-	}
+	panicIfErr(
+		u.repositoryManager.UserRepository().Update(ctx, &user),
+	)
 
 	u.mustLoadUsersData(ctx, []*model.User{&user}, userLoaderParams{
 		userRoles: true,
@@ -198,45 +195,7 @@ func (u *userUseCase) UpdatePassword(ctx context.Context, request dto_request.Us
 
 	user.Password = u.mustGetHashedPassword(request.Password)
 	panicIfErr(
-		u.repositoryManager.UserRepository().UpdatePassword(ctx, &user),
-	)
-
-	u.mustLoadUsersData(ctx, []*model.User{&user}, userLoaderParams{
-		userRoles: true,
-	})
-
-	return user
-}
-
-func (u *userUseCase) UpdateActive(ctx context.Context, request dto_request.UserUpdateActiveRequest) model.User {
-	user := mustGetUser(ctx, u.repositoryManager, request.UserId, false)
-
-	if user.IsActive {
-		panic(dto_response.NewBadRequestErrorResponse("USER.ALREADY_ACTIVE"))
-	}
-
-	user.IsActive = true
-	panicIfErr(
-		u.repositoryManager.UserRepository().UpdateIsActive(ctx, &user),
-	)
-
-	u.mustLoadUsersData(ctx, []*model.User{&user}, userLoaderParams{
-		userRoles: true,
-	})
-
-	return user
-}
-
-func (u *userUseCase) UpdateInActive(ctx context.Context, request dto_request.UserUpdateInActiveRequest) model.User {
-	user := mustGetUser(ctx, u.repositoryManager, request.UserId, false)
-
-	if !user.IsActive {
-		panic(dto_response.NewBadRequestErrorResponse("USER.ALREADY.INACTIVE"))
-	}
-
-	user.IsActive = false
-	panicIfErr(
-		u.repositoryManager.UserRepository().UpdateIsActive(ctx, &user),
+		u.repositoryManager.UserRepository().Update(ctx, &user),
 	)
 
 	u.mustLoadUsersData(ctx, []*model.User{&user}, userLoaderParams{
