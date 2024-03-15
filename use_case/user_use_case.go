@@ -193,9 +193,35 @@ func (u *userUseCase) Update(ctx context.Context, request dto_request.UserUpdate
 func (u *userUseCase) UpdatePassword(ctx context.Context, request dto_request.UserUpdatePasswordRequest) model.User {
 	user := mustGetUser(ctx, u.repositoryManager, request.UserId, false)
 
+	// change user password
 	user.Password = u.mustGetHashedPassword(request.Password)
+
+	// update all updated user non-revoked access token to revoked
+	userAccessTokens, err := u.repositoryManager.UserAccessTokenRepository().FetchByUserIdAndRevokedAndGetExpiredAt(ctx, request.UserId, false, util.CurrentDateTime())
+	panicIfErr(err)
+
+	toBeRevokedUserAccessTokenIds := []string{}
+	for _, userAccessToken := range userAccessTokens {
+		toBeRevokedUserAccessTokenIds = append(toBeRevokedUserAccessTokenIds, userAccessToken.Id)
+	}
+
 	panicIfErr(
-		u.repositoryManager.UserRepository().Update(ctx, &user),
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			userRepository := u.repositoryManager.UserRepository()
+			userAccessTokenRepository := u.repositoryManager.UserAccessTokenRepository()
+
+			// update password
+			if err := userRepository.Update(ctx, &user); err != nil {
+				return err
+			}
+
+			// revoked access token
+			if err := userAccessTokenRepository.UpdateManyRevokedByIds(ctx, true, toBeRevokedUserAccessTokenIds); err != nil {
+				return err
+			}
+
+			return nil
+		}),
 	)
 
 	u.mustLoadUsersData(ctx, []*model.User{&user}, userLoaderParams{
