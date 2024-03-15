@@ -147,7 +147,9 @@ func (u *userUseCase) Fetch(ctx context.Context, request dto_request.UserFetchRe
 			request.Limit,
 			model.Sorts(request.Sorts),
 		),
-		Phrase: request.Phrase,
+		Phrase:   request.Phrase,
+		IsActive: request.IsActive,
+		RoleIds:  request.RoleIds,
 	}
 
 	users, err := u.repositoryManager.UserRepository().Fetch(ctx, queryOption)

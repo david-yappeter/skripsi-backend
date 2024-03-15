@@ -8,6 +8,8 @@ type CustomerType struct {
 	Description *string `db:"description"`
 
 	Timestamp
+
+	CustomerTypeDiscounts []CustomerTypeDiscount `db:"-"`
 }
 
 func (m *CustomerType) TableName() string {

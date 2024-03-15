@@ -4,10 +4,17 @@ import (
 	"context"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
+	"myapp/loader"
 	"myapp/model"
 	"myapp/repository"
 	"myapp/util"
+
+	"golang.org/x/sync/errgroup"
 )
+
+type customerTypeLoaderParams struct {
+	customerTypeDiscounts bool
+}
 
 type CustomerTypeUseCase interface {
 	//  create
@@ -57,6 +64,34 @@ func (u *customerTypeUseCase) mustValidateAllowDeleteCustomerType(ctx context.Co
 	}
 }
 
+func (u *customerTypeUseCase) mustLoadCustomerTypesData(ctx context.Context, customerTypes []*model.CustomerType, option customerTypeLoaderParams) {
+	customerTypeDiscountsLoader := loader.NewCustomerTypeDiscountsLoader(u.repositoryManager.CustomerTypeDiscountRepository())
+
+	panicIfErr(
+		util.Await(func(group *errgroup.Group) {
+			if option.customerTypeDiscounts {
+				for i := range customerTypes {
+					group.Go(customerTypeDiscountsLoader.CustomerTypeFn(customerTypes[i]))
+				}
+			}
+		}),
+	)
+
+	productLoader := loader.NewProductLoader(u.repositoryManager.ProductRepository())
+
+	panicIfErr(
+		util.Await(func(group *errgroup.Group) {
+			if option.customerTypeDiscounts {
+				for i := range customerTypes {
+					for j := range customerTypes[i].CustomerTypeDiscounts {
+						group.Go(productLoader.CustomerTypeDiscountFn(&customerTypes[i].CustomerTypeDiscounts[j]))
+					}
+				}
+			}
+		}),
+	)
+}
+
 func (u *customerTypeUseCase) Create(ctx context.Context, request dto_request.CustomerTypeCreateRequest) model.CustomerType {
 	u.mustValidateNameNotDuplicate(ctx, request.Name)
 
@@ -95,6 +130,10 @@ func (u *customerTypeUseCase) Fetch(ctx context.Context, request dto_request.Cus
 func (u *customerTypeUseCase) Get(ctx context.Context, request dto_request.CustomerTypeGetRequest) model.CustomerType {
 	customerType := mustGetCustomerType(ctx, u.repositoryManager, request.CustomerTypeId, true)
 
+	u.mustLoadCustomerTypesData(ctx, []*model.CustomerType{&customerType}, customerTypeLoaderParams{
+		customerTypeDiscounts: true,
+	})
+
 	return customerType
 }
 
@@ -111,6 +150,10 @@ func (u *customerTypeUseCase) Update(ctx context.Context, request dto_request.Cu
 	panicIfErr(
 		u.repositoryManager.CustomerTypeRepository().Update(ctx, &customerType),
 	)
+
+	u.mustLoadCustomerTypesData(ctx, []*model.CustomerType{&customerType}, customerTypeLoaderParams{
+		customerTypeDiscounts: true,
+	})
 
 	return customerType
 }

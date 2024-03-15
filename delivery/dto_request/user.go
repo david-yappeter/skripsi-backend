@@ -8,7 +8,7 @@ type UserCreateRequest struct {
 } // @name UserCreateRequest
 
 type UserFetchSorts []struct {
-	Field     string `json:"field" validate:"required,oneof=username created_at updated_at" example:"username"`
+	Field     string `json:"field" validate:"required,oneof=username is_active created_at updated_at" example:"username"`
 	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
 } // @name UserFetchSorts
 
@@ -17,6 +17,7 @@ type UserFetchRequest struct {
 	Sorts    UserFetchSorts `json:"sorts" validate:"unique=Field,dive"`
 	Phrase   *string        `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 	IsActive *bool          `json:"is_active" extensions:"x-nullable"`
+	RoleIds  []string       `json:"role_ids" extensions:"x-nullable"`
 } // @name UserFetchRequest
 
 type UserGetRequest struct {

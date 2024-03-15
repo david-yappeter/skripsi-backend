@@ -54,7 +54,29 @@ func (o *UserQueryOption) SetDefaultFields() {
 func (o *UserQueryOption) SetDefaultSorts() {
 	if len(o.Sorts) == 0 {
 		o.Sorts = Sorts{
-			{Field: "updated_at", Direction: "desc"},
+			{Field: "is_active", Direction: "asc"},
 		}
 	}
+}
+
+func (o *UserQueryOption) TranslateSorts() {
+	translateFn := func(field string, direction string) Sorts {
+	switch field {
+		case "is_active":
+			if direction == "asc" {
+				return Sorts{
+					{Field: "is_active", Direction: "desc"},
+				}
+			} else {
+				return Sorts{
+					{Field: "is_active", Direction: "asc"},
+				}
+			}
+
+		default:
+			return defaultTranslateSort(field, direction)
+		}
+	}
+
+	o.Sorts = TranslateSorts(o.Sorts, translateFn)
 }
