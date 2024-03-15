@@ -63,3 +63,15 @@ type ProductOptionForDeliveryOrderFormRequest struct {
 	Sorts  ProductOptionForDeliveryOrderFormSorts `json:"sorts" validate:"unique=Field,dive"`
 	Phrase *string                                `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name ProductOptionForDeliveryOrderFormRequest
+
+type ProductOptionForCustomerTypeFormSorts []struct {
+	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
+	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
+} // @name ProductOptionForCustomerTypeFormSorts
+
+type ProductOptionForCustomerTypeFormRequest struct {
+	PaginationRequest
+	Sorts          ProductOptionForCustomerTypeFormSorts `json:"sorts" validate:"unique=Field,dive"`
+	CustomerTypeId string                                `json:"customer_type_id" validate:"required,not_empty,uuid"`
+	Phrase         *string                               `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name ProductOptionForCustomerTypeFormRequest

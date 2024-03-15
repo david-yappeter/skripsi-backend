@@ -42,6 +42,7 @@ type ProductUseCase interface {
 	// option
 	OptionForProductReceiveForm(ctx context.Context, request dto_request.ProductOptionForProductReceiveFormRequest) ([]model.Product, int)
 	OptionForDeliveryOrderForm(ctx context.Context, request dto_request.ProductOptionForDeliveryOrderFormRequest) ([]model.Product, int)
+	OptionForCustomerTypeForm(ctx context.Context, request dto_request.ProductOptionForCustomerTypeFormRequest) ([]model.Product, int)
 }
 
 type productUseCase struct {
@@ -377,6 +378,35 @@ func (u *productUseCase) OptionForDeliveryOrderForm(ctx context.Context, request
 	u.mustLoadProductDatas(ctx, util.SliceValueToSlicePointer(products), productLoaderParams{
 		productStock: true,
 	})
+
+	return products, total
+}
+
+func (u *productUseCase) OptionForCustomerTypeForm(ctx context.Context, request dto_request.ProductOptionForCustomerTypeFormRequest) ([]model.Product, int) {
+	customerTypeDiscounts, err := u.repositoryManager.CustomerTypeDiscountRepository().FetchByCustomerTypeIds(ctx, []string{request.CustomerTypeId})
+	panicIfErr(err)
+
+	excludedProductIds := []string{}
+	for _, customerTypeDiscount := range customerTypeDiscounts {
+		excludedProductIds = append(excludedProductIds, customerTypeDiscount.ProductId)
+	}
+
+	queryOption := model.ProductQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts(request.Sorts),
+		),
+		ExcludeIds: excludedProductIds,
+		IsActive:   util.BoolP(true),
+		Phrase:     request.Phrase,
+	}
+
+	products, err := u.repositoryManager.ProductRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.ProductRepository().Count(ctx, queryOption)
+	panicIfErr(err)
 
 	return products, total
 }

@@ -138,8 +138,9 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionProductGet,
 		PermissionProductUpdate,
 		PermissionProductDelete,
-		PermissionProductOptionForDeliveryOrderForm,
 		PermissionProductOptionForProductReceiveForm,
+		PermissionProductOptionForDeliveryOrderForm,
+		PermissionProductOptionForCustomerTypeForm,
 
 		// product receive
 		PermissionProductReceiveCreate,
