@@ -9,6 +9,7 @@ type DeliveryOrderItem struct {
 	UserId          string  `db:"user_id"`
 	Qty             float64 `db:"qty"`
 	PricePerUnit    float64 `db:"price_per_unit"`
+	DiscountPerUnit float64 `db:"discount_per_unit"`
 	Timestamp
 
 	ProductUnit            *ProductUnit            `db:"-"`
@@ -31,6 +32,7 @@ func (m *DeliveryOrderItem) ToMap() map[string]interface{} {
 		"user_id":           m.UserId,
 		"qty":               m.Qty,
 		"price_per_unit":    m.PricePerUnit,
+		"discount_per_unit": m.DiscountPerUnit,
 		"created_at":        m.CreatedAt,
 		"updated_at":        m.UpdatedAt,
 	}

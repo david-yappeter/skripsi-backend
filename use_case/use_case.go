@@ -343,9 +343,23 @@ func mustGetCustomerTypeDiscount(ctx context.Context, repositoryManager reposito
 	return *customerTypeDiscount
 }
 
+func mustGetProductDiscountByProductId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string, isValidate bool) model.ProductDiscount {
+	productDiscount := shouldGetProductDiscountByProductId(ctx, repositoryManager, productId)
+
+	if productDiscount == nil {
+		panicIfRepositoryError(constant.ErrNoData, "PRODUCT_DISCOUNT.NOT_FOUND", isValidate)
+	}
+
+	return *productDiscount
+}
+
 func mustGetCustomerTypeDiscountByCustomerTypeIdAndProductId(ctx context.Context, repositoryManager repository.RepositoryManager, customerTypeId string, productId string, isValidate bool) model.CustomerTypeDiscount {
-	customerTypeDiscount, err := repositoryManager.CustomerTypeDiscountRepository().GetByCustomerTypeIdAndProductId(ctx, customerTypeId, productId)
-	panicIfRepositoryError(err, "CUSTOMER_TYPE_DISCOUNT.NOT_FOUND", isValidate)
+	customerTypeDiscount := shouldGetCustomerTypeDiscountByCustomerTypeIdAndProductId(ctx, repositoryManager, customerTypeId, productId)
+
+	if customerTypeDiscount == nil {
+		panicIfRepositoryError(constant.ErrNoData, "CUSTOMER_TYPE_DISCOUNT.NOT_FOUND", isValidate)
+	}
+
 	return *customerTypeDiscount
 }
 
@@ -359,6 +373,18 @@ func shouldGetProductStockByProductId(ctx context.Context, repositoryManager rep
 	productStock, err := repositoryManager.ProductStockRepository().GetByProductId(ctx, productId)
 	panicIfErr(err, constant.ErrNoData)
 	return productStock
+}
+
+func shouldGetProductDiscountByProductId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string) *model.ProductDiscount {
+	productDiscount, err := repositoryManager.ProductDiscountRepository().GetByProductId(ctx, productId)
+	panicIfErr(err, constant.ErrNoData)
+	return productDiscount
+}
+
+func shouldGetCustomerTypeDiscountByCustomerTypeIdAndProductId(ctx context.Context, repositoryManager repository.RepositoryManager, customerTypeId string, productId string) *model.CustomerTypeDiscount {
+	customerTypeDiscount, err := repositoryManager.CustomerTypeDiscountRepository().GetByCustomerTypeIdAndProductId(ctx, customerTypeId, productId)
+	panicIfErr(err, constant.ErrNoData)
+	return customerTypeDiscount
 }
 
 func execWebhookMutex(fn func()) {

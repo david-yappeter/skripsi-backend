@@ -20,6 +20,7 @@ type ProductDiscountRepository interface {
 	Fetch(ctx context.Context, options ...model.ProductDiscountQueryOption) ([]model.ProductDiscount, error)
 	FetchByIds(ctx context.Context, ids []string) ([]model.ProductDiscount, error)
 	Get(ctx context.Context, id string) (*model.ProductDiscount, error)
+	GetByProductId(ctx context.Context, productId string) (*model.ProductDiscount, error)
 	IsExistByProductId(ctx context.Context, productId string) (bool, error)
 
 	// update
@@ -127,6 +128,14 @@ func (r *productDiscountRepository) Get(ctx context.Context, id string) (*model.
 	stmt := stmtBuilder.Select("*").
 		From(model.ProductDiscountTableName).
 		Where(squirrel.Eq{"id": id})
+
+	return r.get(ctx, stmt)
+}
+
+func (r *productDiscountRepository) GetByProductId(ctx context.Context, productId string) (*model.ProductDiscount, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.ProductDiscountTableName).
+		Where(squirrel.Eq{"product_id": productId})
 
 	return r.get(ctx, stmt)
 }

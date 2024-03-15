@@ -174,6 +174,10 @@ func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.
 		productStock        = shouldGetProductStockByProductId(ctx, u.repositoryManager, product.Id)
 		isProductStockExist = productStock != nil
 
+		// discount
+		customer        = mustGetCustomer(ctx, u.repositoryManager, deliveryOrder.CustomerId, true)
+		discountPerUnit = 0.0
+
 		totalSmallestQty = request.Qty * productUnit.ScaleToBase
 	)
 
@@ -208,6 +212,17 @@ func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.
 	isNewDeliveryOrderItem := deliveryOrderItem == nil
 
 	if isNewDeliveryOrderItem {
+		// check for customer discount
+		if customer.CustomerTypeId != nil {
+			customerTypeDiscount := shouldGetCustomerTypeDiscountByCustomerTypeIdAndProductId(ctx, u.repositoryManager, *customer.CustomerTypeId, product.Id)
+
+			if customerTypeDiscount.DiscountAmount != nil {
+				discountPerUnit = *customerTypeDiscount.DiscountAmount
+			} else {
+				discountPerUnit = *customerTypeDiscount.DiscountPercentage * *product.Price
+			}
+		}
+
 		deliveryOrderItem = &model.DeliveryOrderItem{
 			Id:              util.NewUuid(),
 			DeliveryOrderId: deliveryOrder.Id,
@@ -215,6 +230,7 @@ func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.
 			UserId:          authUser.Id,
 			Qty:             request.Qty,
 			PricePerUnit:    *product.Price,
+			DiscountPerUnit: discountPerUnit,
 		}
 	} else {
 		deliveryOrderItem.Qty += request.Qty
