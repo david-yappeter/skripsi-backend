@@ -11,9 +11,10 @@ type Product struct {
 	IsActive    bool     `db:"is_active"`
 	Timestamp
 
-	ProductStock  *ProductStock  `db:"-"`
-	TiktokProduct *TiktokProduct `db:"-"`
-	ProductUnits  []ProductUnit  `db:"-"`
+	ProductStock    *ProductStock    `db:"-"`
+	TiktokProduct   *TiktokProduct   `db:"-"`
+	ProductUnits    []ProductUnit    `db:"-"`
+	ProductDiscount *ProductDiscount `db:"-"`
 }
 
 func (m *Product) TableName() string {

@@ -83,6 +83,16 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 		}),
 	)
 
+	productDiscountLoader := loader.NewProductDiscountLoader(u.repositoryManager.ProductDiscountRepository())
+
+	panicIfErr(
+		util.Await(func(group *errgroup.Group) {
+			for i := range cartItems {
+				group.Go(productDiscountLoader.ProductFnNotStrict(cartItems[i].ProductUnit.Product))
+			}
+		}),
+	)
+
 	var (
 		transaction                    = model.Transaction{}
 		transactionTotal               = 0.0
@@ -128,12 +138,31 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 				// add transaction total
 				transactionTotal += cartItem.Qty * cartItem.ProductUnit.ScaleToBase * *cartItem.ProductUnit.Product.Price
 
+				// determine if transaction applied discount (must check minimum quantity)
+				var discountPerUnit *float64 = nil
+				productDiscount := cartItem.ProductUnit.Product.ProductDiscount
+
+				if productDiscount != nil && cartItem.Qty >= productDiscount.MinimumQty {
+					if productDiscount.DiscountAmount != nil {
+						discountPerUnit = productDiscount.DiscountAmount
+					} else {
+						discountPerUnit = util.Float64P(*productDiscount.DiscountPercentage * *cartItem.ProductUnit.Product.Price)
+					}
+				}
+
+				// deduct transaction total if discount exist
+				if discountPerUnit != nil {
+					transactionTotal -= *discountPerUnit
+				}
+
 				// create transaction items
 				transactionItem := model.TransactionItem{
-					Id:            util.NewUuid(),
-					TransactionId: transaction.Id,
-					ProductUnitId: cartItem.ProductUnitId,
-					Qty:           cartItem.Qty,
+					Id:              util.NewUuid(),
+					TransactionId:   transaction.Id,
+					ProductUnitId:   cartItem.ProductUnitId,
+					Qty:             cartItem.Qty,
+					PricePerUnit:    *cartItem.ProductUnit.Product.Price,
+					DiscountPerUnit: discountPerUnit,
 				}
 				transactionItems = append(transactionItems, transactionItem)
 

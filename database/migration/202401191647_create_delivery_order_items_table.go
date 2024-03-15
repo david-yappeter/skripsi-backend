@@ -12,7 +12,7 @@ func init() {
 				qty decimal(16,2) NOT NULL,
 				price_per_unit decimal(16,2) NOT NULL,
 				discount_per_unit decimal(16,2) NOT NULL,m
-				created_at timestamp NOT NULL,
+				created_at timestampra NOT NULL,
 				updated_at timestamp NOT NULL,
 				CONSTRAINT delivery_order_items_pk PRIMARY KEY (id),
 				CONSTRAINT delivery_order_items_delivery_orders_fk FOREIGN KEY (delivery_order_id) REFERENCES delivery_orders (id),
