@@ -111,6 +111,10 @@ func (u *productUseCase) mustLoadProductDatas(ctx context.Context, products []*m
 			}
 		}),
 	)
+
+	for i := range products {
+		products[i].ImageFile.SetLink(u.baseFileUseCase.mainFilesystem)
+	}
 }
 
 func (u *productUseCase) Create(ctx context.Context, request dto_request.ProductCreateRequest) model.Product {

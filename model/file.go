@@ -1,6 +1,10 @@
 package model
 
-import "myapp/data_type"
+import (
+	"myapp/data_type"
+	"myapp/internal/filesystem"
+	"myapp/util"
+)
 
 const FileTableName = "files"
 
@@ -31,4 +35,8 @@ func (m *File) ToMap() map[string]interface{} {
 		"created_at": m.CreatedAt,
 		"updated_at": m.UpdatedAt,
 	}
+}
+
+func (m *File) SetLink(fs filesystem.Client) {
+	m.Link = util.StringP(fs.Url(m.Path))
 }
