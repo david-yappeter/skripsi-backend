@@ -16,6 +16,7 @@ type DeliveryOrderResponse struct {
 
 	Customer *CustomerResponse `json:"customer" extensions:"x-nullable"`
 	Timestamp
+	Items []DeliveryOrderItemResponse `json:"items" extensions:"x-nullable"`
 } // @name DeliveryOrderResponse
 
 func NewDeliveryOrderResponse(deliveryOrder model.DeliveryOrder) DeliveryOrderResponse {
@@ -32,6 +33,10 @@ func NewDeliveryOrderResponse(deliveryOrder model.DeliveryOrder) DeliveryOrderRe
 
 	if deliveryOrder.Customer != nil {
 		r.Customer = NewCustomerResponseP(*deliveryOrder.Customer)
+	}
+
+	for _, deliveryOrderItem := range deliveryOrder.DeliveryOrderItems {
+		r.Items = append(r.Items, NewDeliveryOrderItemResponse(deliveryOrderItem))
 	}
 
 	return r

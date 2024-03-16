@@ -191,7 +191,6 @@ func (u *deliveryOrderUseCase) Create(ctx context.Context, request dto_request.D
 
 func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.DeliveryOrderAddItemRequest) model.DeliveryOrder {
 	var (
-		authUser            = model.MustGetUserCtx(ctx)
 		deliveryOrder       = mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, false)
 		productUnit         = mustGetProductUnitByProductIdAndUnitId(ctx, u.repositoryManager, request.ProductId, request.UnitId, true)
 		product             = mustGetProduct(ctx, u.repositoryManager, request.ProductId, false)
@@ -251,7 +250,6 @@ func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.
 			Id:              util.NewUuid(),
 			DeliveryOrderId: deliveryOrder.Id,
 			ProductUnitId:   productUnit.Id,
-			UserId:          authUser.Id,
 			Qty:             request.Qty,
 			PricePerUnit:    *product.Price,
 			DiscountPerUnit: discountPerUnit,
