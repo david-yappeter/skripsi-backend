@@ -15,6 +15,7 @@ type ProductResponse struct {
 
 	ProductUnits []ProductUnitResponse `json:"product_units"`
 	Stock        *ProductStockResponse `json:"stock" extensions:"x-nulalble"`
+	ImageFile    *FileResponse         `json:"image_file" extensions:"x-nullable"`
 } // @name ProductResponse
 
 func NewProductResponse(product model.Product) ProductResponse {
@@ -33,6 +34,10 @@ func NewProductResponse(product model.Product) ProductResponse {
 
 	if product.ProductStock != nil {
 		r.Stock = util.Pointer(NewProductStockResponse(*product.ProductStock))
+	}
+
+	if product.ImageFile != nil {
+		r.ImageFile = NewFileResponseP(*product.ImageFile)
 	}
 
 	return r

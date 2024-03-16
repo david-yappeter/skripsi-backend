@@ -22,6 +22,7 @@ type productLoaderParams struct {
 	productStock  bool
 	tiktokProduct bool
 	productUnits  bool
+	productImage  bool
 }
 
 type ProductUseCase interface {
@@ -87,6 +88,7 @@ func (u *productUseCase) mustLoadProductDatas(ctx context.Context, products []*m
 	productStockLoader := loader.NewProductStockLoader(u.repositoryManager.ProductStockRepository())
 	tiktokProductLoader := loader.NewTiktokProductLoader(u.repositoryManager.TiktokProductRepository())
 	productUnitsLoader := loader.NewProductUnitsLoader(u.repositoryManager.ProductUnitRepository())
+	fileLoader := loader.NewFileLoader(u.repositoryManager.FileRepository())
 
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
@@ -101,6 +103,10 @@ func (u *productUseCase) mustLoadProductDatas(ctx context.Context, products []*m
 
 				if option.productUnits {
 					group.Go(productUnitsLoader.ProductFn(products[i]))
+				}
+
+				if option.productImage {
+					group.Go(fileLoader.ProductFn(products[i]))
 				}
 			}
 		}),
@@ -203,7 +209,9 @@ func (u *productUseCase) Fetch(ctx context.Context, request dto_request.ProductF
 	panicIfErr(err)
 
 	u.mustLoadProductDatas(ctx, util.SliceValueToSlicePointer(products), productLoaderParams{
-		productStock: true,
+		productStock:  true,
+		productImage:  true,
+		tiktokProduct: true,
 	})
 
 	return products, total
@@ -215,6 +223,7 @@ func (u *productUseCase) Get(ctx context.Context, request dto_request.ProductGet
 	u.mustLoadProductDatas(ctx, []*model.Product{&product}, productLoaderParams{
 		productStock:  true,
 		tiktokProduct: true,
+		productImage:  true,
 		productUnits:  true,
 	})
 

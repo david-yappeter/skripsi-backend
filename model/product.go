@@ -15,6 +15,7 @@ type Product struct {
 	TiktokProduct   *TiktokProduct   `db:"-"`
 	ProductUnits    []ProductUnit    `db:"-"`
 	ProductDiscount *ProductDiscount `db:"-"`
+	ImageFile       *File            `db:"-"`
 }
 
 func (m *Product) TableName() string {

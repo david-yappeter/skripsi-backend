@@ -50,6 +50,19 @@ func (l *FileLoader) DeliveryOrderImageFn(deliveryOrderImage *model.DeliveryOrde
 	}
 }
 
+func (l *FileLoader) ProductFn(product *model.Product) func() error {
+	return func() error {
+		file, err := l.load(product.ImageFileId)
+		if err != nil {
+			return err
+		}
+
+		product.ImageFile = file
+
+		return nil
+	}
+}
+
 func NewFileLoader(fileRepository repository.FileRepository) *FileLoader {
 	batchFn := func(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
 		ids := make([]string, len(keys))
