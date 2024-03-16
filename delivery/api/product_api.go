@@ -52,7 +52,7 @@ func (a *ProductApi) Create() gin.HandlerFunc {
 //	@Summary	Upload
 //	@tags		Products
 //	@Accept		json
-//	@Param		dto_request.ProductUploadRequest	body	dto_request.ProductUploadRequest	true	"Body Request"
+//	@Param		file	formData	file	true	"Body with file"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{path=string}}
 func (a *ProductApi) Upload() gin.HandlerFunc {

@@ -5,10 +5,10 @@ import (
 	// filesystemInternal "myapp/internal/filesystem"
 )
 
-// @title		Mortal Health - Clinic Pilot API
-// @version	0.0.1
-// @host		cp-api.mortalhealth.com
-// @BasePath	/
+//	@title		Mortal Health - Clinic Pilot API
+//	@version	0.0.1
+//	@host		cp-api.mortalhealth.com
+//	@BasePath	/
 func main() {
 
 	// filesystemConfig := filesystemInternal.Config{

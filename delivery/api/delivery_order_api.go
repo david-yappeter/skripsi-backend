@@ -52,7 +52,7 @@ func (a *DeliveryOrderApi) Create() gin.HandlerFunc {
 //	@Summary	Upload
 //	@tags		Delivery Orders
 //	@Accept		json
-//	@Param		dto_request.DeliveryOrderUploadRequest	body	dto_request.DeliveryOrderUploadRequest	true	"Body Request"
+//	@Param		file	formData	file	true	"Body with file"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{path=string}}
 func (a *DeliveryOrderApi) Upload() gin.HandlerFunc {

@@ -244,8 +244,8 @@ func (a *UserApi) AddRole() gin.HandlerFunc {
 //	@Summary	Delete Role
 //	@tags		Users
 //	@Accept		json
-//	@Param		id									path	string								true	"Id"
-//	@Param		role_id								path	string								true	"Role Id"
+//	@Param		id		path	string	true	"Id"
+//	@Param		role_id	path	string	true	"Role Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{user=dto_response.UserResponse}}
 func (a *UserApi) DeleteRole() gin.HandlerFunc {
