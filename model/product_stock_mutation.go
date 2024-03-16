@@ -16,6 +16,8 @@ type ProductStockMutation struct {
 	MutatedAt     data_type.DateTime                 `db:"mutated_at"`
 
 	Timestamp
+
+	ProductUnit *ProductUnit `db:"-"`
 }
 
 func (m *ProductStockMutation) TableName() string {

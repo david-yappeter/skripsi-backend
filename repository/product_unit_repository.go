@@ -20,6 +20,7 @@ type ProductUnitRepository interface {
 	Fetch(ctx context.Context, options ...model.ProductUnitQueryOption) ([]model.ProductUnit, error)
 	FetchByIds(ctx context.Context, ids []string) ([]model.ProductUnit, error)
 	FetchByProductIds(ctx context.Context, productIds []string) ([]model.ProductUnit, error)
+	FetchBaseByProductIds(ctx context.Context, productIds []string) ([]model.ProductUnit, error)
 	Get(ctx context.Context, id string) (*model.ProductUnit, error)
 	GetByProductIdAndUnitId(ctx context.Context, productId string, unitId string) (*model.ProductUnit, error)
 	GetBaseProductUnitByProductId(ctx context.Context, productId string) (*model.ProductUnit, error)
@@ -137,6 +138,15 @@ func (r *productProductUnitRepository) FetchByProductIds(ctx context.Context, pr
 	stmt := stmtBuilder.Select("*").
 		From(model.ProductUnitTableName).
 		Where(squirrel.Eq{"product_id": productIds})
+
+	return r.fetch(ctx, stmt)
+}
+
+func (r *productProductUnitRepository) FetchBaseByProductIds(ctx context.Context, productIds []string) ([]model.ProductUnit, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.ProductUnitTableName).
+		Where(squirrel.Eq{"product_id": productIds}).
+		Where(squirrel.Expr("to_unit_id IS NULL"))
 
 	return r.fetch(ctx, stmt)
 }

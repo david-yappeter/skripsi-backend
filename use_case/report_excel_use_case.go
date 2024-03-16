@@ -107,7 +107,7 @@ func SetDefaultReportExcelSheet(file *excelize.File, sheet string) error {
 		sheet,
 		0,
 		&excelize.ViewOptions{
-			ShowGridLines: util.BoolP(false),
+			ShowGridLines: util.BoolP(true),
 		},
 	); err != nil {
 		return err

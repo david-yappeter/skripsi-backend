@@ -13,6 +13,7 @@ type Product struct {
 
 	ProductStock    *ProductStock    `db:"-"`
 	TiktokProduct   *TiktokProduct   `db:"-"`
+	BaseProductUnit *ProductUnit     `db:"-"`
 	ProductUnits    []ProductUnit    `db:"-"`
 	ProductDiscount *ProductDiscount `db:"-"`
 	ImageFile       *File            `db:"-"`

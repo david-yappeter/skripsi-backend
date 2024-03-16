@@ -123,10 +123,19 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 			for i := range productReceives {
 				for j := range productReceives[i].ProductReceiveItems {
 					group.Go(productLoader.ProductUnitFn(productReceives[i].ProductReceiveItems[j].ProductUnit))
-
 					if option.productReceiveItems && option.productReceiveProductStock {
 						group.Go(productStockLoader.ProductUnitFn(productReceives[i].ProductReceiveItems[j].ProductUnit))
 					}
+				}
+			}
+		}),
+	)
+
+	panicIfErr(
+		util.Await(func(group *errgroup.Group) {
+			for i := range productReceives {
+				for j := range productReceives[i].ProductReceiveItems {
+					group.Go(fileLoader.ProductFn(productReceives[i].ProductReceiveItems[j].ProductUnit.Product))
 				}
 			}
 		}),

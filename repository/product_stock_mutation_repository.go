@@ -18,6 +18,7 @@ type ProductStockMutationRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.ProductStockMutationQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.ProductStockMutationQueryOption) ([]model.ProductStockMutation, error)
+	FetchHaveQtyLeft(ctx context.Context) ([]model.ProductStockMutation, error)
 	FetchByTypeAndIdentifierIds(ctx context.Context, _type data_type.ProductStockMutationType, identifierIds []string) ([]model.ProductStockMutation, error)
 	Get(ctx context.Context, id string) (*model.ProductStockMutation, error)
 	GetByTypeAndIdentifierId(ctx context.Context, _type data_type.ProductStockMutationType, identifierId string) (*model.ProductStockMutation, error)
@@ -113,6 +114,14 @@ func (r *productStockMutationRepository) Fetch(ctx context.Context, options ...m
 	}
 
 	stmt := r.prepareQuery(option)
+
+	return r.fetch(ctx, stmt)
+}
+
+func (r *productStockMutationRepository) FetchHaveQtyLeft(ctx context.Context) ([]model.ProductStockMutation, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.ProductStockMutationTableName).
+		Where(squirrel.Gt{"base_qty_left": 0})
 
 	return r.fetch(ctx, stmt)
 }

@@ -24,6 +24,19 @@ func (l *ProductUnitLoader) load(id string) (*model.ProductUnit, error) {
 	return result.(*model.ProductUnit), nil
 }
 
+func (l *ProductUnitLoader) ProductStockMutationFn(productStockMutation *model.ProductStockMutation) func() error {
+	return func() error {
+		productUnit, err := l.load(productStockMutation.ProductUnitId)
+		if err != nil {
+			return err
+		}
+
+		productStockMutation.ProductUnit = productUnit
+
+		return nil
+	}
+}
+
 func (l *ProductUnitLoader) ProductReceiveItemFn(productReceiveItem *model.ProductReceiveItem) func() error {
 	return func() error {
 		productUnit, err := l.load(productReceiveItem.ProductUnitId)
