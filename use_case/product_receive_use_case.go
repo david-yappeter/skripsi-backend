@@ -121,15 +121,27 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
 			for i := range productReceives {
-				if option.productReceiveItems && option.productReceiveProductStock {
-					for j := range productReceives[i].ProductReceiveItems {
+
+				group.Go(productLoader.ProductUnitFn(productReceives[i].ProductReceiveItems[j].ProductUnit))
+
+				for j := range productReceives[i].ProductReceiveItems {
+					if option.productReceiveItems && option.productReceiveProductStock {
 						group.Go(productStockLoader.ProductUnitFn(productReceives[i].ProductReceiveItems[j].ProductUnit))
-						group.Go(productLoader.ProductUnitFn(productReceives[i].ProductReceiveItems[j].ProductUnit))
 					}
 				}
 			}
 		}),
 	)
+
+	for i := range productReceives {
+		for j := range productReceives[i].ProductReceiveImages {
+			productReceives[i].ProductReceiveImages[j].File.SetLink(u.mainFilesystem)
+		}
+
+		for j := range productReceives[i].ProductReceiveItems {
+			productReceives[i].ProductReceiveItems[j].ProductUnit.Product.ImageFile.SetLink(u.mainFilesystem)
+		}
+	}
 }
 
 func (u *productReceiveUseCase) Create(ctx context.Context, request dto_request.ProductReceiveCreateRequest) model.ProductReceive {

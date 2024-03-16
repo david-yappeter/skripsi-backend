@@ -123,17 +123,41 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 	)
 
 	productStockLoader := loader.NewProductStockLoader(u.repositoryManager.ProductStockRepository())
+	productLoader := loader.NewProductLoader(u.repositoryManager.ProductRepository())
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
 			for i := range deliveryOrders {
-				if option.deliveryOrderItems && option.deliveryOrderProductStock {
-					for j := range deliveryOrders[i].DeliveryOrderItems {
+				for j := range deliveryOrders[i].DeliveryOrderItems {
+					group.Go(productLoader.ProductUnitFn(deliveryOrders[i].DeliveryOrderItems[j].ProductUnit))
+
+					if option.deliveryOrderItems && option.deliveryOrderProductStock {
 						group.Go(productStockLoader.ProductUnitFn(deliveryOrders[i].DeliveryOrderItems[j].ProductUnit))
 					}
 				}
 			}
 		}),
 	)
+
+	panicIfErr(
+		util.Await(func(group *errgroup.Group) {
+			for i := range deliveryOrders {
+				if option.deliveryOrderItems {
+					for j := range deliveryOrders[i].DeliveryOrderItems {
+						group.Go(fileLoader.ProductFn(deliveryOrders[i].DeliveryOrderItems[j].ProductUnit.Product))
+					}
+				}
+			}
+		}),
+	)
+
+	for i := range deliveryOrders {
+		for j := range deliveryOrders[i].DeliveryOrderImages {
+			deliveryOrders[i].DeliveryOrderImages[j].File.SetLink(u.mainFilesystem)
+		}
+		for j := range deliveryOrders[i].DeliveryOrderItems {
+			deliveryOrders[i].DeliveryOrderItems[j].ProductUnit.Product.ImageFile.SetLink(u.mainFilesystem)
+		}
+	}
 }
 
 func (u *deliveryOrderUseCase) shouldGetDeliveryOrderItemByDeliveryOrderIdAndProductUnitId(ctx context.Context, deliveryOrderId string, productUnitId string) *model.DeliveryOrderItem {
