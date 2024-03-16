@@ -2,20 +2,15 @@ package use_case
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"io"
-	"myapp/constant"
 	"myapp/data_type"
 	"myapp/internal/filesystem"
-	"myapp/loader"
-	"myapp/model"
 	"myapp/repository"
 	"myapp/util"
 	"time"
 
 	"github.com/xuri/excelize/v2"
-	"golang.org/x/sync/errgroup"
 )
 
 const (
@@ -607,18 +602,34 @@ func (u *ReportDailyTransactionExcel) Init(
 	return
 }
 
-func (u *ReportDailyTransactionExcel) ToReadSeekCloser() (io.ReadSeekCloser, error) {
+func (u *ReportDailyTransactionExcel) ToReadSeekCloserWithContentLength() (io.ReadSeekCloser, int64, error) {
 	reader := bytes.NewReader(nil)
 	if u.excelFile != nil {
 		bytesBuffer, err := u.excelFile.WriteToBuffer()
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 
 		reader = bytes.NewReader(bytesBuffer.Bytes())
 	}
 
-	return util.ReadSeekNopCloser(reader), nil
+	readSeekCloser := util.ReadSeekNopCloser(reader)
+
+	seeker, ok := readSeekCloser.(io.Seeker)
+	if !ok {
+		panic("does not support seeking")
+	}
+
+	contentLength, err := seeker.Seek(0, io.SeekEnd)
+	if err != nil {
+		return nil, 0, err
+	}
+	_, err = seeker.Seek(0, io.SeekStart)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return readSeekCloser, contentLength, nil
 }
 
 func (u *ReportDailyTransactionExcel) AddSheet1Data(data ReportDailyTransactionExcelSheet1Data) error {
@@ -904,133 +915,3 @@ type reportDailyTransactionUseCase struct {
 
 // 	return reader, reader.ContentLength(), reader.ContentType(), file.Name
 // }
-
-func GenerateStockReport(
-	ctx context.Context,
-	repositoryManager repository.RepositoryManager,
-	mainFilesystem filesystem.Client,
-) (file *model.File, err error) {
-	productRepository := repositoryManager.ProductRepository()
-	productStockMutationRepository := repositoryManager.ProductStockMutationRepository()
-
-	products, err := productRepository.Fetch(ctx)
-	panicIfErr(err)
-
-	baseProductUnitLoader := loader.NewBaseProductUnitLoader(repositoryManager.ProductUnitRepository())
-	productStockLoader := loader.NewProductStockLoader(repositoryManager.ProductStockRepository())
-
-	panicIfErr(
-		util.Await(func(group *errgroup.Group) {
-			for i := range products {
-				group.Go(baseProductUnitLoader.ProductFnNotStrict(&products[i]))
-				group.Go(productStockLoader.ProductFnNotStrict(&products[i]))
-			}
-		}),
-	)
-
-	unitLoader := loader.NewUnitLoader(repositoryManager.UnitRepository())
-
-	panicIfErr(
-		util.Await(func(group *errgroup.Group) {
-			for i := range products {
-				group.Go(unitLoader.ProductUnitFn(products[i].BaseProductUnit))
-			}
-		}),
-	)
-
-	// construct excel report sheets
-	reportExcel, err := NewReportDailyTransactionExcel(
-		util.CurrentDateTime(),
-	)
-	if err != nil {
-		return
-	}
-	defer reportExcel.Close()
-
-	for _, product := range products {
-		baseUnit := "-"
-		stockLeft := 0.0
-		currentSellingPrice := 0.0
-
-		if product.BaseProductUnit != nil {
-			baseUnit = product.BaseProductUnit.Unit.Name
-		}
-
-		if product.Price != nil {
-			currentSellingPrice = *product.Price
-		}
-
-		if product.ProductStock != nil {
-			stockLeft = product.ProductStock.Qty
-		}
-
-		reportExcel.AddSheet1Data(ReportDailyTransactionExcelSheet1Data{
-			ProductId:           product.Id,
-			ProductName:         product.Name,
-			BaseUnit:            baseUnit,
-			CurrentSellingPrice: currentSellingPrice,
-			IsActive:            false,
-			StockLeft:           stockLeft,
-		})
-	}
-
-	productStockMutations, err := productStockMutationRepository.FetchHaveQtyLeft(ctx)
-	panicIfErr(err)
-
-	productUnitLoader := loader.NewProductUnitLoader(repositoryManager.ProductUnitRepository())
-	panicIfErr(
-		util.Await(func(group *errgroup.Group) {
-			for i := range productStockMutations {
-				group.Go(productUnitLoader.ProductStockMutationFn(&productStockMutations[i]))
-			}
-		}),
-	)
-
-	productLoader := loader.NewProductLoader(repositoryManager.ProductRepository())
-	panicIfErr(
-		util.Await(func(group *errgroup.Group) {
-			for i := range productStockMutations {
-				group.Go(productLoader.ProductUnitFn(productStockMutations[i].ProductUnit))
-				group.Go(unitLoader.ProductUnitFn(productStockMutations[i].ProductUnit))
-			}
-		}),
-	)
-
-	for _, productStockMutation := range productStockMutations {
-		reportExcel.AddSheet2Data(ReportDailyTransactionExcelSheet2Data{
-			ProductId:     productStockMutation.ProductUnit.ProductId,
-			UnitId:        productStockMutation.ProductUnit.UnitId,
-			ProductName:   productStockMutation.ProductUnit.Product.Name,
-			UnitName:      productStockMutation.ProductUnit.Unit.Name,
-			MutationType:  productStockMutation.Type.String(),
-			Qty:           productStockMutation.Qty,
-			ScaleToBase:   productStockMutation.ScaleToBase,
-			BaseQty:       productStockMutation.ScaleToBase * productStockMutation.Qty,
-			BaseQtyLeft:   productStockMutation.BaseQtyLeft,
-			BaseQtySold:   (productStockMutation.ScaleToBase * productStockMutation.Qty) - productStockMutation.BaseQtyLeft,
-			BaseCostPrice: productStockMutation.BaseCostPrice,
-			MutatedAt:     productStockMutation.MutatedAt.Time(),
-		})
-	}
-
-	readSeekCloser, err := reportExcel.ToReadSeekCloser()
-	if err != nil {
-		return
-	}
-
-	// filename := fmt.Sprintf("%s.xlsx", report.Id)
-	filename := fmt.Sprintf("%s.xlsx", "test_excel")
-
-	file = &model.File{
-		Id:   util.NewUuid(),
-		Name: filename,
-		Path: fmt.Sprintf("%s/%s", constant.ReportProductStockPath, filename),
-		Type: data_type.FileTypeCustomerPaymentImage,
-	}
-
-	if err = mainFilesystem.Write(ctx, readSeekCloser, file.Path); err != nil {
-		return
-	}
-
-	return
-}

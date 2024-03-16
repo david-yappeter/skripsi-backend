@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"myapp/data_type"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
@@ -85,6 +86,32 @@ func (a *ProductStockApi) Get() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/product-stocks/report [get]
+//	@Summary	Download Report
+//	@tags		Product Stocks=
+//	@Produce	json
+func (a *ProductStockApi) DownloadReport() gin.HandlerFunc {
+	return a.Guest(
+		// data_type.PermissionP(data_type.PermissionProductStockGet),
+		func(ctx apiContext) {
+
+			ioReadCloser, contentLength, contentType, filename := a.productStockUseCase.DownloadReport(ctx.context())
+
+			ctx.dataFromReader(
+				http.StatusOK,
+				contentLength,
+				contentType,
+				ioReadCloser,
+				map[string]string{
+					"Content-Disposition": fmt.Sprintf("attachment; filename=\"%s\"", filename),
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/product-stocks/{id}/adjustment [patch]
 //	@Summary	Adjustment
 //	@tags		Product Stocks
@@ -126,5 +153,6 @@ func RegisterProductStockApi(router gin.IRouter, useCaseManager use_case.UseCase
 	routerGroup := router.Group("/product-stocks")
 	routerGroup.POST("/filter", api.Fetch())
 	routerGroup.GET("/:id", api.Get())
+	routerGroup.GET("/report", api.DownloadReport())
 	routerGroup.PATCH("/:id/adjustment", api.Adjustment())
 }

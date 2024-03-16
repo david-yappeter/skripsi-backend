@@ -96,9 +96,10 @@ const (
 	PermissionProductReceiveDeleteImage  // PRODUCT_RECEIVE_DELETE_IMAGE
 
 	// product stock
-	PermissionProductStockFetch      // PRODUCT_STOCK_FETCH
-	PermissionProductStockGet        // PRODUCT_STOCK_GET
-	PermissionProductStockAdjustment // PRODUCT_STOCK_ADJUSTMENT
+	PermissionProductStockFetch          // PRODUCT_STOCK_FETCH
+	PermissionProductStockGet            // PRODUCT_STOCK_GET
+	PermissionProductStockDownloadReport // PRODUCT_STOCK_DOWNLOAD_REPORT
+	PermissionProductStockAdjustment     // PRODUCT_STOCK_ADJUSTMENT
 
 	// product unit
 	PermissionProductUnitCreate                      // PRODUCT_UNIT_CREATE

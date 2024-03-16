@@ -163,6 +163,7 @@ func GetRoleInventoryPermissions() []Permission {
 		// product stock
 		PermissionProductStockFetch,
 		PermissionProductStockGet,
+		PermissionProductStockDownloadReport,
 		PermissionProductStockAdjustment,
 
 		// product_unit
