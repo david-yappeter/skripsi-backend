@@ -201,6 +201,7 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 						})
 
 						productStockMutation.BaseQtyLeft -= deductQtyLeft
+						deductQtyLeft = 0
 					}
 
 					if err := productStockMutationRepository.Update(ctx, productStockMutation); err != nil {

@@ -141,8 +141,7 @@ func (r *cashierSessionRepository) GetByUserIdAndStatusActive(ctx context.Contex
 	stmt := stmtBuilder.Select("*").
 		From(model.CashierSessionTableName).
 		Where(squirrel.Eq{"user_id": userId}).
-		Where(squirrel.Eq{"status": data_type.CashierSessionStatusActive}).
-		Prefix("EXISTS (").Suffix(")")
+		Where(squirrel.Eq{"status": data_type.CashierSessionStatusActive})
 
 	return r.get(ctx, stmt)
 }

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"myapp/data_type"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
@@ -81,19 +82,78 @@ func (a *CashierSessionApi) Start() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/cashier-sessions/{id} [get]
+//	@Summary	Get
+//	@tags		Cashier Sessions
+//	@Accept		json
+//	@Param		id	path	string	true	"Cashier Session Id"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{cashier_session=dto_response.CashierSessionResponse}}
+func (a *CashierSessionApi) Get() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCashierSessionGet),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.CashierSessionGetRequest
+			request.CashierSessionId = id
+
+			cashierSession := a.cashierSessionUseCase.Get(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"cashier_session": dto_response.NewCashierSessionResponse(cashierSession),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/cashier-sessions/{id}/report [get]
+//	@Summary	Download Report
+//	@tags		Cashier Sessions
+//	@Accept		json
+//	@Param		id	path	string	true	"Cashier Session Id"
+//	@Produce	json
+func (a *CashierSessionApi) DownloadReport() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCashierSessionDownloadReport),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.CashierSessionDownloadReportRequest
+			request.CashierSessionId = id
+
+			ioReadCloser, contentLength, contentType, filename := a.cashierSessionUseCase.DownloadReport(ctx.context(), request)
+
+			ctx.dataFromReader(
+				http.StatusOK,
+				contentLength,
+				contentType,
+				ioReadCloser,
+				map[string]string{
+					"Content-Disposition": fmt.Sprintf("attachment; filename=\"%s\"", filename),
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/cashier-sessions/get-current [get]
 //	@Summary	Get current user cashier session
 //	@tags		Cashier Sessions
 //	@Accept		json
-//	@Param		dto_request.CashierSessionStartRequest	body	dto_request.CashierSessionStartRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{cashier_session=dto_response.CashierSessionResponse}}
 func (a *CashierSessionApi) GetCurrent() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionCashierSessionGetCurrent),
 		func(ctx apiContext) {
-			var request dto_request.CashierSessionStartRequest
-			ctx.mustBind(&request)
 
 			cashierSession := a.cashierSessionUseCase.GetByCurrentUser(ctx.context())
 
@@ -153,6 +213,8 @@ func RegisterCashierSessionApi(router gin.IRouter, useCaseManager use_case.UseCa
 	routerGroup := router.Group("/cashier-sessions")
 	routerGroup.POST("/filter", api.Fetch())
 	routerGroup.POST("/start", api.Start())
+	routerGroup.GET("/:id", api.Get())
+	routerGroup.GET("/:id/report", api.DownloadReport())
 	routerGroup.GET("/current", api.GetCurrent())
 	routerGroup.POST("/end", api.End())
 }

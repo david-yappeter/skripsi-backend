@@ -137,7 +137,7 @@ func (a *CartApi) SetInActive() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/carts/items/{product_unit_id} [post]
+//	@Router		/carts/items [post]
 //	@Summary	Add Item
 //	@tags		Carts
 //	@Accept		json
@@ -266,7 +266,7 @@ func RegisterCartApi(router gin.IRouter, useCaseManager use_case.UseCaseManager)
 	routerGroup.GET("/in-active", api.FetchInActive())
 	routerGroup.PATCH("/:id/set-active", api.SetActive())
 	routerGroup.PATCH("/set-in-active", api.SetInActive())
-	routerGroup.POST("/items/:product_unit_id", api.AddItem())
+	routerGroup.POST("/items", api.AddItem())
 	routerGroup.PATCH("/items/:product_unit_id", api.UpdateItem())
 	routerGroup.DELETE("/items/:product_unit_id", api.DeleteItem())
 	routerGroup.DELETE("/:id", api.Delete())

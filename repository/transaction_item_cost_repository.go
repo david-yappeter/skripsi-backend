@@ -18,6 +18,7 @@ type TransactionItemCostRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.TransactionItemCostQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.TransactionItemCostQueryOption) ([]model.TransactionItemCost, error)
+	FetchByTransactionItemIds(ctx context.Context, transactionItemIds []string) ([]model.TransactionItemCost, error)
 	Get(ctx context.Context, id string) (*model.TransactionItemCost, error)
 
 	// update
@@ -109,6 +110,14 @@ func (r *transactionItemCostRepository) Fetch(ctx context.Context, options ...mo
 	}
 
 	stmt := r.prepareQuery(option)
+
+	return r.fetch(ctx, stmt)
+}
+
+func (r *transactionItemCostRepository) FetchByTransactionItemIds(ctx context.Context, transactionItemIds []string) ([]model.TransactionItemCost, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.TransactionItemCostTableName).
+		Where(squirrel.Eq{"transaction_item_id": transactionItemIds})
 
 	return r.fetch(ctx, stmt)
 }

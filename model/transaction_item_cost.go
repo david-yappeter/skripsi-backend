@@ -1,6 +1,6 @@
 package model
 
-const TransactionItemCostTableName = "transaction_item_cost"
+const TransactionItemCostTableName = "transaction_item_costs"
 
 type TransactionItemCost struct {
 	Id                string  `db:"id"`

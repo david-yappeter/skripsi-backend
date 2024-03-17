@@ -234,6 +234,8 @@ func GetRoleCashier() []Permission {
 		// cashier session
 		PermissionCashierSessionFetch,
 		PermissionCashierSessionStart,
+		PermissionCashierSessionGet,
+		PermissionCashierSessionDownloadReport,
 		PermissionCashierSessionGetCurrent,
 		PermissionCashierSessionEnd,
 

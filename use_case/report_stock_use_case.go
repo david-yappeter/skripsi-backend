@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"io"
 	"myapp/data_type"
-	"myapp/internal/filesystem"
-	"myapp/repository"
 	"myapp/util"
 	"time"
 
@@ -18,7 +16,7 @@ const (
 	ReportStockExcelSheet2Name string = "Stock Mutation"
 )
 
-type ReportDailyTransactionExcelSheet1Data struct {
+type ReportStockExcelSheet1Data struct {
 	ProductId           string
 	ProductName         string
 	BaseUnit            string
@@ -27,7 +25,7 @@ type ReportDailyTransactionExcelSheet1Data struct {
 	StockLeft           float64
 }
 
-type ReportDailyTransactionExcelSheet2Data struct {
+type ReportStockExcelSheet2Data struct {
 	ProductId     string
 	UnitId        string
 	ProductName   string
@@ -42,7 +40,7 @@ type ReportDailyTransactionExcelSheet2Data struct {
 	MutatedAt     time.Time
 }
 
-type ReportDailyTransactionExcel struct {
+type ReportStockExcel struct {
 	excelFile *excelize.File
 
 	// Font:
@@ -163,7 +161,7 @@ type ReportDailyTransactionExcel struct {
 	sheet2LatestDataPosY int
 }
 
-func (u *ReportDailyTransactionExcel) initSheet1(
+func (u *ReportStockExcel) initSheet1(
 	dateTime data_type.DateTime,
 ) (err error) {
 
@@ -252,7 +250,7 @@ func (u *ReportDailyTransactionExcel) initSheet1(
 	return
 }
 
-func (u *ReportDailyTransactionExcel) initSheet2(
+func (u *ReportStockExcel) initSheet2(
 	dateTime data_type.DateTime,
 ) (err error) {
 	if u.excelFile == nil {
@@ -366,7 +364,7 @@ func (u *ReportDailyTransactionExcel) initSheet2(
 	return
 }
 
-func (u *ReportDailyTransactionExcel) initSheet1Style() (err error) {
+func (u *ReportStockExcel) initSheet1Style() (err error) {
 	if u.excelFile == nil {
 		return
 	}
@@ -485,7 +483,7 @@ func (u *ReportDailyTransactionExcel) initSheet1Style() (err error) {
 	return
 }
 
-func (u *ReportDailyTransactionExcel) initSheet2Style() (err error) {
+func (u *ReportStockExcel) initSheet2Style() (err error) {
 	if u.excelFile == nil {
 		return
 	}
@@ -588,7 +586,7 @@ func (u *ReportDailyTransactionExcel) initSheet2Style() (err error) {
 	return
 }
 
-func (u *ReportDailyTransactionExcel) Init(
+func (u *ReportStockExcel) Init(
 	dateTime data_type.DateTime,
 ) (err error) {
 	if err = u.initSheet1(dateTime); err != nil {
@@ -602,7 +600,7 @@ func (u *ReportDailyTransactionExcel) Init(
 	return
 }
 
-func (u *ReportDailyTransactionExcel) ToReadSeekCloserWithContentLength() (io.ReadSeekCloser, int64, error) {
+func (u *ReportStockExcel) ToReadSeekCloserWithContentLength() (io.ReadSeekCloser, int64, error) {
 	reader := bytes.NewReader(nil)
 	if u.excelFile != nil {
 		bytesBuffer, err := u.excelFile.WriteToBuffer()
@@ -632,7 +630,7 @@ func (u *ReportDailyTransactionExcel) ToReadSeekCloserWithContentLength() (io.Re
 	return readSeekCloser, contentLength, nil
 }
 
-func (u *ReportDailyTransactionExcel) AddSheet1Data(data ReportDailyTransactionExcelSheet1Data) error {
+func (u *ReportStockExcel) AddSheet1Data(data ReportStockExcelSheet1Data) error {
 	newLatestDataPosY := u.sheet1LatestDataPosY + 1
 
 	if err := u.excelFile.SetCellStyle(
@@ -664,7 +662,7 @@ func (u *ReportDailyTransactionExcel) AddSheet1Data(data ReportDailyTransactionE
 	return nil
 }
 
-func (u *ReportDailyTransactionExcel) AddSheet2Data(data ReportDailyTransactionExcelSheet2Data) error {
+func (u *ReportStockExcel) AddSheet2Data(data ReportStockExcelSheet2Data) error {
 	newLatestDataPosY := u.sheet2LatestDataPosY + 1
 
 	if err := u.excelFile.SetCellStyle(
@@ -711,7 +709,7 @@ func (u *ReportDailyTransactionExcel) AddSheet2Data(data ReportDailyTransactionE
 	return nil
 }
 
-func (u *ReportDailyTransactionExcel) Close() error {
+func (u *ReportStockExcel) Close() error {
 	if u.excelFile != nil {
 		return u.excelFile.Close()
 	}
@@ -719,12 +717,12 @@ func (u *ReportDailyTransactionExcel) Close() error {
 	return nil
 }
 
-func NewReportDailyTransactionExcel(
+func NewReportStockExcel(
 	exportedDateTime data_type.DateTime,
-) (reportExcel *ReportDailyTransactionExcel, err error) {
+) (reportExcel *ReportStockExcel, err error) {
 	defer func() {
 		if err != nil {
-			err = fmt.Errorf("NewReportDailyTransactionExcel: %w", err)
+			err = fmt.Errorf("NewReportStockExcel: %w", err)
 
 			if reportExcel != nil {
 				// make sure to close it before set to nil pointer
@@ -736,7 +734,7 @@ func NewReportDailyTransactionExcel(
 		}
 	}()
 
-	reportExcel = &ReportDailyTransactionExcel{}
+	reportExcel = &ReportStockExcel{}
 
 	reportExcel.excelFile, err = NewDefaultReportExcelFile()
 	if err != nil {
@@ -749,169 +747,3 @@ func NewReportDailyTransactionExcel(
 
 	return
 }
-
-type ReportDailyTransactionUseCase interface {
-	// create
-	// Generate(ctx context.Context, clinicId string, date data_type.Date) (*model.Report, error)
-
-	// read
-	// Fetch(ctx context.Context, request dto_request.ReportDailyTransactionFetchRequest) ([]model.Report, int)
-	// Download(ctx context.Context, request dto_request.ReportDailyTransactionDownloadRequest) (
-	// 	ioReadCloser io.ReadCloser,
-	// 	contentLength int64,
-	// 	contentType string,
-	// 	filename string,
-	// )
-}
-
-type reportDailyTransactionUseCase struct {
-	repositoryManager repository.RepositoryManager
-
-	mainFilesystem filesystem.Client
-}
-
-// func NewReportDailyTransactionUseCase(
-// 	repositoryManager repository.RepositoryManager,
-// 	queueManager queue.QueueManager,
-
-// 	mainFilesystem filesystem.Client,
-// ) ReportDailyTransactionUseCase {
-// 	return &reportDailyTransactionUseCase{
-// 		repositoryManager: repositoryManager,
-// 		queueManager:      queueManager,
-
-// 		mainFilesystem: mainFilesystem,
-// 	}
-// }
-
-// func (u *reportDailyTransactionUseCase) Generate(
-// 	ctx context.Context,
-// 	clinicId string,
-// 	date data_type.Date,
-// ) (*model.Report, error) {
-// 	var (
-// 		authorizedUser, _ = model.GetUserCtx(ctx)
-
-// 		requestedUserId *string = nil
-// 		isScheduled     bool    = false
-
-// 		clinicRepository = u.repositoryManager.ClinicRepository()
-// 		reportRepository = u.repositoryManager.ReportRepository()
-
-// 		reportQueue = u.queueManager.ReportQueue()
-// 	)
-
-// 	if authorizedUser != nil {
-// 		requestedUserId = &authorizedUser.Id
-// 		isScheduled = true
-// 	}
-
-// 	if _, err := clinicRepository.GetById(ctx, clinicId); err != nil {
-// 		if err == constant.ErrNoData {
-// 			return nil, fmt.Errorf("clinic [id: %s]: %w", clinicId, err)
-// 		}
-
-// 		return nil, err
-// 	}
-
-// 	report := model.Report{
-// 		Id:              util.NewUuid(),
-// 		ClinicId:        &clinicId,
-// 		CompanyId:       nil,
-// 		RequestedUserId: requestedUserId,
-// 		FileId:          nil,
-// 		Type:            data_type.ReportTypeDailyTransaction,
-// 		ReportStartTime: date.DateTimeStartOfDay().NullDateTime(),
-// 		ReportEndTime:   date.DateTimeEndOfDay().NullDateTime(),
-// 		Status:          data_type.ReportStatusPending,
-// 		IsScheduled:     isScheduled,
-// 		RequestedAt:     util.CurrentNullDateTime(),
-// 		ProcessedAt:     data_type.NewNullDateTime(nil),
-// 		CompletedAt:     data_type.NewNullDateTime(nil),
-// 	}
-
-// 	if err := reportRepository.Insert(ctx, &report); err != nil {
-// 		return nil, fmt.Errorf("insert report: %w", err)
-// 	}
-
-// 	if err := reportQueue.Publish(
-// 		ctx,
-// 		model_queue.Report{
-// 			Id: report.Id,
-// 		},
-// 	); err != nil {
-// 		if err := UpdateReportWhenPublishQueueFailed(ctx, reportRepository, &report, err); err != nil {
-// 			return nil, fmt.Errorf("update report: %w", err)
-// 		}
-
-// 		return nil, fmt.Errorf("publish report: %w", err)
-// 	}
-
-// 	return &report, nil
-// }
-
-// func (u *reportDailyTransactionUseCase) Fetch(ctx context.Context, request dto_request.ReportDailyTransactionFetchRequest) ([]model.Report, int) {
-// 	var (
-// 		activeClinicId = model.MustGetActiveClinicIdCtx(ctx)
-
-// 		reportRepository  = u.repositoryManager.ReportRepository()
-// 		clinicRepository  = u.repositoryManager.ClinicRepository()
-// 		companyRepository = u.repositoryManager.CompanyRepository()
-// 		userRepository    = u.repositoryManager.UserRepository()
-// 		fileRepository    = u.repositoryManager.FileRepository()
-
-// 		queryOption = model.ReportQueryOption{
-// 			QueryOption: model.QueryOption{
-// 				Page:  request.Page,
-// 				Limit: request.Limit,
-// 				Sorts: model.Sorts(request.Sorts),
-// 			},
-// 			ClinicId: &activeClinicId,
-// 			Type:     data_type.ReportTypeP(data_type.ReportTypeDailyTransaction),
-// 		}
-// 	)
-
-// 	reports, err := reportRepository.Fetch(ctx, queryOption)
-// 	panicIfErr(err)
-
-// 	count, err := reportRepository.Count(ctx, queryOption)
-// 	panicIfErr(err)
-
-// 	mustLoadReportsData(
-// 		ctx,
-// 		clinicRepository,
-// 		companyRepository,
-// 		userRepository,
-// 		fileRepository,
-// 		u.mainFilesystem,
-// 		reports,
-// 	)
-
-// 	return reports, count
-// }
-
-// func (u *reportDailyTransactionUseCase) Download(ctx context.Context, request dto_request.ReportDailyTransactionDownloadRequest) (io.ReadCloser, int64, string, string) {
-// 	var (
-// 		activeClinicId = model.MustGetActiveClinicIdCtx(ctx)
-
-// 		fileRepository   = u.repositoryManager.FileRepository()
-// 		reportRepository = u.repositoryManager.ReportRepository()
-
-// 		report = mustGetReportPWithinClinic(ctx, reportRepository, request.Id, data_type.ReportTypeDailyTransaction, activeClinicId, false)
-// 	)
-
-// 	mustValidateAllowDownload(ctx, report)
-
-// 	file := mustGetFileP(ctx, fileRepository, *report.FileId, true)
-
-// 	reader, err := u.mainFilesystem.Stream(ctx, file.Path)
-// 	if err != nil {
-// 		if err == filesystem.ErrFileNotExist {
-// 			panic(dto_response.NewBadRequestErrorResponse("Report file not found"))
-// 		}
-
-// 		panic(err)
-// 	}
-
-// 	return reader, reader.ContentLength(), reader.ContentType(), file.Name
-// }

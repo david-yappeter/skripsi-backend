@@ -115,7 +115,7 @@ func (u *productStockUseCase) DownloadReport(
 	)
 
 	// construct excel report sheets
-	reportExcel, err := NewReportDailyTransactionExcel(
+	reportExcel, err := NewReportStockExcel(
 		util.CurrentDateTime(),
 	)
 	panicIfErr(err)
@@ -138,7 +138,7 @@ func (u *productStockUseCase) DownloadReport(
 			stockLeft = product.ProductStock.Qty
 		}
 
-		reportExcel.AddSheet1Data(ReportDailyTransactionExcelSheet1Data{
+		reportExcel.AddSheet1Data(ReportStockExcelSheet1Data{
 			ProductId:           product.Id,
 			ProductName:         product.Name,
 			BaseUnit:            baseUnit,
@@ -171,7 +171,7 @@ func (u *productStockUseCase) DownloadReport(
 	)
 
 	for _, productStockMutation := range productStockMutations {
-		reportExcel.AddSheet2Data(ReportDailyTransactionExcelSheet2Data{
+		reportExcel.AddSheet2Data(ReportStockExcelSheet2Data{
 			ProductId:     productStockMutation.ProductUnit.ProductId,
 			UnitId:        productStockMutation.ProductUnit.UnitId,
 			ProductName:   productStockMutation.ProductUnit.Product.Name,

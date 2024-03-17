@@ -12,6 +12,9 @@ type Transaction struct {
 	PaymentAt        data_type.NullDateTime      `db:"payment_at"`
 
 	Timestamp
+
+	TransactionItems    []TransactionItem    `db:"-"`
+	TransactionPayments []TransactionPayment `db:"-"`
 }
 
 func (m *Transaction) TableName() string {

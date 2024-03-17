@@ -3,9 +3,10 @@ package dto_response
 import "myapp/model"
 
 type CartItemResponse struct {
-	Id            string `json:"id"`
-	CartId        string `json:"cart_id"`
-	ProductUnitId string `json:"product_unit_id"`
+	Id            string  `json:"id"`
+	CartId        string  `json:"cart_id"`
+	ProductUnitId string  `json:"product_unit_id"`
+	Qty           float64 `json:"qty"`
 	Timestamp
 
 	ProductUnit *ProductUnitResponse `json:"product_unit" extensions:"x-nullable"`
@@ -16,6 +17,7 @@ func NewCartItemResponse(cartItem model.CartItem) CartItemResponse {
 		Id:            cartItem.Id,
 		CartId:        cartItem.CartId,
 		ProductUnitId: cartItem.ProductUnitId,
+		Qty:           cartItem.Qty,
 		Timestamp:     Timestamp(cartItem.Timestamp),
 	}
 

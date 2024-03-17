@@ -16,6 +16,7 @@ type TransactionItemRepository interface {
 
 	// read
 	Count(ctx context.Context) (int, error)
+	FetchByTransactionIds(ctx context.Context, transactionIds []string) ([]model.TransactionItem, error)
 	Get(ctx context.Context, id string) (*model.TransactionItem, error)
 
 	// update
@@ -77,6 +78,14 @@ func (r *transactionItemRepository) Count(ctx context.Context) (int, error) {
 		From(model.TransactionItemTableName)
 
 	return count(r.db, ctx, stmt)
+}
+
+func (r *transactionItemRepository) FetchByTransactionIds(ctx context.Context, transactionIds []string) ([]model.TransactionItem, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.TransactionItemTableName).
+		Where(squirrel.Eq{"transaction_id": transactionIds})
+
+	return r.fetch(ctx, stmt)
 }
 
 func (r *transactionItemRepository) Get(ctx context.Context, id string) (*model.TransactionItem, error) {

@@ -132,7 +132,7 @@ func (u *cartUseCase) AddItem(ctx context.Context, request dto_request.CartAddIt
 	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
 	cart := u.shouldGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
 	isNewCart := cart == nil
-	isNewCartItem := false
+	isNewCartItem := isNewCart
 
 	if isNewCart {
 		cart = &model.Cart{
@@ -150,8 +150,9 @@ func (u *cartUseCase) AddItem(ctx context.Context, request dto_request.CartAddIt
 		}
 	} else {
 		cartItem = u.shouldGetCartItemByCartIdAndProductUnitId(ctx, cart.Id, request.ProductUnitId)
+		isNewCartItem = cartItem == nil
 
-		if cartItem == nil {
+		if isNewCartItem {
 			cartItem = &model.CartItem{
 				Id:            util.NewUuid(),
 				CartId:        cart.Id,

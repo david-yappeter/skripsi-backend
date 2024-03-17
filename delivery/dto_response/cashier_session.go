@@ -11,6 +11,8 @@ type CashierSessionResponse struct {
 	Status       data_type.CashierSessionStatus `json:"status"`
 	StartingCash float64                        `json:"starting_cash"`
 	EndingCash   *float64                       `json:"ending_cash" extensions:"x-nullable"`
+	StartedAt    data_type.DateTime             `json:"started_at"`
+	EndedAt      data_type.NullDateTime         `json:"ended_at" extensions:"x-nullable"`
 	Timestamp
 
 	User *UserResponse `json:"user" extensions:"x-nullable"`
@@ -23,6 +25,8 @@ func NewCashierSessionResponse(cashierSession model.CashierSession) CashierSessi
 		Status:       cashierSession.Status,
 		StartingCash: cashierSession.StartingCash,
 		EndingCash:   cashierSession.EndingCash,
+		StartedAt:    cashierSession.StartedAt,
+		EndedAt:      cashierSession.EndedAt,
 		Timestamp:    Timestamp(cashierSession.Timestamp),
 	}
 

@@ -26,7 +26,10 @@ type CashierSessionGetRequest struct {
 	CashierSessionId string `json:"-" swaggerignore:"true"`
 } // @name CashierSessionGetRequest
 
+type CashierSessionDownloadReportRequest struct {
+	CashierSessionId string `json:"-" swaggerignore:"true"`
+} // @name CashierSessionDownloadReportRequest
+
 type CashierSessionEndRequest struct {
-	EndingCash       float64 `json:"ending_cash"`
-	CashierSessionId string  `json:"-" swaggerignore:"true"`
+	EndingCash float64 `json:"ending_cash" validate:"required,gte=0"`
 } // @name CashierSessionEndRequest
