@@ -52,10 +52,21 @@ func (u *transactionUseCase) shouldGetActiveCartByCashierSessionId(ctx context.C
 }
 
 func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_request.TransactionCheckoutCartRequest) model.Transaction {
+	switch request.PaymentType {
+	case data_type.TransactionPaymentTypeCash:
+		if request.CashPaid == nil {
+			panic(dto_response.NewBadRequestErrorResponse("TRANSACTION.PAYMENT_TYPE_CASH_REQUIRED_CASH_PAID"))
+		}
+	}
+
 	currentTime := util.CurrentDateTime()
 	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
 
 	cart := u.shouldGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
+	if cart == nil {
+		panic(dto_response.NewBadRequestErrorResponse("TRANSACTION.NO_ACTIVE_CART"))
+	}
+
 	cartItems, err := u.repositoryManager.CartItemRepository().FetchByCartIds(ctx, []string{cart.Id})
 	panicIfErr(err)
 
@@ -95,6 +106,7 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 
 	var (
 		transaction                    = model.Transaction{}
+		transactionPayment             = model.TransactionPayment{}
 		transactionTotal               = 0.0
 		transactionItems               = []model.TransactionItem{}
 		transactionItemCosts           = []model.TransactionItemCost{}
@@ -107,6 +119,7 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 			cartRepository := u.repositoryManager.CartRepository()
 			cartItemRepository := u.repositoryManager.CartItemRepository()
 			transactionRepository := u.repositoryManager.TransactionRepository()
+			transactionPaymentRepository := u.repositoryManager.TransactionPaymentRepository()
 			transactionItemRepository := u.repositoryManager.TransactionItemRepository()
 			transactionItemCostRepository := u.repositoryManager.TransactionItemCostRepository()
 			productStockRepository := u.repositoryManager.ProductStockRepository()
@@ -213,7 +226,32 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 			// assign transaction total
 			transaction.Total = transactionTotal
 
+			// transaction payment
+			transactionPayment = model.TransactionPayment{
+				Id:              util.NewUuid(),
+				TransactionId:   transaction.Id,
+				PaymentType:     request.PaymentType,
+				ReferenceNumber: request.ReferenceNumber,
+				Total:           transactionTotal,
+				TotalPaid:       transactionTotal,
+			}
+			switch request.PaymentType {
+			case data_type.TransactionPaymentTypeCash:
+				if *request.CashPaid < transactionTotal {
+					panic(dto_response.NewBadRequestErrorResponse("TRANSACTION.INVALID_CASH_PAID_AMOUNT"))
+				}
+				transactionPayment.TotalPaid = *request.CashPaid
+			case data_type.TransactionPaymentTypeBcaTransfer:
+				// skip
+			default:
+				panic("unhandled")
+			}
+
 			if err := transactionRepository.Insert(ctx, &transaction); err != nil {
+				return err
+			}
+
+			if err := transactionPaymentRepository.Insert(ctx, &transactionPayment); err != nil {
 				return err
 			}
 
@@ -242,6 +280,9 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 			return nil
 		}),
 	)
+
+	transaction.TransactionItems = transactionItems
+	transaction.TransactionPayments = append(transaction.TransactionPayments, transactionPayment)
 
 	return transaction
 }

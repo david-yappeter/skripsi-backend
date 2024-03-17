@@ -15,7 +15,7 @@ type TransactionResponse struct {
 	Timestamp
 
 	Items    []TransactionItemResponse    `json:"items" extensions:"x-nullable"`
-	Payments []TransactionPaymentResponse `json:"items" extensions:"x-nullable"`
+	Payments []TransactionPaymentResponse `json:"payments" extensions:"x-nullable"`
 } // @name TransactionResponse
 
 func NewTransactionResponse(transaction model.Transaction) TransactionResponse {

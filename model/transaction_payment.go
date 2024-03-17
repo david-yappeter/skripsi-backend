@@ -10,6 +10,7 @@ type TransactionPayment struct {
 	PaymentType     data_type.TransactionPaymentType `db:"payment_type"`
 	ReferenceNumber *string                          `db:"reference_number"`
 	Total           float64                          `db:"total"`
+	TotalPaid       float64                          `db:"total_paid"`
 
 	Timestamp
 }
@@ -29,6 +30,7 @@ func (m *TransactionPayment) ToMap() map[string]interface{} {
 		"payment_type":     m.PaymentType,
 		"reference_number": m.ReferenceNumber,
 		"total":            m.Total,
+		"total_paid":       m.TotalPaid,
 		"created_at":       m.CreatedAt,
 		"updated_at":       m.UpdatedAt,
 	}

@@ -10,6 +10,7 @@ func init() {
 				payment_type varchar(255) NOT NULL,
 				reference_number varchar(255) NULL,
 				total decimal(16,2) NOT NULL,
+				total_paid decimal(16,2) NOT NULL,
 				created_at timestamp NOT NULL,
 				updated_at timestamp NOT NULL,
 				CONSTRAINT transaction_payments_pk PRIMARY KEY (id),
