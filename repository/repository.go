@@ -47,13 +47,24 @@ func failSafety(loggerStack infrastructure.LoggerStack, fn func()) {
 	fn()
 }
 
+func dbtx(db infrastructure.DBTX, ctx context.Context) infrastructure.DBTX {
+	// use transaction if available, else use db connection
+	dbtx, err := model.GetDbtxCtx(ctx)
+	if err == nil || dbtx != nil {
+		return dbtx
+	}
+
+	return db
+}
+
 func exec(db infrastructure.DBTX, ctx context.Context, stmt squirrel.Sqlizer) error {
 	query, args, err := stmt.ToSql()
 	if err != nil {
 		return translateSqlError(err)
 	}
 
-	_, err = db.ExecContext(ctx, query, args...)
+	dbtx := dbtx(db, ctx)
+	_, err = dbtx.ExecContext(ctx, query, args...)
 
 	return translateSqlError(err)
 }
@@ -101,7 +112,9 @@ func insertMany(db infrastructure.DBTX, ctx context.Context, tableName string, c
 
 	stmt := stmtBuilder.Insert(tableName).Columns(columns...).Values(values...)
 	query, _ := stmt.MustSql()
-	_, err := db.NamedExecContext(ctx, query, arg)
+
+	dbtx := dbtx(db, ctx)
+	_, err := dbtx.NamedExecContext(ctx, query, arg)
 
 	return translateSqlError(err)
 }
