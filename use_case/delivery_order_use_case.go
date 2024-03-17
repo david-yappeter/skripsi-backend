@@ -670,11 +670,17 @@ func (u *deliveryOrderUseCase) DeleteItem(ctx context.Context, request dto_reque
 		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
 	}
 
-	mustGetProductUnit(ctx, u.repositoryManager, request.ProductUnitId, true)
-	deliveryOrderItem := mustGetDeliveryOrderItemByDeliveryOrderIdAndProductUnitId(ctx, u.repositoryManager, request.DeliveryOrderId, request.ProductUnitId, true)
+	// check delivery order item
+	deliveryOrderItem := mustGetDeliveryOrderItem(ctx, u.repositoryManager, request.DeliveryOrderItemId, true)
+	if deliveryOrderItem.DeliveryOrderId != deliveryOrder.Id {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER_ITEM.NOT_FOUND"))
+	}
+
+	// get product unit and product
 	productUnit := mustGetProductUnit(ctx, u.repositoryManager, deliveryOrderItem.ProductUnitId, true)
 	product := mustGetProduct(ctx, u.repositoryManager, productUnit.ProductId, true)
 
+	// calculate qty
 	totalSmallestQty := deliveryOrderItem.Qty * productUnit.ScaleToBase
 
 	productStock := shouldGetProductStockByProductId(ctx, u.repositoryManager, product.Id)

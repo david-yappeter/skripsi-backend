@@ -373,12 +373,12 @@ func (a *DeliveryOrderApi) Delete() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/delivery-orders/{id}/items/{product_unit_id} [delete]
+//	@Router		/delivery-orders/{id}/items/{delivery_order_item_id} [delete]
 //	@Summary	Delete Item
 //	@tags		Delivery Orders
 //	@Accept		json
 //	@Param		id											path	string										true	"Id"
-//	@Param		product_unit_id								path	string										true	"Product Unit Id"
+//	@Param		delivery_order_item_id								path	string										true	"Delivery Order Item Id"
 //	@Param		dto_request.DeliveryOrderDeleteItemRequest	body	dto_request.DeliveryOrderDeleteItemRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
@@ -386,12 +386,12 @@ func (a *DeliveryOrderApi) DeleteItem() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionDeliveryOrderDeleteItem),
 		func(ctx apiContext) {
-			id := ctx.getUuidParam("id")
-			productUnitId := ctx.getUuidParam("product_unit_id")
+			deliveryOrderId := ctx.getUuidParam("id")
+			deliveryOrderItemId := ctx.getUuidParam("delivery_order_item_id")
 			var request dto_request.DeliveryOrderDeleteItemRequest
 			ctx.mustBind(&request)
-			request.DeliveryOrderId = id
-			request.ProductUnitId = productUnitId
+			request.DeliveryOrderId = deliveryOrderId
+			request.DeliveryOrderItemId = deliveryOrderItemId
 
 			deliveryOrder := a.deliveryOrderUseCase.DeleteItem(ctx.context(), request)
 
@@ -500,7 +500,7 @@ func RegisterDeliveryOrderApi(router gin.IRouter, useCaseManager use_case.UseCas
 	routerGroup.PATCH("/:id/on-going", api.OnGoing())
 	routerGroup.PATCH("/:id/completed", api.Completed())
 
-	routerGroup.DELETE("/:id/items/:product_unit_id", api.DeleteItem())
+	routerGroup.DELETE("/:id/items/:delivery_order_item_id", api.DeleteItem())
 	routerGroup.DELETE("/:id/images/:file_id", api.DeleteImage())
 	routerGroup.DELETE("/:id/drivers/:driver_user_id", api.DeleteDriver())
 }

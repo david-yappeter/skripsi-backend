@@ -167,10 +167,11 @@ func (a *CartApi) AddItem() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/carts/items/{product_unit_id} [patch]
+//	@Router		/carts/items/{cart_item_id} [patch]
 //	@Summary	Update Item
 //	@tags		Carts
 //	@Accept		json
+//	@Param		cart_item_id						path	string								true	"Cart Item Id"
 //	@Param		dto_request.CartUpdateItemRequest	body	dto_request.CartUpdateItemRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{cart=dto_response.CartResponse}}
@@ -178,8 +179,11 @@ func (a *CartApi) UpdateItem() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionCartAddItem),
 		func(ctx apiContext) {
+			cartItemId := ctx.getUuidParam("cart_item_id")
 			var request dto_request.CartUpdateItemRequest
 			ctx.mustBind(&request)
+
+			request.CartItemId = cartItemId
 
 			cart := a.cartUseCase.UpdateItem(ctx.context(), request)
 
@@ -197,20 +201,23 @@ func (a *CartApi) UpdateItem() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/carts/items/{product_unit_id} [delete]
+//	@Router		/carts/items/{cart_item_id} [delete]
 //	@Summary	Delete Item
 //	@tags		Carts
 //	@Accept		json
+//	@Param		cart_item_id						path	string								true	"Cart Item Id"
 //	@Param		dto_request.CartDeleteItemRequest	body	dto_request.CartDeleteItemRequest	true	"Body Request"
-//	@Param		product_unit_id						path	string								true	"Product Unit Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{cart=dto_response.CartResponse}}
 func (a *CartApi) DeleteItem() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionCartAddItem),
 		func(ctx apiContext) {
+			cartItemId := ctx.getUuidParam("cart_item_id")
 			var request dto_request.CartDeleteItemRequest
 			ctx.mustBind(&request)
+
+			request.CartItemId = cartItemId
 
 			cart := a.cartUseCase.DeleteItem(ctx.context(), request)
 
@@ -267,7 +274,7 @@ func RegisterCartApi(router gin.IRouter, useCaseManager use_case.UseCaseManager)
 	routerGroup.PATCH("/:id/set-active", api.SetActive())
 	routerGroup.PATCH("/set-in-active", api.SetInActive())
 	routerGroup.POST("/items", api.AddItem())
-	routerGroup.PATCH("/items/:product_unit_id", api.UpdateItem())
-	routerGroup.DELETE("/items/:product_unit_id", api.DeleteItem())
+	routerGroup.PATCH("/items/:cart_item_id", api.UpdateItem())
+	routerGroup.DELETE("/items/:cart_item_id", api.DeleteItem())
 	routerGroup.DELETE("/:id", api.Delete())
 }

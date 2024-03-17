@@ -129,10 +129,19 @@ func (u *cartUseCase) AddItem(ctx context.Context, request dto_request.CartAddIt
 		cartItem *model.CartItem
 	)
 
+	// check cashier session exist and is cart exist
 	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
 	cart := u.shouldGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
 	isNewCart := cart == nil
 	isNewCartItem := isNewCart
+
+	// get base product unit
+	product := mustGetProduct(ctx, u.repositoryManager, request.ProductId, true)
+	productUnit := shouldGetBaseProductUnitByProductId(ctx, u.repositoryManager, product.Id)
+
+	if productUnit == nil {
+		panic(dto_response.NewBadRequestErrorResponse("CART.PRODUCT_MUST_HAVE_UNIT"))
+	}
 
 	if isNewCart {
 		cart = &model.Cart{
@@ -145,18 +154,18 @@ func (u *cartUseCase) AddItem(ctx context.Context, request dto_request.CartAddIt
 		cartItem = &model.CartItem{
 			Id:            util.NewUuid(),
 			CartId:        cart.Id,
-			ProductUnitId: request.ProductUnitId,
+			ProductUnitId: productUnit.Id,
 			Qty:           request.Qty,
 		}
 	} else {
-		cartItem = u.shouldGetCartItemByCartIdAndProductUnitId(ctx, cart.Id, request.ProductUnitId)
+		cartItem = u.shouldGetCartItemByCartIdAndProductUnitId(ctx, cart.Id, productUnit.Id)
 		isNewCartItem = cartItem == nil
 
 		if isNewCartItem {
 			cartItem = &model.CartItem{
 				Id:            util.NewUuid(),
 				CartId:        cart.Id,
-				ProductUnitId: request.ProductUnitId,
+				ProductUnitId: productUnit.Id,
 				Qty:           request.Qty,
 			}
 		} else {
@@ -249,9 +258,15 @@ func (u *cartUseCase) GetCurrent(ctx context.Context) *model.Cart {
 }
 
 func (u *cartUseCase) UpdateItem(ctx context.Context, request dto_request.CartUpdateItemRequest) model.Cart {
+	// check cashier session and active cart
 	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
 	cart := u.mustGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
-	cartItem := u.mustGetCartItemByCartIdAndProductUnitId(ctx, cart.Id, request.ProductUnitId)
+
+	// check cart item
+	cartItem := mustGetCartItem(ctx, u.repositoryManager, request.CartItemId, true)
+	if cartItem.CartId != cart.Id {
+		panic(dto_response.NewBadRequestErrorResponse("CART_ITEM.NOT_FOUND"))
+	}
 
 	cartItem.Qty = request.Qty
 
@@ -335,7 +350,12 @@ func (u *cartUseCase) Delete(ctx context.Context, request dto_request.CartDelete
 func (u *cartUseCase) DeleteItem(ctx context.Context, request dto_request.CartDeleteItemRequest) model.Cart {
 	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
 	cart := u.mustGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
-	cartItem := u.mustGetCartItemByCartIdAndProductUnitId(ctx, cart.Id, request.ProductUnitId)
+
+	// check cart item
+	cartItem := mustGetCartItem(ctx, u.repositoryManager, request.CartItemId, true)
+	if cartItem.CartId != cart.Id {
+		panic(dto_response.NewBadRequestErrorResponse("CART_ITEM.NOT_FOUND"))
+	}
 
 	cartItemCount, err := u.repositoryManager.CartItemRepository().Count(ctx, model.CartItemQueryOption{
 		CartId: &cart.Id,

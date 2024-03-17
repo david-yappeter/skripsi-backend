@@ -19,6 +19,7 @@ type UserRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.UserQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.UserQueryOption) ([]model.User, error)
+	FetchByIds(ctx context.Context, ids []string) ([]model.User, error)
 	GetByUsername(ctx context.Context, username string) (*model.User, error)
 	GetByUsernameAndIsActive(ctx context.Context, username string, isActive bool) (*model.User, error)
 	Get(ctx context.Context, id string) (*model.User, error)
@@ -126,6 +127,14 @@ func (r *userRepository) Fetch(ctx context.Context, options ...model.UserQueryOp
 	}
 
 	stmt := r.prepareQuery(option)
+
+	return r.fetch(ctx, stmt)
+}
+
+func (r *userRepository) FetchByIds(ctx context.Context, ids []string) ([]model.User, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.UserTableName).
+		Where(squirrel.Eq{"id": ids})
 
 	return r.fetch(ctx, stmt)
 }

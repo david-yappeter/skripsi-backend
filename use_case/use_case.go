@@ -299,6 +299,12 @@ func mustGetCart(ctx context.Context, repositoryManager repository.RepositoryMan
 	return *cart
 }
 
+func mustGetCartItem(ctx context.Context, repositoryManager repository.RepositoryManager, cartItemId string, isValidate bool) model.CartItem {
+	cartItem, err := repositoryManager.CartItemRepository().Get(ctx, cartItemId)
+	panicIfRepositoryError(err, "CART_ITEM.NOT_FOUND", isValidate)
+	return *cartItem
+}
+
 func mustGetProductStock(ctx context.Context, repositoryManager repository.RepositoryManager, productStockId string, isValidate bool) model.ProductStock {
 	productStock, err := repositoryManager.ProductStockRepository().Get(ctx, productStockId)
 	panicIfRepositoryError(err, "PRODUCT_STOCK.NOT_FOUND", isValidate)
@@ -379,6 +385,12 @@ func shouldGetProductDiscountByProductId(ctx context.Context, repositoryManager 
 	productDiscount, err := repositoryManager.ProductDiscountRepository().GetByProductId(ctx, productId)
 	panicIfErr(err, constant.ErrNoData)
 	return productDiscount
+}
+
+func shouldGetBaseProductUnitByProductId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string) *model.ProductUnit {
+	productUnit, err := repositoryManager.ProductUnitRepository().GetBaseProductUnitByProductId(ctx, productId)
+	panicIfErr(err, constant.ErrNoData)
+	return productUnit
 }
 
 func shouldGetCustomerTypeDiscountByCustomerTypeIdAndProductId(ctx context.Context, repositoryManager repository.RepositoryManager, customerTypeId string, productId string) *model.CustomerTypeDiscount {

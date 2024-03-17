@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"myapp/data_type"
+	"myapp/model"
 	"myapp/util"
 	"time"
 
@@ -16,11 +17,20 @@ const (
 )
 
 type ReportTransactionExcelSheet1Data struct {
-	Id        string
-	Status    string
-	Total     float64
-	Revenue   float64
-	PaymentAt time.Time
+	Id              string
+	Status          string
+	PaymentMethod   string
+	ProductId       string
+	UnitId          string
+	ProductName     string
+	UnitName        string  // G
+	Qty             float64 // H
+	PricePerUnit    float64
+	DiscountPerUnit float64
+	Total           float64
+	CostPerUnit     float64
+	Revenue         float64
+	PaymentAt       time.Time // N
 }
 
 type ReportTransactionExcel struct {
@@ -146,6 +156,7 @@ type ReportTransactionExcel struct {
 
 func (u *ReportTransactionExcel) initSheet1(
 	dateTime data_type.DateTime,
+	cashierSession model.CashierSession,
 ) (err error) {
 
 	if err = u.initSheet1Style(); err != nil {
@@ -166,26 +177,37 @@ func (u *ReportTransactionExcel) initSheet1(
 		return
 	}
 
-	if err = excelFile.SetColWidth(ReportTransactionExcelSheet1Name, "A", "A", DefaultColWidthInchToExcelizeNumber(0.86)); err != nil {
+	if err = excelFile.SetColWidth(ReportTransactionExcelSheet1Name, "A", "A", DefaultColWidthInchToExcelizeNumber(2)); err != nil {
 		return
 	}
-	if err = excelFile.SetColWidth(ReportTransactionExcelSheet1Name, "B", "B", DefaultColWidthInchToExcelizeNumber(1.8)); err != nil {
+	if err = excelFile.SetColWidth(ReportTransactionExcelSheet1Name, "B", "B", DefaultColWidthInchToExcelizeNumber(2)); err != nil {
 		return
 	}
-	if err = excelFile.SetColWidth(ReportTransactionExcelSheet1Name, "C", "C", DefaultColWidthInchToExcelizeNumber(1.15)); err != nil {
+	if err = excelFile.SetColWidth(ReportTransactionExcelSheet1Name, "C", "C", DefaultColWidthInchToExcelizeNumber(2)); err != nil {
 		return
 	}
-	if err = excelFile.SetColWidth(ReportTransactionExcelSheet1Name, "D", "D", DefaultColWidthInchToExcelizeNumber(1.7)); err != nil {
+	if err = excelFile.SetColWidth(ReportTransactionExcelSheet1Name, "D", "D", DefaultColWidthInchToExcelizeNumber(2)); err != nil {
 		return
 	}
-	if err = excelFile.SetColWidth(ReportTransactionExcelSheet1Name, "E", "E", DefaultColWidthInchToExcelizeNumber(1.27)); err != nil {
-		return
+	for _, v := range []string{"E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O"} {
+		if err = excelFile.SetColWidth(ReportTransactionExcelSheet1Name, v, v, DefaultColWidthInchToExcelizeNumber(1.6)); err != nil {
+			return
+		}
 	}
 
 	if err = excelFile.SetCellStyle(
 		ReportTransactionExcelSheet1Name,
 		"B1",
 		"B1",
+		u.sheet1Data2StyleId,
+	); err != nil {
+		return
+	}
+
+	if err = excelFile.SetCellStyle(
+		ReportTransactionExcelSheet1Name,
+		"B3",
+		"B4",
 		u.sheet1Data2StyleId,
 	); err != nil {
 		return
@@ -202,11 +224,88 @@ func (u *ReportTransactionExcel) initSheet1(
 		return
 	}
 
-	if err = SetHeaderSeparator(u.excelFile, ReportTransactionExcelSheet1Name, "A6", 13); err != nil {
+	if err = excelFile.SetSheetRow(
+		ReportTransactionExcelSheet1Name,
+		"A2",
+		&[]interface{}{
+			"Cashier Session Id",
+			cashierSession.Id,
+		},
+	); err != nil {
 		return
 	}
 
-	if err = excelFile.SetCellStyle(ReportTransactionExcelSheet1Name, "A8", "F8", u.sheet1DataHeader1StyleId); err != nil {
+	if err = excelFile.SetSheetRow(
+		ReportTransactionExcelSheet1Name,
+		"A3",
+		&[]interface{}{
+			"Started At",
+			cashierSession.StartedAt.Time(),
+		},
+	); err != nil {
+		return
+	}
+
+	if err = excelFile.SetSheetRow(
+		ReportTransactionExcelSheet1Name,
+		"A4",
+		&[]interface{}{
+			"Ended At",
+			cashierSession.StartedAt.Time(),
+		},
+	); err != nil {
+		return
+	}
+
+	if err = excelFile.SetSheetRow(
+		ReportTransactionExcelSheet1Name,
+		"A5",
+		&[]interface{}{
+			"Starting Cash",
+			cashierSession.StartingCash,
+		},
+	); err != nil {
+		return
+	}
+
+	if err = excelFile.SetSheetRow(
+		ReportTransactionExcelSheet1Name,
+		"A6",
+		&[]interface{}{
+			"Ending Cash",
+			*cashierSession.EndingCash,
+		},
+	); err != nil {
+		return
+	}
+
+	if err = excelFile.SetSheetRow(
+		ReportTransactionExcelSheet1Name,
+		"C5",
+		&[]interface{}{
+			"User Id",
+			cashierSession.User.Id,
+		},
+	); err != nil {
+		return
+	}
+
+	if err = excelFile.SetSheetRow(
+		ReportTransactionExcelSheet1Name,
+		"C6",
+		&[]interface{}{
+			"User Name",
+			cashierSession.User.Name,
+		},
+	); err != nil {
+		return
+	}
+
+	if err = SetHeaderSeparator(u.excelFile, ReportTransactionExcelSheet1Name, "A6", 15); err != nil {
+		return
+	}
+
+	if err = excelFile.SetCellStyle(ReportTransactionExcelSheet1Name, "A8", "N8", u.sheet1DataHeader1StyleId); err != nil {
 		return
 	}
 
@@ -216,7 +315,16 @@ func (u *ReportTransactionExcel) initSheet1(
 		&[]interface{}{
 			"Transaction Id",
 			"Status",
+			"Payment Method",
+			"Product Id",
+			"Unit Id",
+			"Product Name",
+			"Unit Name",
+			"Qty",
+			"Price Per Unit",
+			"Discount Per Unit",
 			"Total",
+			"Cost Per Unit",
 			"Revenue",
 			"Payment At",
 		},
@@ -350,8 +458,9 @@ func (u *ReportTransactionExcel) initSheet1Style() (err error) {
 
 func (u *ReportTransactionExcel) Init(
 	dateTime data_type.DateTime,
+	cashierSession model.CashierSession,
 ) (err error) {
-	if err = u.initSheet1(dateTime); err != nil {
+	if err = u.initSheet1(dateTime, cashierSession); err != nil {
 		return
 	}
 
@@ -394,7 +503,7 @@ func (u *ReportTransactionExcel) AddSheet1Data(data ReportTransactionExcelSheet1
 	if err := u.excelFile.SetCellStyle(
 		ReportTransactionExcelSheet1Name,
 		fmt.Sprintf("A%d", newLatestDataPosY),
-		fmt.Sprintf("D%d", newLatestDataPosY),
+		fmt.Sprintf("M%d", newLatestDataPosY),
 		u.sheet1Data1StyleId,
 	); err != nil {
 		return err
@@ -402,8 +511,8 @@ func (u *ReportTransactionExcel) AddSheet1Data(data ReportTransactionExcelSheet1
 
 	if err := u.excelFile.SetCellStyle(
 		ReportTransactionExcelSheet1Name,
-		fmt.Sprintf("E%d", newLatestDataPosY),
-		fmt.Sprintf("E%d", newLatestDataPosY),
+		fmt.Sprintf("N%d", newLatestDataPosY),
+		fmt.Sprintf("N%d", newLatestDataPosY),
 		u.sheet1Data2StyleId,
 	); err != nil {
 		return err
@@ -415,7 +524,16 @@ func (u *ReportTransactionExcel) AddSheet1Data(data ReportTransactionExcelSheet1
 		&[]interface{}{
 			data.Id,
 			data.Status,
+			data.PaymentMethod,
+			data.ProductId,
+			data.UnitId,
+			data.ProductName,
+			data.UnitName,
+			data.Qty,
+			data.PricePerUnit,
+			data.DiscountPerUnit,
 			data.Total,
+			data.CostPerUnit,
 			data.Revenue,
 			data.PaymentAt,
 		},
@@ -438,6 +556,7 @@ func (u *ReportTransactionExcel) Close() error {
 
 func NewReportTransactionExcel(
 	exportedDateTime data_type.DateTime,
+	cashierSession model.CashierSession,
 ) (reportExcel *ReportTransactionExcel, err error) {
 	defer func() {
 		if err != nil {
@@ -460,7 +579,7 @@ func NewReportTransactionExcel(
 		return
 	}
 
-	if err = reportExcel.Init(exportedDateTime); err != nil {
+	if err = reportExcel.Init(exportedDateTime, cashierSession); err != nil {
 		return
 	}
 

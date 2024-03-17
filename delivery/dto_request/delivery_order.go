@@ -71,8 +71,8 @@ type DeliveryOrderDeleteImageRequest struct {
 } // @name DeliveryOrderDeleteImageRequest
 
 type DeliveryOrderDeleteItemRequest struct {
-	ProductUnitId   string `json:"-" swaggerignore:"true"`
-	DeliveryOrderId string `json:"-" swaggerignore:"true"`
+	DeliveryOrderItemId string `json:"-" swaggerignore:"true"`
+	DeliveryOrderId     string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderDeleteItemRequest
 
 type DeliveryOrderDeleteDriverRequest struct {

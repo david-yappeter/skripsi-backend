@@ -116,6 +116,12 @@ func (u *cashierSessionUseCase) DownloadReport(ctx context.Context, request dto_
 		panic(dto_response.NewBadRequestErrorResponse("CASHIER_SESSION.STATUS_MUST_BE_COMPLETED"))
 	}
 
+	userLoader := loader.NewUserLoader(u.repositoryManager.UserRepository())
+
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		group.Go(userLoader.CashierSessionFn(&cashierSession))
+	}))
+
 	transactions, err := u.repositoryManager.TransactionRepository().Fetch(ctx, model.TransactionQueryOption{
 		CashierSessionId: &request.CashierSessionId,
 	})
@@ -131,43 +137,81 @@ func (u *cashierSessionUseCase) DownloadReport(ctx context.Context, request dto_
 		}
 	}))
 
+	productUnitLoader := loader.NewProductUnitLoader(u.repositoryManager.ProductUnitRepository())
 	transactionItemCostsLoader := loader.NewTransactionItemCostsLoader(u.repositoryManager.TransactionItemCostRepository())
 
 	panicIfErr(util.Await(func(group *errgroup.Group) {
 		for i := range transactions {
 			for j := range transactions[i].TransactionItems {
+				group.Go(productUnitLoader.TransactionItemFn(&transactions[i].TransactionItems[j]))
 				group.Go(transactionItemCostsLoader.TransactionItemFn(&transactions[i].TransactionItems[j]))
+			}
+		}
+	}))
+
+	productLoader := loader.NewProductLoader(u.repositoryManager.ProductRepository())
+	unitLoader := loader.NewUnitLoader(u.repositoryManager.UnitRepository())
+
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		for i := range transactions {
+			for j := range transactions[i].TransactionItems {
+				group.Go(productLoader.ProductUnitFn(transactions[i].TransactionItems[j].ProductUnit))
+				group.Go(unitLoader.ProductUnitFn(transactions[i].TransactionItems[j].ProductUnit))
 			}
 		}
 	}))
 
 	reportExcel, err := NewReportTransactionExcel(
 		util.CurrentDateTime(),
+		cashierSession,
 	)
 	panicIfErr(err)
 
 	for _, transaction := range transactions {
-		totalRevenue := 0.0
 		for _, transactionItem := range transaction.TransactionItems {
 			for _, cost := range transactionItem.TransactionItemCosts {
+				// calculate revenue
 				revenue := transactionItem.PricePerUnit
 				if transactionItem.DiscountPerUnit != nil {
 					revenue -= *transactionItem.DiscountPerUnit
 				}
+				revenue -= cost.BaseCostPrice
 				revenue *= transactionItem.Qty
-				revenue -= cost.TotalCostPrice
 
-				totalRevenue += revenue
+				// discount
+				discountPerUnit := 0.0
+				if transactionItem.DiscountPerUnit != nil {
+					discountPerUnit = *transactionItem.DiscountPerUnit
+				}
+
+				// payment method
+				paymentMethod := ""
+				if len(transaction.TransactionPayments) > 0 {
+					paymentMethod = transaction.TransactionPayments[0].PaymentType.String()
+				}
+
+				// calculate total (follow cost, not transaction item)
+				total := cost.Qty * (transactionItem.PricePerUnit - discountPerUnit)
+
+				// add data
+				reportExcel.AddSheet1Data(ReportTransactionExcelSheet1Data{
+					Id:              transaction.Id,
+					Status:          transaction.Status.String(),
+					PaymentMethod:   paymentMethod,
+					ProductId:       transactionItem.ProductUnit.ProductId,
+					UnitId:          transactionItem.ProductUnit.UnitId,
+					ProductName:     transactionItem.ProductUnit.Product.Name,
+					UnitName:        transactionItem.ProductUnit.Unit.Name,
+					Qty:             cost.Qty,
+					PricePerUnit:    transactionItem.PricePerUnit,
+					DiscountPerUnit: discountPerUnit,
+					Total:           total,
+					CostPerUnit:     cost.BaseCostPrice,
+					Revenue:         revenue,
+					PaymentAt:       transaction.PaymentAt.DateTime().Time(),
+				})
 			}
 		}
-
-		reportExcel.AddSheet1Data(ReportTransactionExcelSheet1Data{
-			Id:        transaction.Id,
-			Status:    transaction.Status.String(),
-			Total:     transaction.Total,
-			Revenue:   totalRevenue,
-			PaymentAt: transaction.PaymentAt.DateTime().Time(),
-		})
 	}
 
 	readCloser, contentLength, err := reportExcel.ToReadSeekCloserWithContentLength()

@@ -120,8 +120,8 @@ func (a *CashierSessionApi) Get() gin.HandlerFunc {
 //	@Param		id	path	string	true	"Cashier Session Id"
 //	@Produce	json
 func (a *CashierSessionApi) DownloadReport() gin.HandlerFunc {
-	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionCashierSessionDownloadReport),
+	return a.Guest(
+		// data_type.PermissionP(data_type.PermissionCashierSessionDownloadReport),
 		func(ctx apiContext) {
 			id := ctx.getUuidParam("id")
 			var request dto_request.CashierSessionDownloadReportRequest

@@ -76,6 +76,19 @@ func (l *ProductUnitLoader) CartItemFn(cartItem *model.CartItem) func() error {
 	}
 }
 
+func (l *ProductUnitLoader) TransactionItemFn(transactionItem *model.TransactionItem) func() error {
+	return func() error {
+		productUnit, err := l.load(transactionItem.ProductUnitId)
+		if err != nil {
+			return err
+		}
+
+		transactionItem.ProductUnit = productUnit
+
+		return nil
+	}
+}
+
 func (l *ProductUnitLoader) ShopOrderItemFn(shopOrderItem *model.ShopOrderItem) func() error {
 	return func() error {
 		productUnit, err := l.load(shopOrderItem.ProductUnitId)

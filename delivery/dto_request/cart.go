@@ -1,8 +1,8 @@
 package dto_request
 
 type CartAddItemRequest struct {
-	ProductUnitId string  `json:"product_unit_id" validate:"required,not_empty,uuid"`
-	Qty           float64 `json:"qty" validate:"required,gt=0"`
+	ProductId string  `json:"productId" validate:"required,not_empty,uuid"`
+	Qty       float64 `json:"qty" validate:"required,gt=0"`
 } // @name CartAddItemRequest
 
 type CartFetchSorts []struct {
@@ -29,8 +29,8 @@ type CartGetRequest struct {
 } // @name CartGetRequest
 
 type CartUpdateItemRequest struct {
-	ProductUnitId string  `json:"product_unit_id" validate:"required,not_empty,uuid"`
-	Qty           float64 `json:"qty" validate:"required,gt=0"`
+	Qty        float64 `json:"qty" validate:"required,gt=0"`
+	CartItemId string  `json:"-" swaggerignore:"true"`
 } // @name CartUpdateRequest
 
 type CartDeleteRequest struct {
@@ -38,5 +38,5 @@ type CartDeleteRequest struct {
 } // @name CartDeleteRequest
 
 type CartDeleteItemRequest struct {
-	ProductUnitId string `json:"product_unit_id" validate:"required,not_empty,uuid"`
+	CartItemId string `json:"-" swaggerignore:"true"`
 } // @name CartDeleteRequest
