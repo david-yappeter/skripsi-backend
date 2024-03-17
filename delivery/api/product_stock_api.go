@@ -88,16 +88,16 @@ func (a *ProductStockApi) Get() gin.HandlerFunc {
 //
 //	@Router		/product-stocks/report [get]
 //	@Summary	Download Report
-//	@tags		Product Stocks=
+//	@tags		Product Stocks
 //	@Produce	json
 func (a *ProductStockApi) DownloadReport() gin.HandlerFunc {
-	return a.Guest(
-		// data_type.PermissionP(data_type.PermissionProductStockGet),
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionProductStockGet),
 		func(ctx apiContext) {
 
 			ioReadCloser, contentLength, contentType, filename := a.productStockUseCase.DownloadReport(ctx.context())
 
-			ctx.dataFromReader(
+			ctx.dataFromReader(	
 				http.StatusOK,
 				contentLength,
 				contentType,

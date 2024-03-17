@@ -73,6 +73,30 @@ func (r *cashierSessionRepository) prepareQuery(option model.CashierSessionQuery
 		})
 	}
 
+	if option.StartedAtLte.DateTimeP() != nil {
+		stmt = stmt.Where(squirrel.LtOrEq{
+			"cs.started_at": option.StartedAtLte,
+		})
+	}
+
+	if option.EndedAtGte.DateTimeP() != nil {
+		stmt = stmt.Where(squirrel.GtOrEq{
+			"cs.ended_at": option.EndedAtGte,
+		})
+	}
+
+	if option.UserId != nil {
+		stmt = stmt.Where(squirrel.Eq{
+			"cs.user_id": option.UserId,
+		})
+	}
+
+	if option.Status != nil {
+		stmt = stmt.Where(squirrel.Eq{
+			"cs.status": option.Status,
+		})
+	}
+
 	stmt = model.Prepare(stmt, &option)
 
 	return stmt

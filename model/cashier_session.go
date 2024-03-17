@@ -10,6 +10,8 @@ type CashierSession struct {
 	Status       data_type.CashierSessionStatus `db:"status"`
 	StartingCash float64                        `db:"starting_cash"`
 	EndingCash   *float64                       `db:"ending_cash"`
+	StartedAt    data_type.DateTime             `db:"started_at"`
+	EndedAt      data_type.NullDateTime         `db:"ended_at"`
 	Timestamp
 
 	User *User `db:"-"`
@@ -30,6 +32,8 @@ func (m *CashierSession) ToMap() map[string]interface{} {
 		"status":        m.Status,
 		"starting_cash": m.StartingCash,
 		"ending_cash":   m.EndingCash,
+		"started_at":    m.StartedAt,
+		"ended_at":      m.EndedAt,
 		"created_at":    m.CreatedAt,
 		"updated_at":    m.UpdatedAt,
 	}
@@ -38,8 +42,11 @@ func (m *CashierSession) ToMap() map[string]interface{} {
 type CashierSessionQueryOption struct {
 	QueryOption
 
-	IsActive *bool
-	Phrase   *string
+	StartedAtLte data_type.NullDateTime
+	EndedAtGte   data_type.NullDateTime
+	UserId       *string
+	Status       *data_type.CashierSessionStatus
+	Phrase       *string
 }
 
 var _ PrepareOption = &CashierSessionQueryOption{}

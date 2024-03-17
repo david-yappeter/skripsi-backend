@@ -10,6 +10,8 @@ func init() {
 				status varchar(255) NOT NULL,
 				starting_cash decimal(16,2) NOT NULL,
 				ending_cash decimal(16,2) NULL,
+				started_at timestamp NOT NULL,
+				ended_at timestamp NULL,
 				created_at timestamp NOT NULL,
 				updated_at timestamp NOT NULL,
 				CONSTRAINT cashier_sessions_pk PRIMARY KEY (id),

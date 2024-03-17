@@ -5,6 +5,7 @@ import (
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
 	"myapp/use_case"
+	"myapp/util"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -13,6 +14,39 @@ import (
 type CashierSessionApi struct {
 	api
 	cashierSessionUseCase use_case.CashierSessionUseCase
+}
+
+// API:
+//
+//	@Router		/cashier-sessions/filter [post]
+//	@Summary	Fetch Cashier Sessions
+//	@tags		Cashier Sessions
+//	@Accept		json
+//	@Param		dto_request.CashierSessionFetchRequest	body	dto_request.CashierSessionFetchRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.CashierSessionResponse}}
+func (a *CashierSessionApi) Fetch() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCashierSessionFetch),
+		func(ctx apiContext) {
+			var request dto_request.CashierSessionFetchRequest
+			ctx.mustBind(&request)
+
+			cashierSessions, total := a.cashierSessionUseCase.Fetch(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Limit: request.Limit,
+						Page:  request.Page,
+						Total: total,
+						Nodes: util.ConvertArray(cashierSessions, dto_response.NewCashierSessionResponse),
+					},
+				},
+			)
+		},
+	)
 }
 
 // API:
@@ -117,6 +151,7 @@ func RegisterCashierSessionApi(router gin.IRouter, useCaseManager use_case.UseCa
 	}
 
 	routerGroup := router.Group("/cashier-sessions")
+	routerGroup.POST("/filter", api.Fetch())
 	routerGroup.POST("/start", api.Start())
 	routerGroup.GET("/current", api.GetCurrent())
 	routerGroup.POST("/end", api.End())

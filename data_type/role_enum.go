@@ -45,6 +45,9 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionBalanceUpdate,
 		PermissionBalanceDelete,
 
+		// cashier session
+		PermissionCashierSessionFetch,
+
 		// shop order
 		PermissionShopOrderFetch,
 		PermissionShopOrderGet,
@@ -229,6 +232,7 @@ func GetRoleCashier() []Permission {
 		PermissionCartDelete,
 
 		// cashier session
+		PermissionCashierSessionFetch,
 		PermissionCashierSessionStart,
 		PermissionCashierSessionGetCurrent,
 		PermissionCashierSessionEnd,

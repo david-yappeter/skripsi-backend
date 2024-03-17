@@ -55,6 +55,7 @@ func (u *cashierSessionUseCase) mustValidateCashierSessionNoCart(ctx context.Con
 }
 
 func (u *cashierSessionUseCase) Start(ctx context.Context, request dto_request.CashierSessionStartRequest) model.CashierSession {
+	currentDateTime := util.CurrentDateTime()
 	authUser := model.MustGetUserCtx(ctx)
 	u.mustValidateCashierSessionUserNotDuplicate(ctx, authUser.Id)
 
@@ -64,6 +65,7 @@ func (u *cashierSessionUseCase) Start(ctx context.Context, request dto_request.C
 		Status:       data_type.CashierSessionStatusActive,
 		StartingCash: request.StartingCash,
 		EndingCash:   nil,
+		StartedAt:    currentDateTime,
 	}
 
 	panicIfErr(
@@ -80,7 +82,11 @@ func (u *cashierSessionUseCase) Fetch(ctx context.Context, request dto_request.C
 			request.Limit,
 			model.Sorts(request.Sorts),
 		),
-		Phrase: request.Phrase,
+		StartedAtLte: request.StartedAt,
+		EndedAtGte:   request.EndedAt,
+		UserId:       request.UserId,
+		Status:       request.Status,
+		Phrase:       request.Phrase,
 	}
 
 	cashierSessions, err := u.repositoryManager.CashierSessionRepository().Fetch(ctx, queryOption)
@@ -107,12 +113,18 @@ func (u *cashierSessionUseCase) GetByCurrentUser(ctx context.Context) *model.Cas
 }
 
 func (u *cashierSessionUseCase) End(ctx context.Context, request dto_request.CashierSessionEndRequest) model.CashierSession {
+	currentDateTime := util.CurrentDateTime()
 	cashierSession := mustGetCashierSession(ctx, u.repositoryManager, request.CashierSessionId, false)
+
+	if cashierSession.Status != data_type.CashierSessionStatusActive {
+		panic(dto_response.NewBadRequestErrorResponse("CASHIER_SESSION.STATUS_MUST_BE_ACTIVE"))
+	}
 
 	u.mustValidateCashierSessionNoCart(ctx, cashierSession.Id)
 
 	cashierSession.EndingCash = &request.EndingCash
 	cashierSession.Status = data_type.CashierSessionStatusCompleted
+	cashierSession.EndedAt = currentDateTime.NullDateTime()
 
 	panicIfErr(
 		u.repositoryManager.CashierSessionRepository().Update(ctx, &cashierSession),

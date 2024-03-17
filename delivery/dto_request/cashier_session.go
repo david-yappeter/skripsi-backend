@@ -1,5 +1,7 @@
 package dto_request
 
+import "myapp/data_type"
+
 type CashierSessionStartRequest struct {
 	StartingCash float64 `db:"starting_cash"`
 } // @name CashierSessionStartRequest
@@ -11,8 +13,13 @@ type CashierSessionFetchSorts []struct {
 
 type CashierSessionFetchRequest struct {
 	PaginationRequest
-	Sorts  CashierSessionFetchSorts `json:"sorts" validate:"unique=Field,dive"`
-	Phrase *string                  `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+
+	UserId    *string                         `json:"user_id" validate:"omitempty,not_empty,uuid"`
+	Status    *data_type.CashierSessionStatus `json:"status" validate:"omitempty,data_type_enum"`
+	Sorts     CashierSessionFetchSorts        `json:"sorts" validate:"unique=Field,dive"`
+	Phrase    *string                         `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+	StartedAt data_type.NullDateTime          `json:"started_at"`
+	EndedAt   data_type.NullDateTime          `json:"ended_at"`
 } // @name CashierSessionFetchRequest
 
 type CashierSessionGetRequest struct {

@@ -21,6 +21,7 @@ const (
 	PermissionCartDelete      // CART_DELETE
 
 	// cashier session
+	PermissionCashierSessionFetch      // CASHIER_SESSION_FETCH
 	PermissionCashierSessionStart      // CASHIER_SESSION_START
 	PermissionCashierSessionGetCurrent // CASHIER_SESSION_GET_CURRENT
 	PermissionCashierSessionEnd        // CASHIER_SESSION_END
