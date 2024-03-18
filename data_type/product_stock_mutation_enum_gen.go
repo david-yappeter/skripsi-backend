@@ -15,13 +15,14 @@ func _() {
 	var x [1]struct{}
 	_ = x[ProductStockMutationTypeProductReceiveItem-1]
 	_ = x[ProductStockMutationTypeDeliveryOrderItemCostCancel-2]
+	_ = x[ProductStockMutationTypeProductStockAdjustment-3]
 }
 
-const _ProductStockMutationType_nameReadable = "PRODUCT_RECEIVE_ITEM, DELIVERY_ORDER_ITEM_COST_CANCEL"
+const _ProductStockMutationType_nameReadable = "PRODUCT_RECEIVE_ITEM, DELIVERY_ORDER_ITEM_COST_CANCEL, PRODUCT_STOCK_ADJUSTMENT"
 
-const _ProductStockMutationType_name = "PRODUCT_RECEIVE_ITEMDELIVERY_ORDER_ITEM_COST_CANCEL"
+const _ProductStockMutationType_name = "PRODUCT_RECEIVE_ITEMDELIVERY_ORDER_ITEM_COST_CANCELPRODUCT_STOCK_ADJUSTMENT"
 
-var _ProductStockMutationType_index = [...]uint8{0, 20, 51}
+var _ProductStockMutationType_index = [...]uint8{0, 20, 51, 75}
 
 func (i *ProductStockMutationType) Determine(s string) {
 	switch s {
@@ -29,6 +30,8 @@ func (i *ProductStockMutationType) Determine(s string) {
 		*i = ProductStockMutationTypeProductReceiveItem
 	case "DELIVERY_ORDER_ITEM_COST_CANCEL":
 		*i = ProductStockMutationTypeDeliveryOrderItemCostCancel
+	case "PRODUCT_STOCK_ADJUSTMENT":
+		*i = ProductStockMutationTypeProductStockAdjustment
 	default:
 		*i = 0
 	}
@@ -99,6 +102,7 @@ func ListProductStockMutationType() []ProductStockMutationType {
 	return []ProductStockMutationType{
 		ProductStockMutationTypeProductReceiveItem,
 		ProductStockMutationTypeDeliveryOrderItemCostCancel,
+		ProductStockMutationTypeProductStockAdjustment,
 	}
 }
 
@@ -106,5 +110,6 @@ func ListProductStockMutationTypeString() []string {
 	return []string{
 		ProductStockMutationTypeProductReceiveItem.String(),
 		ProductStockMutationTypeDeliveryOrderItemCostCancel.String(),
+		ProductStockMutationTypeProductStockAdjustment.String(),
 	}
 }

@@ -6,4 +6,5 @@ type ProductStockMutationType int // @name ProductStockMutationTypeEnum
 const (
 	ProductStockMutationTypeProductReceiveItem          ProductStockMutationType = iota + 1 // PRODUCT_RECEIVE_ITEM
 	ProductStockMutationTypeDeliveryOrderItemCostCancel                                     // DELIVERY_ORDER_ITEM_COST_CANCEL
+	ProductStockMutationTypeProductStockAdjustment                                          // PRODUCT_STOCK_ADJUSTMENT
 )

@@ -85,11 +85,13 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 	)
 
 	productLoader := loader.NewProductLoader(u.repositoryManager.ProductRepository())
+	unitLoader := loader.NewUnitLoader(u.repositoryManager.UnitRepository())
 
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
 			for i := range cartItems {
 				group.Go(productLoader.ProductUnitFn(cartItems[i].ProductUnit))
+				group.Go(unitLoader.ProductUnitFn(cartItems[i].ProductUnit))
 			}
 		}),
 	)
@@ -188,7 +190,7 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 				// deduct product stock mutation
 				deductQtyLeft := cartItem.Qty
 				for deductQtyLeft > 0 {
-					productStockMutation, err := u.repositoryManager.ProductStockMutationRepository().GetFIFOByProductUnitIdAndBaseQtyLeftNotZero(ctx, cartItem.ProductUnitId)
+					productStockMutation, err := u.repositoryManager.ProductStockMutationRepository().GetFIFOByProductIdAndBaseQtyLeftNotZero(ctx, cartItem.ProductUnit.ProductId)
 					if err != nil {
 						return err
 					}

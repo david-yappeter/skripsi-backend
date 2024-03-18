@@ -124,11 +124,13 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 
 	productStockLoader := loader.NewProductStockLoader(u.repositoryManager.ProductStockRepository())
 	productLoader := loader.NewProductLoader(u.repositoryManager.ProductRepository())
+	unitLoader := loader.NewUnitLoader(u.repositoryManager.UnitRepository())
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
 			for i := range deliveryOrders {
 				for j := range deliveryOrders[i].DeliveryOrderItems {
 					group.Go(productLoader.ProductUnitFn(deliveryOrders[i].DeliveryOrderItems[j].ProductUnit))
+					group.Go(unitLoader.ProductUnitFn(deliveryOrders[i].DeliveryOrderItems[j].ProductUnit))
 
 					if option.deliveryOrderItems && option.deliveryOrderProductStock {
 						group.Go(productStockLoader.ProductUnitFn(deliveryOrders[i].DeliveryOrderItems[j].ProductUnit))
@@ -531,7 +533,7 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 				deductQtyLeft := deliveryOrderItem.Qty
 
 				for deductQtyLeft > 0 {
-					productStockMutation, err := u.repositoryManager.ProductStockMutationRepository().GetFIFOByProductUnitIdAndBaseQtyLeftNotZero(ctx, deliveryOrderItem.ProductUnitId)
+					productStockMutation, err := u.repositoryManager.ProductStockMutationRepository().GetFIFOByProductIdAndBaseQtyLeftNotZero(ctx, deliveryOrderItem.ProductUnit.ProductId)
 					if err != nil {
 						return err
 					}

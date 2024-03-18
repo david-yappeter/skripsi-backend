@@ -3,7 +3,9 @@ package use_case
 import (
 	"context"
 	"io"
+	"myapp/data_type"
 	"myapp/delivery/dto_request"
+	"myapp/delivery/dto_response"
 	"myapp/loader"
 	"myapp/model"
 	"myapp/repository"
@@ -194,12 +196,81 @@ func (u *productStockUseCase) DownloadReport(
 }
 
 func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_request.ProductStockAdjustmentRequest) model.ProductStock {
+	currentDateTime := util.CurrentDateTime()
 	productStock := mustGetProductStock(ctx, u.repositoryManager, request.ProductStockId, true)
+
+	product := mustGetProduct(ctx, u.repositoryManager, productStock.ProductId, true)
+
+	if !product.IsActive {
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_STOCK.PRODUCT_MUST_BE_ACTIVE"))
+	}
+
+	// cost_price is required when adding stock
+	if productStock.Qty > request.Qty && request.CostPrice == nil {
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_STOCK.COST_PRICE_IS_REQUIRED_WHEN_ADDING_STOCK"))
+	}
 
 	productStock.Qty = request.Qty
 
+	var toBeAddedProductStockMutation *model.ProductStockMutation
+
 	panicIfErr(
-		u.repositoryManager.ProductStockRepository().Update(ctx, &productStock),
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			productStockRepository := u.repositoryManager.ProductStockRepository()
+			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
+
+			if productStock.Qty > request.Qty {
+				baseProductUnit, err := u.repositoryManager.ProductUnitRepository().GetBaseProductUnitByProductId(ctx, productStock.ProductId)
+				if err != nil {
+					return err
+				}
+
+				toBeAddedProductStockMutation = &model.ProductStockMutation{
+					Id:            util.NewUuid(),
+					ProductUnitId: baseProductUnit.Id,
+					Type:          data_type.ProductStockMutationTypeProductStockAdjustment,
+					IdentifierId:  productStock.Id,
+					Qty:           productStock.Qty - request.Qty,
+					ScaleToBase:   1,
+					BaseQtyLeft:   productStock.Qty - request.Qty,
+					BaseCostPrice: *request.CostPrice,
+					MutatedAt:     currentDateTime,
+				}
+			} else if productStock.Qty < request.Qty {
+				deductQty := request.Qty - productStock.Qty
+
+				for deductQty > 0 {
+					productStockMutation, err := u.repositoryManager.ProductStockMutationRepository().GetFIFOByProductIdAndBaseQtyLeftNotZero(ctx, product.Id)
+					if err != nil {
+						return err
+					}
+
+					if deductQty > productStockMutation.BaseQtyLeft {
+						deductQty -= productStockMutation.BaseQtyLeft
+						productStockMutation.Qty = 0
+					} else {
+						productStockMutation.Qty -= deductQty
+						deductQty = 0
+					}
+
+					if err := productStockMutationRepository.Update(ctx, productStockMutation); err != nil {
+						return err
+					}
+				}
+			}
+
+			if err := productStockRepository.Update(ctx, &productStock); err != nil {
+				return err
+			}
+
+			if toBeAddedProductStockMutation != nil {
+				if err := productStockMutationRepository.Insert(ctx, toBeAddedProductStockMutation); err != nil {
+					return err
+				}
+			}
+
+			return nil
+		}),
 	)
 
 	return productStock

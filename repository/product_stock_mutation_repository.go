@@ -22,7 +22,7 @@ type ProductStockMutationRepository interface {
 	FetchByTypeAndIdentifierIds(ctx context.Context, _type data_type.ProductStockMutationType, identifierIds []string) ([]model.ProductStockMutation, error)
 	Get(ctx context.Context, id string) (*model.ProductStockMutation, error)
 	GetByTypeAndIdentifierId(ctx context.Context, _type data_type.ProductStockMutationType, identifierId string) (*model.ProductStockMutation, error)
-	GetFIFOByProductUnitIdAndBaseQtyLeftNotZero(ctx context.Context, productUnitId string) (*model.ProductStockMutation, error)
+	GetFIFOByProductIdAndBaseQtyLeftNotZero(ctx context.Context, productId string) (*model.ProductStockMutation, error)
 
 	// update
 	Update(ctx context.Context, productStockMutation *model.ProductStockMutation) error
@@ -152,12 +152,13 @@ func (r *productStockMutationRepository) GetByTypeAndIdentifierId(ctx context.Co
 	return r.get(ctx, stmt)
 }
 
-func (r *productStockMutationRepository) GetFIFOByProductUnitIdAndBaseQtyLeftNotZero(ctx context.Context, productUnitId string) (*model.ProductStockMutation, error) {
-	stmt := stmtBuilder.Select("*").
-		From(model.ProductStockMutationTableName).
-		Where(squirrel.Eq{"product_unit_id": productUnitId}).
-		Where(squirrel.Gt{"base_qty_left": 0}).
-		OrderBy("mutated_at ASC")
+func (r *productStockMutationRepository) GetFIFOByProductIdAndBaseQtyLeftNotZero(ctx context.Context, productId string) (*model.ProductStockMutation, error) {
+	stmt := stmtBuilder.Select("psm.*").
+		From(fmt.Sprintf("%s psm", model.ProductStockMutationTableName)).
+		InnerJoin(fmt.Sprintf("%s pu ON pu.id = psm.product_unit_id", model.ProductUnitTableName)).
+		Where(squirrel.Eq{"pu.product_id": productId}).
+		Where(squirrel.Gt{"psm.base_qty_left": 0}).
+		OrderBy("psm.mutated_at ASC")
 
 	return r.get(ctx, stmt)
 }

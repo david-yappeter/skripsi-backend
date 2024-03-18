@@ -13,6 +13,7 @@ func init() {
 			Enum: []interface{}{
 				"PRODUCT_RECEIVE_ITEM",
 				"DELIVERY_ORDER_ITEM_COST_CANCEL",
+				"PRODUCT_STOCK_ADJUSTMENT",
 			},
 		},
 	}
