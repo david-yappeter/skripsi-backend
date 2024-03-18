@@ -1,7 +1,7 @@
 package dto_request
 
 type CartAddItemRequest struct {
-	ProductId string  `json:"productId" validate:"required,not_empty,uuid"`
+	ProductId string  `json:"product_id" validate:"required,not_empty,uuid"`
 	Qty       float64 `json:"qty" validate:"required,gt=0"`
 } // @name CartAddItemRequest
 
