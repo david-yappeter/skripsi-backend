@@ -6,7 +6,6 @@ import (
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
 	"myapp/use_case"
-	"myapp/util"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,41 +14,6 @@ import (
 type ProductStockApi struct {
 	api
 	productStockUseCase use_case.ProductStockUseCase
-}
-
-// API:
-//
-//	@Router		/product-stocks/filter [post]
-//	@Summary	Filter
-//	@tags		Product Stocks
-//	@Accept		json
-//	@Param		dto_request.ProductStockFetchRequest	body	dto_request.ProductStockFetchRequest	true	"Body Request"
-//	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.ProductStockResponse}}
-func (a *ProductStockApi) Fetch() gin.HandlerFunc {
-	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionProductStockFetch),
-		func(ctx apiContext) {
-			var request dto_request.ProductStockFetchRequest
-			ctx.mustBind(&request)
-
-			productStocks, total := a.productStockUseCase.Fetch(ctx.context(), request)
-
-			nodes := util.ConvertArray(productStocks, dto_response.NewProductStockResponse)
-
-			ctx.json(
-				http.StatusOK,
-				dto_response.Response{
-					Data: dto_response.PaginationResponse{
-						Page:  request.Page,
-						Limit: request.Limit,
-						Total: total,
-						Nodes: nodes,
-					},
-				},
-			)
-		},
-	)
 }
 
 // API:
@@ -97,7 +61,7 @@ func (a *ProductStockApi) DownloadReport() gin.HandlerFunc {
 
 			ioReadCloser, contentLength, contentType, filename := a.productStockUseCase.DownloadReport(ctx.context())
 
-			ctx.dataFromReader(	
+			ctx.dataFromReader(
 				http.StatusOK,
 				contentLength,
 				contentType,
@@ -151,7 +115,6 @@ func RegisterProductStockApi(router gin.IRouter, useCaseManager use_case.UseCase
 	}
 
 	routerGroup := router.Group("/product-stocks")
-	routerGroup.POST("/filter", api.Fetch())
 	routerGroup.GET("/:id", api.Get())
 	routerGroup.GET("/report", api.DownloadReport())
 	routerGroup.PATCH("/:id/adjustment", api.Adjustment())
