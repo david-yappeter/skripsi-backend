@@ -44,6 +44,7 @@ type ProductUseCase interface {
 	OptionForProductReceiveForm(ctx context.Context, request dto_request.ProductOptionForProductReceiveFormRequest) ([]model.Product, int)
 	OptionForDeliveryOrderForm(ctx context.Context, request dto_request.ProductOptionForDeliveryOrderFormRequest) ([]model.Product, int)
 	OptionForCustomerTypeForm(ctx context.Context, request dto_request.ProductOptionForCustomerTypeFormRequest) ([]model.Product, int)
+	OptionForCartAddItemForm(ctx context.Context, request dto_request.ProductOptionForCartAddItemFormRequest) ([]model.Product, int)
 }
 
 type productUseCase struct {
@@ -402,6 +403,42 @@ func (u *productUseCase) OptionForCustomerTypeForm(ctx context.Context, request 
 	excludedProductIds := []string{}
 	for _, customerTypeDiscount := range customerTypeDiscounts {
 		excludedProductIds = append(excludedProductIds, customerTypeDiscount.ProductId)
+	}
+
+	queryOption := model.ProductQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts(request.Sorts),
+		),
+		ExcludeIds: excludedProductIds,
+		IsActive:   util.BoolP(true),
+		Phrase:     request.Phrase,
+	}
+
+	products, err := u.repositoryManager.ProductRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.ProductRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	return products, total
+}
+
+func (u *productUseCase) OptionForCartAddItemForm(ctx context.Context, request dto_request.ProductOptionForCartAddItemFormRequest) ([]model.Product, int) {
+	cartItems, err := u.repositoryManager.CartItemRepository().FetchByCartIds(ctx, []string{request.CartId})
+	panicIfErr(err)
+
+	productUnitLoader := loader.NewProductUnitLoader(u.repositoryManager.ProductUnitRepository())
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		for i := range cartItems {
+			group.Go(productUnitLoader.CartItemFn(&cartItems[i]))
+		}
+	}))
+
+	excludedProductIds := []string{}
+	for _, cartItem := range cartItems {
+		excludedProductIds = append(excludedProductIds, cartItem.ProductUnit.ProductId)
 	}
 
 	queryOption := model.ProductQueryOption{

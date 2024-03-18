@@ -75,3 +75,15 @@ type ProductOptionForCustomerTypeFormRequest struct {
 	CustomerTypeId string                                `json:"customer_type_id" validate:"required,not_empty,uuid"`
 	Phrase         *string                               `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name ProductOptionForCustomerTypeFormRequest
+
+type ProductOptionForCartAddItemFormSorts []struct {
+	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
+	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
+} // @name ProductOptionForCartAddItemFormSorts
+
+type ProductOptionForCartAddItemFormRequest struct {
+	PaginationRequest
+	Sorts  ProductOptionForCartAddItemFormSorts `json:"sorts" validate:"unique=Field,dive"`
+	CartId string                               `json:"cart_id" validate:"required,not_empty,uuid"`
+	Phrase *string                              `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name ProductOptionForCartAddItemFormRequest

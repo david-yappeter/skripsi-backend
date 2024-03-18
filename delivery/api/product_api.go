@@ -312,6 +312,41 @@ func (a *ProductApi) OptionForCustomerTypeForm() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/products/options/cart-add-item-form [post]
+//	@Summary	Option for Cart Add Item Form
+//	@tags		Products
+//	@Accept		json
+//	@Param		dto_request.ProductOptionForCartAddItemFormRequest	body	dto_request.ProductOptionForCartAddItemFormRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.ProductResponse}}
+func (a *ProductApi) OptionForCartAddItemForm() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionProductOptionForCartAddItemForm),
+		func(ctx apiContext) {
+			var request dto_request.ProductOptionForCartAddItemFormRequest
+			ctx.mustBind(&request)
+
+			products, total := a.productUseCase.OptionForCartAddItemForm(ctx.context(), request)
+
+			nodes := util.ConvertArray(products, dto_response.NewProductResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Total: total,
+						Nodes: nodes,
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterProductApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := ProductApi{
 		api:            newApi(useCaseManager),
@@ -330,4 +365,5 @@ func RegisterProductApi(router gin.IRouter, useCaseManager use_case.UseCaseManag
 	optionRouterGroup.POST("/product-receive-form", api.OptionForProductReceiveForm())
 	optionRouterGroup.POST("/delivery-order-form", api.OptionForDeliveryOrderForm())
 	optionRouterGroup.POST("/customer-type-form", api.OptionForCustomerTypeForm())
+	optionRouterGroup.POST("/cart-add-item-form", api.OptionForCartAddItemForm())
 }

@@ -378,7 +378,7 @@ func (a *DeliveryOrderApi) Delete() gin.HandlerFunc {
 //	@tags		Delivery Orders
 //	@Accept		json
 //	@Param		id											path	string										true	"Id"
-//	@Param		delivery_order_item_id								path	string										true	"Delivery Order Item Id"
+//	@Param		delivery_order_item_id						path	string										true	"Delivery Order Item Id"
 //	@Param		dto_request.DeliveryOrderDeleteItemRequest	body	dto_request.DeliveryOrderDeleteItemRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
