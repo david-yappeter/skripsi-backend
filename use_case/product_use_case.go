@@ -266,6 +266,31 @@ func (u *productUseCase) Update(ctx context.Context, request dto_request.Product
 		panic(dto_response.NewBadRequestErrorResponse("ACTIVE_PRODUCT.MUST_HAVE_PRICE"))
 	}
 
+	// handle if update image file
+	var toBeDeletedImageFile *model.File
+	var toBeCreatedImageFile *model.File
+	if request.ImageFilePath != nil {
+		// delete file later
+		toBeDeletedImageFile = util.Pointer(mustGetFile(ctx, u.repositoryManager, product.ImageFileId, true))
+
+		toBeCreatedImageFile = &model.File{
+			Id:   util.NewUuid(),
+			Type: data_type.FileTypeProductImage,
+		}
+		toBeCreatedImageFile.Path, toBeCreatedImageFile.Name = u.baseFileUseCase.mustUploadFileFromTemporaryToMain(
+			ctx,
+			constant.ProductImagePath,
+			product.Id,
+			fmt.Sprintf("%s%s", toBeCreatedImageFile.Id, path.Ext(*request.ImageFilePath)),
+			*request.ImageFilePath,
+			fileUploadTemporaryToMainParams{
+				deleteTmpOnSuccess: false,
+			},
+		)
+
+		product.ImageFileId = toBeCreatedImageFile.Id
+	}
+
 	// update product price in tiktok
 	if tiktokProduct != nil && request.Price != nil && (product.Price == nil || *product.Price != *request.Price) {
 		tiktokProductDetail := mustGetTiktokProductDetail(ctx, u.repositoryManager, tiktokProduct.TiktokProductId)
@@ -327,8 +352,31 @@ func (u *productUseCase) Update(ctx context.Context, request dto_request.Product
 	product.IsActive = request.IsActive
 
 	panicIfErr(
-		u.repositoryManager.ProductRepository().Update(ctx, &product),
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			fileRepository := u.repositoryManager.FileRepository()
+			productRepository := u.repositoryManager.ProductRepository()
+
+			if toBeCreatedImageFile != nil {
+				if err := fileRepository.Insert(ctx, toBeCreatedImageFile); err != nil {
+					return err
+				}
+			}
+
+			if err := productRepository.Update(ctx, &product); err != nil {
+				return err
+			}
+
+			if toBeDeletedImageFile != nil {
+				if err := fileRepository.Delete(ctx, toBeDeletedImageFile); err != nil {
+					return err
+				}
+			}
+
+			return nil
+		}),
 	)
+
+	panicIfErr(u.baseFileUseCase.mainFilesystem.Delete(toBeDeletedImageFile.Path))
 
 	u.mustLoadProductDatas(ctx, []*model.Product{&product}, productLoaderParams{
 		productStock: true,
