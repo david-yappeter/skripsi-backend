@@ -14,8 +14,9 @@ type ProductReceiveResponse struct {
 	Status        data_type.ProductReceiveStatus `json:"status"`
 	TotalPrice    float64                        `json:"total_price"`
 
-	Items    []ProductReceiveItemResponse `json:"items"`
-	Supplier *SupplierResponse            `json:"supplier" extensions:"x-nullable"`
+	Items    []ProductReceiveItemResponse  `json:"items" extensions:"x-nullable"`
+	Images   []ProductReceiveImageResponse `json:"images" extensions:"x-nullable"`
+	Supplier *SupplierResponse             `json:"supplier" extensions:"x-nullable"`
 	Timestamp
 } // @name ProductReceiveResponse
 
@@ -34,6 +35,10 @@ func NewProductReceiveResponse(productReceive model.ProductReceive) ProductRecei
 
 	if productReceive.Supplier != nil {
 		r.Supplier = NewSupplierResponseP(*productReceive.Supplier)
+	}
+
+	for _, productReceiveImage := range productReceive.ProductReceiveImages {
+		r.Images = append(r.Images, NewProductReceiveImageResponse(productReceiveImage))
 	}
 
 	for _, productReceiveItem := range productReceive.ProductReceiveItems {
