@@ -16,9 +16,6 @@ type ProductUnitUseCase interface {
 	//  read
 	Get(ctx context.Context, request dto_request.ProductUnitGetRequest) model.ProductUnit
 
-	//  update
-	Update(ctx context.Context, request dto_request.ProductUnitUpdateRequest) model.ProductUnit
-
 	//  delete
 	Delete(ctx context.Context, request dto_request.ProductUnitDeleteRequest)
 
@@ -48,8 +45,13 @@ func (u *productUnitUseCase) mustValidateProductUnitNotDuplicate(ctx context.Con
 	}
 }
 
-func (u *productUnitUseCase) mustValidateAllowDeleteProductUnit(ctx context.Context, productUnitId string) {
+func (u *productUnitUseCase) mustValidateAllowDeleteProductUnit(ctx context.Context, productUnit model.ProductUnit) {
+	isExist, err := u.repositoryManager.ProductUnitRepository().IsExistByProductIdAndToUnitId(ctx, productUnit.ProductId, productUnit.UnitId)
+	panicIfErr(err)
 
+	if isExist {
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_UNIT.IN_USED_BY_OTHER_UNIT"))
+	}
 }
 
 func (u *productUnitUseCase) Create(ctx context.Context, request dto_request.ProductUnitCreateRequest) model.ProductUnit {
@@ -95,23 +97,10 @@ func (u *productUnitUseCase) Get(ctx context.Context, request dto_request.Produc
 	return productUnit
 }
 
-func (u *productUnitUseCase) Update(ctx context.Context, request dto_request.ProductUnitUpdateRequest) model.ProductUnit {
-	productUnit := mustGetProductUnit(ctx, u.repositoryManager, request.ProductUnitId, true)
-
-	productUnit.ProductId = request.ProductId
-	productUnit.UnitId = request.UnitId
-
-	panicIfErr(
-		u.repositoryManager.ProductUnitRepository().Update(ctx, &productUnit),
-	)
-
-	return productUnit
-}
-
 func (u *productUnitUseCase) Delete(ctx context.Context, request dto_request.ProductUnitDeleteRequest) {
 	productUnit := mustGetProductUnit(ctx, u.repositoryManager, request.ProductUnitId, true)
 
-	u.mustValidateAllowDeleteProductUnit(ctx, request.ProductUnitId)
+	u.mustValidateAllowDeleteProductUnit(ctx, productUnit)
 
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {

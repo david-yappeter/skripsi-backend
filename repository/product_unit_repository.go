@@ -23,9 +23,11 @@ type ProductUnitRepository interface {
 	FetchBaseByProductIds(ctx context.Context, productIds []string) ([]model.ProductUnit, error)
 	Get(ctx context.Context, id string) (*model.ProductUnit, error)
 	GetByProductIdAndUnitId(ctx context.Context, productId string, unitId string) (*model.ProductUnit, error)
+	GetByProductIdAndToUnitId(ctx context.Context, productId string, toUnitId string) (*model.ProductUnit, error)
 	GetBaseProductUnitByProductId(ctx context.Context, productId string) (*model.ProductUnit, error)
 	IsExistByProductId(ctx context.Context, productId string) (bool, error)
 	IsExistByProductIdAndUnitId(ctx context.Context, productId string, unitId string) (bool, error)
+	IsExistByProductIdAndToUnitId(ctx context.Context, productId string, toUnitId string) (bool, error)
 
 	// update
 	Update(ctx context.Context, productProductUnit *model.ProductUnit) error
@@ -168,6 +170,15 @@ func (r *productProductUnitRepository) GetByProductIdAndUnitId(ctx context.Conte
 	return r.get(ctx, stmt)
 }
 
+func (r *productProductUnitRepository) GetByProductIdAndToUnitId(ctx context.Context, productId string, toUnitId string) (*model.ProductUnit, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.ProductUnitTableName).
+		Where(squirrel.Eq{"product_id": productId}).
+		Where(squirrel.Eq{"to_unit_id": toUnitId})
+
+	return r.get(ctx, stmt)
+}
+
 func (r *productProductUnitRepository) GetBaseProductUnitByProductId(ctx context.Context, productId string) (*model.ProductUnit, error) {
 	stmt := stmtBuilder.Select("*").
 		From(model.ProductUnitTableName).
@@ -194,6 +205,18 @@ func (r *productProductUnitRepository) IsExistByProductIdAndUnitId(ctx context.C
 			From(model.ProductUnitTableName).
 			Where(squirrel.Eq{"product_id": productId}).
 			Where(squirrel.Eq{"unit_id": unitId}).
+			Prefix("EXISTS (").Suffix(")"),
+	)
+
+	return isExist(r.db, ctx, stmt)
+}
+
+func (r *productProductUnitRepository) IsExistByProductIdAndToUnitId(ctx context.Context, productId string, toUnitId string) (bool, error) {
+	stmt := stmtBuilder.Select().Column(
+		stmtBuilder.Select("1").
+			From(model.ProductUnitTableName).
+			Where(squirrel.Eq{"product_id": productId}).
+			Where(squirrel.Eq{"to_unit_id": toUnitId}).
 			Prefix("EXISTS (").Suffix(")"),
 	)
 

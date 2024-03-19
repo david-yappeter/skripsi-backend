@@ -48,39 +48,6 @@ func (a *ProductUnitApi) Create() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/product-units/{id} [put]
-//	@Summary	Update
-//	@tags		Product Units
-//	@Accept		json
-//	@Param		id										path	string									true	"Id"
-//	@Param		dto_request.ProductUnitUpdateRequest	body	dto_request.ProductUnitUpdateRequest	true	"Body Request"
-//	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_unit=dto_response.ProductUnitResponse}}
-func (a *ProductUnitApi) Update() gin.HandlerFunc {
-	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionProductUnitUpdate),
-		func(ctx apiContext) {
-			id := ctx.getUuidParam("id")
-			var request dto_request.ProductUnitUpdateRequest
-			ctx.mustBind(&request)
-			request.ProductUnitId = id
-
-			productUnit := a.productUnitUseCase.Update(ctx.context(), request)
-
-			ctx.json(
-				http.StatusOK,
-				dto_response.Response{
-					Data: dto_response.DataResponse{
-						"product_unit": dto_response.NewProductUnitResponse(productUnit),
-					},
-				},
-			)
-		},
-	)
-}
-
-// API:
-//
 //	@Router		/product-units/{id} [delete]
 //	@Summary	Delete
 //	@tags		Product Units
@@ -188,7 +155,6 @@ func RegisterProductUnitApi(router gin.IRouter, useCaseManager use_case.UseCaseM
 
 	routerGroup := router.Group("/product-units")
 	routerGroup.POST("", api.Create())
-	routerGroup.PUT("/:id", api.Update())
 	routerGroup.DELETE("/:id", api.Delete())
 
 	optionRouterGroup := routerGroup.Group("/options")
