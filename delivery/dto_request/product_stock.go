@@ -17,7 +17,7 @@ type ProductStockGetRequest struct {
 
 type ProductStockAdjustmentRequest struct {
 	Qty       float64  `json:"qty"`
-	CostPrice *float64 `json:"cost_price" validate:"omitempty,gte=0"`
+	CostPrice *float64 `json:"cost_price" validate:"omitempty,gte=0" extensions:"x-nullable"`
 
 	ProductStockId string `json:"-" swaggerignore:"true"`
 } // @name ProductStockAdjustmentRequest
