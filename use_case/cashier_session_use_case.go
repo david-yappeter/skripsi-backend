@@ -15,6 +15,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+type cashierSessionLoaderParams struct {
+	user bool
+}
+
 type CashierSessionUseCase interface {
 	//  create
 	Start(ctx context.Context, request dto_request.CashierSessionStartRequest) model.CashierSession
@@ -59,6 +63,18 @@ func (u *cashierSessionUseCase) mustValidateCashierSessionNoCart(ctx context.Con
 	}
 }
 
+func (u *cashierSessionUseCase) mustLoadCashierSessionsData(ctx context.Context, cashierSessions []*model.CashierSession, option cashierSessionLoaderParams) {
+	userLoader := loader.NewUserLoader(u.repositoryManager.UserRepository())
+
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		for i := range cashierSessions {
+			if option.user {
+				group.Go(userLoader.CashierSessionFn(cashierSessions[i]))
+			}
+		}
+	}))
+}
+
 func (u *cashierSessionUseCase) Start(ctx context.Context, request dto_request.CashierSessionStartRequest) model.CashierSession {
 	currentDateTime := util.CurrentDateTime()
 	authUser := model.MustGetUserCtx(ctx)
@@ -76,6 +92,10 @@ func (u *cashierSessionUseCase) Start(ctx context.Context, request dto_request.C
 	panicIfErr(
 		u.repositoryManager.CashierSessionRepository().Insert(ctx, &cashierSession),
 	)
+
+	u.mustLoadCashierSessionsData(ctx, []*model.CashierSession{&cashierSession}, cashierSessionLoaderParams{
+		user: true,
+	})
 
 	return cashierSession
 }
@@ -100,11 +120,19 @@ func (u *cashierSessionUseCase) Fetch(ctx context.Context, request dto_request.C
 	total, err := u.repositoryManager.CashierSessionRepository().Count(ctx, queryOption)
 	panicIfErr(err)
 
+	u.mustLoadCashierSessionsData(ctx, util.SliceValueToSlicePointer(cashierSessions), cashierSessionLoaderParams{
+		user: true,
+	})
+
 	return cashierSessions, total
 }
 
 func (u *cashierSessionUseCase) Get(ctx context.Context, request dto_request.CashierSessionGetRequest) model.CashierSession {
 	cashierSession := mustGetCashierSession(ctx, u.repositoryManager, request.CashierSessionId, false)
+
+	u.mustLoadCashierSessionsData(ctx, []*model.CashierSession{&cashierSession}, cashierSessionLoaderParams{
+		user: true,
+	})
 
 	return cashierSession
 }
@@ -225,6 +253,10 @@ func (u *cashierSessionUseCase) GetByCurrentUser(ctx context.Context) *model.Cas
 	cashierSession, err := u.repositoryManager.CashierSessionRepository().GetByUserIdAndStatusActive(ctx, authUser.Id)
 	panicIfErr(err, constant.ErrNoData)
 
+	u.mustLoadCashierSessionsData(ctx, []*model.CashierSession{cashierSession}, cashierSessionLoaderParams{
+		user: true,
+	})
+
 	return cashierSession
 }
 
@@ -251,6 +283,10 @@ func (u *cashierSessionUseCase) End(ctx context.Context, request dto_request.Cas
 	panicIfErr(
 		u.repositoryManager.CashierSessionRepository().Update(ctx, cashierSession),
 	)
+
+	u.mustLoadCashierSessionsData(ctx, []*model.CashierSession{cashierSession}, cashierSessionLoaderParams{
+		user: true,
+	})
 
 	return *cashierSession
 }
