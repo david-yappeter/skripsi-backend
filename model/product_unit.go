@@ -14,6 +14,7 @@ type ProductUnit struct {
 	Product      *Product      `db:"-"`
 	ProductStock *ProductStock `db:"-"`
 	Unit         *Unit         `db:"-"`
+	ToUnit       *Unit         `db:"-"`
 }
 
 func (m *ProductUnit) TableName() string {

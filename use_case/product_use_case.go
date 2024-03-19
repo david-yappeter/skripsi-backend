@@ -113,6 +113,17 @@ func (u *productUseCase) mustLoadProductDatas(ctx context.Context, products []*m
 		}),
 	)
 
+	unitLoader := loader.NewUnitLoader(u.repositoryManager.UnitRepository())
+
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		for i := range products {
+			for j := range products[i].ProductUnits {
+				group.Go(unitLoader.ProductUnitFn(&products[i].ProductUnits[j]))
+				group.Go(unitLoader.ProductUnitToUnitIdFn(&products[i].ProductUnits[j]))
+			}
+		}
+	}))
+
 	for i := range products {
 		products[i].ImageFile.SetLink(u.baseFileUseCase.mainFilesystem)
 	}

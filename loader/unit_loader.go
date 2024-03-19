@@ -37,6 +37,19 @@ func (l *UnitLoader) ProductUnitFn(productUnit *model.ProductUnit) func() error 
 	}
 }
 
+func (l *UnitLoader) ProductUnitToUnitIdFn(productUnit *model.ProductUnit) func() error {
+	return func() error {
+		unit, err := l.loadById(*productUnit.ToUnitId)
+		if err != nil {
+			return err
+		}
+
+		productUnit.ToUnit = unit
+
+		return nil
+	}
+}
+
 func NewUnitLoader(unitRepository repository.UnitRepository) *UnitLoader {
 	batchByUnitIdFn := func(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
 		ids := make([]string, len(keys))

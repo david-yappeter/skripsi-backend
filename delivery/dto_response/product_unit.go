@@ -17,6 +17,7 @@ type ProductUnitResponse struct {
 
 	Product *ProductResponse `json:"product" extensions:"x-nullable"`
 	Unit    *UnitResponse    `json:"unit" extensions:"x-nullable"`
+	ToUnit  *UnitResponse    `json:"to_unit" extensions:"x-nullable"`
 } // @name ProductUnitResponse
 
 func NewProductUnitResponse(productUnit model.ProductUnit) ProductUnitResponse {
@@ -36,6 +37,10 @@ func NewProductUnitResponse(productUnit model.ProductUnit) ProductUnitResponse {
 
 	if productUnit.Unit != nil {
 		r.Unit = util.Pointer(NewUnitResponse(*productUnit.Unit))
+	}
+
+	if productUnit.ToUnit != nil {
+		r.ToUnit = util.Pointer(NewUnitResponse(*productUnit.ToUnit))
 	}
 
 	return r
