@@ -206,7 +206,7 @@ func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_reques
 	}
 
 	// cost_price is required when adding stock
-	if productStock.Qty > request.Qty && request.CostPrice == nil {
+	if productStock.Qty < request.Qty && request.CostPrice == nil {
 		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_STOCK.COST_PRICE_IS_REQUIRED_WHEN_ADDING_STOCK"))
 	}
 
@@ -219,7 +219,7 @@ func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_reques
 			productStockRepository := u.repositoryManager.ProductStockRepository()
 			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
 
-			if productStock.Qty > request.Qty {
+			if productStock.Qty < request.Qty {
 				baseProductUnit, err := u.repositoryManager.ProductUnitRepository().GetBaseProductUnitByProductId(ctx, productStock.ProductId)
 				if err != nil {
 					return err
@@ -236,7 +236,7 @@ func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_reques
 					BaseCostPrice: *request.CostPrice,
 					MutatedAt:     currentDateTime,
 				}
-			} else if productStock.Qty < request.Qty {
+			} else if productStock.Qty > request.Qty {
 				deductQty := request.Qty - productStock.Qty
 
 				for deductQty > 0 {
