@@ -32,6 +32,7 @@ type UnitQueryOption struct {
 	QueryOption
 
 	ProductIdNotExist *string
+	ProductIdExist    *string
 	Phrase            *string
 }
 

@@ -88,6 +88,7 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionUnitUpdate,
 		PermissionUnitDelete,
 		PermissionUnitOptionForProductUnitForm,
+		PermissionUnitOptionForProductUnitToUnitForm,
 	}
 }
 
@@ -218,6 +219,7 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionUnitUpdate,
 		PermissionUnitDelete,
 		PermissionUnitOptionForProductUnitForm,
+		PermissionUnitOptionForProductUnitToUnitForm,
 	}
 }
 

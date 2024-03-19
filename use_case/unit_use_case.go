@@ -25,6 +25,7 @@ type UnitUseCase interface {
 
 	// option
 	OptionForProductUnitForm(ctx context.Context, request dto_request.UnitOptionForProductUnitFormRequest) ([]model.Unit, int)
+	OptionForProductUnitToUnitForm(ctx context.Context, request dto_request.UnitOptionForProductUnitToUnitFormRequest) ([]model.Unit, int)
 }
 
 type unitUseCase struct {
@@ -133,6 +134,30 @@ func (u *unitUseCase) OptionForProductUnitForm(ctx context.Context, request dto_
 		),
 		ProductIdNotExist: &product.Id,
 		Phrase:            request.Phrase,
+	}
+
+	units, err := u.repositoryManager.UnitRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.UnitRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	return units, total
+}
+
+func (u *unitUseCase) OptionForProductUnitToUnitForm(ctx context.Context, request dto_request.UnitOptionForProductUnitToUnitFormRequest) ([]model.Unit, int) {
+	product := mustGetProduct(ctx, u.repositoryManager, request.ProductId, true)
+
+	queryOption := model.UnitQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts{
+				{Field: "name", Direction: "asc"},
+			},
+		),
+		ProductIdExist: &product.Id,
+		Phrase:         request.Phrase,
 	}
 
 	units, err := u.repositoryManager.UnitRepository().Fetch(ctx, queryOption)

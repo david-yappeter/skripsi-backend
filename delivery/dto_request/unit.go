@@ -36,3 +36,9 @@ type UnitOptionForProductUnitFormRequest struct {
 	ProductId string  `json:"product_id" validate:"required,not_empty,uuid"`
 	Phrase    *string `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name UnitOptionForProductUnitFormRequest
+
+type UnitOptionForProductUnitToUnitFormRequest struct {
+	PaginationRequest
+	ProductId string  `json:"product_id" validate:"required,not_empty,uuid"`
+	Phrase    *string `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name UnitOptionForProductUnitToUnitFormRequest

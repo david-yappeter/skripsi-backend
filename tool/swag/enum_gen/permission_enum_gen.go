@@ -138,6 +138,7 @@ func init() {
 				"UNIT_UPDATE",
 				"UNIT_DELETE",
 				"UNIT_OPTION_FOR_PRODUCT_UNIT_FORM",
+				"UNIT_OPTION_FOR_PRODUCT_UNIT_TO_UNIT_FORM",
 			},
 		},
 	}

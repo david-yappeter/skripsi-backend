@@ -164,10 +164,11 @@ const (
 	PermissionUserDeleteRole     // USER_DELETE_ROLE
 
 	// unit
-	PermissionUnitCreate                   // UNIT_CREATE
-	PermissionUnitFetch                    // UNIT_FETCH
-	PermissionUnitGet                      // UNIT_GET
-	PermissionUnitUpdate                   // UNIT_UPDATE
-	PermissionUnitDelete                   // UNIT_DELETE
-	PermissionUnitOptionForProductUnitForm // UNIT_OPTION_FOR_PRODUCT_UNIT_FORM
+	PermissionUnitCreate                         // UNIT_CREATE
+	PermissionUnitFetch                          // UNIT_FETCH
+	PermissionUnitGet                            // UNIT_GET
+	PermissionUnitUpdate                         // UNIT_UPDATE
+	PermissionUnitDelete                         // UNIT_DELETE
+	PermissionUnitOptionForProductUnitForm       // UNIT_OPTION_FOR_PRODUCT_UNIT_FORM
+	PermissionUnitOptionForProductUnitToUnitForm // UNIT_OPTION_FOR_PRODUCT_UNIT_TO_UNIT_FORM
 )
