@@ -144,7 +144,7 @@ func (a *CashierSessionApi) DownloadReport() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/cashier-sessions/get-current [get]
+//	@Router		/cashier-sessions/current [get]
 //	@Summary	Get current user cashier session
 //	@tags		Cashier Sessions
 //	@Accept		json
@@ -154,7 +154,6 @@ func (a *CashierSessionApi) GetCurrent() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionCashierSessionGetCurrent),
 		func(ctx apiContext) {
-
 			cashierSession := a.cashierSessionUseCase.GetByCurrentUser(ctx.context())
 
 			var resp *dto_response.CashierSessionResponse
