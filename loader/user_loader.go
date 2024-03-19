@@ -26,12 +26,14 @@ func (l *UserLoader) load(id string) (*model.User, error) {
 
 func (l *UserLoader) CashierSessionFn(cashierSession *model.CashierSession) func() error {
 	return func() error {
-		user, err := l.load(cashierSession.UserId)
-		if err != nil {
-			return err
-		}
+		if cashierSession != nil {
+			user, err := l.load(cashierSession.UserId)
+			if err != nil {
+				return err
+			}
 
-		cashierSession.User = user
+			cashierSession.User = user
+		}
 
 		return nil
 	}
