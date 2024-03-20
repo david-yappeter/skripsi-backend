@@ -42,8 +42,8 @@ func (m *CashierSession) ToMap() map[string]interface{} {
 type CashierSessionQueryOption struct {
 	QueryOption
 
-	StartedAtLte data_type.NullDateTime
-	EndedAtGte   data_type.NullDateTime
+	StartedAtGte data_type.NullDateTime
+	EndedAtLte   data_type.NullDateTime
 	UserId       *string
 	Status       *data_type.CashierSessionStatus
 	Phrase       *string
