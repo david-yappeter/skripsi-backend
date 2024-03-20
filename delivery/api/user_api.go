@@ -274,6 +274,41 @@ func (a *UserApi) DeleteRole() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/users/options/cashier-session-filter [post]
+//	@Summary	Option for Cashier Session Filter
+//	@tags		Users
+//	@Accept		json
+//	@Param		dto_request.UserOptionForCashierSessionFilterRequest	body	dto_request.UserOptionForCashierSessionFilterRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.UserResponse}}
+func (a *UserApi) OptionForCashierSessionFilter() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionUserOptionForCashierSessionFilter),
+		func(ctx apiContext) {
+			var request dto_request.UserOptionForCashierSessionFilterRequest
+			ctx.mustBind(&request)
+
+			users, total := a.userUseCase.OptionForCashierSessionFilter(ctx.context(), request)
+
+			nodes := util.ConvertArray(users, dto_response.NewUserResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Nodes: nodes,
+						Total: total,
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterUserApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := UserApi{
 		api:         newApi(useCaseManager),
@@ -290,4 +325,7 @@ func RegisterUserApi(router gin.IRouter, useCaseManager use_case.UseCaseManager)
 
 	routerGroup.POST("/:id/roles", api.AddRole())
 	routerGroup.DELETE("/:id/roles/:role_id", api.DeleteRole())
+
+	optionRouterGroup := routerGroup.Group("/options")
+	optionRouterGroup.POST("/cashier-session-filter", api.OptionForCashierSessionFilter())
 }

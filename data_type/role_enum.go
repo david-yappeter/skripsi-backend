@@ -80,6 +80,7 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionUserUpdateInActive,
 		PermissionUserAddRole,
 		PermissionUserDeleteRole,
+		PermissionUserOptionForCashierSessionFilter,
 
 		// unit
 		PermissionUnitCreate,

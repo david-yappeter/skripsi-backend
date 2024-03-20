@@ -26,6 +26,7 @@ type UserUseCase interface {
 	// read
 	Fetch(ctx context.Context, request dto_request.UserFetchRequest) ([]model.User, int)
 	Get(ctx context.Context, request dto_request.UserGetRequest) model.User
+	GetMe(ctx context.Context) model.User
 
 	//  update
 	Update(ctx context.Context, request dto_request.UserUpdateRequest) model.User
@@ -34,8 +35,8 @@ type UserUseCase interface {
 	//  delete
 	DeleteRole(ctx context.Context, request dto_request.UserDeleteRoleRequest) model.User
 
-	// read
-	GetMe(ctx context.Context) model.User
+	// option
+	OptionForCashierSessionFilter(ctx context.Context, request dto_request.UserOptionForCashierSessionFilterRequest) ([]model.User, int)
 }
 
 type userUseCase struct {
@@ -267,4 +268,23 @@ func (u *userUseCase) GetMe(ctx context.Context) model.User {
 	authUser.Permissions = permissions
 
 	return authUser
+}
+
+func (u *userUseCase) OptionForCashierSessionFilter(ctx context.Context, request dto_request.UserOptionForCashierSessionFilterRequest) ([]model.User, int) {
+	queryOption := model.UserQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts{{Field: "name", Direction: "asc"}},
+		),
+		Phrase: request.Phrase,
+	}
+
+	users, err := u.repositoryManager.UserRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.UserRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	return users, total
 }
