@@ -7,7 +7,9 @@ type Customer struct {
 	CustomerTypeId *string `db:"customer_type_id"`
 	Name           string  `db:"name"`
 	Email          string  `db:"email"`
-	Address        *string `db:"address"`
+	Address        string  `db:"address"`
+	Latitude       float64 `db:"latitude"`
+	Longitude      float64 `db:"longitude"`
 	Phone          string  `db:"phone"`
 	IsActive       bool    `db:"is_active"`
 
@@ -29,6 +31,8 @@ func (m *Customer) ToMap() map[string]interface{} {
 		"name":             m.Name,
 		"email":            m.Email,
 		"address":          m.Address,
+		"latitude":         m.Latitude,
+		"longitude":        m.Longitude,
 		"phone":            m.Phone,
 		"is_active":        m.IsActive,
 		"created_at":       m.CreatedAt,

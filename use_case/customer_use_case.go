@@ -53,6 +53,8 @@ func (u *customerUseCase) Create(ctx context.Context, request dto_request.Custom
 		Name:           request.Name,
 		Email:          request.Email,
 		Address:        request.Address,
+		Latitude:       request.Latitude,
+		Longitude:      request.Longitude,
 		Phone:          request.Phone,
 		IsActive:       request.IsActive,
 	}
@@ -101,6 +103,8 @@ func (u *customerUseCase) Update(ctx context.Context, request dto_request.Custom
 	customer.Name = request.Name
 	customer.Email = request.Email
 	customer.Address = request.Address
+	customer.Latitude = request.Latitude
+	customer.Longitude = request.Longitude
 	customer.Phone = request.Phone
 	customer.IsActive = request.IsActive
 

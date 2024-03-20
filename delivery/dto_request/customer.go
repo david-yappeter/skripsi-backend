@@ -4,7 +4,9 @@ type CustomerCreateRequest struct {
 	CustomerTypeId *string `json:"customer_type_Id" validate:"omitempty,not_empty,uuid"`
 	Name           string  `json:"name" validate:"required,not_empty"`
 	Email          string  `json:"email" validate:"required,not_empty,email"`
-	Address        *string `json:"address" validate:"required,not_empty" extensions:"x-nullable"`
+	Address        string  `json:"address" validate:"required,not_empty"`
+	Latitude       float64 `json:"latitude" validate:"latitude"`
+	Longitude      float64 `json:"longitude" validate:"longitude"`
 	Phone          string  `json:"phone" validate:"required,not_empty,e164"`
 	IsActive       bool    `json:"is_active"`
 } // @name CustomerCreateRequest
@@ -29,7 +31,9 @@ type CustomerUpdateRequest struct {
 	CustomerTypeId *string `json:"customer_type_Id" validate:"omitempty,not_empty,uuid"`
 	Name           string  `json:"name" validate:"required,not_empty"`
 	Email          string  `json:"email" validate:"required,not_empty,email"`
-	Address        *string `json:"address" validate:"required,not_empty" extensions:"x-nullable"`
+	Address        string  `json:"address" validate:"required,not_empty"`
+	Latitude       float64 `json:"latitude" validate:"latitude"`
+	Longitude      float64 `json:"longitude" validate:"longitude"`
 	Phone          string  `json:"phone" validate:"required,not_empty,e164"`
 	IsActive       bool    `json:"is_active"`
 

@@ -3,12 +3,12 @@ package dto_response
 import "myapp/model"
 
 type CustomerResponse struct {
-	Id       string  `json:"id"`
-	Name     string  `json:"name"`
-	Email    string  `json:"email"`
-	Address  *string `json:"address" extensions:"x-nullable"`
-	Phone    string  `json:"phone"`
-	IsActive bool    `json:"is_active"`
+	Id       string `json:"id"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Address  string `json:"address"`
+	Phone    string `json:"phone"`
+	IsActive bool   `json:"is_active"`
 
 	Timestamp
 } // @name CustomerResponse

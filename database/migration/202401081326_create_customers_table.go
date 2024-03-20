@@ -10,7 +10,8 @@ func init() {
 				email varchar(255) NOT NULL,
 				address text NOT NULL,
 				phone varchar(20) NOT NULL,
-				
+				latitude double NOT NULL,
+				longitude double NOT NULL,
 				is_active bool NOT NULL,
 				created_at timestamp NOT NULL,
 				updated_at timestamp NOT NULL,
