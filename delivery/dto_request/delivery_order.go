@@ -61,6 +61,13 @@ type DeliveryOrderMarkCompletedRequest struct {
 	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderMarkCompletedRequest
 
+type DeliveryOrderDeliveryLocationRequest struct {
+	Latitude  float64 `json:"latitude" validate:"latitude"`
+	Longitude float64 `json:"longitude" validate:"longitude"`
+
+	DeliveryOrderId string `json:"-" swaggerignore:"true"`
+} // @name DeliveryOrderMarkCompletedRequest
+
 type DeliveryOrderDeleteRequest struct {
 	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderDeleteRequest

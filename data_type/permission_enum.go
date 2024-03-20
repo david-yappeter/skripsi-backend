@@ -54,20 +54,21 @@ const (
 	PermissionCustomerTypeDeleteDiscount        // CUSTOMER_TYPE_OPTION_DELETE_DISCOUNT
 
 	// delivery order
-	PermissionDeliveryOrderCreate        // DELIVERY_ORDER_CREATE
-	PermissionDeliveryOrderUpload        // DELIVERY_ORDER_UPLOAD
-	PermissionDeliveryOrderAddItem       // DELIVERY_ORDER_ADD_ITEM
-	PermissionDeliveryOrderAddImage      // DELIVERY_ORDER_ADD_IMAGE
-	PermissionDeliveryOrderAddDriver     // DELIVERY_ORDER_ADD_DRIVER
-	PermissionDeliveryOrderFetch         // DELIVERY_ORDER_FETCH
-	PermissionDeliveryOrderGet           // DELIVERY_ORDER_GET
-	PermissionDeliveryOrderMarkOngoing   // DELIVERY_ORDER_MARK_ONGOING
-	PermissionDeliveryOrderCancel        // DELIVERY_ORDER_CANCEL
-	PermissionDeliveryOrderMarkCompleted // DELIVERY_ORDER_MARK_COMPLETED
-	PermissionDeliveryOrderDelete        // DELIVERY_ORDER_DELETE
-	PermissionDeliveryOrderDeleteItem    // DELIVERY_ORDER_DELETE_ITEM
-	PermissionDeliveryOrderDeleteImage   // DELIVERY_ORDER_DELETE_IMAGE
-	PermissionDeliveryOrderDeleteDriver  // DELIVERY_ORDER_DELETE_DRIVER
+	PermissionDeliveryOrderCreate           // DELIVERY_ORDER_CREATE
+	PermissionDeliveryOrderUpload           // DELIVERY_ORDER_UPLOAD
+	PermissionDeliveryOrderAddItem          // DELIVERY_ORDER_ADD_ITEM
+	PermissionDeliveryOrderAddImage         // DELIVERY_ORDER_ADD_IMAGE
+	PermissionDeliveryOrderAddDriver        // DELIVERY_ORDER_ADD_DRIVER
+	PermissionDeliveryOrderFetch            // DELIVERY_ORDER_FETCH
+	PermissionDeliveryOrderGet              // DELIVERY_ORDER_GET
+	PermissionDeliveryOrderMarkOngoing      // DELIVERY_ORDER_MARK_ONGOING
+	PermissionDeliveryOrderCancel           // DELIVERY_ORDER_CANCEL
+	PermissionDeliveryOrderMarkCompleted    // DELIVERY_ORDER_MARK_COMPLETED
+	PermissionDeliveryOrderDeliveryLocation // DELIVERY_ORDER_DELIVERY_LOCATION
+	PermissionDeliveryOrderDelete           // DELIVERY_ORDER_DELETE
+	PermissionDeliveryOrderDeleteItem       // DELIVERY_ORDER_DELETE_ITEM
+	PermissionDeliveryOrderDeleteImage      // DELIVERY_ORDER_DELETE_IMAGE
+	PermissionDeliveryOrderDeleteDriver     // DELIVERY_ORDER_DELETE_DRIVER
 
 	// product
 	PermissionProductCreate                      // PRODUCT_CREATE

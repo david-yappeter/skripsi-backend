@@ -27,6 +27,7 @@ type RepositoryManager interface {
 	CustomerTypeRepository() CustomerTypeRepository
 	DebtPaymentRepository() DebtPaymentRepository
 	DebtRepository() DebtRepository
+	DeliveryOrderPositionRepository() DeliveryOrderPositionRepository
 	DeliveryOrderRepository() DeliveryOrderRepository
 	DeliveryOrderDriverRepository() DeliveryOrderDriverRepository
 	DeliveryOrderImageRepository() DeliveryOrderImageRepository
@@ -75,6 +76,7 @@ type repositoryManager struct {
 	customerTypeRepository          CustomerTypeRepository
 	debtPaymentRepository           DebtPaymentRepository
 	debtRepository                  DebtRepository
+	deliveryOrderPositionRepository DeliveryOrderPositionRepository
 	deliveryOrderRepository         DeliveryOrderRepository
 	deliveryOrderDriverRepository   DeliveryOrderDriverRepository
 	deliveryOrderImageRepository    DeliveryOrderImageRepository
@@ -181,6 +183,10 @@ func (r *repositoryManager) DebtPaymentRepository() DebtPaymentRepository {
 
 func (r *repositoryManager) DebtRepository() DebtRepository {
 	return r.debtRepository
+}
+
+func (r *repositoryManager) DeliveryOrderPositionRepository() DeliveryOrderPositionRepository {
+	return r.deliveryOrderPositionRepository
 }
 
 func (r *repositoryManager) DeliveryOrderRepository() DeliveryOrderRepository {
@@ -355,6 +361,10 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		debtRepository: NewDebtRepository(
+			db,
+			loggerStack,
+		),
+		deliveryOrderPositionRepository: NewDeliveryOrderPositionRepository(
 			db,
 			loggerStack,
 		),

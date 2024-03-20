@@ -5,6 +5,7 @@ import (
 	"myapp/constant"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
+	"myapp/internal/filesystem"
 	"myapp/loader"
 	"myapp/model"
 	"myapp/repository"
@@ -39,13 +40,16 @@ type CartUseCase interface {
 
 type cartUseCase struct {
 	repositoryManager repository.RepositoryManager
+	mainFilesystem    filesystem.Client
 }
 
 func NewCartUseCase(
 	repositoryManager repository.RepositoryManager,
+	mainFilesystem filesystem.Client,
 ) CartUseCase {
 	return &cartUseCase{
 		repositoryManager: repositoryManager,
+		mainFilesystem:    mainFilesystem,
 	}
 }
 
@@ -123,15 +127,26 @@ func (u *cartUseCase) mustLoadCartDatas(ctx context.Context, carts []*model.Cart
 		}
 	}))
 
+	fileLoader := loader.NewFileLoader(u.repositoryManager.FileRepository())
 	productDiscountLoader := loader.NewProductDiscountLoader(u.repositoryManager.ProductDiscountRepository())
 
 	panicIfErr(util.Await(func(group *errgroup.Group) {
 		for i := range carts {
 			for j := range carts[i].CartItems {
+				group.Go(fileLoader.ProductFn(carts[i].CartItems[j].ProductUnit.Product))
 				group.Go(productDiscountLoader.ProductFnNotStrict(carts[i].CartItems[j].ProductUnit.Product))
 			}
 		}
 	}))
+
+	for i := range carts {
+		for j := range carts[i].CartItems {
+			productUnit := carts[i].CartItems[j].ProductUnit
+			if productUnit != nil && productUnit.Product != nil {
+				productUnit.Product.ImageFile.SetLink(u.mainFilesystem)
+			}
+		}
+	}
 }
 
 func (u *cartUseCase) shouldGetActiveCartByCashierSessionId(ctx context.Context, cashierSessionId string) *model.Cart {

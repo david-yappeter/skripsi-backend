@@ -173,6 +173,7 @@ func NewUseCaseManager(
 		),
 		cartUseCase: NewCartUseCase(
 			repositoryManager,
+			filesystemManager.Main(),
 		),
 		cashierSessionUseCase: NewCashierSessionUseCase(
 			repositoryManager,

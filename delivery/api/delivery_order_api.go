@@ -243,6 +243,37 @@ func (a *DeliveryOrderApi) Completed() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/delivery-orders/{id}/delivery-location [patch]
+//	@Summary	Delivery Location
+//	@tags		Delivery Orders
+//	@Accept		json
+//	@Param		id												path	string											true	"Id"
+//	@Param		dto_request.DeliveryOrderDeliveryLocationRequest	body	dto_request.DeliveryOrderDeliveryLocationRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.SuccessResponse
+func (a *DeliveryOrderApi) DeliveryLocation() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionDeliveryOrderDeliveryLocation),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.DeliveryOrderDeliveryLocationRequest
+			ctx.mustBind(&request)
+			request.DeliveryOrderId = id
+
+			a.deliveryOrderUseCase.DeliveryLocation(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.SuccessResponse{
+					Message: "OK",
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/delivery-orders/{id}/on-going [patch]
 //	@Summary	On Going
 //	@tags		Delivery Orders
@@ -499,6 +530,7 @@ func RegisterDeliveryOrderApi(router gin.IRouter, useCaseManager use_case.UseCas
 	routerGroup.PATCH("/:id/cancel", api.Cancel())
 	routerGroup.PATCH("/:id/on-going", api.OnGoing())
 	routerGroup.PATCH("/:id/completed", api.Completed())
+	routerGroup.PATCH("/:id/delivery-location", api.DeliveryLocation())
 
 	routerGroup.DELETE("/:id/items/:delivery_order_item_id", api.DeleteItem())
 	routerGroup.DELETE("/:id/images/:file_id", api.DeleteImage())

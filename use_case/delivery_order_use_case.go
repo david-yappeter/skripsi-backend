@@ -41,6 +41,7 @@ type DeliveryOrderUseCase interface {
 	MarkOngoing(ctx context.Context, request dto_request.DeliveryOrderMarkOngoingRequest) model.DeliveryOrder
 	Cancel(ctx context.Context, request dto_request.DeliveryOrderCancelRequest) model.DeliveryOrder
 	MarkCompleted(ctx context.Context, request dto_request.DeliveryOrderMarkCompletedRequest) model.DeliveryOrder
+	DeliveryLocation(ctx context.Context, request dto_request.DeliveryOrderDeliveryLocationRequest)
 
 	// delete
 	Delete(ctx context.Context, request dto_request.DeliveryOrderDeleteRequest)
@@ -609,6 +610,9 @@ func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_re
 	})
 
 	return deliveryOrder
+}
+
+func (u *deliveryOrderUseCase) DeliveryLocation(ctx context.Context, request dto_request.DeliveryOrderDeliveryLocationRequest) {
 }
 
 func (u *deliveryOrderUseCase) Delete(ctx context.Context, request dto_request.DeliveryOrderDeleteRequest) {
