@@ -30,7 +30,7 @@ type CartUseCase interface {
 	//  update
 	UpdateItem(ctx context.Context, request dto_request.CartUpdateItemRequest) model.Cart
 	SetActive(ctx context.Context, request dto_request.CartSetActiveRequest) model.Cart
-	SetInActive(ctx context.Context) model.Cart
+	SetInActive(ctx context.Context, request dto_request.CartSetInActiveRequest) model.Cart
 
 	//  delete
 	Delete(ctx context.Context, request dto_request.CartDeleteRequest)
@@ -295,6 +295,7 @@ func (u *cartUseCase) SetActive(ctx context.Context, request dto_request.CartSet
 		panic(dto_response.NewBadRequestErrorResponse("CART.NOT_FOUND"))
 	}
 
+	cart.Name = nil
 	cart.IsActive = true
 
 	panicIfErr(
@@ -308,11 +309,12 @@ func (u *cartUseCase) SetActive(ctx context.Context, request dto_request.CartSet
 	return cart
 }
 
-func (u *cartUseCase) SetInActive(ctx context.Context) model.Cart {
+func (u *cartUseCase) SetInActive(ctx context.Context, request dto_request.CartSetInActiveRequest) model.Cart {
 	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
 	cart := u.mustGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
 
 	cart.IsActive = false
+	cart.Name = &request.Name
 
 	panicIfErr(
 		u.repositoryManager.CartRepository().Update(ctx, &cart),
@@ -328,6 +330,10 @@ func (u *cartUseCase) SetInActive(ctx context.Context) model.Cart {
 func (u *cartUseCase) Delete(ctx context.Context, request dto_request.CartDeleteRequest) {
 	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
 	cart := u.mustGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
+
+	if cart.IsActive {
+		panic(dto_response.NewBadRequestErrorResponse("CART.CANNOT_REMOVE_ACTIVE_CART"))
+	}
 
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {

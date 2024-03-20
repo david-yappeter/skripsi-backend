@@ -24,6 +24,10 @@ type CartSetActiveRequest struct {
 	CartId string `json:"cart_id" validate:"required,not_empty,uuid"`
 } // @name CartSetActiveRequest
 
+type CartSetInActiveRequest struct {
+	Name string `json:"name" validate:"required,not_empty"`
+} // @name CartSetInActiveRequest
+
 type CartGetRequest struct {
 	CartId string `json:"-" swaggerignore:"true"`
 } // @name CartGetRequest

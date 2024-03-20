@@ -115,13 +115,17 @@ func (a *CartApi) SetActive() gin.HandlerFunc {
 //	@Summary	Set Active Cart to In Active
 //	@tags		Carts
 //	@Accept		json
+//	@Param		dto_request.CartSetInActiveRequest	body	dto_request.CartSetInActiveRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{cart=dto_response.CartResponse}}
 func (a *CartApi) SetInActive() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionCartSetInActive),
 		func(ctx apiContext) {
-			cart := a.cartUseCase.SetInActive(ctx.context())
+			var request dto_request.CartSetInActiveRequest
+			ctx.mustBind(&request)
+
+			cart := a.cartUseCase.SetInActive(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
