@@ -274,9 +274,11 @@ func (u *cartUseCase) GetCurrent(ctx context.Context) *model.Cart {
 	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
 	cart := u.shouldGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
 
-	u.mustLoadCartDatas(ctx, []*model.Cart{cart}, cartLoaderParams{
-		items: true,
-	})
+	if cart != nil {
+		u.mustLoadCartDatas(ctx, []*model.Cart{cart}, cartLoaderParams{
+			items: true,
+		})
+	}
 
 	return cart
 }

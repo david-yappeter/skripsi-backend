@@ -84,6 +84,5 @@ type ProductOptionForCartAddItemFormSorts []struct {
 type ProductOptionForCartAddItemFormRequest struct {
 	PaginationRequest
 	Sorts  ProductOptionForCartAddItemFormSorts `json:"sorts" validate:"unique=Field,dive"`
-	CartId string                               `json:"cart_id" validate:"required,not_empty,uuid"`
 	Phrase *string                              `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name ProductOptionForCartAddItemFormRequest
