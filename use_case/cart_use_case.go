@@ -108,6 +108,30 @@ func (u *cartUseCase) mustLoadCartDatas(ctx context.Context, carts []*model.Cart
 			}
 		}),
 	)
+
+	productLoader := loader.NewProductLoader(u.repositoryManager.ProductRepository())
+	unitLoader := loader.NewUnitLoader(u.repositoryManager.UnitRepository())
+
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		for i := range carts {
+			for j := range carts[i].CartItems {
+				if option.items {
+					group.Go(productLoader.ProductUnitFn(carts[i].CartItems[j].ProductUnit))
+					group.Go(unitLoader.ProductUnitFn(carts[i].CartItems[j].ProductUnit))
+				}
+			}
+		}
+	}))
+
+	productDiscountLoader := loader.NewProductDiscountLoader(u.repositoryManager.ProductDiscountRepository())
+
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		for i := range carts {
+			for j := range carts[i].CartItems {
+				group.Go(productDiscountLoader.ProductFnNotStrict(carts[i].CartItems[j].ProductUnit.Product))
+			}
+		}
+	}))
 }
 
 func (u *cartUseCase) shouldGetActiveCartByCashierSessionId(ctx context.Context, cashierSessionId string) *model.Cart {

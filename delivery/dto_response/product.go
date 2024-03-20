@@ -13,9 +13,10 @@ type ProductResponse struct {
 	IsActive    bool     `json:"is_active"`
 	Timestamp
 
-	ProductUnits []ProductUnitResponse `json:"product_units"`
-	Stock        *ProductStockResponse `json:"stock" extensions:"x-nulalble"`
-	ImageFile    *FileResponse         `json:"image_file" extensions:"x-nullable"`
+	ProductUnits []ProductUnitResponse    `json:"product_units" extensions:"x-nullable"`
+	Discount     *ProductDiscountResponse `json:"discount" extensions:"x-nullable"`
+	Stock        *ProductStockResponse    `json:"stock" extensions:"x-nullable"`
+	ImageFile    *FileResponse            `json:"image_file" extensions:"x-nullable"`
 } // @name ProductResponse
 
 func NewProductResponse(product model.Product) ProductResponse {
@@ -38,6 +39,10 @@ func NewProductResponse(product model.Product) ProductResponse {
 
 	if product.ImageFile != nil {
 		r.ImageFile = NewFileResponseP(*product.ImageFile)
+	}
+
+	if product.ProductDiscount != nil {
+		r.Discount = util.Pointer(NewProductDiscountResponse(*product.ProductDiscount))
 	}
 
 	return r
