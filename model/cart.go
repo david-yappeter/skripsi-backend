@@ -32,6 +32,16 @@ func (m *Cart) ToMap() map[string]interface{} {
 	}
 }
 
+func (m *Cart) Subtotal() float64 {
+	subtotal := 0.0
+
+	for _, cartItem := range m.CartItems {
+		subtotal += cartItem.Subtotal()
+	}
+
+	return subtotal
+}
+
 type CartQueryOption struct {
 	QueryOption
 

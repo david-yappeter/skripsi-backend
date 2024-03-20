@@ -9,6 +9,7 @@ type CartResponse struct {
 	IsActive         bool    `json:"is_active"`
 	Timestamp
 
+	Subtotal       float64                 `json:"subtotal"`
 	CashierSession *CashierSessionResponse `json:"cashier_session" extensions:"x-nullable"`
 	Items          []CartItemResponse      `json:"items" extensions:"x-nullable"`
 } // @name CartResponse
@@ -20,6 +21,7 @@ func NewCartResponse(cart model.Cart) CartResponse {
 		Name:             cart.Name,
 		IsActive:         cart.IsActive,
 		Timestamp:        Timestamp(cart.Timestamp),
+		Subtotal:         cart.Subtotal(),
 	}
 
 	if cart.CashierSession != nil {

@@ -31,6 +31,36 @@ func (m *CartItem) ToMap() map[string]interface{} {
 	}
 }
 
+func (m CartItem) Subtotal() float64 {
+	subtotal := 0.0
+
+	if m.ProductUnit != nil {
+		productUnit := m.ProductUnit
+
+		if productUnit.Product != nil {
+			product := productUnit.Product
+
+			if product.Price != nil {
+				subtotal += *productUnit.Product.Price
+
+				if product.ProductDiscount != nil && m.Qty >= product.ProductDiscount.MinimumQty {
+					productDiscount := product.ProductDiscount
+					if productDiscount.DiscountAmount != nil {
+						subtotal -= *product.ProductDiscount.DiscountAmount
+					} else {
+						subtotal -= *product.Price * *product.ProductDiscount.DiscountPercentage / 100.0
+					}
+				}
+			}
+
+		}
+	}
+
+	subtotal *= m.Qty
+
+	return subtotal
+}
+
 type CartItemQueryOption struct {
 	QueryOption
 
