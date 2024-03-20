@@ -15,6 +15,8 @@ type CustomerDebt struct {
 	RemainingAmount float64                          `db:"remaining_amount"`
 
 	Timestamp
+
+	CustomerPayments []CustomerPayment `db:"-"`
 }
 
 func (m *CustomerDebt) TableName() string {

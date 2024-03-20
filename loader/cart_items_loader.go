@@ -57,12 +57,12 @@ func NewCartItemsLoader(cartItemRepository repository.CartItemRepository) *CartI
 
 		results := make([]*dataloader.Result, len(keys))
 		for idx, k := range keys {
-			var userRoles []model.CartItem
+			var cartItems []model.CartItem
 			if v, ok := cartItemByCartId[k.String()]; ok {
-				userRoles = v
+				cartItems = v
 			}
 
-			result := &dataloader.Result{Data: userRoles, Error: nil}
+			result := &dataloader.Result{Data: cartItems, Error: nil}
 			results[idx] = result
 		}
 

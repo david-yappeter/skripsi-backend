@@ -8,11 +8,18 @@ import (
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
 	"myapp/internal/filesystem"
+	"myapp/loader"
 	"myapp/model"
 	"myapp/repository"
 	"myapp/util"
 	"path"
+
+	"golang.org/x/sync/errgroup"
 )
+
+type customerDebtLoaderParams struct {
+	customerPayments bool
+}
 
 type CustomerDebtUseCase interface {
 	// create
@@ -51,6 +58,18 @@ func NewCustomerDebtUseCase(
 	}
 }
 
+func (u *customerDebtUseCase) mustLoadCustomerDebtsData(ctx context.Context, customerDebts []*model.CustomerDebt, option customerDebtLoaderParams) {
+	customerPaymentsLoader := loader.NewCustomerPaymentsLoader(u.repositoryManager.CustomerPaymentRepository())
+
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		if option.customerPayments {
+			for i := range customerDebts {
+				group.Go(customerPaymentsLoader.CustomerDebtFn(customerDebts[i]))
+			}
+		}
+	}))
+}
+
 func (u *customerDebtUseCase) UploadImage(ctx context.Context, request dto_request.CustomerDebtUploadImageRequest) string {
 	return u.baseFileUseCase.mustUploadFileToTemporary(
 		ctx,
@@ -87,6 +106,10 @@ func (u *customerDebtUseCase) Fetch(ctx context.Context, request dto_request.Cus
 
 func (u *customerDebtUseCase) Get(ctx context.Context, request dto_request.CustomerDebtGetRequest) model.CustomerDebt {
 	customerDebt := mustGetCustomerDebt(ctx, u.repositoryManager, request.CustomerDebtId, true)
+
+	u.mustLoadCustomerDebtsData(ctx, []*model.CustomerDebt{&customerDebt}, customerDebtLoaderParams{
+		customerPayments: true,
+	})
 
 	return customerDebt
 }
@@ -167,6 +190,10 @@ func (u *customerDebtUseCase) Payment(ctx context.Context, request dto_request.C
 			return nil
 		}),
 	)
+
+	u.mustLoadCustomerDebtsData(ctx, []*model.CustomerDebt{&customerDebt}, customerDebtLoaderParams{
+		customerPayments: true,
+	})
 
 	return customerDebt
 }

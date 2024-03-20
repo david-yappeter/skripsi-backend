@@ -18,6 +18,7 @@ type CustomerPaymentRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.CustomerPaymentQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.CustomerPaymentQueryOption) ([]model.CustomerPayment, error)
+	FetchByCustomerDebtIds(ctx context.Context, customerDebtIds []string) ([]model.CustomerPayment, error)
 	Get(ctx context.Context, id string) (*model.CustomerPayment, error)
 
 	// update
@@ -109,6 +110,14 @@ func (r *customerPaymentRepository) Fetch(ctx context.Context, options ...model.
 	}
 
 	stmt := r.prepareQuery(option)
+
+	return r.fetch(ctx, stmt)
+}
+
+func (r *customerPaymentRepository) FetchByCustomerDebtIds(ctx context.Context, customerDebtIds []string) ([]model.CustomerPayment, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.CustomerPaymentTableName).
+		Where(squirrel.Eq{"customer_debt_id": customerDebtIds})
 
 	return r.fetch(ctx, stmt)
 }
