@@ -3,7 +3,7 @@ package dto_request
 import "myapp/data_type"
 
 type CashierSessionStartRequest struct {
-	StartingCash float64 `db:"starting_cash"`
+	StartingCash float64 `json:"starting_cash" validate:"gte=0"`
 } // @name CashierSessionStartRequest
 
 type CashierSessionFetchSorts []struct {
