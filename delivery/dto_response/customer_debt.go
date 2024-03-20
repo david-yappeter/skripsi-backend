@@ -16,19 +16,25 @@ type CustomerDebtResponse struct {
 	RemainingAmount float64                          `json:"remaining_amount"`
 
 	Timestamp
+
+	Payments []CustomerPaymentResponse `json:"payments" extensions:"x-nullable"`
 } // @name CustomerDebtResponse
 
-func NewCustomerDebtResponse(unit model.CustomerDebt) CustomerDebtResponse {
+func NewCustomerDebtResponse(customerDebt model.CustomerDebt) CustomerDebtResponse {
 	r := CustomerDebtResponse{
-		Id:              unit.Id,
-		CustomerId:      unit.CustomerId,
-		DebtSource:      unit.DebtSource,
-		DebtSourceId:    unit.DebtSourceId,
-		DueDate:         unit.DueDate,
-		Status:          unit.Status,
-		Amount:          unit.Amount,
-		RemainingAmount: unit.RemainingAmount,
-		Timestamp:       Timestamp(unit.Timestamp),
+		Id:              customerDebt.Id,
+		CustomerId:      customerDebt.CustomerId,
+		DebtSource:      customerDebt.DebtSource,
+		DebtSourceId:    customerDebt.DebtSourceId,
+		DueDate:         customerDebt.DueDate,
+		Status:          customerDebt.Status,
+		Amount:          customerDebt.Amount,
+		RemainingAmount: customerDebt.RemainingAmount,
+		Timestamp:       Timestamp(customerDebt.Timestamp),
+	}
+
+	for _, customerPayment := range customerDebt.CustomerPayments {
+		r.Payments = append(r.Payments, NewCustomerPaymentResponse(customerPayment))
 	}
 
 	return r

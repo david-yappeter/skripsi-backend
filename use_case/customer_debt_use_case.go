@@ -68,6 +68,27 @@ func (u *customerDebtUseCase) mustLoadCustomerDebtsData(ctx context.Context, cus
 			}
 		}
 	}))
+
+	fileLoader := loader.NewFileLoader(u.repositoryManager.FileRepository())
+
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		if option.customerPayments {
+			for i := range customerDebts {
+				for j := range customerDebts[i].CustomerPayments {
+					group.Go(fileLoader.CustomerPaymentFn(&customerDebts[i].CustomerPayments[j]))
+				}
+			}
+		}
+	}))
+
+	for i := range customerDebts {
+		for j := range customerDebts[i].CustomerPayments {
+			file := customerDebts[i].CustomerPayments[j].ImageFile
+			if file != nil {
+				file.SetLink(u.mainFilesystem)
+			}
+		}
+	}
 }
 
 func (u *customerDebtUseCase) UploadImage(ctx context.Context, request dto_request.CustomerDebtUploadImageRequest) string {
