@@ -487,30 +487,14 @@ func (u *productUseCase) OptionForCustomerTypeForm(ctx context.Context, request 
 }
 
 func (u *productUseCase) OptionForCartAddItemForm(ctx context.Context, request dto_request.ProductOptionForCartAddItemFormRequest) ([]model.Product, int) {
-	cartItems, err := u.repositoryManager.CartItemRepository().FetchByCartIds(ctx, []string{request.CartId})
-	panicIfErr(err)
-
-	productUnitLoader := loader.NewProductUnitLoader(u.repositoryManager.ProductUnitRepository())
-	panicIfErr(util.Await(func(group *errgroup.Group) {
-		for i := range cartItems {
-			group.Go(productUnitLoader.CartItemFn(&cartItems[i]))
-		}
-	}))
-
-	excludedProductIds := []string{}
-	for _, cartItem := range cartItems {
-		excludedProductIds = append(excludedProductIds, cartItem.ProductUnit.ProductId)
-	}
-
 	queryOption := model.ProductQueryOption{
 		QueryOption: model.NewQueryOptionWithPagination(
 			request.Page,
 			request.Limit,
 			model.Sorts(request.Sorts),
 		),
-		ExcludeIds: excludedProductIds,
-		IsActive:   util.BoolP(true),
-		Phrase:     request.Phrase,
+		IsActive: util.BoolP(true),
+		Phrase:   request.Phrase,
 	}
 
 	products, err := u.repositoryManager.ProductRepository().Fetch(ctx, queryOption)
