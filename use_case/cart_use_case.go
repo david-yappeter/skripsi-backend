@@ -312,7 +312,7 @@ func (u *cartUseCase) UpdateItem(ctx context.Context, request dto_request.CartUp
 	cartItem.Qty = request.Qty
 
 	panicIfErr(
-		u.repositoryManager.CartRepository().Update(ctx, &cart),
+		u.repositoryManager.CartItemRepository().Update(ctx, &cartItem),
 	)
 
 	u.mustLoadCartDatas(ctx, []*model.Cart{&cart}, cartLoaderParams{
