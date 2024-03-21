@@ -613,7 +613,7 @@ func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_re
 }
 
 func (u *deliveryOrderUseCase) DeliveryLocation(ctx context.Context, request dto_request.DeliveryOrderDeliveryLocationRequest) {
-	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, false)
+	// deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, false)
 }
 
 func (u *deliveryOrderUseCase) Delete(ctx context.Context, request dto_request.DeliveryOrderDeleteRequest) {
