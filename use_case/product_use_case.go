@@ -191,6 +191,11 @@ func (u *productUseCase) Create(ctx context.Context, request dto_request.Product
 		}),
 	)
 
+	u.mustLoadProductDatas(ctx, []*model.Product{&product}, productLoaderParams{
+		productStock: true,
+		productImage: true,
+	})
+
 	return product
 }
 
@@ -380,6 +385,7 @@ func (u *productUseCase) Update(ctx context.Context, request dto_request.Product
 
 	u.mustLoadProductDatas(ctx, []*model.Product{&product}, productLoaderParams{
 		productStock: true,
+		productImage: true,
 		productUnits: true,
 	})
 
@@ -430,6 +436,9 @@ func (u *productUseCase) OptionForProductReceiveForm(ctx context.Context, reques
 	total, err := u.repositoryManager.ProductRepository().Count(ctx, queryOption)
 	panicIfErr(err)
 
+	u.mustLoadProductDatas(ctx, util.SliceValueToSlicePointer(products), productLoaderParams{
+		productImage: true,
+	})
 	return products, total
 }
 
@@ -451,6 +460,7 @@ func (u *productUseCase) OptionForDeliveryOrderForm(ctx context.Context, request
 	panicIfErr(err)
 
 	u.mustLoadProductDatas(ctx, util.SliceValueToSlicePointer(products), productLoaderParams{
+		productImage: true,
 		productStock: true,
 	})
 
@@ -483,6 +493,10 @@ func (u *productUseCase) OptionForCustomerTypeForm(ctx context.Context, request 
 	total, err := u.repositoryManager.ProductRepository().Count(ctx, queryOption)
 	panicIfErr(err)
 
+	u.mustLoadProductDatas(ctx, util.SliceValueToSlicePointer(products), productLoaderParams{
+		productImage: true,
+	})
+
 	return products, total
 }
 
@@ -502,6 +516,11 @@ func (u *productUseCase) OptionForCartAddItemForm(ctx context.Context, request d
 
 	total, err := u.repositoryManager.ProductRepository().Count(ctx, queryOption)
 	panicIfErr(err)
+
+	u.mustLoadProductDatas(ctx, util.SliceValueToSlicePointer(products), productLoaderParams{
+		productImage: true,
+		productStock: true,
+	})
 
 	return products, total
 }
