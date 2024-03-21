@@ -613,7 +613,50 @@ func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_re
 }
 
 func (u *deliveryOrderUseCase) DeliveryLocation(ctx context.Context, request dto_request.DeliveryOrderDeliveryLocationRequest) {
-	// deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, false)
+	authUser := model.MustGetUserCtx(ctx)
+	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, false)
+
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusOngoing {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_ONGOING"))
+	}
+
+	deliveryOrderPosition := shouldGetDeliveryOrderPositionByDeliveryOrderId(ctx, u.repositoryManager, request.DeliveryOrderId)
+	isNewDeliveryOrderPosition := deliveryOrderPosition == nil
+
+	if isNewDeliveryOrderPosition {
+		deliveryOrderPosition = &model.DeliveryOrderPosition{
+			Id:              util.NewUuid(),
+			DeliveryOrderId: deliveryOrder.Id,
+			DriverUserId:    authUser.Id,
+			Latitude:        request.Latitude,
+			Longitude:       request.Longitude,
+		}
+	} else {
+		if authUser.Id != deliveryOrderPosition.DriverUserId {
+			panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.INVALID_USER_FOR_LIVE_TRACKING"))
+		}
+
+		deliveryOrderPosition.Latitude = request.Latitude
+		deliveryOrderPosition.Longitude = request.Longitude
+	}
+
+	panicIfErr(
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			deliveryOrderPositionRepository := u.repositoryManager.DeliveryOrderPositionRepository()
+
+			if isNewDeliveryOrderPosition {
+				if err := deliveryOrderPositionRepository.Insert(ctx, deliveryOrderPosition); err != nil {
+					return err
+				}
+			} else {
+				if err := deliveryOrderPositionRepository.Update(ctx, deliveryOrderPosition); err != nil {
+					return err
+				}
+			}
+
+			return nil
+		}),
+	)
 }
 
 func (u *deliveryOrderUseCase) Delete(ctx context.Context, request dto_request.DeliveryOrderDeleteRequest) {
