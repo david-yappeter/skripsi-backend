@@ -376,7 +376,7 @@ func (u *productUseCase) Update(ctx context.Context, request dto_request.Product
 		}),
 	)
 
-	panicIfErr(u.baseFileUseCase.mainFilesystem.Delete(toBeDeletedImageFile.Path))
+	u.baseFileUseCase.mainFilesystem.Delete(toBeDeletedImageFile.Path)
 
 	u.mustLoadProductDatas(ctx, []*model.Product{&product}, productLoaderParams{
 		productStock: true,

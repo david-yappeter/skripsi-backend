@@ -523,7 +523,7 @@ func (u *productReceiveUseCase) DeleteImage(ctx context.Context, request dto_req
 		u.repositoryManager.ProductReceiveImageRepository().Delete(ctx, &productReceiveImage),
 	)
 
-	panicIfErr(u.mainFilesystem.Delete(file.Path))
+	u.mainFilesystem.Delete(file.Path)
 
 	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
 		productReceiveItems:  true,

@@ -613,6 +613,7 @@ func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_re
 }
 
 func (u *deliveryOrderUseCase) DeliveryLocation(ctx context.Context, request dto_request.DeliveryOrderDeliveryLocationRequest) {
+	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, false)
 }
 
 func (u *deliveryOrderUseCase) Delete(ctx context.Context, request dto_request.DeliveryOrderDeleteRequest) {
@@ -659,7 +660,7 @@ func (u *deliveryOrderUseCase) DeleteImage(ctx context.Context, request dto_requ
 		u.repositoryManager.DeliveryOrderImageRepository().Delete(ctx, &deliveryOrderImage),
 	)
 
-	panicIfErr(u.mainFilesystem.Delete(file.Path))
+	u.mainFilesystem.Delete(file.Path)
 
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
 		deliveryOrderItems:  true,
