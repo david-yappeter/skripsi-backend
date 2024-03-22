@@ -440,7 +440,7 @@ func (a *DeliveryOrderApi) DeleteItem() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/delivery-orders/{id}/images/{file_id} [post]
+//	@Router		/delivery-orders/{id}/images/{file_id} [delete]
 //	@Summary	Delete File
 //	@tags		Delivery Orders
 //	@Accept		json
@@ -476,7 +476,7 @@ func (a *DeliveryOrderApi) DeleteImage() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/delivery-orders/{id}/drivers/{driver_user_id} [post]
+//	@Router		/delivery-orders/{id}/drivers/{driver_user_id} [delete]
 //	@Summary	Delete Driver
 //	@tags		Delivery Orders
 //	@Accept		json
