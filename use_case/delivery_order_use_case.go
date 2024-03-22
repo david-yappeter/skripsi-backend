@@ -18,6 +18,7 @@ import (
 )
 
 type deliveryOrdersLoaderParams struct {
+	customer             bool
 	deliveryOrderItems   bool
 	deliveryOrderImages  bool
 	deliveryOrderDrivers bool
@@ -79,6 +80,7 @@ func NewDeliveryOrderUseCase(
 }
 
 func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, deliveryOrders []*model.DeliveryOrder, option deliveryOrdersLoaderParams) {
+	customerLoader := loader.NewCustomerLoader(u.repositoryManager.CustomerRepository())
 	deliveryOrderItemsLoader := loader.NewDeliveryOrderItemsLoader(u.repositoryManager.DeliveryOrderItemRepository())
 	deliveryOrderImagesLoader := loader.NewDeliveryOrderImagesLoader(u.repositoryManager.DeliveryOrderImageRepository())
 	deliveryOrderDriversLoader := loader.NewDeliveryOrderDriversLoader(u.repositoryManager.DeliveryOrderDriverRepository())
@@ -86,6 +88,10 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
 			for i := range deliveryOrders {
+				if option.customer {
+					group.Go(customerLoader.DeliveryOrderFn(deliveryOrders[i]))
+				}
+
 				if option.deliveryOrderImages {
 					group.Go(deliveryOrderImagesLoader.DeliveryOrderFn(deliveryOrders[i]))
 				}
@@ -309,6 +315,7 @@ func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.
 	)
 
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		customer:             true,
 		deliveryOrderItems:   true,
 		deliveryOrderImages:  true,
 		deliveryOrderDrivers: true,
@@ -341,6 +348,7 @@ func (u *deliveryOrderUseCase) AddImage(ctx context.Context, request dto_request
 	)
 
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		customer:             true,
 		deliveryOrderItems:   true,
 		deliveryOrderImages:  true,
 		deliveryOrderDrivers: true,
@@ -375,6 +383,7 @@ func (u *deliveryOrderUseCase) AddDriver(ctx context.Context, request dto_reques
 	)
 
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		customer:             true,
 		deliveryOrderItems:   true,
 		deliveryOrderImages:  true,
 		deliveryOrderDrivers: true,
@@ -414,11 +423,22 @@ func (u *deliveryOrderUseCase) Fetch(ctx context.Context, request dto_request.De
 	total, err := u.repositoryManager.DeliveryOrderRepository().Count(ctx, queryOption)
 	panicIfErr(err)
 
+	u.mustLoadDeliveryOrdersData(ctx, util.SliceValueToSlicePointer(deliveryOrders), deliveryOrdersLoaderParams{
+		customer: true,
+	})
+
 	return deliveryOrders, total
 }
 
 func (u *deliveryOrderUseCase) Get(ctx context.Context, request dto_request.DeliveryOrderGetRequest) model.DeliveryOrder {
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
+
+	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		customer:             true,
+		deliveryOrderItems:   true,
+		deliveryOrderImages:  true,
+		deliveryOrderDrivers: true,
+	})
 
 	return deliveryOrder
 }
@@ -507,6 +527,7 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 	)
 
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		customer:             true,
 		deliveryOrderItems:   true,
 		deliveryOrderImages:  true,
 		deliveryOrderDrivers: true,
@@ -608,6 +629,7 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 	)
 
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		customer:             true,
 		deliveryOrderImages:  true,
 		deliveryOrderItems:   true,
 		deliveryOrderDrivers: true,
@@ -630,6 +652,7 @@ func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_re
 	)
 
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		customer:             true,
 		deliveryOrderItems:   true,
 		deliveryOrderImages:  true,
 		deliveryOrderDrivers: true,
@@ -732,6 +755,7 @@ func (u *deliveryOrderUseCase) DeleteImage(ctx context.Context, request dto_requ
 	u.mainFilesystem.Delete(file.Path)
 
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		customer:             true,
 		deliveryOrderItems:   true,
 		deliveryOrderImages:  true,
 		deliveryOrderDrivers: true,
@@ -791,6 +815,7 @@ func (u *deliveryOrderUseCase) DeleteItem(ctx context.Context, request dto_reque
 	)
 
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		customer:             true,
 		deliveryOrderItems:   true,
 		deliveryOrderImages:  true,
 		deliveryOrderDrivers: true,
@@ -814,6 +839,7 @@ func (u *deliveryOrderUseCase) DeleteDriver(ctx context.Context, request dto_req
 	)
 
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		customer:             true,
 		deliveryOrderItems:   true,
 		deliveryOrderImages:  true,
 		deliveryOrderDrivers: true,

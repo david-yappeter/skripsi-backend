@@ -37,6 +37,19 @@ func (l *CustomerLoader) CustomerDebtFn(customerDebt *model.CustomerDebt) func()
 	}
 }
 
+func (l *CustomerLoader) DeliveryOrderFn(deliveryOrder *model.DeliveryOrder) func() error {
+	return func() error {
+		customer, err := l.load(deliveryOrder.CustomerId)
+		if err != nil {
+			return err
+		}
+
+		deliveryOrder.Customer = customer
+
+		return nil
+	}
+}
+
 func NewCustomerLoader(customerRepository repository.CustomerRepository) *CustomerLoader {
 	batchFn := func(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
 		ids := make([]string, len(keys))
