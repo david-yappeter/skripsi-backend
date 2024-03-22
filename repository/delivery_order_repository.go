@@ -64,18 +64,14 @@ func (r *deliveryOrderRepository) get(ctx context.Context, stmt squirrel.Sqlizer
 
 func (r *deliveryOrderRepository) prepareQuery(option model.DeliveryOrderQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s do", model.DeliveryOrderTableName))
+		From(fmt.Sprintf("%s dorder", model.DeliveryOrderTableName))
 
 	if option.Phrase != nil {
-		phrase := "%" + *option.Phrase + "%"
-		stmt = stmt.Where(squirrel.Or{
-			squirrel.ILike{"do.name": phrase},
-		})
 	}
 
 	if option.CustomerId != nil {
 		stmt = stmt.Where(squirrel.Eq{
-			"do.customer_id": option.CustomerId,
+			"dorder.customer_id": option.CustomerId,
 		})
 	}
 

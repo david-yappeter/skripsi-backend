@@ -53,7 +53,7 @@ var _ PrepareOption = &DeliveryOrderQueryOption{}
 
 func (o *DeliveryOrderQueryOption) SetDefaultFields() {
 	if len(o.Fields) == 0 {
-		o.Fields = []string{"do.*"}
+		o.Fields = []string{"dorder.*"}
 	}
 }
 
