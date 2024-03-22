@@ -177,7 +177,7 @@ func (u *customerUseCase) OptionForDeliveryOrderForm(ctx context.Context, reques
 	total, err := u.repositoryManager.CustomerRepository().Count(ctx, queryOption)
 	panicIfErr(err)
 
-	u.mustLoadCustomersData(ctx, []*model.Customer{&customer}, customerLoaderParams{
+	u.mustLoadCustomersData(ctx, util.SliceValueToSlicePointer(customers), customerLoaderParams{
 		customerType: true,
 	})
 
