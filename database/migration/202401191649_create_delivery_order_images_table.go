@@ -2,7 +2,7 @@ package migration
 
 func init() {
 	sourceDriver.append(
-		202401191648,
+		202401191649,
 		`
 			CREATE TABLE IF NOT EXISTS delivery_order_images (
 				id char(36) NOT NULL,
