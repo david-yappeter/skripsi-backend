@@ -14,9 +14,10 @@ type DeliveryOrder struct {
 	TotalPrice    float64                       `db:"total_price"`
 	Timestamp
 
-	Customer            *Customer            `db:"-"`
-	DeliveryOrderItems  []DeliveryOrderItem  `db:"-"`
-	DeliveryOrderImages []DeliveryOrderImage `db:"-"`
+	Customer             *Customer             `db:"-"`
+	DeliveryOrderItems   []DeliveryOrderItem   `db:"-"`
+	DeliveryOrderImages  []DeliveryOrderImage  `db:"-"`
+	DeliveryOrderDrivers []DeliveryOrderDriver `db:"-"`
 }
 
 func (m *DeliveryOrder) TableName() string {

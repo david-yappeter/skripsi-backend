@@ -8,6 +8,7 @@ type DeliveryOrderDriver struct {
 	DriverUserId    string `db:"driver_user_id"`
 
 	Timestamp
+	User *User `db:"-"`
 }
 
 func (m *DeliveryOrderDriver) TableName() string {

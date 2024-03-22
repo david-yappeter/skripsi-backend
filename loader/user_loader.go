@@ -39,6 +39,21 @@ func (l *UserLoader) CashierSessionFn(cashierSession *model.CashierSession) func
 	}
 }
 
+func (l *UserLoader) DeliveryOrderDriverFn(deliveryOrderDriver *model.DeliveryOrderDriver) func() error {
+	return func() error {
+		if deliveryOrderDriver != nil {
+			user, err := l.load(deliveryOrderDriver.DriverUserId)
+			if err != nil {
+				return err
+			}
+
+			deliveryOrderDriver.User = user
+		}
+
+		return nil
+	}
+}
+
 func NewUserLoader(userRepository repository.UserRepository) *UserLoader {
 	batchFn := func(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
 		ids := make([]string, len(keys))

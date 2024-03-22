@@ -16,8 +16,9 @@ type DeliveryOrderResponse struct {
 
 	Customer *CustomerResponse `json:"customer" extensions:"x-nullable"`
 	Timestamp
-	Items  []DeliveryOrderItemResponse  `json:"items" extensions:"x-nullable"`
-	Images []DeliveryOrderImageResponse `json:"images" extensions:"x-nullable"`
+	Items   []DeliveryOrderItemResponse  `json:"items" extensions:"x-nullable"`
+	Images  []DeliveryOrderImageResponse `json:"images" extensions:"x-nullable"`
+	Drivers []UserResponse               `json:"drivers" extensions:"x-nullable"`
 } // @name DeliveryOrderResponse
 
 func NewDeliveryOrderResponse(deliveryOrder model.DeliveryOrder) DeliveryOrderResponse {
@@ -42,6 +43,12 @@ func NewDeliveryOrderResponse(deliveryOrder model.DeliveryOrder) DeliveryOrderRe
 
 	for _, deliveryOrderImage := range deliveryOrder.DeliveryOrderImages {
 		r.Images = append(r.Images, NewDeliveryOrderImageResponse(deliveryOrderImage))
+	}
+
+	for _, deliveryOrderDriver := range deliveryOrder.DeliveryOrderDrivers {
+		if deliveryOrderDriver.User != nil {
+			r.Drivers = append(r.Drivers, NewUserResponse(*deliveryOrderDriver.User))
+		}
 	}
 
 	return r
