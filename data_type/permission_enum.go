@@ -71,16 +71,16 @@ const (
 	PermissionDeliveryOrderDeleteDriver     // DELIVERY_ORDER_DELETE_DRIVER
 
 	// product
-	PermissionProductCreate                      // PRODUCT_CREATE
-	PermissionProductUpload                      // PRODUCT_UPLOAD
-	PermissionProductFetch                       // PRODUCT_FETCH
-	PermissionProductGet                         // PRODUCT_GET
-	PermissionProductUpdate                      // PRODUCT_UPDATE
-	PermissionProductDelete                      // PRODUCT_DELETE
-	PermissionProductOptionForProductReceiveForm // PRODUCT_OPTION_FOR_PRODUCT_RECEIVE_FORM
-	PermissionProductOptionForDeliveryOrderForm  // PRODUCT_OPTION_FOR_DELIVERY_ORDER_FORM
-	PermissionProductOptionForCustomerTypeForm   // PRODUCT_OPTION_FOR_CUSTOMER_TYPE_FORM
-	PermissionProductOptionForCartAddItemForm    // PRODUCT_OPTION_FOR_CART_ADD_ITEM_FORM
+	PermissionProductCreate                            // PRODUCT_CREATE
+	PermissionProductUpload                            // PRODUCT_UPLOAD
+	PermissionProductFetch                             // PRODUCT_FETCH
+	PermissionProductGet                               // PRODUCT_GET
+	PermissionProductUpdate                            // PRODUCT_UPDATE
+	PermissionProductDelete                            // PRODUCT_DELETE
+	PermissionProductOptionForProductReceiveForm       // PRODUCT_OPTION_FOR_PRODUCT_RECEIVE_FORM
+	PermissionProductOptionForDeliveryOrderForm        // PRODUCT_OPTION_FOR_DELIVERY_ORDER_FORM
+	PermissionProductOptionForCustomerTypeDiscountForm // PRODUCT_OPTION_FOR_CUSTOMER_TYPE_DISCOUNT_FORM
+	PermissionProductOptionForCartAddItemForm          // PRODUCT_OPTION_FOR_CART_ADD_ITEM_FORM
 
 	// product discount
 	PermissionProductDiscountCreate // PRODUCT_DISCOUNT_CREATE

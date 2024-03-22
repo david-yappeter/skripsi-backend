@@ -43,7 +43,7 @@ type ProductUseCase interface {
 	// option
 	OptionForProductReceiveForm(ctx context.Context, request dto_request.ProductOptionForProductReceiveFormRequest) ([]model.Product, int)
 	OptionForDeliveryOrderForm(ctx context.Context, request dto_request.ProductOptionForDeliveryOrderFormRequest) ([]model.Product, int)
-	OptionForCustomerTypeForm(ctx context.Context, request dto_request.ProductOptionForCustomerTypeFormRequest) ([]model.Product, int)
+	OptionForCustomerTypeDiscountForm(ctx context.Context, request dto_request.ProductOptionForCustomerTypeDiscountFormRequest) ([]model.Product, int)
 	OptionForCartAddItemForm(ctx context.Context, request dto_request.ProductOptionForCartAddItemFormRequest) ([]model.Product, int)
 }
 
@@ -467,7 +467,7 @@ func (u *productUseCase) OptionForDeliveryOrderForm(ctx context.Context, request
 	return products, total
 }
 
-func (u *productUseCase) OptionForCustomerTypeForm(ctx context.Context, request dto_request.ProductOptionForCustomerTypeFormRequest) ([]model.Product, int) {
+func (u *productUseCase) OptionForCustomerTypeDiscountForm(ctx context.Context, request dto_request.ProductOptionForCustomerTypeDiscountFormRequest) ([]model.Product, int) {
 	customerTypeDiscounts, err := u.repositoryManager.CustomerTypeDiscountRepository().FetchByCustomerTypeIds(ctx, []string{request.CustomerTypeId})
 	panicIfErr(err)
 
