@@ -247,7 +247,7 @@ func (a *DeliveryOrderApi) Completed() gin.HandlerFunc {
 //	@Summary	Delivery Location
 //	@tags		Delivery Orders
 //	@Accept		json
-//	@Param		id												path	string											true	"Id"
+//	@Param		id													path	string												true	"Id"
 //	@Param		dto_request.DeliveryOrderDeliveryLocationRequest	body	dto_request.DeliveryOrderDeliveryLocationRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.SuccessResponse

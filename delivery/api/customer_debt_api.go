@@ -18,7 +18,7 @@ type CustomerDebtApi struct {
 
 // API:
 //
-//	@Router		/customer-debts [post]
+//	@Router		/customer-debts/upload [post]
 //	@Summary	Upload Image
 //	@tags		Customer Debts
 //	@Accept		json

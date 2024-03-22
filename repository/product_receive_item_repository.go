@@ -107,7 +107,8 @@ func (r *productReceiveItemRepository) IsExistByProductIdAndHaveProductReceive(c
 			From(fmt.Sprintf("%s pri", model.ProductReceiveItemTableName)).
 			InnerJoin(fmt.Sprintf("%s pr ON pr.id = pri.product_receive_id", model.ProductReceiveTableName)).
 			InnerJoin(fmt.Sprintf("%s pu ON pu.id = pri.product_unit_id", model.ProductUnitTableName)).
-			Where(squirrel.Eq{"pu.product_id": productId}),
+			Where(squirrel.Eq{"pu.product_id": productId}).
+			Prefix("EXISTS (").Suffix(")"),
 	)
 
 	return isExist(r.db, ctx, stmt)
