@@ -226,8 +226,11 @@ func (a *CustomerTypeApi) AddDiscount() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionCustomerTypeAddDiscount),
 		func(ctx apiContext) {
+			customerTypeId := ctx.getUuidParam("id")
 			var request dto_request.CustomerTypeAddDiscountRequest
 			ctx.mustBind(&request)
+
+			request.CustomerTypeId = customerTypeId
 
 			customerType := a.customerTypeUseCase.AddDiscount(ctx.context(), request)
 
@@ -258,8 +261,12 @@ func (a *CustomerTypeApi) UpdateDiscount() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionCustomerTypeUpdateDiscount),
 		func(ctx apiContext) {
+			customerTypeId := ctx.getUuidParam("id")
+			productId := ctx.getUuidParam("product_id")
 			var request dto_request.CustomerTypeUpdateDiscountRequest
 			ctx.mustBind(&request)
+			request.CustomerTypeId = customerTypeId
+			request.ProductId = productId
 
 			customerType := a.customerTypeUseCase.UpdateDiscount(ctx.context(), request)
 
@@ -290,8 +297,12 @@ func (a *CustomerTypeApi) DeleteDiscount() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionCustomerTypeDeleteDiscount),
 		func(ctx apiContext) {
+			customerTypeId := ctx.getUuidParam("id")
+			productId := ctx.getUuidParam("product_id")
 			var request dto_request.CustomerTypeDeleteDiscountRequest
 			ctx.mustBind(&request)
+			request.CustomerTypeId = customerTypeId
+			request.ProductId = productId
 
 			customerType := a.customerTypeUseCase.DeleteDiscount(ctx.context(), request)
 
