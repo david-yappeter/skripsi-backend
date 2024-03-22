@@ -56,11 +56,11 @@ type CustomerTypeUpdateDiscountRequest struct {
 	DiscountPercentage *float64 `json:"discount_percentage" validate:"omitempty,gt=0,lte=100"`
 	DiscountAmount     *float64 `json:"discount_amount" validate:"required_without=DiscountPercentage,omitempty,excluded_with=DiscountPercentage,gt=0"`
 
-	ProductId      string `json:"-" swaggerignore:"true"`
-	CustomerTypeId string `json:"-" swaggerignore:"true"`
+	CustomerTypeDiscountId string `json:"-" swaggerignore:"true"`
+	CustomerTypeId         string `json:"-" swaggerignore:"true"`
 } // @name CustomerTypeUpdateDiscountRequest
 
 type CustomerTypeDeleteDiscountRequest struct {
-	ProductId      string `json:"-" swaggerignore:"true"`
-	CustomerTypeId string `json:"-" swaggerignore:"true"`
+	CustomerTypeDiscountId string `json:"-" swaggerignore:"true"`
+	CustomerTypeId         string `json:"-" swaggerignore:"true"`
 } // @name CustomerTypeDeleteDiscountRequest

@@ -369,6 +369,16 @@ func mustDeliveryOrderPositionByDeliveryOrderId(ctx context.Context, repositoryM
 	return *deliveryOrderPosition
 }
 
+func mustGetCustomerTypeDiscountByCustomerTypeIdAndCustomerTypeDiscountId(ctx context.Context, repositoryManager repository.RepositoryManager, customerTypeId string, customerTypeDiscountId string, isValidate bool) model.CustomerTypeDiscount {
+	customerTypeDiscount := shouldGetCustomerTypeDiscountByCustomerTypeIdAndCustomerTypeDiscountId(ctx, repositoryManager, customerTypeId, customerTypeDiscountId)
+
+	if customerTypeDiscount == nil {
+		panicIfRepositoryError(constant.ErrNoData, "CUSTOMER_TYPE_DISCOUNT.NOT_FOUND", isValidate)
+	}
+
+	return *customerTypeDiscount
+}
+
 func mustGetCustomerTypeDiscountByCustomerTypeIdAndProductId(ctx context.Context, repositoryManager repository.RepositoryManager, customerTypeId string, productId string, isValidate bool) model.CustomerTypeDiscount {
 	customerTypeDiscount := shouldGetCustomerTypeDiscountByCustomerTypeIdAndProductId(ctx, repositoryManager, customerTypeId, productId)
 
@@ -407,6 +417,12 @@ func shouldGetDeliveryOrderPositionByDeliveryOrderId(ctx context.Context, reposi
 	deliveryOrderPosition, err := repositoryManager.DeliveryOrderPositionRepository().GetByDeliveryOrderId(ctx, deliveryOrderId)
 	panicIfErr(err, constant.ErrNoData)
 	return deliveryOrderPosition
+}
+
+func shouldGetCustomerTypeDiscountByCustomerTypeIdAndCustomerTypeDiscountId(ctx context.Context, repositoryManager repository.RepositoryManager, customerTypeId string, customerTypeDiscountId string) *model.CustomerTypeDiscount {
+	customerTypeDiscount, err := repositoryManager.CustomerTypeDiscountRepository().GetByIdAndCustomerTypeId(ctx, customerTypeDiscountId, customerTypeId)
+	panicIfErr(err, constant.ErrNoData)
+	return customerTypeDiscount
 }
 
 func shouldGetCustomerTypeDiscountByCustomerTypeIdAndProductId(ctx context.Context, repositoryManager repository.RepositoryManager, customerTypeId string, productId string) *model.CustomerTypeDiscount {

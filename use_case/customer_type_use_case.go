@@ -187,8 +187,7 @@ func (u *customerTypeUseCase) Update(ctx context.Context, request dto_request.Cu
 
 func (u *customerTypeUseCase) UpdateDiscount(ctx context.Context, request dto_request.CustomerTypeUpdateDiscountRequest) model.CustomerType {
 	customerType := mustGetCustomerType(ctx, u.repositoryManager, request.CustomerTypeId, false)
-	product := mustGetProduct(ctx, u.repositoryManager, request.ProductId, false)
-	customerTypeDiscount := mustGetCustomerTypeDiscountByCustomerTypeIdAndProductId(ctx, u.repositoryManager, customerType.Id, product.Id, false)
+	customerTypeDiscount := mustGetCustomerTypeDiscountByCustomerTypeIdAndCustomerTypeDiscountId(ctx, u.repositoryManager, customerType.Id, request.CustomerTypeDiscountId, false)
 
 	customerTypeDiscount.IsActive = request.IsActive
 	customerTypeDiscount.DiscountAmount = request.DiscountAmount
@@ -217,8 +216,7 @@ func (u *customerTypeUseCase) Delete(ctx context.Context, request dto_request.Cu
 
 func (u *customerTypeUseCase) DeleteDiscount(ctx context.Context, request dto_request.CustomerTypeDeleteDiscountRequest) model.CustomerType {
 	customerType := mustGetCustomerType(ctx, u.repositoryManager, request.CustomerTypeId, false)
-	product := mustGetProduct(ctx, u.repositoryManager, request.ProductId, false)
-	customerTypeDiscount := mustGetCustomerTypeDiscountByCustomerTypeIdAndProductId(ctx, u.repositoryManager, customerType.Id, product.Id, false)
+	customerTypeDiscount := mustGetCustomerTypeDiscountByCustomerTypeIdAndCustomerTypeDiscountId(ctx, u.repositoryManager, customerType.Id, request.CustomerTypeDiscountId, false)
 
 	panicIfErr(
 		u.repositoryManager.CustomerTypeDiscountRepository().Delete(ctx, &customerTypeDiscount),

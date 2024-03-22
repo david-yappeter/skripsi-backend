@@ -248,12 +248,12 @@ func (a *CustomerTypeApi) AddDiscount() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/customer-types/{id}/discount/{product_id} [put]
+//	@Router		/customer-types/{id}/discount/{discount_id} [put]
 //	@Summary	Update Discount
 //	@tags		Customer Types
 //	@Accept		json
 //	@Param		id												path	string											true	"Customer Type Id"
-//	@Param		product_id										path	string											true	"Product Id"
+//	@Param		discount_id										path	string											true	"Product Id"
 //	@Param		dto_request.CustomerTypeUpdateDiscountRequest	body	dto_request.CustomerTypeUpdateDiscountRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{customer_type=dto_response.CustomerTypeResponse}}
@@ -262,11 +262,11 @@ func (a *CustomerTypeApi) UpdateDiscount() gin.HandlerFunc {
 		data_type.PermissionP(data_type.PermissionCustomerTypeUpdateDiscount),
 		func(ctx apiContext) {
 			customerTypeId := ctx.getUuidParam("id")
-			productId := ctx.getUuidParam("product_id")
+			discountId := ctx.getUuidParam("discount_id")
 			var request dto_request.CustomerTypeUpdateDiscountRequest
 			ctx.mustBind(&request)
 			request.CustomerTypeId = customerTypeId
-			request.ProductId = productId
+			request.CustomerTypeDiscountId = discountId
 
 			customerType := a.customerTypeUseCase.UpdateDiscount(ctx.context(), request)
 
@@ -284,12 +284,12 @@ func (a *CustomerTypeApi) UpdateDiscount() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/customer-types/{id}/discount/{product_id} [delete]
+//	@Router		/customer-types/{id}/discount/{discount_id} [delete]
 //	@Summary	Delete Discount
 //	@tags		Customer Types
 //	@Accept		json
 //	@Param		id												path	string											true	"Customer Type Id"
-//	@Param		product_id										path	string											true	"Product Id"
+//	@Param		discount_id										path	string											true	"Product Id"
 //	@Param		dto_request.CustomerTypeDeleteDiscountRequest	body	dto_request.CustomerTypeDeleteDiscountRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{customer_type=dto_response.CustomerTypeResponse}}
@@ -298,11 +298,11 @@ func (a *CustomerTypeApi) DeleteDiscount() gin.HandlerFunc {
 		data_type.PermissionP(data_type.PermissionCustomerTypeDeleteDiscount),
 		func(ctx apiContext) {
 			customerTypeId := ctx.getUuidParam("id")
-			productId := ctx.getUuidParam("product_id")
+			discountId := ctx.getUuidParam("discount_id")
 			var request dto_request.CustomerTypeDeleteDiscountRequest
 			ctx.mustBind(&request)
 			request.CustomerTypeId = customerTypeId
-			request.ProductId = productId
+			request.CustomerTypeDiscountId = discountId
 
 			customerType := a.customerTypeUseCase.DeleteDiscount(ctx.context(), request)
 
@@ -331,8 +331,8 @@ func RegisterCustomerTypeApi(router gin.IRouter, useCaseManager use_case.UseCase
 	routerGroup.PUT("/:id", api.Update())
 	routerGroup.DELETE("/:id", api.Delete())
 	routerGroup.POST("/:id/discount", api.AddDiscount())
-	routerGroup.PUT("/:id/discount/:product_id", api.UpdateDiscount())
-	routerGroup.DELETE("/:id/discount/:product_id", api.DeleteDiscount())
+	routerGroup.PUT("/:id/discount/:discount_id", api.UpdateDiscount())
+	routerGroup.DELETE("/:id/discount/:discount_id", api.DeleteDiscount())
 
 	optionRouterGroup := routerGroup.Group("/options")
 	optionRouterGroup.POST("/customer-form", api.OptionForCustomerForm())
