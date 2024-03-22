@@ -404,7 +404,7 @@ func (u *productUseCase) Delete(ctx context.Context, request dto_request.Product
 			productRepository := u.repositoryManager.ProductRepository()
 			fileRepository := u.repositoryManager.FileRepository()
 
-			if err := productRepository.Insert(ctx, &product); err != nil {
+			if err := productRepository.Delete(ctx, &product); err != nil {
 				return err
 			}
 
