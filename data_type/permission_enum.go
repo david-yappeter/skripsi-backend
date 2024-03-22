@@ -48,10 +48,10 @@ const (
 	PermissionCustomerTypeGet                   // CUSTOMER_TYPE_GET
 	PermissionCustomerTypeUpdate                // CUSTOMER_TYPE_UPDATE
 	PermissionCustomerTypeDelete                // CUSTOMER_TYPE_DELETE
+	PermissionCustomerTypeAddDiscount           // CUSTOMER_TYPE_ADD_DISCOUNT
+	PermissionCustomerTypeUpdateDiscount        // CUSTOMER_TYPE_UPDATE_DISCOUNT
+	PermissionCustomerTypeDeleteDiscount        // CUSTOMER_TYPE_DELETE_DISCOUNT
 	PermissionCustomerTypeOptionForCustomerForm // CUSTOMER_TYPE_OPTION_FOR_CUSTOMER_FORM
-	PermissionCustomerTypeAddDiscount           // CUSTOMER_TYPE_OPTION_ADD_DISCOUNT
-	PermissionCustomerTypeUpdateDiscount        // CUSTOMER_TYPE_OPTION_UPDATE_DISCOUNT
-	PermissionCustomerTypeDeleteDiscount        // CUSTOMER_TYPE_OPTION_DELETE_DISCOUNT
 
 	// delivery order
 	PermissionDeliveryOrderCreate           // DELIVERY_ORDER_CREATE
