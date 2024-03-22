@@ -75,6 +75,7 @@ func (u *customerDebtUseCase) mustLoadCustomerDebtsData(ctx context.Context, cus
 		}
 	}))
 
+	customerTypeLoader := loader.NewCustomerTypeLoader(u.repositoryManager.CustomerTypeRepository())
 	fileLoader := loader.NewFileLoader(u.repositoryManager.FileRepository())
 
 	panicIfErr(util.Await(func(group *errgroup.Group) {
@@ -82,6 +83,10 @@ func (u *customerDebtUseCase) mustLoadCustomerDebtsData(ctx context.Context, cus
 			for i := range customerDebts {
 				for j := range customerDebts[i].CustomerPayments {
 					group.Go(fileLoader.CustomerPaymentFn(&customerDebts[i].CustomerPayments[j]))
+				}
+
+				if option.customer {
+					group.Go(customerTypeLoader.CustomerFn(customerDebts[i].Customer))
 				}
 			}
 		}
