@@ -48,8 +48,12 @@ type UserDeleteRoleRequest struct {
 	UserId string `json:"-" swaggerignore:"true"`
 } // @name UserDeleteRoleRequest
 
-
 type UserOptionForCashierSessionFilterRequest struct {
 	PaginationRequest
-	Phrase   *string        `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+	Phrase *string `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name UserOptionForCashierSessionFilterRequest
+
+type UserOptionForDeliveryOrderDriverFormRequest struct {
+	PaginationRequest
+	Phrase *string `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name UserOptionForCashierSessionFilterRequest

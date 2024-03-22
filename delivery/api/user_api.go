@@ -309,6 +309,41 @@ func (a *UserApi) OptionForCashierSessionFilter() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/users/options/delivery-order-driver-form [post]
+//	@Summary	Option for Delivery Order Driver Form
+//	@tags		Users
+//	@Accept		json
+//	@Param		dto_request.UserOptionForDeliveryOrderDriverFormRequest	body	dto_request.UserOptionForDeliveryOrderDriverFormRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.UserResponse}}
+func (a *UserApi) OptionForDeliveryOrderDriverForm() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionUserOptionForDeliveryOrderDriverForm),
+		func(ctx apiContext) {
+			var request dto_request.UserOptionForDeliveryOrderDriverFormRequest
+			ctx.mustBind(&request)
+
+			users, total := a.userUseCase.OptionForDeliveryOrderDriverForm(ctx.context(), request)
+
+			nodes := util.ConvertArray(users, dto_response.NewUserResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Nodes: nodes,
+						Total: total,
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterUserApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := UserApi{
 		api:         newApi(useCaseManager),
@@ -328,4 +363,5 @@ func RegisterUserApi(router gin.IRouter, useCaseManager use_case.UseCaseManager)
 
 	optionRouterGroup := routerGroup.Group("/options")
 	optionRouterGroup.POST("/cashier-session-filter", api.OptionForCashierSessionFilter())
+	optionRouterGroup.POST("/delivery-order-driver-form", api.OptionForDeliveryOrderDriverForm())
 }

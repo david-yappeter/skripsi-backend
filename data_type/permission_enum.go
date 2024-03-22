@@ -154,16 +154,17 @@ const (
 	PermissionTransactionCheckoutCart // TRANSACTION_CHECKOUT_CART
 
 	// user
-	PermissionUserCreate                        // USER_CREATE
-	PermissionUserFetch                         // USER_FETCH
-	PermissionUserGet                           // USER_GET
-	PermissionUserUpdate                        // USER_UPDATE
-	PermissionUserUpdatePassword                // USER_UPDATE_PASSWORD
-	PermissionUserUpdateActive                  // USER_UPDATE_ACTIVE
-	PermissionUserUpdateInActive                // USER_UPDATE_INACTIVE
-	PermissionUserAddRole                       // USER_ADD_ROLE
-	PermissionUserDeleteRole                    // USER_DELETE_ROLE
-	PermissionUserOptionForCashierSessionFilter // USER_OPTION_FOR_CASHIER_SESSION_FILTER
+	PermissionUserCreate                           // USER_CREATE
+	PermissionUserFetch                            // USER_FETCH
+	PermissionUserGet                              // USER_GET
+	PermissionUserUpdate                           // USER_UPDATE
+	PermissionUserUpdatePassword                   // USER_UPDATE_PASSWORD
+	PermissionUserUpdateActive                     // USER_UPDATE_ACTIVE
+	PermissionUserUpdateInActive                   // USER_UPDATE_INACTIVE
+	PermissionUserAddRole                          // USER_ADD_ROLE
+	PermissionUserDeleteRole                       // USER_DELETE_ROLE
+	PermissionUserOptionForCashierSessionFilter    // USER_OPTION_FOR_CASHIER_SESSION_FILTER
+	PermissionUserOptionForDeliveryOrderDriverForm // USER_OPTION_FOR_DELIVERY_ORDER_DRIVER_FORM
 
 	// unit
 	PermissionUnitCreate                         // UNIT_CREATE

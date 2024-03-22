@@ -3,6 +3,7 @@ package use_case
 import (
 	"context"
 	"myapp/constant"
+	"myapp/data_type"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
 	"myapp/loader"
@@ -37,6 +38,7 @@ type UserUseCase interface {
 
 	// option
 	OptionForCashierSessionFilter(ctx context.Context, request dto_request.UserOptionForCashierSessionFilterRequest) ([]model.User, int)
+	OptionForDeliveryOrderDriverForm(ctx context.Context, request dto_request.UserOptionForDeliveryOrderDriverFormRequest) ([]model.User, int)
 }
 
 type userUseCase struct {
@@ -278,6 +280,29 @@ func (u *userUseCase) OptionForCashierSessionFilter(ctx context.Context, request
 			model.Sorts{{Field: "name", Direction: "asc"}},
 		),
 		Phrase: request.Phrase,
+	}
+
+	users, err := u.repositoryManager.UserRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.UserRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	return users, total
+}
+
+func (u *userUseCase) OptionForDeliveryOrderDriverForm(ctx context.Context, request dto_request.UserOptionForDeliveryOrderDriverFormRequest) ([]model.User, int) {
+	role, err := u.repositoryManager.RoleRepository().GetByTitle(ctx, data_type.RoleDriver)
+	panicIfErr(err)
+
+	queryOption := model.UserQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts{{Field: "name", Direction: "asc"}},
+		),
+		Phrase:  request.Phrase,
+		RoleIds: []string{role.Id},
 	}
 
 	users, err := u.repositoryManager.UserRepository().Fetch(ctx, queryOption)

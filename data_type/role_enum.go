@@ -81,6 +81,7 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionUserAddRole,
 		PermissionUserDeleteRole,
 		PermissionUserOptionForCashierSessionFilter,
+		PermissionUserOptionForDeliveryOrderDriverForm,
 
 		// unit
 		PermissionUnitCreate,
