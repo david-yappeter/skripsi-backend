@@ -19,7 +19,7 @@ type ProductReceiveItemRepository interface {
 	FetchByProductReceiveIds(ctx context.Context, productReceiveIds []string) ([]model.ProductReceiveItem, error)
 	Get(ctx context.Context, id string) (*model.ProductReceiveItem, error)
 	GetByProductReceiveIdAndProductUnitId(ctx context.Context, productReceiveId string, productUnitId string) (*model.ProductReceiveItem, error)
-	IsExistByProductId(ctx context.Context, productId string) (bool, error)
+	IsExistByProductIdAndHaveProductReceive(ctx context.Context, productId string) (bool, error)
 
 	// update
 	Update(ctx context.Context, productReceiveItem *model.ProductReceiveItem) error
@@ -101,10 +101,11 @@ func (r *productReceiveItemRepository) GetByProductReceiveIdAndProductUnitId(ctx
 	return r.get(ctx, stmt)
 }
 
-func (r *productReceiveItemRepository) IsExistByProductId(ctx context.Context, productId string) (bool, error) {
+func (r *productReceiveItemRepository) IsExistByProductIdAndHaveProductReceive(ctx context.Context, productId string) (bool, error) {
 	stmt := stmtBuilder.Select().Column(
 		stmtBuilder.Select("1").
 			From(fmt.Sprintf("%s pri", model.ProductReceiveItemTableName)).
+			InnerJoin(fmt.Sprintf("%s pr ON pr.id = pri.product_receive_id", model.ProductReceiveTableName)).
 			InnerJoin(fmt.Sprintf("%s pu ON pu.id = pri.product_unit_id", model.ProductUnitTableName)).
 			Where(squirrel.Eq{"pu.product_id": productId}),
 	)

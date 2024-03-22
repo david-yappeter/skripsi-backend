@@ -9,7 +9,6 @@ type CustomerDebtResponse struct {
 	Id              string                           `json:"id"`
 	CustomerId      string                           `json:"customer_id"`
 	DebtSource      data_type.CustomerDebtDebtSource `json:"debt_source"`
-	DebtSourceId    string                           `json:"debt_source_id"`
 	DueDate         data_type.NullDate               `json:"due_date"`
 	Status          data_type.CustomerDebtStatus     `json:"status"`
 	Amount          float64                          `json:"amount"`
@@ -25,7 +24,6 @@ func NewCustomerDebtResponse(customerDebt model.CustomerDebt) CustomerDebtRespon
 		Id:              customerDebt.Id,
 		CustomerId:      customerDebt.CustomerId,
 		DebtSource:      customerDebt.DebtSource,
-		DebtSourceId:    customerDebt.DebtSourceId,
 		DueDate:         customerDebt.DueDate,
 		Status:          customerDebt.Status,
 		Amount:          customerDebt.Amount,

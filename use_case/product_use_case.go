@@ -77,11 +77,11 @@ func (u *productUseCase) mustValidateNameNotDuplicate(ctx context.Context, name 
 }
 
 func (u *productUseCase) mustValidateAllowDeleteProduct(ctx context.Context, productId string) {
-	isExist, err := u.repositoryManager.ProductStockRepository().IsExistByProductId(ctx, productId)
+	isExist, err := u.repositoryManager.ProductReceiveItemRepository().IsExistByProductIdAndHaveProductReceive(ctx, productId)
 	panicIfErr(err)
 
 	if isExist {
-		panic(dto_response.NewBadRequestErrorResponse("PRODUCT.ALREADY_HAVE_STOCK"))
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT.ALREADY_HAVE_PRODUCT_RECEIVE"))
 	}
 }
 
