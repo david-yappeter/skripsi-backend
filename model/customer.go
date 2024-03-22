@@ -14,6 +14,8 @@ type Customer struct {
 	IsActive       bool    `db:"is_active"`
 
 	Timestamp
+
+	CustomerType *CustomerType `db:"-"`
 }
 
 func (m *Customer) TableName() string {

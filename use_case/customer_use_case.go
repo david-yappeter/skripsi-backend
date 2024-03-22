@@ -3,10 +3,17 @@ package use_case
 import (
 	"context"
 	"myapp/delivery/dto_request"
+	"myapp/loader"
 	"myapp/model"
 	"myapp/repository"
 	"myapp/util"
+
+	"golang.org/x/sync/errgroup"
 )
+
+type customerLoaderParams struct {
+	customerType bool
+}
 
 type CustomerUseCase interface {
 	//  create
@@ -38,6 +45,18 @@ func NewCustomerUseCase(
 	}
 }
 
+func (u *customerUseCase) mustLoadCustomersData(ctx context.Context, customers []*model.Customer, option customerLoaderParams) {
+	customerTypeLoader := loader.NewCustomerTypeLoader(u.repositoryManager.CustomerTypeRepository())
+
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		for i := range customers {
+			if option.customerType {
+				group.Go(customerTypeLoader.CustomerFn(customers[i]))
+			}
+		}
+	}))
+}
+
 func (u *customerUseCase) mustValidateAllowDeleteCustomer(ctx context.Context, customerId string) {
 
 }
@@ -63,6 +82,10 @@ func (u *customerUseCase) Create(ctx context.Context, request dto_request.Custom
 		u.repositoryManager.CustomerRepository().Insert(ctx, &customer),
 	)
 
+	u.mustLoadCustomersData(ctx, []*model.Customer{&customer}, customerLoaderParams{
+		customerType: true,
+	})
+
 	return customer
 }
 
@@ -83,11 +106,19 @@ func (u *customerUseCase) Fetch(ctx context.Context, request dto_request.Custome
 	total, err := u.repositoryManager.CustomerRepository().Count(ctx, queryOption)
 	panicIfErr(err)
 
+	u.mustLoadCustomersData(ctx, util.SliceValueToSlicePointer(customers), customerLoaderParams{
+		customerType: true,
+	})
+
 	return customers, total
 }
 
 func (u *customerUseCase) Get(ctx context.Context, request dto_request.CustomerGetRequest) model.Customer {
 	customer := mustGetCustomer(ctx, u.repositoryManager, request.CustomerId, true)
+
+	u.mustLoadCustomersData(ctx, []*model.Customer{&customer}, customerLoaderParams{
+		customerType: true,
+	})
 
 	return customer
 }
@@ -111,6 +142,10 @@ func (u *customerUseCase) Update(ctx context.Context, request dto_request.Custom
 	panicIfErr(
 		u.repositoryManager.CustomerRepository().Update(ctx, &customer),
 	)
+
+	u.mustLoadCustomersData(ctx, []*model.Customer{&customer}, customerLoaderParams{
+		customerType: true,
+	})
 
 	return customer
 }
@@ -141,6 +176,10 @@ func (u *customerUseCase) OptionForDeliveryOrderForm(ctx context.Context, reques
 
 	total, err := u.repositoryManager.CustomerRepository().Count(ctx, queryOption)
 	panicIfErr(err)
+
+	u.mustLoadCustomersData(ctx, []*model.Customer{&customer}, customerLoaderParams{
+		customerType: true,
+	})
 
 	return customers, total
 }
