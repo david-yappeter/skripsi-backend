@@ -18,6 +18,7 @@ type CustomerRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.CustomerQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.CustomerQueryOption) ([]model.Customer, error)
+	FetchByIds(ctx context.Context, ids []string) ([]model.Customer, error)
 	Get(ctx context.Context, id string) (*model.Customer, error)
 	IsExistByCustomerTypeId(ctx context.Context, customerTypeId string) (bool, error)
 
@@ -126,6 +127,14 @@ func (r *customerRepository) Fetch(ctx context.Context, options ...model.Custome
 	}
 
 	stmt := r.prepareQuery(option)
+
+	return r.fetch(ctx, stmt)
+}
+
+func (r *customerRepository) FetchByIds(ctx context.Context, ids []string) ([]model.Customer, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.CustomerTableName).
+		Where(squirrel.Eq{"id": ids})
 
 	return r.fetch(ctx, stmt)
 }

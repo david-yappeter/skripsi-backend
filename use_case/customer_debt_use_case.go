@@ -18,6 +18,7 @@ import (
 )
 
 type customerDebtLoaderParams struct {
+	customer         bool
 	customerPayments bool
 }
 
@@ -59,12 +60,17 @@ func NewCustomerDebtUseCase(
 }
 
 func (u *customerDebtUseCase) mustLoadCustomerDebtsData(ctx context.Context, customerDebts []*model.CustomerDebt, option customerDebtLoaderParams) {
+	customerLoader := loader.NewCustomerLoader(u.repositoryManager.CustomerRepository())
 	customerPaymentsLoader := loader.NewCustomerPaymentsLoader(u.repositoryManager.CustomerPaymentRepository())
 
 	panicIfErr(util.Await(func(group *errgroup.Group) {
-		if option.customerPayments {
-			for i := range customerDebts {
+		for i := range customerDebts {
+			if option.customerPayments {
 				group.Go(customerPaymentsLoader.CustomerDebtFn(customerDebts[i]))
+			}
+
+			if option.customer {
+				group.Go(customerLoader.CustomerDebtFn(customerDebts[i]))
 			}
 		}
 	}))
@@ -122,6 +128,11 @@ func (u *customerDebtUseCase) Fetch(ctx context.Context, request dto_request.Cus
 	total, err := u.repositoryManager.CustomerDebtRepository().Count(ctx, queryOption)
 	panicIfErr(err)
 
+	u.mustLoadCustomerDebtsData(ctx, util.SliceValueToSlicePointer(customerDebts), customerDebtLoaderParams{
+		customerPayments: false,
+		customer:         true,
+	})
+
 	return customerDebts, total
 }
 
@@ -130,6 +141,7 @@ func (u *customerDebtUseCase) Get(ctx context.Context, request dto_request.Custo
 
 	u.mustLoadCustomerDebtsData(ctx, []*model.CustomerDebt{&customerDebt}, customerDebtLoaderParams{
 		customerPayments: true,
+		customer:         true,
 	})
 
 	return customerDebt
@@ -214,6 +226,7 @@ func (u *customerDebtUseCase) Payment(ctx context.Context, request dto_request.C
 
 	u.mustLoadCustomerDebtsData(ctx, []*model.CustomerDebt{&customerDebt}, customerDebtLoaderParams{
 		customerPayments: true,
+		customer:         true,
 	})
 
 	return customerDebt

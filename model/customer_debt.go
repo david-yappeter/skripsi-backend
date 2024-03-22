@@ -16,6 +16,7 @@ type CustomerDebt struct {
 
 	Timestamp
 
+	Customer         *Customer         `db:"-"`
 	CustomerPayments []CustomerPayment `db:"-"`
 }
 
