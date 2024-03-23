@@ -292,7 +292,7 @@ func (u *userUseCase) OptionForCashierSessionFilter(ctx context.Context, request
 }
 
 func (u *userUseCase) OptionForDeliveryOrderDriverForm(ctx context.Context, request dto_request.UserOptionForDeliveryOrderDriverFormRequest) ([]model.User, int) {
-	role, err := u.repositoryManager.RoleRepository().GetByTitle(ctx, data_type.RoleDriver)
+	role, err := u.repositoryManager.RoleRepository().GetByName(ctx, data_type.RoleDriver)
 	panicIfErr(err)
 
 	queryOption := model.UserQueryOption{
