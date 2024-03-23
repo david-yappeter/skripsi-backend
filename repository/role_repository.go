@@ -18,12 +18,12 @@ type RoleRepository interface {
 	Count(ctx context.Context, options ...model.RoleQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.RoleQueryOption) ([]model.Role, error)
 	FetchByIds(ctx context.Context, ids []string) ([]model.Role, error)
-	FetchByTitles(ctx context.Context, roleEnums []data_type.Role) ([]model.Role, error)
+	FetchByNames(ctx context.Context, roleEnums []data_type.Role) ([]model.Role, error)
 	FetchByUserId(ctx context.Context, id string) ([]model.Role, error)
-	FetchIdsByTitles(ctx context.Context, roleEnums []data_type.Role) ([]string, error)
+	FetchIdsByNames(ctx context.Context, roleEnums []data_type.Role) ([]string, error)
 	FetchIdsByUserId(ctx context.Context, id string) ([]string, error)
 	GetById(ctx context.Context, id string) (*model.Role, error)
-	GetByTitle(ctx context.Context, title data_type.Role) (*model.Role, error)
+	GetByName(ctx context.Context, name data_type.Role) (*model.Role, error)
 	IsIdsExist(ctx context.Context, ids []string) (bool, error)
 
 	// delete
@@ -68,7 +68,7 @@ func (r roleRepository) prepareQuery(option model.RoleQueryOption) squirrel.Sele
 
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
-		stmt = stmt.Where(squirrel.ILike{"title": phrase})
+		stmt = stmt.Where(squirrel.ILike{"name": phrase})
 	}
 
 	stmt = model.Prepare(stmt, &option)
@@ -120,14 +120,14 @@ func (r *roleRepository) FetchByIds(ctx context.Context, ids []string) ([]model.
 	return r.fetch(ctx, stmt)
 }
 
-func (r *roleRepository) FetchByTitles(ctx context.Context, roleEnums []data_type.Role) ([]model.Role, error) {
+func (r *roleRepository) FetchByNames(ctx context.Context, roleEnums []data_type.Role) ([]model.Role, error) {
 	if len(roleEnums) == 0 {
 		return []model.Role{}, nil
 	}
 
 	stmt := stmtBuilder.Select("*").
 		From(model.RoleTableName).
-		Where(squirrel.Eq{"title": roleEnums})
+		Where(squirrel.Eq{"name": roleEnums})
 
 	return r.fetch(ctx, stmt)
 }
@@ -141,8 +141,8 @@ func (r *roleRepository) FetchByUserId(ctx context.Context, id string) ([]model.
 	return r.fetch(ctx, stmt)
 }
 
-func (r *roleRepository) FetchIdsByTitles(ctx context.Context, roleEnums []data_type.Role) ([]string, error) {
-	roles, err := r.FetchByTitles(ctx, roleEnums)
+func (r *roleRepository) FetchIdsByNames(ctx context.Context, roleEnums []data_type.Role) ([]string, error) {
+	roles, err := r.FetchByNames(ctx, roleEnums)
 	if err != nil {
 		return nil, err
 	}
@@ -177,10 +177,10 @@ func (r *roleRepository) GetById(ctx context.Context, id string) (*model.Role, e
 	return r.get(ctx, stmt)
 }
 
-func (r *roleRepository) GetByTitle(ctx context.Context, title data_type.Role) (*model.Role, error) {
+func (r *roleRepository) GetByName(ctx context.Context, name data_type.Role) (*model.Role, error) {
 	stmt := stmtBuilder.Select("*").
 		From(model.RoleTableName).
-		Where(squirrel.Eq{"title": title})
+		Where(squirrel.Eq{"name": name})
 
 	return r.get(ctx, stmt)
 }
