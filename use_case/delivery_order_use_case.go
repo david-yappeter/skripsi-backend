@@ -368,7 +368,7 @@ func (u *deliveryOrderUseCase) AddDriver(ctx context.Context, request dto_reques
 	deliveryOrderDriver, err := u.repositoryManager.DeliveryOrderDriverRepository().Get(ctx, request.DriverUserId)
 	panicIfErr(err, constant.ErrNoData)
 
-	if deliveryOrderDriver == nil {
+	if deliveryOrderDriver != nil {
 		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.DRIVER_ALREADY_ADDED"))
 	}
 
