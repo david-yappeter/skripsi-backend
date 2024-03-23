@@ -92,7 +92,7 @@ func (r *deliveryOrderDriverRepository) GetByDeliveryOrderIdAndDriverUserId(ctx 
 	stmt := stmtBuilder.Select("*").
 		From(model.DeliveryOrderDriverTableName).
 		Where(squirrel.Eq{"delivery_order_id": deliveryOrderId}).
-		Where(squirrel.Eq{"user_id": driverUserId})
+		Where(squirrel.Eq{"driver_user_id": driverUserId})
 
 	return r.get(ctx, stmt)
 }
