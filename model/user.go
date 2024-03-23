@@ -38,9 +38,10 @@ func (m *User) ToMap() map[string]interface{} {
 type UserQueryOption struct {
 	QueryOption
 
-	Phrase   *string
-	IsActive *bool
-	RoleIds  []string
+	ExcludedIds []string
+	Phrase      *string
+	IsActive    *bool
+	RoleIds     []string
 }
 
 var _ PrepareOption = &UserQueryOption{}
@@ -61,7 +62,7 @@ func (o *UserQueryOption) SetDefaultSorts() {
 
 func (o *UserQueryOption) TranslateSorts() {
 	translateFn := func(field string, direction string) Sorts {
-	switch field {
+		switch field {
 		case "is_active":
 			if direction == "asc" {
 				return Sorts{

@@ -55,5 +55,6 @@ type UserOptionForCashierSessionFilterRequest struct {
 
 type UserOptionForDeliveryOrderDriverFormRequest struct {
 	PaginationRequest
-	Phrase *string `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+	DeliveryOrderId string  `json:"delivery_order_id" validate:"required,not_empty,uuid"`
+	Phrase          *string `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name UserOptionForCashierSessionFilterRequest

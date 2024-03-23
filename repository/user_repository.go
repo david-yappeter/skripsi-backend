@@ -76,6 +76,10 @@ func (r *userRepository) prepareQuery(option model.UserQueryOption) squirrel.Sel
 		})
 	}
 
+	if len(option.ExcludedIds) > 0 {
+		stmt = stmt.Where(squirrel.NotEq{"id": option.ExcludedIds})
+	}
+
 	if option.IsActive != nil {
 		stmt = stmt.Where(squirrel.Eq{"u.is_active": option.IsActive})
 	}

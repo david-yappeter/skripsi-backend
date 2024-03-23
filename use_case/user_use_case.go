@@ -295,14 +295,27 @@ func (u *userUseCase) OptionForDeliveryOrderDriverForm(ctx context.Context, requ
 	role, err := u.repositoryManager.RoleRepository().GetByName(ctx, data_type.RoleDriver)
 	panicIfErr(err)
 
+	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
+	deliveryOrderDriversLoader := loader.NewDeliveryOrderDriversLoader(u.repositoryManager.DeliveryOrderDriverRepository())
+
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		group.Go(deliveryOrderDriversLoader.DeliveryOrderFn(&deliveryOrder))
+	}))
+
+	excludedUserIds := []string{}
+	for _, deliveryOrderDriver := range deliveryOrder.DeliveryOrderDrivers {
+		excludedUserIds = append(excludedUserIds, deliveryOrderDriver.DriverUserId)
+	}
+
 	queryOption := model.UserQueryOption{
 		QueryOption: model.NewQueryOptionWithPagination(
 			request.Page,
 			request.Limit,
 			model.Sorts{{Field: "name", Direction: "asc"}},
 		),
-		Phrase:  request.Phrase,
-		RoleIds: []string{role.Id},
+		ExcludedIds: excludedUserIds,
+		Phrase:      request.Phrase,
+		RoleIds:     []string{role.Id},
 	}
 
 	users, err := u.repositoryManager.UserRepository().Fetch(ctx, queryOption)
