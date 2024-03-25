@@ -42,16 +42,16 @@ type ProductDeleteRequest struct {
 	ProductId string `json:"-" swaggerignore:"true"`
 } // @name ProductDeleteRequest
 
-type ProductOptionForProductReceiveFormSorts []struct {
+type ProductOptionForProductReceiveItemFormSorts []struct {
 	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
 	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
-} // @name ProductOptionForProductReceiveFormSorts
+} // @name ProductOptionForProductReceiveItemFormSorts
 
-type ProductOptionForProductReceiveFormRequest struct {
+type ProductOptionForProductReceiveItemFormRequest struct {
 	PaginationRequest
-	Sorts  ProductOptionForProductReceiveFormSorts `json:"sorts" validate:"unique=Field,dive"`
-	Phrase *string                                 `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
-} // @name ProductOptionForProductReceiveFormRequest
+	Sorts  ProductOptionForProductReceiveItemFormSorts `json:"sorts" validate:"unique=Field,dive"`
+	Phrase *string                                     `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name ProductOptionForProductReceiveItemFormRequest
 
 type ProductOptionForDeliveryOrderFormSorts []struct {
 	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`

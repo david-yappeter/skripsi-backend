@@ -209,21 +209,21 @@ func (a *ProductApi) Delete() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/products/options/product-receive-form [post]
-//	@Summary	Option for Product Receive Form
+//	@Router		/products/options/product-receive-item-form [post]
+//	@Summary	Option for Product Receive Item Form
 //	@tags		Products
 //	@Accept		json
-//	@Param		dto_request.ProductOptionForProductReceiveFormRequest	body	dto_request.ProductOptionForProductReceiveFormRequest	true	"Body Request"
+//	@Param		dto_request.ProductOptionForProductReceiveItemFormRequest	body	dto_request.ProductOptionForProductReceiveItemFormRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.ProductResponse}}
-func (a *ProductApi) OptionForProductReceiveForm() gin.HandlerFunc {
+func (a *ProductApi) OptionForProductReceiveItemForm() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionProductOptionForProductReceiveForm),
+		data_type.PermissionP(data_type.PermissionProductOptionForProductReceiveItemForm),
 		func(ctx apiContext) {
-			var request dto_request.ProductOptionForProductReceiveFormRequest
+			var request dto_request.ProductOptionForProductReceiveItemFormRequest
 			ctx.mustBind(&request)
 
-			products, total := a.productUseCase.OptionForProductReceiveForm(ctx.context(), request)
+			products, total := a.productUseCase.OptionForProductReceiveItemForm(ctx.context(), request)
 
 			nodes := util.ConvertArray(products, dto_response.NewProductResponse)
 
@@ -362,7 +362,7 @@ func RegisterProductApi(router gin.IRouter, useCaseManager use_case.UseCaseManag
 	routerGroup.DELETE("/:id", api.Delete())
 
 	optionRouterGroup := routerGroup.Group("/options")
-	optionRouterGroup.POST("/product-receive-form", api.OptionForProductReceiveForm())
+	optionRouterGroup.POST("/product-receive-item-form", api.OptionForProductReceiveItemForm())
 	optionRouterGroup.POST("/delivery-order-form", api.OptionForDeliveryOrderForm())
 	optionRouterGroup.POST("/customer-type-discount-form", api.OptionForCustomerTypeDiscountForm())
 	optionRouterGroup.POST("/cart-add-item-form", api.OptionForCartAddItemForm())

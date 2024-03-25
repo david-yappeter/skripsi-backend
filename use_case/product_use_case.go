@@ -41,7 +41,7 @@ type ProductUseCase interface {
 	Delete(ctx context.Context, request dto_request.ProductDeleteRequest)
 
 	// option
-	OptionForProductReceiveForm(ctx context.Context, request dto_request.ProductOptionForProductReceiveFormRequest) ([]model.Product, int)
+	OptionForProductReceiveItemForm(ctx context.Context, request dto_request.ProductOptionForProductReceiveItemFormRequest) ([]model.Product, int)
 	OptionForDeliveryOrderForm(ctx context.Context, request dto_request.ProductOptionForDeliveryOrderFormRequest) ([]model.Product, int)
 	OptionForCustomerTypeDiscountForm(ctx context.Context, request dto_request.ProductOptionForCustomerTypeDiscountFormRequest) ([]model.Product, int)
 	OptionForCartAddItemForm(ctx context.Context, request dto_request.ProductOptionForCartAddItemFormRequest) ([]model.Product, int)
@@ -419,7 +419,7 @@ func (u *productUseCase) Delete(ctx context.Context, request dto_request.Product
 	u.baseFileUseCase.mainFilesystem.Delete(imageFile.Path)
 }
 
-func (u *productUseCase) OptionForProductReceiveForm(ctx context.Context, request dto_request.ProductOptionForProductReceiveFormRequest) ([]model.Product, int) {
+func (u *productUseCase) OptionForProductReceiveItemForm(ctx context.Context, request dto_request.ProductOptionForProductReceiveItemFormRequest) ([]model.Product, int) {
 	queryOption := model.ProductQueryOption{
 		QueryOption: model.NewQueryOptionWithPagination(
 			request.Page,

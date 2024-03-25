@@ -77,7 +77,7 @@ const (
 	PermissionProductGet                               // PRODUCT_GET
 	PermissionProductUpdate                            // PRODUCT_UPDATE
 	PermissionProductDelete                            // PRODUCT_DELETE
-	PermissionProductOptionForProductReceiveForm       // PRODUCT_OPTION_FOR_PRODUCT_RECEIVE_FORM
+	PermissionProductOptionForProductReceiveItemForm   // PRODUCT_OPTION_FOR_PRODUCT_RECEIVE_ITEM_FORM
 	PermissionProductOptionForDeliveryOrderForm        // PRODUCT_OPTION_FOR_DELIVERY_ORDER_FORM
 	PermissionProductOptionForCustomerTypeDiscountForm // PRODUCT_OPTION_FOR_CUSTOMER_TYPE_DISCOUNT_FORM
 	PermissionProductOptionForCartAddItemForm          // PRODUCT_OPTION_FOR_CART_ADD_ITEM_FORM
