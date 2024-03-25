@@ -305,6 +305,10 @@ func (u *productReceiveUseCase) Fetch(ctx context.Context, request dto_request.P
 	total, err := u.repositoryManager.ProductReceiveRepository().Count(ctx, queryOption)
 	panicIfErr(err)
 
+	u.mustLoadProductReceivesData(ctx, util.SliceValueToSlicePointer(productReceives), productReceivesLoaderParams{
+		supplier: true,
+	})
+
 	return productReceives, total
 }
 
