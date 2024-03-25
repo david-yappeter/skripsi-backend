@@ -92,6 +92,7 @@ const (
 	PermissionProductReceiveUpload       // PRODUCT_RECEIVE_UPLOAD
 	PermissionProductReceiveAddItem      // PRODUCT_RECEIVE_ADD_ITEM
 	PermissionProductReceiveAddImage     // PRODUCT_RECEIVE_ADD_IMAGE
+	PermissionProductReceiveUpdate       // PRODUCT_RECEIVE_UPDATE
 	PermissionProductReceiveCancel       // PRODUCT_RECEIVE_CANCEL
 	PermissionProductReceiveMarkComplete // PRODUCT_RECEIVE_MARK_COMPLETE
 	PermissionProductReceiveFetch        // PRODUCT_RECEIVE_FETCH

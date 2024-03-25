@@ -69,8 +69,12 @@ func (r *productReceiveRepository) prepareQuery(option model.ProductReceiveQuery
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
 		stmt = stmt.Where(squirrel.Or{
-			squirrel.ILike{"pr.name": phrase},
+			squirrel.ILike{"pr.invoice_number": phrase},
 		})
+	}
+
+	if option.SupplierId != nil {
+		stmt = stmt.Where(squirrel.Eq{"pr.supplier_id": option.SupplierId})
 	}
 
 	stmt = model.Prepare(stmt, &option)

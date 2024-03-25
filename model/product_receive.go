@@ -44,7 +44,8 @@ func (m *ProductReceive) ToMap() map[string]interface{} {
 type ProductReceiveQueryOption struct {
 	QueryOption
 
-	Phrase *string
+	SupplierId *string
+	Phrase     *string
 }
 
 var _ PrepareOption = &ProductReceiveQueryOption{}

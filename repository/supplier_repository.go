@@ -18,6 +18,7 @@ type SupplierRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.SupplierQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.SupplierQueryOption) ([]model.Supplier, error)
+	FetchByIds(ctx context.Context, ids []string) ([]model.Supplier, error)
 	Get(ctx context.Context, id string) (*model.Supplier, error)
 	IsExistByCode(ctx context.Context, code string) (bool, error)
 	IsExistBySupplierTypeId(ctx context.Context, supplierTypeId string) (bool, error)
@@ -123,6 +124,14 @@ func (r *supplierRepository) Fetch(ctx context.Context, options ...model.Supplie
 	}
 
 	stmt := r.prepareQuery(option)
+
+	return r.fetch(ctx, stmt)
+}
+
+func (r *supplierRepository) FetchByIds(ctx context.Context, ids []string) ([]model.Supplier, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.SupplierTableName).
+		Where(squirrel.Eq{"id": ids})
 
 	return r.fetch(ctx, stmt)
 }

@@ -6,8 +6,9 @@ import (
 )
 
 type ProductReceiveCreateRequest struct {
-	SupplierId string         `json:"supplier_id" validate:"required,not_empty,uuid"`
-	Date       data_type.Date `json:"date"`
+	SupplierId    string         `json:"supplier_id" validate:"required,not_empty,uuid"`
+	InvoiceNumber string         `json:"invoice_number" validate:"required,not_empty"`
+	Date          data_type.Date `json:"date"`
 } // @name ProductReceiveCreateRequest
 
 type ProductReceiveAddItemRequest struct {
@@ -38,13 +39,21 @@ type ProductReceiveFetchSorts []struct {
 
 type ProductReceiveFetchRequest struct {
 	PaginationRequest
-	Sorts  ProductReceiveFetchSorts `json:"sorts" validate:"unique=Field,dive"`
-	Phrase *string                  `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+	Sorts      ProductReceiveFetchSorts `json:"sorts" validate:"unique=Field,dive"`
+	SupplierId *string                  `json:"supplier_id" validate:"omitempty,not_empty,uuid" extensions:"x-nullable"`
+	Phrase     *string                  `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name ProductReceiveFetchRequest
 
 type ProductReceiveGetRequest struct {
 	ProductReceiveId string `json:"-" swaggerignore:"true"`
 } // @name ProductReceiveGetRequest
+
+type ProductReceiveUpdateRequest struct {
+	InvoiceNumber string         `json:"invoice_number" validate:"required,not_empty"`
+	Date          data_type.Date `json:"date"`
+
+	ProductReceiveId string `json:"-" swaggerignore:"true"`
+} // @name ProductReceiveUpdateRequest
 
 type ProductReceiveCancelRequest struct {
 	ProductReceiveId string `json:"-" swaggerignore:"true"`

@@ -18,6 +18,7 @@ import (
 )
 
 type productReceivesLoaderParams struct {
+	supplier             bool
 	productReceiveItems  bool
 	productReceiveImages bool
 
@@ -37,6 +38,7 @@ type ProductReceiveUseCase interface {
 	Get(ctx context.Context, request dto_request.ProductReceiveGetRequest) model.ProductReceive
 
 	// update
+	Update(ctx context.Context, request dto_request.ProductReceiveUpdateRequest) model.ProductReceive
 	Cancel(ctx context.Context, request dto_request.ProductReceiveCancelRequest) model.ProductReceive
 	MarkComplete(ctx context.Context, request dto_request.ProductReceiveMarkCompleteRequest) model.ProductReceive
 
@@ -76,6 +78,7 @@ func NewProductReceiveUseCase(
 func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context, productReceives []*model.ProductReceive, option productReceivesLoaderParams) {
 	productReceiveItemsLoader := loader.NewProductReceiveItemsLoader(u.repositoryManager.ProductReceiveItemRepository())
 	productReceiveImagesLoader := loader.NewProductReceiveImagesLoader(u.repositoryManager.ProductReceiveImageRepository())
+	supplierLoader := loader.NewSupplierLoader(u.repositoryManager.SupplierRepository())
 
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
@@ -86,6 +89,10 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 
 				if option.productReceiveItems {
 					group.Go(productReceiveItemsLoader.ProductReceiveFn(productReceives[i]))
+				}
+
+				if option.supplier {
+					group.Go(supplierLoader.ProductReceiveFn(productReceives[i]))
 				}
 			}
 		}),
@@ -164,7 +171,7 @@ func (u *productReceiveUseCase) Create(ctx context.Context, request dto_request.
 		Id:            util.NewUuid(),
 		SupplierId:    request.SupplierId,
 		UserId:        authUser.Id,
-		InvoiceNumber: "",
+		InvoiceNumber: request.InvoiceNumber,
 		Date:          currentDate,
 		Status:        data_type.ProductReceiveStatusPending,
 		TotalPrice:    0,
@@ -222,6 +229,7 @@ func (u *productReceiveUseCase) AddItem(ctx context.Context, request dto_request
 	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
 		productReceiveItems:  true,
 		productReceiveImages: true,
+		supplier:             true,
 	})
 
 	return productReceive
@@ -253,6 +261,7 @@ func (u *productReceiveUseCase) AddImage(ctx context.Context, request dto_reques
 	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
 		productReceiveItems:  true,
 		productReceiveImages: true,
+		supplier:             true,
 	})
 
 	return productReceive
@@ -286,7 +295,8 @@ func (u *productReceiveUseCase) Fetch(ctx context.Context, request dto_request.P
 			request.Limit,
 			model.Sorts(request.Sorts),
 		),
-		Phrase: request.Phrase,
+		Phrase:     request.Phrase,
+		SupplierId: request.SupplierId,
 	}
 
 	productReceives, err := u.repositoryManager.ProductReceiveRepository().Fetch(ctx, queryOption)
@@ -304,6 +314,26 @@ func (u *productReceiveUseCase) Get(ctx context.Context, request dto_request.Pro
 	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
 		productReceiveItems:        true,
 		productReceiveProductStock: true,
+		supplier:                   true,
+	})
+
+	return productReceive
+}
+
+func (u *productReceiveUseCase) Update(ctx context.Context, request dto_request.ProductReceiveUpdateRequest) model.ProductReceive {
+	productReceive := mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, true)
+
+	productReceive.InvoiceNumber = request.InvoiceNumber
+	productReceive.Date = request.Date
+
+	panicIfErr(
+		u.repositoryManager.ProductReceiveRepository().Update(ctx, &productReceive),
+	)
+
+	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
+		productReceiveItems:        true,
+		productReceiveProductStock: true,
+		supplier:                   true,
 	})
 
 	return productReceive
@@ -398,6 +428,7 @@ func (u *productReceiveUseCase) Cancel(ctx context.Context, request dto_request.
 
 	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
 		productReceiveImages: true,
+		supplier:             true,
 	})
 
 	return productReceive
@@ -417,6 +448,7 @@ func (u *productReceiveUseCase) MarkComplete(ctx context.Context, request dto_re
 		productReceiveItems:        true,
 		productReceiveImages:       true,
 		productReceiveProductStock: true,
+		supplier:                   true,
 	})
 
 	if productReceive.Status != data_type.ProductReceiveStatusPending {
@@ -528,6 +560,7 @@ func (u *productReceiveUseCase) DeleteImage(ctx context.Context, request dto_req
 	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
 		productReceiveItems:  true,
 		productReceiveImages: true,
+		supplier:             true,
 	})
 
 	return productReceive
@@ -569,6 +602,7 @@ func (u *productReceiveUseCase) DeleteItem(ctx context.Context, request dto_requ
 	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
 		productReceiveItems:  true,
 		productReceiveImages: true,
+		supplier:             true,
 	})
 
 	return productReceive
