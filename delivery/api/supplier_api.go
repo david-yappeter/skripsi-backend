@@ -179,21 +179,21 @@ func (a *SupplierApi) Delete() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/suppliers/options/product-receive-form [post]
+//	@Router		/suppliers/options/product-receive-item-form [post]
 //	@Summary	Option for Product Receive Form
 //	@tags		Suppliers
 //	@Accept		json
-//	@Param		dto_request.SupplierOptionForProductReceiveFormRequest	body	dto_request.SupplierOptionForProductReceiveFormRequest	true	"Body Request"
+//	@Param		dto_request.SupplierOptionForProductReceiveItemFormRequest	body	dto_request.SupplierOptionForProductReceiveItemFormRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.SuccessResponse
-func (a *SupplierApi) OptionForProductReceiveForm() gin.HandlerFunc {
+func (a *SupplierApi) OptionForProductReceiveItemForm() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionSupplierOptionForProductReceiveForm),
+		data_type.PermissionP(data_type.PermissionSupplierOptionForProductReceiveItemForm),
 		func(ctx apiContext) {
-			var request dto_request.SupplierOptionForProductReceiveFormRequest
+			var request dto_request.SupplierOptionForProductReceiveItemFormRequest
 			ctx.mustBind(&request)
 
-			suppliers, total := a.supplierUseCase.OptionForProductReceiveForm(ctx.context(), request)
+			suppliers, total := a.supplierUseCase.OptionForProductReceiveItemForm(ctx.context(), request)
 
 			nodes := util.ConvertArray(suppliers, dto_response.NewSupplierResponse)
 
@@ -261,6 +261,6 @@ func RegisterSupplierApi(router gin.IRouter, useCaseManager use_case.UseCaseMana
 	routerGroup.DELETE("/:id", api.Delete())
 
 	optionRouterGroup := routerGroup.Group("/options")
-	optionRouterGroup.POST("/product-receive-form", api.OptionForProductReceiveForm())
+	optionRouterGroup.POST("/product-receive-item-form", api.OptionForProductReceiveItemForm())
 	optionRouterGroup.POST("/product-receive-filter", api.OptionForProductReceiveFilter())
 }

@@ -27,7 +27,7 @@ type SupplierUseCase interface {
 	Delete(ctx context.Context, request dto_request.SupplierDeleteRequest)
 
 	// option
-	OptionForProductReceiveForm(ctx context.Context, request dto_request.SupplierOptionForProductReceiveFormRequest) ([]model.Supplier, int)
+	OptionForProductReceiveItemForm(ctx context.Context, request dto_request.SupplierOptionForProductReceiveItemFormRequest) ([]model.Supplier, int)
 	OptionForProductReceiveFilter(ctx context.Context, request dto_request.SupplierOptionForProductReceiveFilterRequest) ([]model.Supplier, int)
 }
 
@@ -165,7 +165,7 @@ func (u *supplierUseCase) Delete(ctx context.Context, request dto_request.Suppli
 	)
 }
 
-func (u *supplierUseCase) OptionForProductReceiveForm(ctx context.Context, request dto_request.SupplierOptionForProductReceiveFormRequest) ([]model.Supplier, int) {
+func (u *supplierUseCase) OptionForProductReceiveItemForm(ctx context.Context, request dto_request.SupplierOptionForProductReceiveItemFormRequest) ([]model.Supplier, int) {
 	queryOption := model.SupplierQueryOption{
 		QueryOption: model.NewQueryOptionWithPagination(
 			request.Page,
