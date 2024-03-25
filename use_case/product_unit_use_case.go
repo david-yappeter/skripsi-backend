@@ -20,7 +20,7 @@ type ProductUnitUseCase interface {
 	Delete(ctx context.Context, request dto_request.ProductUnitDeleteRequest)
 
 	// option
-	OptionForProductReceiveForm(ctx context.Context, request dto_request.ProductUnitOptionForProductReceiveFormRequest) ([]model.ProductUnit, int)
+	OptionForProductReceiveItemForm(ctx context.Context, request dto_request.ProductUnitOptionForProductReceiveItemFormRequest) ([]model.ProductUnit, int)
 	OptionForDeliveryOrderForm(ctx context.Context, request dto_request.ProductUnitOptionForDeliveryOrderFormRequest) ([]model.ProductUnit, int)
 }
 
@@ -116,25 +116,15 @@ func (u *productUnitUseCase) Delete(ctx context.Context, request dto_request.Pro
 	)
 }
 
-func (u *productUnitUseCase) OptionForProductReceiveForm(ctx context.Context, request dto_request.ProductUnitOptionForProductReceiveFormRequest) ([]model.ProductUnit, int) {
-	mustGetProductReceiveItem(ctx, u.repositoryManager, request.ProductReceiveId, true)
-
-	productReceiveItems, err := u.repositoryManager.ProductReceiveItemRepository().FetchByProductReceiveIds(ctx, []string{request.ProductReceiveId})
-	panicIfErr(err)
-
-	excludeProductUnitIds := []string{}
-	for _, productReceiveItem := range productReceiveItems {
-		excludeProductUnitIds = append(excludeProductUnitIds, productReceiveItem.ProductUnitId)
-	}
-
+func (u *productUnitUseCase) OptionForProductReceiveItemForm(ctx context.Context, request dto_request.ProductUnitOptionForProductReceiveItemFormRequest) ([]model.ProductUnit, int) {
 	queryOption := model.ProductUnitQueryOption{
 		QueryOption: model.NewQueryOptionWithPagination(
 			request.Page,
 			request.Limit,
 			model.Sorts(request.Sorts),
 		),
-		ExcludeIds: excludeProductUnitIds,
-		Phrase:     request.Phrase,
+		ProductId: &request.ProductId,
+		Phrase:    request.Phrase,
 	}
 
 	productUnits, err := u.repositoryManager.ProductUnitRepository().Fetch(ctx, queryOption)

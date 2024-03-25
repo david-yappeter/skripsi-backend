@@ -79,21 +79,21 @@ func (a *ProductUnitApi) Delete() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/product-units/options/product-receive-form [post]
-//	@Summary	Option for Product Receive Form
+//	@Router		/product-units/options/product-receive-item-form [post]
+//	@Summary	Option for Product Receive Item Form
 //	@tags		Product Units
 //	@Accept		json
-//	@Param		dto_request.ProductUnitOptionForProductReceiveFormRequest	body	dto_request.ProductUnitOptionForProductReceiveFormRequest	true	"Body Request"
+//	@Param		dto_request.ProductUnitOptionForProductReceiveItemFormRequest	body	dto_request.ProductUnitOptionForProductReceiveItemFormRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.ProductUnitResponse}}
-func (a *ProductUnitApi) OptionForProductReceiveForm() gin.HandlerFunc {
+func (a *ProductUnitApi) OptionForProductReceiveItemForm() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionProductUnitOptionForProductReceiveForm),
+		data_type.PermissionP(data_type.PermissionProductUnitOptionForProductReceiveItemForm),
 		func(ctx apiContext) {
-			var request dto_request.ProductUnitOptionForProductReceiveFormRequest
+			var request dto_request.ProductUnitOptionForProductReceiveItemFormRequest
 			ctx.mustBind(&request)
 
-			productUnits, total := a.productUnitUseCase.OptionForProductReceiveForm(ctx.context(), request)
+			productUnits, total := a.productUnitUseCase.OptionForProductReceiveItemForm(ctx.context(), request)
 
 			nodes := util.ConvertArray(productUnits, dto_response.NewProductUnitResponse)
 
@@ -158,6 +158,6 @@ func RegisterProductUnitApi(router gin.IRouter, useCaseManager use_case.UseCaseM
 	routerGroup.DELETE("/:id", api.Delete())
 
 	optionRouterGroup := routerGroup.Group("/options")
-	optionRouterGroup.POST("/product-receive-form", api.OptionForProductReceiveForm())
+	optionRouterGroup.POST("/product-receive-item-form", api.OptionForProductReceiveItemForm())
 	optionRouterGroup.POST("/delivery-order-form", api.OptionForDeliveryOrderForm())
 }

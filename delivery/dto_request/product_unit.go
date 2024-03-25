@@ -22,17 +22,17 @@ type ProductUnitDeleteRequest struct {
 	ProductUnitId string `json:"-" swaggerignore:"true"`
 } // @name ProductUnitDeleteRequest
 
-type ProductUnitOptionForProductReceiveFormSorts []struct {
+type ProductUnitOptionForProductReceiveItemFormSorts []struct {
 	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
 	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
-} // @name ProductUnitOptionForProductReceiveFormSorts
+} // @name ProductUnitOptionForProductReceiveItemFormSorts
 
-type ProductUnitOptionForProductReceiveFormRequest struct {
+type ProductUnitOptionForProductReceiveItemFormRequest struct {
 	PaginationRequest
-	ProductReceiveId string                                      `json:"product_receive_id" validate:"required,not_empty,uuid"`
-	Sorts            ProductUnitOptionForProductReceiveFormSorts `json:"sorts" validate:"unique=Field,dive"`
-	Phrase           *string                                     `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
-} // @name ProductUnitOptionForProductReceiveFormRequest
+	ProductId string                                          `json:"product_id" validate:"required,not_empty,uuid"`
+	Sorts     ProductUnitOptionForProductReceiveItemFormSorts `json:"sorts" validate:"unique=Field,dive"`
+	Phrase    *string                                         `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name ProductUnitOptionForProductReceiveItemFormRequest
 
 type ProductUnitOptionForDeliveryOrderFormSorts []struct {
 	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`

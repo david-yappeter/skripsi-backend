@@ -180,7 +180,7 @@ func (a *SupplierApi) Delete() gin.HandlerFunc {
 // API:
 //
 //	@Router		/suppliers/options/product-receive-item-form [post]
-//	@Summary	Option for Product Receive Form
+//	@Summary	Option for Product Receive Item Form
 //	@tags		Suppliers
 //	@Accept		json
 //	@Param		dto_request.SupplierOptionForProductReceiveItemFormRequest	body	dto_request.SupplierOptionForProductReceiveItemFormRequest	true	"Body Request"

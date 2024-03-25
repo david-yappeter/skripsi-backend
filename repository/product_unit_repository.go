@@ -87,6 +87,12 @@ func (r *productProductUnitRepository) prepareQuery(option model.ProductUnitQuer
 		})
 	}
 
+	if option.ProductId != nil {
+		stmt = stmt.Where(squirrel.Eq{
+			"pu.product_id": option.ProductId,
+		})
+	}
+
 	stmt = model.Prepare(stmt, &option)
 
 	return stmt

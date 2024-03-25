@@ -42,6 +42,7 @@ type ProductUnitQueryOption struct {
 	QueryOption
 
 	ExcludeIds []string
+	ProductId  *string
 	Phrase     *string
 }
 

@@ -108,12 +108,12 @@ const (
 	PermissionProductStockAdjustment     // PRODUCT_STOCK_ADJUSTMENT
 
 	// product unit
-	PermissionProductUnitCreate                      // PRODUCT_UNIT_CREATE
-	PermissionProductUnitGet                         // PRODUCT_UNIT_GET
-	PermissionProductUnitUpdate                      // PRODUCT_UNIT_UPDATE
-	PermissionProductUnitDelete                      // PRODUCT_UNIT_DELETE
-	PermissionProductUnitOptionForProductReceiveForm // PRODUCT_UNIT_OPTION_FOR_PRODUCT_RECEIVE_FORM
-	PermissionProductUnitOptionForDeliveryOrderForm  // PRODUCT_UNIT_OPTION_FOR_DELIVERY_ORDER_FORM
+	PermissionProductUnitCreate                          // PRODUCT_UNIT_CREATE
+	PermissionProductUnitGet                             // PRODUCT_UNIT_GET
+	PermissionProductUnitUpdate                          // PRODUCT_UNIT_UPDATE
+	PermissionProductUnitDelete                          // PRODUCT_UNIT_DELETE
+	PermissionProductUnitOptionForProductReceiveItemForm // PRODUCT_UNIT_OPTION_FOR_PRODUCT_RECEIVE_ITEM_FORM
+	PermissionProductUnitOptionForDeliveryOrderForm      // PRODUCT_UNIT_OPTION_FOR_DELIVERY_ORDER_FORM
 
 	// role
 	PermissionRoleOptionForUserForm // ROLE_OPTION_FOR_USER_FORM
