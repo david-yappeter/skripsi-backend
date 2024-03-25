@@ -54,3 +54,8 @@ type SupplierOptionForProductReceiveFormRequest struct {
 	Sorts  SupplierOptionForProductReceiveFormSorts `json:"sorts" validate:"unique=Field,dive"`
 	Phrase *string                                  `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name SupplierOptionForProductReceiveFormRequest
+
+type SupplierOptionForProductReceiveFilterRequest struct {
+	PaginationRequest
+	Phrase *string `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name SupplierOptionForProductReceiveFilterRequest

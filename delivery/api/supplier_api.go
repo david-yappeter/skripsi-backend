@@ -212,6 +212,41 @@ func (a *SupplierApi) OptionForProductReceiveForm() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/suppliers/options/product-receive-filter [post]
+//	@Summary	Option for Product Receive Filter
+//	@tags		Suppliers
+//	@Accept		json
+//	@Param		dto_request.SupplierOptionForProductReceiveFilterRequest	body	dto_request.SupplierOptionForProductReceiveFilterRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.SuccessResponse
+func (a *SupplierApi) OptionForProductReceiveFilter() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionSupplierOptionForProductReceiveFilter),
+		func(ctx apiContext) {
+			var request dto_request.SupplierOptionForProductReceiveFilterRequest
+			ctx.mustBind(&request)
+
+			suppliers, total := a.supplierUseCase.OptionForProductReceiveFilter(ctx.context(), request)
+
+			nodes := util.ConvertArray(suppliers, dto_response.NewSupplierResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Total: total,
+						Nodes: nodes,
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterSupplierApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := SupplierApi{
 		api:             newApi(useCaseManager),
@@ -227,4 +262,5 @@ func RegisterSupplierApi(router gin.IRouter, useCaseManager use_case.UseCaseMana
 
 	optionRouterGroup := routerGroup.Group("/options")
 	optionRouterGroup.POST("/product-receive-form", api.OptionForProductReceiveForm())
+	optionRouterGroup.POST("/product-receive-filter", api.OptionForProductReceiveFilter())
 }

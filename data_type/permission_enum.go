@@ -123,12 +123,13 @@ const (
 	PermissionShopOrderGet   // SHOP_ORDER_GET
 
 	// supplier
-	PermissionSupplierCreate                      // SUPPLIER_CREATE
-	PermissionSupplierFetch                       // SUPPLIER_FETCH
-	PermissionSupplierGet                         // SUPPLIER_GET
-	PermissionSupplierUpdate                      // SUPPLIER_UPDATE
-	PermissionSupplierDelete                      // SUPPLIER_DELETE
-	PermissionSupplierOptionForProductReceiveForm // SUPPLIER_OPTION_FOR_PRODUCT_RECEIVE_FORM
+	PermissionSupplierCreate                        // SUPPLIER_CREATE
+	PermissionSupplierFetch                         // SUPPLIER_FETCH
+	PermissionSupplierGet                           // SUPPLIER_GET
+	PermissionSupplierUpdate                        // SUPPLIER_UPDATE
+	PermissionSupplierDelete                        // SUPPLIER_DELETE
+	PermissionSupplierOptionForProductReceiveForm   // SUPPLIER_OPTION_FOR_PRODUCT_RECEIVE_FORM
+	PermissionSupplierOptionForProductReceiveFilter // SUPPLIER_OPTION_FOR_PRODUCT_RECEIVE_FILTER
 
 	// supplier type
 	PermissionSupplierTypeCreate                // SUPPLIER_TYPE_CREATE
