@@ -194,6 +194,10 @@ func (u *productReceiveUseCase) AddItem(ctx context.Context, request dto_request
 		product        = mustGetProduct(ctx, u.repositoryManager, request.ProductId, false)
 	)
 
+	if productReceive.Status != data_type.ProductReceiveStatusPending {
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.STATUS_MUST_BE_PENDING"))
+	}
+
 	if !product.IsActive {
 		panic(dto_response.NewBadRequestErrorResponse("PRODUCT.NOT_FOUND"))
 	}
