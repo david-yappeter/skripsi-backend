@@ -333,6 +333,10 @@ func (u *productReceiveUseCase) Get(ctx context.Context, request dto_request.Pro
 func (u *productReceiveUseCase) Update(ctx context.Context, request dto_request.ProductReceiveUpdateRequest) model.ProductReceive {
 	productReceive := mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, true)
 
+	if productReceive.Status != data_type.ProductReceiveStatusPending {
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.STATUS_MUST_BE_PENDING"))
+	}
+
 	productReceive.InvoiceNumber = request.InvoiceNumber
 	productReceive.Date = request.Date
 
