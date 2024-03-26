@@ -274,12 +274,6 @@ func (u *productReceiveUseCase) AddImage(ctx context.Context, request dto_reques
 }
 
 func (u *productReceiveUseCase) Upload(ctx context.Context, request dto_request.ProductReceiveUploadRequest) string {
-	productReceive := mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, false)
-
-	if productReceive.Status != data_type.ProductReceiveStatusPending {
-		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.STATUS.MUST_BE_PENDING"))
-	}
-
 	return u.baseFileUseCase.mustUploadFileToTemporary(
 		ctx,
 		constant.ProductReceiveImagePath,

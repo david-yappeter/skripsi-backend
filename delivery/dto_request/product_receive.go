@@ -28,8 +28,6 @@ type ProductReceiveAddImageRequest struct {
 
 type ProductReceiveUploadRequest struct {
 	File *multipart.FileHeader `json:"file" validate:"required"`
-
-	ProductReceiveId string `json:"-" swaggerignore:"true"`
 } // @name ProductReceiveUploadRequest
 
 type ProductReceiveFetchSorts []struct {
