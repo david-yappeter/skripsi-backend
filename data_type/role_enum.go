@@ -201,7 +201,7 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionSupplierGet,
 		PermissionSupplierUpdate,
 		PermissionSupplierDelete,
-		PermissionSupplierOptionForProductReceiveItemForm,
+		PermissionSupplierOptionForProductReceiveForm,
 		PermissionSupplierOptionForProductReceiveFilter,
 
 		// tiktok product

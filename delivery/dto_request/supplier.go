@@ -44,17 +44,17 @@ type SupplierDeleteRequest struct {
 	SupplierId string `json:"-" swaggerignore:"true"`
 } // @name SupplierDeleteRequest
 
-type SupplierOptionForProductReceiveItemFormSorts []struct {
+type SupplierOptionForProductReceiveFormSorts []struct {
 	Field     string `json:"field" validate:"required,oneof=code name created_at updated_at" example:"name"`
 	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
-} // @name SupplierOptionForProductReceiveItemFormSorts
+} // @name SupplierOptionForProductReceiveFormSorts
 
-type SupplierOptionForProductReceiveItemFormRequest struct {
+type SupplierOptionForProductReceiveFormRequest struct {
 	PaginationRequest
-	Sorts            SupplierOptionForProductReceiveItemFormSorts `json:"sorts" validate:"unique=Field,dive"`
-	ProductReceiveId string                                       `json:"product_receive_id" validate:"required,not_empty,uuid" extensions:"x-nullable"`
-	Phrase           *string                                      `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
-} // @name SupplierOptionForProductReceiveItemFormRequest
+	Sorts            SupplierOptionForProductReceiveFormSorts `json:"sorts" validate:"unique=Field,dive"`
+	ProductReceiveId string                                   `json:"product_receive_id" validate:"required,not_empty,uuid" extensions:"x-nullable"`
+	Phrase           *string                                  `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name SupplierOptionForProductReceiveFormRequest
 
 type SupplierOptionForProductReceiveFilterRequest struct {
 	PaginationRequest

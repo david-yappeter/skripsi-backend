@@ -108,7 +108,7 @@ func _() {
 	_ = x[PermissionSupplierGet-93]
 	_ = x[PermissionSupplierUpdate-94]
 	_ = x[PermissionSupplierDelete-95]
-	_ = x[PermissionSupplierOptionForProductReceiveItemForm-96]
+	_ = x[PermissionSupplierOptionForProductReceiveForm-96]
 	_ = x[PermissionSupplierOptionForProductReceiveFilter-97]
 	_ = x[PermissionSupplierTypeCreate-98]
 	_ = x[PermissionSupplierTypeFetch-99]
@@ -347,7 +347,7 @@ func (i *Permission) Determine(s string) {
 	case "SUPPLIER_DELETE":
 		*i = PermissionSupplierDelete
 	case "SUPPLIER_OPTION_FOR_PRODUCT_RECEIVE_ITEM_FORM":
-		*i = PermissionSupplierOptionForProductReceiveItemForm
+		*i = PermissionSupplierOptionForProductReceiveForm
 	case "SUPPLIER_OPTION_FOR_PRODUCT_RECEIVE_FILTER":
 		*i = PermissionSupplierOptionForProductReceiveFilter
 	case "SUPPLIER_TYPE_CREATE":
@@ -585,7 +585,7 @@ func ListPermission() []Permission {
 		PermissionSupplierGet,
 		PermissionSupplierUpdate,
 		PermissionSupplierDelete,
-		PermissionSupplierOptionForProductReceiveItemForm,
+		PermissionSupplierOptionForProductReceiveForm,
 		PermissionSupplierOptionForProductReceiveFilter,
 		PermissionSupplierTypeCreate,
 		PermissionSupplierTypeFetch,
@@ -723,7 +723,7 @@ func ListPermissionString() []string {
 		PermissionSupplierGet.String(),
 		PermissionSupplierUpdate.String(),
 		PermissionSupplierDelete.String(),
-		PermissionSupplierOptionForProductReceiveItemForm.String(),
+		PermissionSupplierOptionForProductReceiveForm.String(),
 		PermissionSupplierOptionForProductReceiveFilter.String(),
 		PermissionSupplierTypeCreate.String(),
 		PermissionSupplierTypeFetch.String(),
