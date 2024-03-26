@@ -43,6 +43,33 @@ func (a *AuthApi) LoginUsername() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/auth/login-driver [post]
+//	@Summary	Username Login Driver (For Mobile)
+//	@tags		Auth
+//	@Accept		json
+//	@Param		dto_request.AuthUsernameLoginDriverRequest	body	dto_request.AuthUsernameLoginDriverRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.AuthTokenResponse}
+func (a *AuthApi) LoginUsernameDriver() gin.HandlerFunc {
+	return a.Guest(
+		func(ctx apiContext) {
+			var request dto_request.AuthUsernameLoginDriverRequest
+			ctx.mustBind(&request)
+
+			data := a.authUseCase.LoginUsernameDriver(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.NewAuthTokenResponse(data),
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/auth/logout [post]
 //	@Summary	Logout
 //	@tags		Auth
@@ -72,5 +99,6 @@ func RegisterAuthApi(router gin.IRouter, useCaseManager use_case.UseCaseManager)
 
 	routerGroup := router.Group("/auth")
 	routerGroup.POST("/login", api.LoginUsername())
+	routerGroup.POST("/login-driver", api.LoginUsernameDriver())
 	routerGroup.POST("/logout", api.Logout())
 }

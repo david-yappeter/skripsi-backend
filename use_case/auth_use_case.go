@@ -23,6 +23,7 @@ type AuthUseCase interface {
 	// create
 	GenerateJWT(ctx context.Context, userId string) (*jwtInternal.Token, error)
 	LoginUsername(ctx context.Context, request dto_request.AuthUsernameLoginRequest) model.Token
+	LoginUsernameDriver(ctx context.Context, request dto_request.AuthUsernameLoginDriverRequest) model.Token
 
 	// update
 	Logout(ctx context.Context)
@@ -129,6 +130,32 @@ func (u *authUseCase) LoginUsername(ctx context.Context, request dto_request.Aut
 	}
 
 	u.mustValidateComparePassword(user.Password, request.Password)
+
+	accessToken, err := u.GenerateJWT(ctx, user.Id)
+	panicIfErr(err)
+
+	return model.Token{
+		AccessToken:          accessToken.AccessToken,
+		AccessTokenExpiredAt: data_type.NewDateTime(accessToken.ExpiredAt),
+		TokenType:            accessToken.TokenType,
+	}
+}
+
+func (u *authUseCase) LoginUsernameDriver(ctx context.Context, request dto_request.AuthUsernameLoginDriverRequest) model.Token {
+	user, err := u.repositoryManager.UserRepository().GetByUsernameAndIsActive(ctx, request.Username, true)
+	panicIfErr(err, constant.ErrNoData)
+	if user == nil {
+		panic(dto_response.NewForbiddenErrorResponse("AUTH.ACCOUNT_NOT_REGISTERED"))
+	}
+
+	u.mustValidateComparePassword(user.Password, request.Password)
+
+	userRole, err := u.repositoryManager.UserRoleRepository().GetByUserIdAndRoleName(ctx, user.Id, data_type.RoleDriver)
+	panicIfErr(err, constant.ErrNoData)
+
+	if userRole == nil {
+		panic(dto_response.NewForbiddenErrorResponse("AUTH.ACCOUNT_ROLE_IS_NOT_DRIVER"))
+	}
 
 	accessToken, err := u.GenerateJWT(ctx, user.Id)
 	panicIfErr(err)
