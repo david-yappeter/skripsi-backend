@@ -124,12 +124,14 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 	)
 
 	productLoader := loader.NewProductLoader(u.repositoryManager.ProductRepository())
+	unitLoader := loader.NewUnitLoader(u.repositoryManager.UnitRepository())
 	productStockLoader := loader.NewProductStockLoader(u.repositoryManager.ProductStockRepository())
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
 			for i := range productReceives {
 				for j := range productReceives[i].ProductReceiveItems {
 					group.Go(productLoader.ProductUnitFn(productReceives[i].ProductReceiveItems[j].ProductUnit))
+					group.Go(unitLoader.ProductUnitFn(productReceives[i].ProductReceiveItems[j].ProductUnit))
 					if option.productReceiveItems && option.productReceiveProductStock {
 						group.Go(productStockLoader.ProductUnitFn(productReceives[i].ProductReceiveItems[j].ProductUnit))
 					}
