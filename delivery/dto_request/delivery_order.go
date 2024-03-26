@@ -45,6 +45,11 @@ type DeliveryOrderFetchRequest struct {
 	Phrase *string                 `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name DeliveryOrderFetchRequest
 
+type DeliveryOrderFetchDriverRequest struct {
+	PaginationRequest
+	Statuses []data_type.DeliveryOrderStatus `json:"statuses" validate:"omitempty,dive,data_type_enum"`
+} // @name DeliveryOrderFetchDriverRequest
+
 type DeliveryOrderGetRequest struct {
 	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderGetRequest
@@ -52,6 +57,10 @@ type DeliveryOrderGetRequest struct {
 type DeliveryOrderMarkOngoingRequest struct {
 	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderMarkOngoingRequest
+
+type DeliveryOrderDeliveringRequest struct {
+	DeliveryOrderId string `json:"-" swaggerignore:"true"`
+} // @name DeliveryOrderDeliveringRequest
 
 type DeliveryOrderCancelRequest struct {
 	DeliveryOrderId string `json:"-" swaggerignore:"true"`

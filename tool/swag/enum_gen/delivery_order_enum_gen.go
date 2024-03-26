@@ -13,6 +13,7 @@ func init() {
 			Enum: []interface{}{
 				"PENDING",
 				"ONGOING",
+				"DELIVERING",
 				"CANCELED",
 				"COMPLETED",
 			},

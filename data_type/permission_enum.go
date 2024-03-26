@@ -60,8 +60,10 @@ const (
 	PermissionDeliveryOrderAddImage         // DELIVERY_ORDER_ADD_IMAGE
 	PermissionDeliveryOrderAddDriver        // DELIVERY_ORDER_ADD_DRIVER
 	PermissionDeliveryOrderFetch            // DELIVERY_ORDER_FETCH
+	PermissionDeliveryOrderFetchDriver      // DELIVERY_ORDER_FETCH_DRIVER
 	PermissionDeliveryOrderGet              // DELIVERY_ORDER_GET
 	PermissionDeliveryOrderMarkOngoing      // DELIVERY_ORDER_MARK_ONGOING
+	PermissionDeliveryOrderDelivering       // DELIVERY_ORDER_DELIVERING
 	PermissionDeliveryOrderCancel           // DELIVERY_ORDER_CANCEL
 	PermissionDeliveryOrderMarkCompleted    // DELIVERY_ORDER_MARK_COMPLETED
 	PermissionDeliveryOrderDeliveryLocation // DELIVERY_ORDER_DELIVERY_LOCATION

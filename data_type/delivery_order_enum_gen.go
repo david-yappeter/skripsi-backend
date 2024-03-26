@@ -15,15 +15,16 @@ func _() {
 	var x [1]struct{}
 	_ = x[DeliveryOrderStatusPending-1]
 	_ = x[DeliveryOrderStatusOngoing-2]
-	_ = x[DeliveryOrderStatusCanceled-3]
-	_ = x[DeliveryOrderStatusCompleted-4]
+	_ = x[DeliveryOrderStatusDelivering-3]
+	_ = x[DeliveryOrderStatusCanceled-4]
+	_ = x[DeliveryOrderStatusCompleted-5]
 }
 
-const _DeliveryOrderStatus_nameReadable = "PENDING, ONGOING, CANCELED, COMPLETED"
+const _DeliveryOrderStatus_nameReadable = "PENDING, ONGOING, DELIVERING, CANCELED, COMPLETED"
 
-const _DeliveryOrderStatus_name = "PENDINGONGOINGCANCELEDCOMPLETED"
+const _DeliveryOrderStatus_name = "PENDINGONGOINGDELIVERINGCANCELEDCOMPLETED"
 
-var _DeliveryOrderStatus_index = [...]uint8{0, 7, 14, 22, 31}
+var _DeliveryOrderStatus_index = [...]uint8{0, 7, 14, 24, 32, 41}
 
 func (i *DeliveryOrderStatus) Determine(s string) {
 	switch s {
@@ -31,6 +32,8 @@ func (i *DeliveryOrderStatus) Determine(s string) {
 		*i = DeliveryOrderStatusPending
 	case "ONGOING":
 		*i = DeliveryOrderStatusOngoing
+	case "DELIVERING":
+		*i = DeliveryOrderStatusDelivering
 	case "CANCELED":
 		*i = DeliveryOrderStatusCanceled
 	case "COMPLETED":
@@ -105,6 +108,7 @@ func ListDeliveryOrderStatus() []DeliveryOrderStatus {
 	return []DeliveryOrderStatus{
 		DeliveryOrderStatusPending,
 		DeliveryOrderStatusOngoing,
+		DeliveryOrderStatusDelivering,
 		DeliveryOrderStatusCanceled,
 		DeliveryOrderStatusCompleted,
 	}
@@ -114,6 +118,7 @@ func ListDeliveryOrderStatusString() []string {
 	return []string{
 		DeliveryOrderStatusPending.String(),
 		DeliveryOrderStatusOngoing.String(),
+		DeliveryOrderStatusDelivering.String(),
 		DeliveryOrderStatusCanceled.String(),
 		DeliveryOrderStatusCompleted.String(),
 	}

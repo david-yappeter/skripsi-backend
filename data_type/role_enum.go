@@ -131,7 +131,6 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionDeliveryOrderGet,
 		PermissionDeliveryOrderMarkOngoing,
 		PermissionDeliveryOrderCancel,
-		PermissionDeliveryOrderMarkCompleted,
 		PermissionDeliveryOrderDelete,
 		PermissionDeliveryOrderDeleteItem,
 		PermissionDeliveryOrderDeleteImage,
@@ -253,5 +252,10 @@ func GetRoleCashier() []Permission {
 }
 
 func GetRoleDriver() []Permission {
-	return []Permission{}
+	return []Permission{
+		// delivery order
+		PermissionDeliveryOrderFetchDriver,
+		PermissionDeliveryOrderDelivering,
+		PermissionDeliveryOrderMarkCompleted,
+	}
 }

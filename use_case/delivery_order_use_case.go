@@ -37,10 +37,12 @@ type DeliveryOrderUseCase interface {
 
 	// read
 	Fetch(ctx context.Context, request dto_request.DeliveryOrderFetchRequest) ([]model.DeliveryOrder, int)
+	FetchDriver(ctx context.Context, request dto_request.DeliveryOrderFetchDriverRequest) ([]model.DeliveryOrder, int)
 	Get(ctx context.Context, request dto_request.DeliveryOrderGetRequest) model.DeliveryOrder
 
 	// update
 	MarkOngoing(ctx context.Context, request dto_request.DeliveryOrderMarkOngoingRequest) model.DeliveryOrder
+	Delivering(ctx context.Context, request dto_request.DeliveryOrderDeliveringRequest) model.DeliveryOrder
 	Cancel(ctx context.Context, request dto_request.DeliveryOrderCancelRequest) model.DeliveryOrder
 	MarkCompleted(ctx context.Context, request dto_request.DeliveryOrderMarkCompletedRequest) model.DeliveryOrder
 	DeliveryLocation(ctx context.Context, request dto_request.DeliveryOrderDeliveryLocationRequest)
@@ -430,6 +432,31 @@ func (u *deliveryOrderUseCase) Fetch(ctx context.Context, request dto_request.De
 	return deliveryOrders, total
 }
 
+func (u *deliveryOrderUseCase) FetchDriver(ctx context.Context, request dto_request.DeliveryOrderFetchDriverRequest) ([]model.DeliveryOrder, int) {
+	authUser := model.MustGetUserCtx(ctx)
+
+	queryOption := model.DeliveryOrderQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts{},
+		),
+		DriverUserId: &authUser.Id,
+	}
+
+	deliveryOrders, err := u.repositoryManager.DeliveryOrderRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.DeliveryOrderRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	u.mustLoadDeliveryOrdersData(ctx, util.SliceValueToSlicePointer(deliveryOrders), deliveryOrdersLoaderParams{
+		customer: true,
+	})
+
+	return deliveryOrders, total
+}
+
 func (u *deliveryOrderUseCase) Get(ctx context.Context, request dto_request.DeliveryOrderGetRequest) model.DeliveryOrder {
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
 
@@ -468,8 +495,9 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 	})
 
 	switch deliveryOrder.Status {
-	case data_type.DeliveryOrderStatusOngoing:
-		// add canceled stock back if already 'OnGoing' status
+	case data_type.DeliveryOrderStatusOngoing,
+		data_type.DeliveryOrderStatusDelivering:
+		// add canceled stock back
 		u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
 			deliveryOrderProductStock: true,
 			deliveryOrderItems:        true,
@@ -621,6 +649,38 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 			}
 
 			if err := customerDebtRepository.Insert(ctx, &customerDebt); err != nil {
+				return err
+			}
+
+			return nil
+		}),
+	)
+
+	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		customer:             true,
+		deliveryOrderImages:  true,
+		deliveryOrderItems:   true,
+		deliveryOrderDrivers: true,
+	})
+
+	return deliveryOrder
+}
+
+func (u *deliveryOrderUseCase) Delivering(ctx context.Context, request dto_request.DeliveryOrderDeliveringRequest) model.DeliveryOrder {
+	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
+
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusOngoing {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_ON_GOING"))
+	}
+
+	// change status
+	deliveryOrder.Status = data_type.DeliveryOrderStatusDelivering
+
+	panicIfErr(
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
+
+			if err := deliveryOrderRepository.Update(ctx, &deliveryOrder); err != nil {
 				return err
 			}
 
@@ -850,7 +910,7 @@ func (u *deliveryOrderUseCase) DeleteDriver(ctx context.Context, request dto_req
 
 /*
 	Notes:
-	- Delivery Order can only be cancel if status 'PENDING' or 'ONGOING'
+	- Delivery Order can only be cancel if status 'PENDING' or 'ONGOING' or 'DELIVERING'
 	- Customer Debt will only be created when status changed from 'PENDING' to 'ONGOING'
 	- If Delivery Order canceled, the Customer Debt will be canceled
 */

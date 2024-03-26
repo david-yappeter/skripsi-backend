@@ -307,6 +307,39 @@ func (a *DeliveryOrderApi) OnGoing() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/delivery-orders/{id}/delivering [patch]
+//	@Summary	Delivering
+//	@tags		Delivery Orders
+//	@Accept		json
+//	@Param		id											path	string										true	"Id"
+//	@Param		dto_request.DeliveryOrderDeliveringRequest	body	dto_request.DeliveryOrderDeliveringRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
+func (a *DeliveryOrderApi) Delivering() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionDeliveryOrderDelivering),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.DeliveryOrderDeliveringRequest
+			ctx.mustBind(&request)
+			request.DeliveryOrderId = id
+
+			deliveryOrder := a.deliveryOrderUseCase.Delivering(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"delivery_order": dto_response.NewDeliveryOrderResponse(deliveryOrder),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/delivery-orders/filter [post]
 //	@Summary	Filter
 //	@tags		Delivery Orders
@@ -315,6 +348,41 @@ func (a *DeliveryOrderApi) OnGoing() gin.HandlerFunc {
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.DeliveryOrderResponse}}
 func (a *DeliveryOrderApi) Fetch() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionDeliveryOrderFetch),
+		func(ctx apiContext) {
+			var request dto_request.DeliveryOrderFetchRequest
+			ctx.mustBind(&request)
+
+			deliveryOrders, total := a.deliveryOrderUseCase.Fetch(ctx.context(), request)
+
+			nodes := util.ConvertArray(deliveryOrders, dto_response.NewDeliveryOrderResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Total: total,
+						Nodes: nodes,
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/delivery-orders/filter-driver [post]
+//	@Summary	Filter for driver
+//	@tags		Delivery Orders
+//	@Accept		json
+//	@Param		dto_request.DeliveryOrderFetchRequest	body	dto_request.DeliveryOrderFetchRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.DeliveryOrderResponse}}
+func (a *DeliveryOrderApi) FetchDriver() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionDeliveryOrderCreate),
 		func(ctx apiContext) {
@@ -520,6 +588,7 @@ func RegisterDeliveryOrderApi(router gin.IRouter, useCaseManager use_case.UseCas
 	routerGroup.POST("", api.Create())
 	routerGroup.POST("/upload", api.Upload())
 	routerGroup.POST("/filter", api.Fetch())
+	routerGroup.POST("/filter-driver", api.FetchDriver())
 	routerGroup.GET("/:id", api.Get())
 	routerGroup.DELETE("/:id", api.Delete())
 
@@ -529,6 +598,7 @@ func RegisterDeliveryOrderApi(router gin.IRouter, useCaseManager use_case.UseCas
 
 	routerGroup.PATCH("/:id/cancel", api.Cancel())
 	routerGroup.PATCH("/:id/on-going", api.OnGoing())
+	routerGroup.PATCH("/:id/deliverying", api.Delivering())
 	routerGroup.PATCH("/:id/completed", api.Completed())
 	routerGroup.PATCH("/:id/delivery-location", api.DeliveryLocation())
 

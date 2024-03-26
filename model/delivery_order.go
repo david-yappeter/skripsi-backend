@@ -45,8 +45,9 @@ func (m *DeliveryOrder) ToMap() map[string]interface{} {
 type DeliveryOrderQueryOption struct {
 	QueryOption
 
-	CustomerId *string
-	Phrase     *string
+	CustomerId   *string
+	DriverUserId *string
+	Phrase       *string
 }
 
 var _ PrepareOption = &DeliveryOrderQueryOption{}
