@@ -51,9 +51,8 @@ type SupplierOptionForProductReceiveFormSorts []struct {
 
 type SupplierOptionForProductReceiveFormRequest struct {
 	PaginationRequest
-	Sorts            SupplierOptionForProductReceiveFormSorts `json:"sorts" validate:"unique=Field,dive"`
-	ProductReceiveId string                                   `json:"product_receive_id" validate:"required,not_empty,uuid" extensions:"x-nullable"`
-	Phrase           *string                                  `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+	Sorts  SupplierOptionForProductReceiveFormSorts `json:"sorts" validate:"unique=Field,dive"`
+	Phrase *string                                  `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name SupplierOptionForProductReceiveFormRequest
 
 type SupplierOptionForProductReceiveFilterRequest struct {
