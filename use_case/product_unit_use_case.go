@@ -4,10 +4,19 @@ import (
 	"context"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
+	"myapp/loader"
 	"myapp/model"
 	"myapp/repository"
 	"myapp/util"
+
+	"golang.org/x/sync/errgroup"
 )
+
+type productUnitLoaderParams struct {
+	product bool
+	unit    bool
+	toUnit  bool
+}
 
 type ProductUnitUseCase interface {
 	//  create
@@ -34,6 +43,27 @@ func NewProductUnitUseCase(
 	return &productUnitUseCase{
 		repositoryManager: repositoryManager,
 	}
+}
+
+func (u *productUnitUseCase) mustLoadProductUnitsData(ctx context.Context, productUnits []*model.ProductUnit, option productUnitLoaderParams) {
+	productLoader := loader.NewProductLoader(u.repositoryManager.ProductRepository())
+	unitLoader := loader.NewUnitLoader(u.repositoryManager.UnitRepository())
+
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		for i := range productUnits {
+			if option.product {
+				group.Go(productLoader.ProductUnitFn(productUnits[i]))
+			}
+
+			if option.unit {
+				group.Go(unitLoader.ProductUnitFn(productUnits[i]))
+			}
+
+			if option.toUnit {
+				group.Go(unitLoader.ProductUnitToUnitIdFn(productUnits[i]))
+			}
+		}
+	}))
 }
 
 func (u *productUnitUseCase) mustValidateProductUnitNotDuplicate(ctx context.Context, productId string, unitId string) {
@@ -88,11 +118,23 @@ func (u *productUnitUseCase) Create(ctx context.Context, request dto_request.Pro
 		}),
 	)
 
+	u.mustLoadProductUnitsData(ctx, []*model.ProductUnit{&productUnit}, productUnitLoaderParams{
+		product: true,
+		unit:    true,
+		toUnit:  true,
+	})
+
 	return productUnit
 }
 
 func (u *productUnitUseCase) Get(ctx context.Context, request dto_request.ProductUnitGetRequest) model.ProductUnit {
 	productUnit := mustGetProductUnit(ctx, u.repositoryManager, request.ProductUnitId, true)
+
+	u.mustLoadProductUnitsData(ctx, []*model.ProductUnit{&productUnit}, productUnitLoaderParams{
+		product: true,
+		unit:    true,
+		toUnit:  true,
+	})
 
 	return productUnit
 }
@@ -114,6 +156,12 @@ func (u *productUnitUseCase) Delete(ctx context.Context, request dto_request.Pro
 			return nil
 		}),
 	)
+
+	u.mustLoadProductUnitsData(ctx, []*model.ProductUnit{&productUnit}, productUnitLoaderParams{
+		product: true,
+		unit:    true,
+		toUnit:  true,
+	})
 }
 
 func (u *productUnitUseCase) OptionForProductReceiveItemForm(ctx context.Context, request dto_request.ProductUnitOptionForProductReceiveItemFormRequest) ([]model.ProductUnit, int) {
@@ -133,11 +181,17 @@ func (u *productUnitUseCase) OptionForProductReceiveItemForm(ctx context.Context
 	total, err := u.repositoryManager.ProductUnitRepository().Count(ctx, queryOption)
 	panicIfErr(err)
 
+	u.mustLoadProductUnitsData(ctx, util.SliceValueToSlicePointer(productUnits), productUnitLoaderParams{
+		product: true,
+		unit:    true,
+		toUnit:  true,
+	})
+
 	return productUnits, total
 }
 
 func (u *productUnitUseCase) OptionForDeliveryOrderForm(ctx context.Context, request dto_request.ProductUnitOptionForDeliveryOrderFormRequest) ([]model.ProductUnit, int) {
-	mustGetDeliveryOrderItem(ctx, u.repositoryManager, request.DeliveryOrderId, true)
+	mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
 
 	deliveryOrderItems, err := u.repositoryManager.DeliveryOrderItemRepository().FetchByDeliveryOrderIds(ctx, []string{request.DeliveryOrderId})
 	panicIfErr(err)
@@ -162,6 +216,12 @@ func (u *productUnitUseCase) OptionForDeliveryOrderForm(ctx context.Context, req
 
 	total, err := u.repositoryManager.ProductUnitRepository().Count(ctx, queryOption)
 	panicIfErr(err)
+
+	u.mustLoadProductUnitsData(ctx, util.SliceValueToSlicePointer(productUnits), productUnitLoaderParams{
+		product: true,
+		unit:    true,
+		toUnit:  true,
+	})
 
 	return productUnits, total
 }
