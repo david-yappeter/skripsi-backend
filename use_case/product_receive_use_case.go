@@ -264,6 +264,30 @@ func (u *productReceiveUseCase) AddImage(ctx context.Context, request dto_reques
 		},
 	)
 
+	productReceiveImage := model.ProductReceiveImage{
+		Id:               util.NewUuid(),
+		ProductReceiveId: productReceive.Id,
+		FileId:           imageFile.Id,
+		Description:      request.Description,
+	}
+
+	panicIfErr(
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			fileRepository := u.repositoryManager.FileRepository()
+			productReceiveImageRepository := u.repositoryManager.ProductReceiveImageRepository()
+
+			if err := fileRepository.Insert(ctx, &imageFile); err != nil {
+				return err
+			}
+
+			if err := productReceiveImageRepository.Insert(ctx, &productReceiveImage); err != nil {
+				return err
+			}
+
+			return nil
+		}),
+	)
+
 	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
 		productReceiveItems:  true,
 		productReceiveImages: true,
@@ -562,7 +586,20 @@ func (u *productReceiveUseCase) DeleteImage(ctx context.Context, request dto_req
 	productReceiveImage := mustGetProductReceiveImageByProductReceiveIdAndFileId(ctx, u.repositoryManager, request.ProductReceiveId, request.FileId, true)
 
 	panicIfErr(
-		u.repositoryManager.ProductReceiveImageRepository().Delete(ctx, &productReceiveImage),
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			fileRepository := u.repositoryManager.FileRepository()
+			productReceiveImageRepository := u.repositoryManager.ProductReceiveImageRepository()
+
+			if err := productReceiveImageRepository.Delete(ctx, &productReceiveImage); err != nil {
+				return err
+			}
+
+			if err := fileRepository.Delete(ctx, &file); err != nil {
+				return err
+			}
+
+			return nil
+		}),
 	)
 
 	u.mainFilesystem.Delete(file.Path)

@@ -21,7 +21,8 @@ type ProductReceiveAddItemRequest struct {
 } // @name ProductReceiveAddItemRequest
 
 type ProductReceiveAddImageRequest struct {
-	FilePath string `json:"file_path" validate:"required,not_empty"`
+	FilePath    string  `json:"file_path" validate:"required,not_empty"`
+	Description *string `json:"description" validate:"omitempty,not_empty"`
 
 	ProductReceiveId string `json:"-" swaggerignore:"true"`
 } // @name ProductReceiveAddImageRequest
