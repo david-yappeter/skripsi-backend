@@ -45,6 +45,7 @@ func (m *DeliveryOrder) ToMap() map[string]interface{} {
 type DeliveryOrderQueryOption struct {
 	QueryOption
 
+	Status       *data_type.DeliveryOrderStatus
 	CustomerId   *string
 	DriverUserId *string
 	Phrase       *string

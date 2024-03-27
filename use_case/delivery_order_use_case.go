@@ -417,7 +417,9 @@ func (u *deliveryOrderUseCase) Fetch(ctx context.Context, request dto_request.De
 			request.Limit,
 			model.Sorts(request.Sorts),
 		),
-		Phrase: request.Phrase,
+		Status:     request.Status,
+		CustomerId: request.CustomerId,
+		Phrase:     request.Phrase,
 	}
 
 	deliveryOrders, err := u.repositoryManager.DeliveryOrderRepository().Fetch(ctx, queryOption)

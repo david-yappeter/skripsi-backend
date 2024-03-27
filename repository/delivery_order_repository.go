@@ -80,6 +80,10 @@ func (r *deliveryOrderRepository) prepareQuery(option model.DeliveryOrderQueryOp
 		)
 	}
 
+	if option.Status != nil {
+		stmt = stmt.Where(squirrel.Eq{"status": option.Status})
+	}
+
 	if option.CustomerId != nil {
 		stmt = stmt.Where(squirrel.Eq{
 			"dorder.customer_id": option.CustomerId,

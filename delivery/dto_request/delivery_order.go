@@ -35,14 +35,16 @@ type DeliveryOrderUploadRequest struct {
 } // @name DeliveryOrderUploadRequest
 
 type DeliveryOrderFetchSorts []struct {
-	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
+	Field     string `json:"field" validate:"required,oneof=date created_at updated_at" example:"date"`
 	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
 } // @name DeliveryOrderFetchSorts
 
 type DeliveryOrderFetchRequest struct {
 	PaginationRequest
-	Sorts  DeliveryOrderFetchSorts `json:"sorts" validate:"unique=Field,dive"`
-	Phrase *string                 `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+	Sorts      DeliveryOrderFetchSorts        `json:"sorts" validate:"unique=Field,dive"`
+	CustomerId *string                        `json:"customer_id" validate:"omitempty,not_empty,uuid"`
+	Status     *data_type.DeliveryOrderStatus `json:"status" validate:"omitempty,data_type_enum"`
+	Phrase     *string                        `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name DeliveryOrderFetchRequest
 
 type DeliveryOrderFetchDriverRequest struct {
