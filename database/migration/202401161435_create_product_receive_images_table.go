@@ -8,7 +8,7 @@ func init() {
 				id char(36) NOT NULL,
 				product_receive_id char(36) NOT NULL,
 				file_id char(36) NOT NULL,
-				description text NOT NULL,
+				description text NULL,
 				created_at timestamp NOT NULL,
 				updated_at timestamp NOT NULL,
 				CONSTRAINT product_receives_images_pk PRIMARY KEY (id),
