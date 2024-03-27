@@ -161,7 +161,7 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 					if productDiscount.DiscountAmount != nil {
 						discountPerUnit = productDiscount.DiscountAmount
 					} else {
-						discountPerUnit = util.Float64P(*productDiscount.DiscountPercentage * *cartItem.ProductUnit.Product.Price)
+						discountPerUnit = util.Float64P(*productDiscount.DiscountPercentage * *cartItem.ProductUnit.Product.Price / 100.0)
 					}
 				}
 

@@ -252,25 +252,27 @@ func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.
 	// deduct product stock
 	productStock.Qty -= totalSmallestQty
 
-	// add total to product receive
-	deliveryOrder.TotalPrice += totalSmallestQty * *product.Price
-
 	// add product receive item
 	deliveryOrderItem := u.shouldGetDeliveryOrderItemByDeliveryOrderIdAndProductUnitId(ctx, deliveryOrder.Id, productUnit.Id)
 	isNewDeliveryOrderItem := deliveryOrderItem == nil
 
-	if isNewDeliveryOrderItem {
-		// check for customer discount
-		if customer.CustomerTypeId != nil {
-			customerTypeDiscount := shouldGetCustomerTypeDiscountByCustomerTypeIdAndProductId(ctx, u.repositoryManager, *customer.CustomerTypeId, product.Id)
+	// check for customer discount
+	if customer.CustomerTypeId != nil {
+		customerTypeDiscount := shouldGetCustomerTypeDiscountByCustomerTypeIdAndProductId(ctx, u.repositoryManager, *customer.CustomerTypeId, product.Id)
 
-			if customerTypeDiscount.DiscountAmount != nil {
-				discountPerUnit = *customerTypeDiscount.DiscountAmount
-			} else {
-				discountPerUnit = *customerTypeDiscount.DiscountPercentage * *product.Price
-			}
+		if customerTypeDiscount.DiscountAmount != nil {
+			discountPerUnit = *customerTypeDiscount.DiscountAmount
+		} else {
+			discountPerUnit = *customerTypeDiscount.DiscountPercentage * *product.Price / 100.0
 		}
+	}
 
+	// add total with discount
+	if *product.Price > discountPerUnit {
+		deliveryOrder.TotalPrice += totalSmallestQty * (*product.Price - discountPerUnit)
+	}
+
+	if isNewDeliveryOrderItem {
 		deliveryOrderItem = &model.DeliveryOrderItem{
 			Id:              util.NewUuid(),
 			DeliveryOrderId: deliveryOrder.Id,
