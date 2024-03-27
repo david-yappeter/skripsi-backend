@@ -32,15 +32,16 @@ type ProductReceiveUploadRequest struct {
 } // @name ProductReceiveUploadRequest
 
 type ProductReceiveFetchSorts []struct {
-	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
+	Field     string `json:"field" validate:"required,oneof=date created_at updated_at" example:"name"`
 	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
 } // @name ProductReceiveFetchSorts
 
 type ProductReceiveFetchRequest struct {
 	PaginationRequest
-	Sorts      ProductReceiveFetchSorts `json:"sorts" validate:"unique=Field,dive"`
-	SupplierId *string                  `json:"supplier_id" validate:"omitempty,not_empty,uuid" extensions:"x-nullable"`
-	Phrase     *string                  `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+	Sorts      ProductReceiveFetchSorts        `json:"sorts" validate:"unique=Field,dive"`
+	Status     *data_type.ProductReceiveStatus `json:"status" validate:"omitempty,data_type_enum"`
+	SupplierId *string                         `json:"supplier_id" validate:"omitempty,not_empty,uuid" extensions:"x-nullable"`
+	Phrase     *string                         `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name ProductReceiveFetchRequest
 
 type ProductReceiveGetRequest struct {

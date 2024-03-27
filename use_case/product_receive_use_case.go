@@ -321,6 +321,7 @@ func (u *productReceiveUseCase) Fetch(ctx context.Context, request dto_request.P
 		),
 		Phrase:     request.Phrase,
 		SupplierId: request.SupplierId,
+		Status:     request.Status,
 	}
 
 	productReceives, err := u.repositoryManager.ProductReceiveRepository().Fetch(ctx, queryOption)

@@ -44,6 +44,7 @@ func (m *ProductReceive) ToMap() map[string]interface{} {
 type ProductReceiveQueryOption struct {
 	QueryOption
 
+	Status     *data_type.ProductReceiveStatus
 	SupplierId *string
 	Phrase     *string
 }

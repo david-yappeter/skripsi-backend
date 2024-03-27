@@ -73,6 +73,10 @@ func (r *productReceiveRepository) prepareQuery(option model.ProductReceiveQuery
 		})
 	}
 
+	if option.Status != nil {
+		stmt = stmt.Where(squirrel.Eq{"pr.status": option.Status})
+	}
+
 	if option.SupplierId != nil {
 		stmt = stmt.Where(squirrel.Eq{"pr.supplier_id": option.SupplierId})
 	}
