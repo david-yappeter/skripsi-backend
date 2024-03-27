@@ -31,7 +31,7 @@ type CustomerUseCase interface {
 
 	// option
 	OptionForDeliveryOrderForm(ctx context.Context, request dto_request.CustomerOptionForDeliveryOrderFormRequest) ([]model.Customer, int)
-	OptionForProductReceiveFilter(ctx context.Context, request dto_request.CustomerOptionForProductReceiveFilterRequest) ([]model.Customer, int)
+	OptionForDeliveryOrderFilter(ctx context.Context, request dto_request.CustomerOptionForDeliveryOrderFilterRequest) ([]model.Customer, int)
 }
 
 type customerUseCase struct {
@@ -185,7 +185,7 @@ func (u *customerUseCase) OptionForDeliveryOrderForm(ctx context.Context, reques
 	return customers, total
 }
 
-func (u *customerUseCase) OptionForProductReceiveFilter(ctx context.Context, request dto_request.CustomerOptionForProductReceiveFilterRequest) ([]model.Customer, int) {
+func (u *customerUseCase) OptionForDeliveryOrderFilter(ctx context.Context, request dto_request.CustomerOptionForDeliveryOrderFilterRequest) ([]model.Customer, int) {
 	queryOption := model.CustomerQueryOption{
 		QueryOption: model.NewQueryOptionWithPagination(
 			request.Page,

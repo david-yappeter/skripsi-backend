@@ -55,7 +55,7 @@ type CustomerOptionForDeliveryOrderFormRequest struct {
 	Phrase *string                                 `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name CustomerOptionForDeliveryOrderFormRequest
 
-type CustomerOptionForProductReceiveFilterRequest struct {
+type CustomerOptionForDeliveryOrderFilterRequest struct {
 	PaginationRequest
 	Phrase *string `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name CustomerOptionForDeliveryOrderFormRequest
