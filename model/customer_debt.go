@@ -32,6 +32,8 @@ func (m *CustomerDebt) ToMap() map[string]interface{} {
 	return map[string]interface{}{
 		"id":               m.Id,
 		"customer_id":      m.CustomerId,
+		"debt_source":      m.DebtSource,
+		"debt_source_id":   m.DebtSourceId,
 		"due_date":         m.DueDate,
 		"status":           m.Status,
 		"amount":           m.Amount,

@@ -39,6 +39,7 @@ type DeliveryOrderUseCase interface {
 	Fetch(ctx context.Context, request dto_request.DeliveryOrderFetchRequest) ([]model.DeliveryOrder, int)
 	FetchDriver(ctx context.Context, request dto_request.DeliveryOrderFetchDriverRequest) ([]model.DeliveryOrder, int)
 	Get(ctx context.Context, request dto_request.DeliveryOrderGetRequest) model.DeliveryOrder
+	ActiveForDriver(ctx context.Context) *model.DeliveryOrder
 
 	// update
 	MarkOngoing(ctx context.Context, request dto_request.DeliveryOrderMarkOngoingRequest) model.DeliveryOrder
@@ -367,7 +368,7 @@ func (u *deliveryOrderUseCase) AddDriver(ctx context.Context, request dto_reques
 		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
 	}
 
-	deliveryOrderDriver, err := u.repositoryManager.DeliveryOrderDriverRepository().Get(ctx, request.DriverUserId)
+	deliveryOrderDriver, err := u.repositoryManager.DeliveryOrderDriverRepository().GetByDeliveryOrderIdAndDriverUserId(ctx, deliveryOrder.Id, request.DriverUserId)
 	panicIfErr(err, constant.ErrNoData)
 
 	if deliveryOrderDriver != nil {
@@ -466,6 +467,24 @@ func (u *deliveryOrderUseCase) Get(ctx context.Context, request dto_request.Deli
 		deliveryOrderImages:  true,
 		deliveryOrderDrivers: true,
 	})
+
+	return deliveryOrder
+}
+
+func (u *deliveryOrderUseCase) ActiveForDriver(ctx context.Context) *model.DeliveryOrder {
+	authUser := model.MustGetUserCtx(ctx)
+
+	deliveryOrder, err := u.repositoryManager.DeliveryOrderRepository().GetByDriverUserIdAndStatusDelivering(ctx, authUser.Id)
+	panicIfErr(err, constant.ErrNoData)
+
+	if deliveryOrder != nil {
+		u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{deliveryOrder}, deliveryOrdersLoaderParams{
+			customer:             true,
+			deliveryOrderItems:   true,
+			deliveryOrderImages:  true,
+			deliveryOrderDrivers: true,
+		})
+	}
 
 	return deliveryOrder
 }
@@ -667,6 +686,14 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 }
 
 func (u *deliveryOrderUseCase) Delivering(ctx context.Context, request dto_request.DeliveryOrderDeliveringRequest) model.DeliveryOrder {
+	authUser := model.MustGetUserCtx(ctx)
+	isExist, err := u.repositoryManager.DeliveryOrderRepository().IsExistByDriverUserIdAndStatusDelivering(ctx, authUser.Id)
+	panicIfErr(err)
+
+	if isExist {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.CURRENT_USER_ALREADY_HAVE_ACTIVE_DELIVERY"))
+	}
+
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
 
 	if deliveryOrder.Status != data_type.DeliveryOrderStatusOngoing {

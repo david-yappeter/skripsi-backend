@@ -50,6 +50,16 @@ func RegisterIdTranslations(v *validator.Validate, trans ut.Translator) (err err
 			override:    false,
 		},
 		{
+			tag:         "latitude",
+			translation: "{0} format must be Latitude",
+			override:    false,
+		},
+		{
+			tag:         "longitude",
+			translation: "{0} format must be longitude",
+			override:    false,
+		},
+		{
 			tag: "len",
 			customRegisFunc: func(ut ut.Translator) (err error) {
 				if err = ut.Add("len-string", "panjang {0} harus {1}", false); err != nil {

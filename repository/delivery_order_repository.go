@@ -19,7 +19,8 @@ type DeliveryOrderRepository interface {
 	Count(ctx context.Context, options ...model.DeliveryOrderQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.DeliveryOrderQueryOption) ([]model.DeliveryOrder, error)
 	Get(ctx context.Context, id string) (*model.DeliveryOrder, error)
-	IsExistByName(ctx context.Context, name string) (bool, error)
+	GetByDriverUserIdAndStatusDelivering(ctx context.Context, driverUserId string) (*model.DeliveryOrder, error)
+	IsExistByDriverUserIdAndStatusDelivering(ctx context.Context, driverUserId string) (bool, error)
 
 	// update
 	Update(ctx context.Context, deliveryOrder *model.DeliveryOrder) error
@@ -134,11 +135,23 @@ func (r *deliveryOrderRepository) Get(ctx context.Context, id string) (*model.De
 	return r.get(ctx, stmt)
 }
 
-func (r *deliveryOrderRepository) IsExistByName(ctx context.Context, name string) (bool, error) {
+func (r *deliveryOrderRepository) GetByDriverUserIdAndStatusDelivering(ctx context.Context, driverUserId string) (*model.DeliveryOrder, error) {
+	stmt := stmtBuilder.Select("dorder.*").
+		From(fmt.Sprintf("%s dorder", model.DeliveryOrderTableName)).
+		InnerJoin(fmt.Sprintf("%s dod ON dorder.id = dod.delivery_order_id", model.DeliveryOrderDriverTableName)).
+		Where(squirrel.Eq{"dorder.status": data_type.DeliveryOrderStatusDelivering}).
+		Where(squirrel.Eq{"dod.driver_user_id": driverUserId})
+
+	return r.get(ctx, stmt)
+}
+
+func (r *deliveryOrderRepository) IsExistByDriverUserIdAndStatusDelivering(ctx context.Context, driverUserId string) (bool, error) {
 	stmt := stmtBuilder.Select().Column(
 		stmtBuilder.Select("1").
-			From(model.DeliveryOrderTableName).
-			Where(squirrel.Eq{"name": name}).
+			From(fmt.Sprintf("%s dorder", model.DeliveryOrderTableName)).
+			InnerJoin(fmt.Sprintf("%s dod ON dorder.id = dod.delivery_order_id", model.DeliveryOrderDriverTableName)).
+			Where(squirrel.Eq{"dorder.status": data_type.DeliveryOrderStatusDelivering}).
+			Where(squirrel.Eq{"dod.driver_user_id": driverUserId}).
 			Prefix("EXISTS (").Suffix(")"),
 	)
 

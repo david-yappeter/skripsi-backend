@@ -62,6 +62,7 @@ const (
 	PermissionDeliveryOrderFetch            // DELIVERY_ORDER_FETCH
 	PermissionDeliveryOrderFetchDriver      // DELIVERY_ORDER_FETCH_DRIVER
 	PermissionDeliveryOrderGet              // DELIVERY_ORDER_GET
+	PermissionDeliveryOrderActiveForDriver  // DELIVERY_ORDER_ACTIVE_FOR_DRIVER
 	PermissionDeliveryOrderMarkOngoing      // DELIVERY_ORDER_MARK_ONGOING
 	PermissionDeliveryOrderDelivering       // DELIVERY_ORDER_DELIVERING
 	PermissionDeliveryOrderCancel           // DELIVERY_ORDER_CANCEL

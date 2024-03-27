@@ -442,6 +442,36 @@ func (a *DeliveryOrderApi) Get() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/delivery-orders/active-driver [get]
+//	@Summary	Get Active For Driver (Mobile)
+//	@tags		Delivery Orders
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
+func (a *DeliveryOrderApi) ActiveForDriver() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionDeliveryOrderActiveForDriver),
+		func(ctx apiContext) {
+			deliveryOrder := a.deliveryOrderUseCase.ActiveForDriver(ctx.context())
+
+			var resp *dto_response.DeliveryOrderResponse
+			if deliveryOrder != nil {
+				resp = dto_response.NewDeliveryOrderResponseP(*deliveryOrder)
+			}
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"delivery_order": resp,
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/delivery-orders/{id} [delete]
 //	@Summary	Delete
 //	@tags		Delivery Orders
@@ -590,6 +620,7 @@ func RegisterDeliveryOrderApi(router gin.IRouter, useCaseManager use_case.UseCas
 	routerGroup.POST("/filter", api.Fetch())
 	routerGroup.POST("/filter-driver", api.FetchDriver())
 	routerGroup.GET("/:id", api.Get())
+	routerGroup.GET("/active-driver", api.ActiveForDriver())
 	routerGroup.DELETE("/:id", api.Delete())
 
 	routerGroup.POST("/:id/items", api.AddItem())
@@ -598,7 +629,7 @@ func RegisterDeliveryOrderApi(router gin.IRouter, useCaseManager use_case.UseCas
 
 	routerGroup.PATCH("/:id/cancel", api.Cancel())
 	routerGroup.PATCH("/:id/on-going", api.OnGoing())
-	routerGroup.PATCH("/:id/deliverying", api.Delivering())
+	routerGroup.PATCH("/:id/delivering", api.Delivering())
 	routerGroup.PATCH("/:id/completed", api.Completed())
 	routerGroup.PATCH("/:id/delivery-location", api.DeliveryLocation())
 
