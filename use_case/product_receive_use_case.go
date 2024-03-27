@@ -318,6 +318,7 @@ func (u *productReceiveUseCase) Get(ctx context.Context, request dto_request.Pro
 	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
 		productReceiveItems:        true,
 		productReceiveProductStock: true,
+		productReceiveImages:       true,
 		supplier:                   true,
 	})
 
@@ -341,6 +342,7 @@ func (u *productReceiveUseCase) Update(ctx context.Context, request dto_request.
 	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
 		productReceiveItems:        true,
 		productReceiveProductStock: true,
+		productReceiveImages:       true,
 		supplier:                   true,
 	})
 
