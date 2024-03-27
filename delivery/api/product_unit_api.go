@@ -114,21 +114,21 @@ func (a *ProductUnitApi) OptionForProductReceiveItemForm() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/product-units/options/delivery-order-form [post]
-//	@Summary	Option for Delivery Order Form
+//	@Router		/product-units/options/delivery-order-item-form [post]
+//	@Summary	Option for Delivery Order Item Form
 //	@tags		Product Units
 //	@Accept		json
-//	@Param		dto_request.ProductUnitOptionForDeliveryOrderFormRequest	body	dto_request.ProductUnitOptionForDeliveryOrderFormRequest	true	"Body Request"
+//	@Param		dto_request.ProductUnitOptionForDeliveryOrderItemFormRequest	body	dto_request.ProductUnitOptionForDeliveryOrderItemFormRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.ProductUnitResponse}}
-func (a *ProductUnitApi) OptionForDeliveryOrderForm() gin.HandlerFunc {
+func (a *ProductUnitApi) OptionForDeliveryOrderItemForm() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionProductUnitOptionForDeliveryOrderForm),
+		data_type.PermissionP(data_type.PermissionProductUnitOptionForDeliveryOrderItemForm),
 		func(ctx apiContext) {
-			var request dto_request.ProductUnitOptionForDeliveryOrderFormRequest
+			var request dto_request.ProductUnitOptionForDeliveryOrderItemFormRequest
 			ctx.mustBind(&request)
 
-			productUnits, total := a.productUnitUseCase.OptionForDeliveryOrderForm(ctx.context(), request)
+			productUnits, total := a.productUnitUseCase.OptionForDeliveryOrderItemForm(ctx.context(), request)
 
 			nodes := util.ConvertArray(productUnits, dto_response.NewProductUnitResponse)
 
@@ -159,5 +159,5 @@ func RegisterProductUnitApi(router gin.IRouter, useCaseManager use_case.UseCaseM
 
 	optionRouterGroup := routerGroup.Group("/options")
 	optionRouterGroup.POST("/product-receive-item-form", api.OptionForProductReceiveItemForm())
-	optionRouterGroup.POST("/delivery-order-form", api.OptionForDeliveryOrderForm())
+	optionRouterGroup.POST("/delivery-order-item-form", api.OptionForDeliveryOrderItemForm())
 }

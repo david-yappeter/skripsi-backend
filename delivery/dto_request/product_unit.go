@@ -34,14 +34,14 @@ type ProductUnitOptionForProductReceiveItemFormRequest struct {
 	Phrase    *string                                         `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name ProductUnitOptionForProductReceiveItemFormRequest
 
-type ProductUnitOptionForDeliveryOrderFormSorts []struct {
+type ProductUnitOptionForDeliveryOrderItemFormSorts []struct {
 	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
 	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
-} // @name ProductUnitOptionForDeliveryOrderFormSorts
+} // @name ProductUnitOptionForDeliveryOrderItemFormSorts
 
-type ProductUnitOptionForDeliveryOrderFormRequest struct {
+type ProductUnitOptionForDeliveryOrderItemFormRequest struct {
 	PaginationRequest
-	DeliveryOrderId string                                     `json:"delivery_order_id" validate:"required,not_empty,uuid"`
-	Sorts           ProductUnitOptionForDeliveryOrderFormSorts `json:"sorts" validate:"unique=Field,dive"`
-	Phrase          *string                                    `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
-} // @name ProductUnitOptionForDeliveryOrderFormRequest
+	DeliveryOrderId string                                         `json:"delivery_order_id" validate:"required,not_empty,uuid"`
+	Sorts           ProductUnitOptionForDeliveryOrderItemFormSorts `json:"sorts" validate:"unique=Field,dive"`
+	Phrase          *string                                        `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name ProductUnitOptionForDeliveryOrderItemFormRequest

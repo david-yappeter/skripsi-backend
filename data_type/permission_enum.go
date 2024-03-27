@@ -117,7 +117,7 @@ const (
 	PermissionProductUnitUpdate                          // PRODUCT_UNIT_UPDATE
 	PermissionProductUnitDelete                          // PRODUCT_UNIT_DELETE
 	PermissionProductUnitOptionForProductReceiveItemForm // PRODUCT_UNIT_OPTION_FOR_PRODUCT_RECEIVE_ITEM_FORM
-	PermissionProductUnitOptionForDeliveryOrderForm      // PRODUCT_UNIT_OPTION_FOR_DELIVERY_ORDER_FORM
+	PermissionProductUnitOptionForDeliveryOrderItemForm  // PRODUCT_UNIT_OPTION_FOR_DELIVERY_ORDER_ITEM_FORM
 
 	// role
 	PermissionRoleOptionForUserForm // ROLE_OPTION_FOR_USER_FORM

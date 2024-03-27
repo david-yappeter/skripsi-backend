@@ -180,7 +180,7 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionProductUnitUpdate,
 		PermissionProductUnitDelete,
 		PermissionProductUnitOptionForProductReceiveItemForm,
-		PermissionProductUnitOptionForDeliveryOrderForm,
+		PermissionProductUnitOptionForDeliveryOrderItemForm,
 		PermissionProductOptionForProductReceiveItemForm,
 
 		// supplier type

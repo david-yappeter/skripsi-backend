@@ -30,7 +30,7 @@ type ProductUnitUseCase interface {
 
 	// option
 	OptionForProductReceiveItemForm(ctx context.Context, request dto_request.ProductUnitOptionForProductReceiveItemFormRequest) ([]model.ProductUnit, int)
-	OptionForDeliveryOrderForm(ctx context.Context, request dto_request.ProductUnitOptionForDeliveryOrderFormRequest) ([]model.ProductUnit, int)
+	OptionForDeliveryOrderItemForm(ctx context.Context, request dto_request.ProductUnitOptionForDeliveryOrderItemFormRequest) ([]model.ProductUnit, int)
 }
 
 type productUnitUseCase struct {
@@ -190,7 +190,7 @@ func (u *productUnitUseCase) OptionForProductReceiveItemForm(ctx context.Context
 	return productUnits, total
 }
 
-func (u *productUnitUseCase) OptionForDeliveryOrderForm(ctx context.Context, request dto_request.ProductUnitOptionForDeliveryOrderFormRequest) ([]model.ProductUnit, int) {
+func (u *productUnitUseCase) OptionForDeliveryOrderItemForm(ctx context.Context, request dto_request.ProductUnitOptionForDeliveryOrderItemFormRequest) ([]model.ProductUnit, int) {
 	mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
 
 	deliveryOrderItems, err := u.repositoryManager.DeliveryOrderItemRepository().FetchByDeliveryOrderIds(ctx, []string{request.DeliveryOrderId})
