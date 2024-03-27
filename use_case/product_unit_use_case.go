@@ -102,7 +102,7 @@ func (u *productUnitUseCase) Create(ctx context.Context, request dto_request.Pro
 	if request.ToUnitId != nil {
 		toProductUnit := mustGetProductUnitByProductIdAndUnitId(ctx, u.repositoryManager, request.ProductId, *request.ToUnitId, true)
 
-		productUnit.ScaleToBase = toProductUnit.ScaleToBase
+		productUnit.ScaleToBase *= toProductUnit.ScaleToBase
 	}
 
 	panicIfErr(

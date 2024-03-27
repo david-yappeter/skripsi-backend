@@ -3,6 +3,7 @@ package use_case
 import (
 	"context"
 	"fmt"
+	"math"
 	"myapp/constant"
 	"myapp/data_type"
 	"myapp/delivery/dto_request"
@@ -268,9 +269,7 @@ func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.
 	}
 
 	// add total with discount
-	if *product.Price > discountPerUnit {
-		deliveryOrder.TotalPrice += totalSmallestQty * (*product.Price - discountPerUnit)
-	}
+	deliveryOrder.TotalPrice += totalSmallestQty * math.Max(*product.Price-discountPerUnit, 0)
 
 	if isNewDeliveryOrderItem {
 		deliveryOrderItem = &model.DeliveryOrderItem{
@@ -878,7 +877,7 @@ func (u *deliveryOrderUseCase) DeleteItem(ctx context.Context, request dto_reque
 	productStock := shouldGetProductStockByProductId(ctx, u.repositoryManager, product.Id)
 
 	// deduct delivery order total
-	deliveryOrder.TotalPrice -= totalSmallestQty * *product.Price
+	deliveryOrder.TotalPrice -= totalSmallestQty * math.Max(deliveryOrderItem.PricePerUnit-deliveryOrderItem.DiscountPerUnit, 0)
 
 	// add product stock back
 	productStock.Qty += totalSmallestQty

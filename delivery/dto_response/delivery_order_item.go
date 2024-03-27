@@ -1,6 +1,7 @@
 package dto_response
 
 import (
+	"math"
 	"myapp/model"
 	"myapp/util"
 )
@@ -12,7 +13,7 @@ type DeliveryOrderItemResponse struct {
 	Qty             float64  `json:"qty"`
 	PricePerUnit    float64  `json:"price_per_base_unit"`
 	PriceTotal      *float64 `json:"price_total"`
-	DiscountPerUnit float64  `json:"discount_per_unit"`
+	DiscountPerUnit float64  `json:"discount_per_base_unit"`
 	Timestamp
 
 	ProductUnit *ProductUnitResponse `json:"product_unit" extensions:"x-nullable"`
@@ -32,7 +33,7 @@ func NewDeliveryOrderItemResponse(deliveryOrderItem model.DeliveryOrderItem) Del
 
 	if deliveryOrderItem.ProductUnit != nil {
 		r.ProductUnit = NewProductUnitResponseP(*deliveryOrderItem.ProductUnit)
-		r.PriceTotal = util.Float64P(deliveryOrderItem.ProductUnit.ScaleToBase * deliveryOrderItem.Qty * deliveryOrderItem.PricePerUnit)
+		r.PriceTotal = util.Float64P(deliveryOrderItem.ProductUnit.ScaleToBase * deliveryOrderItem.Qty * math.Max(deliveryOrderItem.PricePerUnit-deliveryOrderItem.DiscountPerUnit, 0))
 	}
 
 	return r
