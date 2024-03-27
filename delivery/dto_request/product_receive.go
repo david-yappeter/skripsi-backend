@@ -67,8 +67,8 @@ type ProductReceiveDeleteRequest struct {
 } // @name ProductReceiveDeleteRequest
 
 type ProductReceiveDeleteImageRequest struct {
-	ProductReceiveId string `json:"-" swaggerignore:"true"`
-	FileId           string `json:"-" swaggerignore:"true"`
+	ProductReceiveId      string `json:"-" swaggerignore:"true"`
+	ProductReceiveImageId string `json:"-" swaggerignore:"true"`
 } // @name ProductReceiveDeleteImageRequest
 
 type ProductReceiveDeleteItemRequest struct {

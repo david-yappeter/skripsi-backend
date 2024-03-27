@@ -582,8 +582,13 @@ func (u *productReceiveUseCase) DeleteImage(ctx context.Context, request dto_req
 		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.STATUS.MUST_BE_PENDING"))
 	}
 
-	file := mustGetFile(ctx, u.repositoryManager, request.FileId, true)
-	productReceiveImage := mustGetProductReceiveImageByProductReceiveIdAndFileId(ctx, u.repositoryManager, request.ProductReceiveId, request.FileId, true)
+	productReceiveImage := mustGetProductReceiveImage(ctx, u.repositoryManager, request.ProductReceiveImageId, true)
+
+	if productReceiveImage.ProductReceiveId != productReceive.Id {
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE_ITEM.NOT_FOUND"))
+	}
+
+	file := mustGetFile(ctx, u.repositoryManager, productReceiveImage.FileId, true)
 
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {

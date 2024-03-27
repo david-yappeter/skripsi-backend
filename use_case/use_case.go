@@ -245,6 +245,12 @@ func mustGetProductReceiveItem(ctx context.Context, repositoryManager repository
 	return *productReceiveItem
 }
 
+func mustGetProductReceiveImage(ctx context.Context, repositoryManager repository.RepositoryManager, productReceiveImageId string, isValidate bool) model.ProductReceiveImage {
+	productReceiveImage, err := repositoryManager.ProductReceiveImageRepository().Get(ctx, productReceiveImageId)
+	panicIfRepositoryError(err, "PRODUCT_RECEIVE_IMAGE.NOT_FOUND", isValidate)
+	return *productReceiveImage
+}
+
 func mustGetProductReceiveImageByProductReceiveIdAndFileId(ctx context.Context, repositoryManager repository.RepositoryManager, productReceiveId string, fileId string, isValidate bool) model.ProductReceiveImage {
 	productReceiveImage, err := repositoryManager.ProductReceiveImageRepository().GetByProductReceiveIdAndFileId(ctx, productReceiveId, fileId)
 	panicIfRepositoryError(err, "PRODUCT_RECEIVE_IMAGE.NOT_FOUND", isValidate)
