@@ -42,7 +42,7 @@ type ProductUseCase interface {
 
 	// option
 	OptionForProductReceiveItemForm(ctx context.Context, request dto_request.ProductOptionForProductReceiveItemFormRequest) ([]model.Product, int)
-	OptionForDeliveryOrderForm(ctx context.Context, request dto_request.ProductOptionForDeliveryOrderFormRequest) ([]model.Product, int)
+	OptionForDeliveryOrderItemForm(ctx context.Context, request dto_request.ProductOptionForDeliveryOrderItemFormRequest) ([]model.Product, int)
 	OptionForCustomerTypeDiscountForm(ctx context.Context, request dto_request.ProductOptionForCustomerTypeDiscountFormRequest) ([]model.Product, int)
 	OptionForCartAddItemForm(ctx context.Context, request dto_request.ProductOptionForCartAddItemFormRequest) ([]model.Product, int)
 }
@@ -442,7 +442,7 @@ func (u *productUseCase) OptionForProductReceiveItemForm(ctx context.Context, re
 	return products, total
 }
 
-func (u *productUseCase) OptionForDeliveryOrderForm(ctx context.Context, request dto_request.ProductOptionForDeliveryOrderFormRequest) ([]model.Product, int) {
+func (u *productUseCase) OptionForDeliveryOrderItemForm(ctx context.Context, request dto_request.ProductOptionForDeliveryOrderItemFormRequest) ([]model.Product, int) {
 	queryOption := model.ProductQueryOption{
 		QueryOption: model.NewQueryOptionWithPagination(
 			request.Page,
