@@ -31,6 +31,7 @@ type CustomerUseCase interface {
 
 	// option
 	OptionForDeliveryOrderForm(ctx context.Context, request dto_request.CustomerOptionForDeliveryOrderFormRequest) ([]model.Customer, int)
+	OptionForProductReceiveFilter(ctx context.Context, request dto_request.CustomerOptionForProductReceiveFilterRequest) ([]model.Customer, int)
 }
 
 type customerUseCase struct {
@@ -169,6 +170,29 @@ func (u *customerUseCase) OptionForDeliveryOrderForm(ctx context.Context, reques
 		),
 		IsActive: util.BoolP(true),
 		Phrase:   request.Phrase,
+	}
+
+	customers, err := u.repositoryManager.CustomerRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.CustomerRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	u.mustLoadCustomersData(ctx, util.SliceValueToSlicePointer(customers), customerLoaderParams{
+		customerType: true,
+	})
+
+	return customers, total
+}
+
+func (u *customerUseCase) OptionForProductReceiveFilter(ctx context.Context, request dto_request.CustomerOptionForProductReceiveFilterRequest) ([]model.Customer, int) {
+	queryOption := model.CustomerQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts{},
+		),
+		Phrase: request.Phrase,
 	}
 
 	customers, err := u.repositoryManager.CustomerRepository().Fetch(ctx, queryOption)

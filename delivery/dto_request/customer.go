@@ -54,3 +54,8 @@ type CustomerOptionForDeliveryOrderFormRequest struct {
 	Sorts  CustomerOptionForDeliveryOrderFormSorts `json:"sorts" validate:"unique=Field,dive"`
 	Phrase *string                                 `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name CustomerOptionForDeliveryOrderFormRequest
+
+type CustomerOptionForProductReceiveFilterRequest struct {
+	PaginationRequest
+	Phrase *string `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name CustomerOptionForDeliveryOrderFormRequest

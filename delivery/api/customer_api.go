@@ -212,6 +212,41 @@ func (a *CustomerApi) OptionForDeliveryOrderForm() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/customers/options/product-receive-filter [post]
+//	@Summary	Option for Product Receive Filter
+//	@tags		Customers
+//	@Accept		json
+//	@Param		dto_request.CustomerOptionForProductReceiveFilterRequest	body	dto_request.CustomerOptionForProductReceiveFilterRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.CustomerResponse}}
+func (a *CustomerApi) OptionForProductReceiveFilter() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCustomerOptionForProductReceiveFilter),
+		func(ctx apiContext) {
+			var request dto_request.CustomerOptionForProductReceiveFilterRequest
+			ctx.mustBind(&request)
+
+			customers, total := a.customerUseCase.OptionForProductReceiveFilter(ctx.context(), request)
+
+			nodes := util.ConvertArray(customers, dto_response.NewCustomerResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Total: total,
+						Nodes: nodes,
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterCustomerApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := CustomerApi{
 		api:             newApi(useCaseManager),
@@ -227,4 +262,5 @@ func RegisterCustomerApi(router gin.IRouter, useCaseManager use_case.UseCaseMana
 
 	optionRouterGroup := routerGroup.Group("/options")
 	optionRouterGroup.POST("/delivery-order-form", api.OptionForDeliveryOrderForm())
+	optionRouterGroup.POST("/product-receive-filter", api.OptionForProductReceiveFilter())
 }

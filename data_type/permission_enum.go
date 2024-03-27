@@ -29,12 +29,13 @@ const (
 	PermissionCashierSessionEnd            // CASHIER_SESSION_END
 
 	// customer
-	PermissionCustomerCreate                     // CUSTOMER_CREATE
-	PermissionCustomerFetch                      // CUSTOMER_FETCH
-	PermissionCustomerGet                        // CUSTOMER_GET
-	PermissionCustomerUpdate                     // CUSTOMER_UPDATE
-	PermissionCustomerDelete                     // CUSTOMER_DELETE
-	PermissionCustomerOptionForDeliveryOrderForm // CUSTOMER_OPTION_FOR_DELIVERY_ORDER_FORM
+	PermissionCustomerCreate                        // CUSTOMER_CREATE
+	PermissionCustomerFetch                         // CUSTOMER_FETCH
+	PermissionCustomerGet                           // CUSTOMER_GET
+	PermissionCustomerUpdate                        // CUSTOMER_UPDATE
+	PermissionCustomerDelete                        // CUSTOMER_DELETE
+	PermissionCustomerOptionForDeliveryOrderForm    // CUSTOMER_OPTION_FOR_DELIVERY_ORDER_FORM
+	PermissionCustomerOptionForProductReceiveFilter // CUSTOMER_OPTION_FOR_PRODUCT_RECEIVE_FILTER
 
 	// customer debt
 	PermissionCustomerDebtUploadImage // CUSTOMER_DEBT_UPLOAD_IMAGE
