@@ -73,9 +73,9 @@ func (r *deliveryOrderRepository) prepareQuery(option model.DeliveryOrderQueryOp
 	if option.DriverUserId != nil {
 		stmt = stmt.Where(
 			stmtBuilder.Select("1").
-				From(fmt.Sprintf("%s doi", model.DeliveryOrderItemTableName)).
-				Where(squirrel.Expr("dorder.id = doi.delivery_order_id")).
-				Where(squirrel.Eq{"dorder.driver_user_id": option.DriverUserId}).
+				From(fmt.Sprintf("%s dod", model.DeliveryOrderDriverTableName)).
+				Where(squirrel.Expr("dorder.id = dod.delivery_order_id")).
+				Where(squirrel.Eq{"dod.driver_user_id": option.DriverUserId}).
 				Prefix("EXISTS (").Suffix(")"),
 		)
 	}
