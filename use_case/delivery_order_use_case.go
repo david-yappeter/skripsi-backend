@@ -445,6 +445,7 @@ func (u *deliveryOrderUseCase) FetchDriver(ctx context.Context, request dto_requ
 			request.Limit,
 			model.Sorts{},
 		),
+		Status:       request.Status,
 		DriverUserId: &authUser.Id,
 	}
 

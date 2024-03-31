@@ -49,7 +49,7 @@ type DeliveryOrderFetchRequest struct {
 
 type DeliveryOrderFetchDriverRequest struct {
 	PaginationRequest
-	Statuses []data_type.DeliveryOrderStatus `json:"statuses" validate:"omitempty,dive,data_type_enum"`
+	Status *data_type.DeliveryOrderStatus `json:"status" validate:"omitempty,dive,data_type_enum"`
 } // @name DeliveryOrderFetchDriverRequest
 
 type DeliveryOrderGetRequest struct {

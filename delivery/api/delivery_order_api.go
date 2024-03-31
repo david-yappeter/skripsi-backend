@@ -379,17 +379,17 @@ func (a *DeliveryOrderApi) Fetch() gin.HandlerFunc {
 //	@Summary	Filter for driver
 //	@tags		Delivery Orders
 //	@Accept		json
-//	@Param		dto_request.DeliveryOrderFetchRequest	body	dto_request.DeliveryOrderFetchRequest	true	"Body Request"
+//	@Param		dto_request.DeliveryOrderFetchDriverRequest	body	dto_request.DeliveryOrderFetchDriverRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.DeliveryOrderResponse}}
 func (a *DeliveryOrderApi) FetchDriver() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionDeliveryOrderCreate),
+		data_type.PermissionP(data_type.PermissionDeliveryOrderFetchDriver),
 		func(ctx apiContext) {
-			var request dto_request.DeliveryOrderFetchRequest
+			var request dto_request.DeliveryOrderFetchDriverRequest
 			ctx.mustBind(&request)
 
-			deliveryOrders, total := a.deliveryOrderUseCase.Fetch(ctx.context(), request)
+			deliveryOrders, total := a.deliveryOrderUseCase.FetchDriver(ctx.context(), request)
 
 			nodes := util.ConvertArray(deliveryOrders, dto_response.NewDeliveryOrderResponse)
 
