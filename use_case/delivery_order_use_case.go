@@ -276,6 +276,7 @@ func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.
 			Id:              util.NewUuid(),
 			DeliveryOrderId: deliveryOrder.Id,
 			ProductUnitId:   productUnit.Id,
+			ScaleToBase:     productUnit.ScaleToBase,
 			Qty:             request.Qty,
 			PricePerUnit:    *product.Price,
 			DiscountPerUnit: discountPerUnit,

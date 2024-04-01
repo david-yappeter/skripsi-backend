@@ -7,6 +7,7 @@ type DeliveryOrderItem struct {
 	DeliveryOrderId string  `db:"delivery_order_id"`
 	ProductUnitId   string  `db:"product_unit_id"`
 	Qty             float64 `db:"qty"`
+	ScaleToBase     float64 `db:"scale_to_base"`
 	PricePerUnit    float64 `db:"price_per_unit"`
 	DiscountPerUnit float64 `db:"discount_per_unit"`
 	Timestamp
@@ -29,6 +30,7 @@ func (m *DeliveryOrderItem) ToMap() map[string]interface{} {
 		"delivery_order_id": m.DeliveryOrderId,
 		"product_unit_id":   m.ProductUnitId,
 		"qty":               m.Qty,
+		"scale_to_base":     m.ScaleToBase,
 		"price_per_unit":    m.PricePerUnit,
 		"discount_per_unit": m.DiscountPerUnit,
 		"created_at":        m.CreatedAt,

@@ -11,9 +11,9 @@ type DeliveryOrderItemResponse struct {
 	DeliveryOrderId string   `json:"delivery_order_id"`
 	ProductUnitId   string   `json:"product_unit_id"`
 	Qty             float64  `json:"qty"`
-	PricePerUnit    float64  `json:"price_per_base_unit"`
+	PricePerUnit    float64  `json:"price_per_unit"`
 	PriceTotal      *float64 `json:"price_total"`
-	DiscountPerUnit float64  `json:"discount_per_base_unit"`
+	DiscountPerUnit float64  `json:"discount_per_unit"`
 	Timestamp
 
 	ProductUnit *ProductUnitResponse `json:"product_unit" extensions:"x-nullable"`
@@ -26,14 +26,14 @@ func NewDeliveryOrderItemResponse(deliveryOrderItem model.DeliveryOrderItem) Del
 		DeliveryOrderId: deliveryOrderItem.DeliveryOrderId,
 		ProductUnitId:   deliveryOrderItem.ProductUnitId,
 		Qty:             deliveryOrderItem.Qty,
-		PricePerUnit:    deliveryOrderItem.PricePerUnit,
-		DiscountPerUnit: deliveryOrderItem.DiscountPerUnit,
+		PricePerUnit:    deliveryOrderItem.PricePerUnit * deliveryOrderItem.ScaleToBase,
+		DiscountPerUnit: deliveryOrderItem.DiscountPerUnit * deliveryOrderItem.ScaleToBase,
 		Timestamp:       Timestamp(deliveryOrderItem.Timestamp),
 	}
 
 	if deliveryOrderItem.ProductUnit != nil {
 		r.ProductUnit = NewProductUnitResponseP(*deliveryOrderItem.ProductUnit)
-		r.PriceTotal = util.Float64P(deliveryOrderItem.ProductUnit.ScaleToBase * deliveryOrderItem.Qty * math.Max(deliveryOrderItem.PricePerUnit-deliveryOrderItem.DiscountPerUnit, 0))
+		r.PriceTotal = util.Float64P(deliveryOrderItem.Qty * math.Max(deliveryOrderItem.PricePerUnit-deliveryOrderItem.DiscountPerUnit, 0))
 	}
 
 	return r
