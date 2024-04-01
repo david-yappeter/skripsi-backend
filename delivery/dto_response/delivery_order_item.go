@@ -33,7 +33,7 @@ func NewDeliveryOrderItemResponse(deliveryOrderItem model.DeliveryOrderItem) Del
 
 	if deliveryOrderItem.ProductUnit != nil {
 		r.ProductUnit = NewProductUnitResponseP(*deliveryOrderItem.ProductUnit)
-		r.PriceTotal = util.Float64P(deliveryOrderItem.Qty * math.Max(deliveryOrderItem.PricePerUnit-deliveryOrderItem.DiscountPerUnit, 0))
+		r.PriceTotal = util.Float64P(deliveryOrderItem.Qty * math.Max(r.PricePerUnit-r.DiscountPerUnit, 0))
 	}
 
 	return r
