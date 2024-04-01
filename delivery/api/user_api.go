@@ -356,7 +356,7 @@ func RegisterUserApi(router gin.IRouter, useCaseManager use_case.UseCaseManager)
 	routerGroup.POST("/me", api.GetMe())
 	routerGroup.GET("/:id", api.Get())
 	routerGroup.PUT("/:id", api.Update())
-	routerGroup.PATCH("/:id", api.UpdatePassword())
+	routerGroup.PATCH("/:id/password", api.UpdatePassword())
 
 	routerGroup.POST("/:id/roles", api.AddRole())
 	routerGroup.DELETE("/:id/roles/:role_id", api.DeleteRole())
