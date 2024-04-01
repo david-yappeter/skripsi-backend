@@ -19,7 +19,8 @@ type DeliveryOrderAddItemRequest struct {
 } // @name DeliveryOrderAddItemRequest
 
 type DeliveryOrderAddImageRequest struct {
-	FilePath string `json:"file_path" validate:"required,not_empty"`
+	FilePath    string  `json:"file_path" validate:"required,not_empty"`
+	Description *string `json:"description" validate:"omitempty,not_empty"`
 
 	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderAddImageRequest

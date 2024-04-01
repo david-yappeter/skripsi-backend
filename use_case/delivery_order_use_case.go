@@ -352,12 +352,36 @@ func (u *deliveryOrderUseCase) AddImage(ctx context.Context, request dto_request
 		},
 	)
 
+	deliveryOrderImage := model.DeliveryOrderImage{
+		Id:              util.NewUuid(),
+		DeliveryOrderId: deliveryOrder.Id,
+		FileId:          imageFile.Id,
+		Description:     request.Description,
+	}
+
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
 		customer:             true,
 		deliveryOrderItems:   true,
 		deliveryOrderImages:  true,
 		deliveryOrderDrivers: true,
 	})
+
+	panicIfErr(
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			fileRepository := u.repositoryManager.FileRepository()
+			deliveryOrderImageRepository := u.repositoryManager.DeliveryOrderImageRepository()
+
+			if err := fileRepository.Insert(ctx, &imageFile); err != nil {
+				return err
+			}
+
+			if err := deliveryOrderImageRepository.Insert(ctx, &deliveryOrderImage); err != nil {
+				return err
+			}
+
+			return nil
+		}),
+	)
 
 	return deliveryOrder
 }
@@ -841,7 +865,20 @@ func (u *deliveryOrderUseCase) DeleteImage(ctx context.Context, request dto_requ
 	deliveryOrderImage := mustGetDeliveryOrderImageByDeliveryOrderIdAndFileId(ctx, u.repositoryManager, request.DeliveryOrderId, request.FileId, true)
 
 	panicIfErr(
-		u.repositoryManager.DeliveryOrderImageRepository().Delete(ctx, &deliveryOrderImage),
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			fileRepository := u.repositoryManager.FileRepository()
+			deliveryOrderImageRepository := u.repositoryManager.DeliveryOrderImageRepository()
+
+			if err := deliveryOrderImageRepository.Delete(ctx, &deliveryOrderImage); err != nil {
+				return err
+			}
+
+			if err := fileRepository.Delete(ctx, &file); err != nil {
+				return err
+			}
+
+			return nil
+		}),
 	)
 
 	u.mainFilesystem.Delete(file.Path)
