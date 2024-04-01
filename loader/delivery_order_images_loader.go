@@ -51,8 +51,8 @@ func NewDeliveryOrderImagesLoader(deliveryOrderImageRepository repository.Delive
 		}
 
 		deliveryOrderImagesByProductReceiveId := map[string][]model.DeliveryOrderImage{}
-		for _, deliveryOrderImages := range deliveryOrderImages {
-			deliveryOrderImagesByProductReceiveId[deliveryOrderImages.DeliveryOrderId] = append(deliveryOrderImagesByProductReceiveId[deliveryOrderImages.DeliveryOrderId], deliveryOrderImages)
+		for _, deliveryOrderImage := range deliveryOrderImages {
+			deliveryOrderImagesByProductReceiveId[deliveryOrderImage.DeliveryOrderId] = append(deliveryOrderImagesByProductReceiveId[deliveryOrderImage.DeliveryOrderId], deliveryOrderImage)
 		}
 
 		results := make([]*dataloader.Result, len(keys))
