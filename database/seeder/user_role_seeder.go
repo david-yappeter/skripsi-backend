@@ -19,6 +19,14 @@ var (
 		UserId: UserInventoryOne.Id,
 		RoleId: RoleInventory.Id,
 	}
+	userRoleCashierOne = model.UserRole{
+		UserId: UserCashierOne.Id,
+		RoleId: RoleCashier.Id,
+	}
+	userRoleDriverOne = model.UserRole{
+		UserId: UserDriverOne.Id,
+		RoleId: RoleDriver.Id,
+	}
 )
 
 func UserRoleSeeder(repositoryManager repository.RepositoryManager) {
@@ -44,5 +52,7 @@ func getUserRoleData() []model.UserRole {
 		userRoleSuperAdminOne,
 		userRoleSuperAdminTwo,
 		userRoleInventoryOne,
+		userRoleCashierOne,
+		userRoleDriverOne,
 	}
 }

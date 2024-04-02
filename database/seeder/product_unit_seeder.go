@@ -15,6 +15,14 @@ var (
 		Scale:       1,
 		ScaleToBase: 1,
 	}
+	ProductUnitTwo = model.ProductUnit{
+		Id:          "fa437b9d-89cd-47a6-8877-2a8e91336450",
+		ToUnitId:    &UnitKaleng.Id,
+		UnitId:      UnitDus.Id,
+		ProductId:   ProductKalengCatMerah.Id,
+		Scale:       12,
+		ScaleToBase: 12,
+	}
 )
 
 func ProductUnitSeeder(repositoryManager repository.RepositoryManager) {
@@ -38,5 +46,6 @@ func ProductUnitSeeder(repositoryManager repository.RepositoryManager) {
 func getProductUnitData() []model.ProductUnit {
 	return []model.ProductUnit{
 		ProductUnitOne,
+		ProductUnitTwo,
 	}
 }

@@ -7,6 +7,8 @@ import (
 )
 
 var Seeders = map[string]func(repositoryManager repository.RepositoryManager){
+	model.CustomerTypeTableName: CustomerTypeSeeder,
+	model.CustomerTableName:     CustomerSeeder,
 	model.FileTableName:         FileSeeder,
 	model.ProductTableName:      ProductSeeder,
 	model.ProductStockTableName: ProductStockSeeder,
@@ -39,6 +41,9 @@ func SeedAll(repositoryManager repository.RepositoryManager) {
 		model.ProductTableName,
 		model.ProductUnitTableName,
 		model.ProductStockTableName,
+
+		model.CustomerTypeTableName,
+		model.CustomerTableName,
 	}
 
 	for _, tableName := range seedOrders {

@@ -22,6 +22,22 @@ var (
 		Password: "$2a$10$5Vw7Is.qZ2.0yLf919fMye.0AFlaXD0gbS3M4k7yQjN0OifCYi3hG",
 		IsActive: true,
 	}
+
+	UserCashierOne = model.User{
+		Id:       "68ed7124-fa08-4720-b741-9fe4fa697c21",
+		Username: "cashier.one",
+		Name:     "Cashier One",
+		Password: "$2a$10$5Vw7Is.qZ2.0yLf919fMye.0AFlaXD0gbS3M4k7yQjN0OifCYi3hG",
+		IsActive: true,
+	}
+
+	UserDriverOne = model.User{
+		Id:       "fbfcbc34-77b9-4901-82f1-e5fa78d5aa48",
+		Username: "driver.one",
+		Name:     "Driver One",
+		Password: "$2a$10$5Vw7Is.qZ2.0yLf919fMye.0AFlaXD0gbS3M4k7yQjN0OifCYi3hG",
+		IsActive: true,
+	}
 )
 
 func UserSeeder(repositoryManager repository.RepositoryManager) {
@@ -46,5 +62,7 @@ func getUserData() []model.User {
 	return []model.User{
 		UserSuperAdminOne,
 		UserInventoryOne,
+		UserCashierOne,
+		UserDriverOne,
 	}
 }

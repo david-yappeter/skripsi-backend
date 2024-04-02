@@ -12,6 +12,11 @@ var (
 		Name:        "Kaleng",
 		Description: nil,
 	}
+	UnitDus = model.Unit{
+		Id:          "3867eb2b-8905-402c-bce3-c5953262ec03",
+		Name:        "Dus",
+		Description: nil,
+	}
 )
 
 func UnitSeeder(repositoryManager repository.RepositoryManager) {
@@ -35,5 +40,6 @@ func UnitSeeder(repositoryManager repository.RepositoryManager) {
 func getUnitData() []model.Unit {
 	return []model.Unit{
 		UnitKaleng,
+		UnitDus,
 	}
 }
