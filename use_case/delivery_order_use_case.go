@@ -261,10 +261,12 @@ func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.
 	if customer.CustomerTypeId != nil {
 		customerTypeDiscount := shouldGetCustomerTypeDiscountByCustomerTypeIdAndProductId(ctx, u.repositoryManager, *customer.CustomerTypeId, product.Id)
 
-		if customerTypeDiscount.DiscountAmount != nil {
-			discountPerUnit = *customerTypeDiscount.DiscountAmount
-		} else {
-			discountPerUnit = *customerTypeDiscount.DiscountPercentage * *product.Price / 100.0
+		if customerTypeDiscount != nil {
+			if customerTypeDiscount.DiscountAmount != nil {
+				discountPerUnit = *customerTypeDiscount.DiscountAmount
+			} else {
+				discountPerUnit = *customerTypeDiscount.DiscountPercentage * *product.Price / 100.0
+			}
 		}
 	}
 
