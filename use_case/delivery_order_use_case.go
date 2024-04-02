@@ -470,6 +470,9 @@ func (u *deliveryOrderUseCase) FetchDriver(ctx context.Context, request dto_requ
 			request.Limit,
 			model.Sorts{},
 		),
+		ExcludeStatuses: []data_type.DeliveryOrderStatus{
+			data_type.DeliveryOrderStatusPending,
+		},
 		Status:       request.Status,
 		DriverUserId: &authUser.Id,
 	}

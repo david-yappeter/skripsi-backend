@@ -90,6 +90,10 @@ func (r *deliveryOrderRepository) prepareQuery(option model.DeliveryOrderQueryOp
 		})
 	}
 
+	if len(option.ExcludeStatuses) > 0 {
+		stmt = stmt.Where(squirrel.NotEq{"dorder.status": option.ExcludeStatuses})
+	}
+
 	stmt = model.Prepare(stmt, &option)
 
 	return stmt
