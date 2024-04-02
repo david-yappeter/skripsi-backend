@@ -42,6 +42,16 @@ func (m *Cart) Subtotal() float64 {
 	return subtotal
 }
 
+func (m *Cart) TotalDiscount() float64 {
+	discount := 0.0
+
+	for _, cartItem := range m.CartItems {
+		discount += cartItem.TotalDiscount()
+	}
+
+	return discount
+}
+
 type CartQueryOption struct {
 	QueryOption
 

@@ -1,6 +1,9 @@
 package dto_response
 
-import "myapp/model"
+import (
+	"math"
+	"myapp/model"
+)
 
 type CartResponse struct {
 	Id               string  `json:"id"`
@@ -10,6 +13,8 @@ type CartResponse struct {
 	Timestamp
 
 	Subtotal       float64                 `json:"subtotal"`
+	TotalDiscount  float64                 `json:"total_discount"`
+	GrandTotal     float64                 `json:"grand_total"`
 	CashierSession *CashierSessionResponse `json:"cashier_session" extensions:"x-nullable"`
 	Items          []CartItemResponse      `json:"items" extensions:"x-nullable"`
 } // @name CartResponse
@@ -22,7 +27,10 @@ func NewCartResponse(cart model.Cart) CartResponse {
 		IsActive:         cart.IsActive,
 		Timestamp:        Timestamp(cart.Timestamp),
 		Subtotal:         cart.Subtotal(),
+		TotalDiscount:    cart.TotalDiscount(),
 	}
+
+	r.GrandTotal = math.Max(r.Subtotal-r.TotalDiscount, 0)
 
 	if cart.CashierSession != nil {
 		r.CashierSession = NewCashierSessionResponseP(*cart.CashierSession)

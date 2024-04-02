@@ -42,15 +42,6 @@ func (m CartItem) Subtotal() float64 {
 
 			if product.Price != nil {
 				subtotal += *productUnit.Product.Price
-
-				if product.ProductDiscount != nil && m.Qty >= product.ProductDiscount.MinimumQty {
-					productDiscount := product.ProductDiscount
-					if productDiscount.DiscountAmount != nil {
-						subtotal -= *product.ProductDiscount.DiscountAmount
-					} else {
-						subtotal -= *product.Price * *product.ProductDiscount.DiscountPercentage / 100.0
-					}
-				}
 			}
 
 		}
@@ -59,6 +50,36 @@ func (m CartItem) Subtotal() float64 {
 	subtotal *= m.Qty
 
 	return subtotal
+}
+
+func (m CartItem) Discount() float64 {
+	discount := 0.0
+
+	if m.ProductUnit != nil {
+		productUnit := m.ProductUnit
+
+		if productUnit.Product != nil {
+			product := productUnit.Product
+
+			if product.Price != nil {
+				if product.ProductDiscount != nil && m.Qty >= product.ProductDiscount.MinimumQty {
+					productDiscount := product.ProductDiscount
+					if productDiscount.DiscountAmount != nil {
+						discount = *product.ProductDiscount.DiscountAmount
+					} else {
+						discount = *product.Price * *product.ProductDiscount.DiscountPercentage / 100.0
+					}
+				}
+			}
+
+		}
+	}
+
+	return discount
+}
+
+func (m CartItem) TotalDiscount() float64 {
+	return m.Qty * m.Discount()
 }
 
 type CartItemQueryOption struct {
