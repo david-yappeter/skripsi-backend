@@ -12,7 +12,7 @@ func init() {
 				scale_to_base decimal(16,2) NOT NULL,
 				price_per_unit decimal(16,2) NOT NULL,
 				discount_per_unit decimal(16,2) NOT NULL,
-				created_at timestampra NOT NULL,
+				created_at timestamp NOT NULL,
 				updated_at timestamp NOT NULL,
 				CONSTRAINT delivery_order_items_pk PRIMARY KEY (id),
 				CONSTRAINT delivery_order_items_delivery_orders_fk FOREIGN KEY (delivery_order_id) REFERENCES delivery_orders (id),
