@@ -45,7 +45,7 @@ func NewCartItemsLoader(cartItemRepository repository.CartItemRepository) *CartI
 			ids[idx] = k.String()
 		}
 
-		cartItems, err := cartItemRepository.FetchByCartIds(ctx, ids)
+		cartItems, err := cartItemRepository.FetchByCartIdsOrderByCreatedAt(ctx, ids)
 		if err != nil {
 			panic(err)
 		}
