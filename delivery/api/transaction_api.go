@@ -23,7 +23,7 @@ type TransactionApi struct {
 //	@Accept		json
 //	@Param		dto_request.TransactionCheckoutCartRequest	body	dto_request.TransactionCheckoutCartRequest	true	"Body Request"
 //	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{transaction=dto_response.TransactionResponse}}
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{transaction=dto_response.TransactionResponse,printer_data=[]int16}}
 func (a *TransactionApi) Checkout() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionTransactionCheckoutCart),
@@ -31,13 +31,14 @@ func (a *TransactionApi) Checkout() gin.HandlerFunc {
 			var request dto_request.TransactionCheckoutCartRequest
 			ctx.mustBind(&request)
 
-			transaction := a.transactionUseCase.CheckoutCart(ctx.context(), request)
+			transaction, printerData := a.transactionUseCase.CheckoutCart(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
 				dto_response.Response{
 					Data: dto_response.DataResponse{
-						"transaction": dto_response.NewTransactionResponse(transaction),
+						"transaction":  dto_response.NewTransactionResponse(transaction),
+						"printer_data": printerData,
 					},
 				},
 			)

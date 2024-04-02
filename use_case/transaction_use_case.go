@@ -6,17 +6,19 @@ import (
 	"myapp/data_type"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
+	"myapp/internal/printer_template"
 	"myapp/loader"
 	"myapp/model"
 	"myapp/repository"
 	"myapp/util"
 
 	"golang.org/x/sync/errgroup"
+	"golang.org/x/text/language"
 )
 
 type TransactionUseCase interface {
 	//  create
-	CheckoutCart(ctx context.Context, request dto_request.TransactionCheckoutCartRequest) model.Transaction
+	CheckoutCart(ctx context.Context, request dto_request.TransactionCheckoutCartRequest) (model.Transaction, []int16)
 }
 
 type transactionUseCase struct {
@@ -51,7 +53,7 @@ func (u *transactionUseCase) shouldGetActiveCartByCashierSessionId(ctx context.C
 	return cart
 }
 
-func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_request.TransactionCheckoutCartRequest) model.Transaction {
+func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_request.TransactionCheckoutCartRequest) (model.Transaction, []int16) {
 	switch request.PaymentType {
 	case data_type.TransactionPaymentTypeCash:
 		if request.CashPaid == nil {
@@ -61,6 +63,7 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 
 	currentTime := util.CurrentDateTime()
 	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
+	cashierUser := mustGetUser(ctx, u.repositoryManager, cashierSession.UserId, true)
 
 	cart := u.shouldGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
 	if cart == nil {
@@ -286,5 +289,25 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 	transaction.TransactionItems = transactionItems
 	transaction.TransactionPayments = append(transaction.TransactionPayments, transactionPayment)
 
-	return transaction
+	isCash := request.PaymentType == data_type.TransactionPaymentTypeCash
+
+	templateAttribute := printer_template.EscposReceiptTemplateAttribute{
+		StoreName:      "Toko Setia Abadi",
+		Address:        "Jl. Marelan Raya No.88 A-B, Tanah Enam Ratus, Kec. Medan Marelan",
+		PhoneNumber:    "081362337116",
+		Date:           transaction.PaymentAt.DateTime().Format("02/01/2006 15:04:05"),
+		Cashier:        cashierUser.Name,
+		Items:          []printer_template.EscposReceiptItem{},
+		SubTotal:       nil,
+		DiscountAmount: nil,
+		GrandTotal:     util.CurrencyFormat(int(transaction.Total), language.Indonesian),
+		Paid:           util.CurrencyFormat(int(transaction.Total), language.Indonesian),
+		Change:         "0",
+		OpenDrawer:     true,
+		IsCash:         isCash,
+	}
+
+	printerDataContent := printer_template.EscposReceiptTemplate(templateAttribute)
+
+	return transaction, util.ArrayUint8ToArrayInt16(printerDataContent)
 }

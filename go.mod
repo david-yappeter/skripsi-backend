@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
+	github.com/david-yappeter/escpos v1.0.12
 	github.com/david-yappeter/go-tiktok v0.1.23
 	github.com/gabriel-vasile/mimetype v1.4.3
 	github.com/ghodss/yaml v1.0.0
