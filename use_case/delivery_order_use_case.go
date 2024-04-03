@@ -198,6 +198,8 @@ func (u *deliveryOrderUseCase) Create(ctx context.Context, request dto_request.D
 		authUser = model.MustGetUserCtx(ctx)
 	)
 
+	mustGetCustomer(ctx, u.repositoryManager, request.CustomerId, true)
+
 	deliveryOrder := model.DeliveryOrder{
 		Id:            util.NewUuid(),
 		CustomerId:    request.CustomerId,
