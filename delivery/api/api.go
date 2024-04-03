@@ -231,6 +231,7 @@ func registerRoutes(router gin.IRouter, useCaseManager use_case.UseCaseManager) 
 
 	RegisterAuthApi(router, useCaseManager)
 
+	RegisterSsrApi(router, useCaseManager)
 	RegisterWebhookApi(router, useCaseManager)
 }
 
