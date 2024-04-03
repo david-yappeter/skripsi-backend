@@ -14,6 +14,8 @@ var Seeders = map[string]func(repositoryManager repository.RepositoryManager){
 	model.ProductStockTableName: ProductStockSeeder,
 	model.ProductUnitTableName:  ProductUnitSeeder,
 	model.RoleTableName:         RoleSeeder,
+	model.SupplierTypeTableName: SupplierTypeSeeder,
+	model.SupplierTableName:     SupplierSeeder,
 	model.TiktokConfigTableName: TiktokConfigSeeder,
 	model.UserTableName:         UserSeeder,
 	model.UserRoleTableName:     UserRoleSeeder,
@@ -44,6 +46,9 @@ func SeedAll(repositoryManager repository.RepositoryManager) {
 
 		model.CustomerTypeTableName,
 		model.CustomerTableName,
+
+		model.SupplierTypeTableName,
+		model.SupplierTableName,
 	}
 
 	for _, tableName := range seedOrders {
