@@ -26,6 +26,7 @@ func (a *SsrApi) Ssr() gin.HandlerFunc {
 			ctx.ginCtx.Header("Content-Type", "text/event-stream")
 			ctx.ginCtx.Header("Cache-Control", "no-cache")
 			ctx.ginCtx.Header("Connection", "keep-alive")
+			ctx.ginCtx.Header("X-Accel-Buffering", "no")
 
 			// Send a message every second
 			for {
