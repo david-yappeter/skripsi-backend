@@ -41,6 +41,7 @@ type DeliveryOrderUseCase interface {
 	FetchDriver(ctx context.Context, request dto_request.DeliveryOrderFetchDriverRequest) ([]model.DeliveryOrder, int)
 	Get(ctx context.Context, request dto_request.DeliveryOrderGetRequest) model.DeliveryOrder
 	ActiveForDriver(ctx context.Context) *model.DeliveryOrder
+	LatestDeliveryLocation(ctx context.Context, request dto_request.LatestDeliveryLocationRequest) *model.DeliveryOrderPosition
 
 	// update
 	MarkOngoing(ctx context.Context, request dto_request.DeliveryOrderMarkOngoingRequest) model.DeliveryOrder
@@ -523,6 +524,19 @@ func (u *deliveryOrderUseCase) ActiveForDriver(ctx context.Context) *model.Deliv
 	}
 
 	return deliveryOrder
+}
+
+func (u *deliveryOrderUseCase) LatestDeliveryLocation(ctx context.Context, request dto_request.LatestDeliveryLocationRequest) *model.DeliveryOrderPosition {
+	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
+
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusDelivering {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_DELIVERING"))
+	}
+
+	deliveryOrderPosition, err := u.repositoryManager.DeliveryOrderPositionRepository().GetByDeliveryOrderId(ctx, deliveryOrder.Id)
+	panicIfErr(err, constant.ErrNoData)
+
+	return deliveryOrderPosition
 }
 
 func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.DeliveryOrderCancelRequest) model.DeliveryOrder {

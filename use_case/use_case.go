@@ -269,6 +269,12 @@ func mustGetDeliveryOrder(ctx context.Context, repositoryManager repository.Repo
 	return *deliveryOrder
 }
 
+func mustGetDeliveryOrderPosition(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.DeliveryOrderPosition {
+	deliveryOrderPosition, err := repositoryManager.DeliveryOrderPositionRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "DELIVERY_ORDER_POSITION.NOT_FOUND", isValidate)
+	return *deliveryOrderPosition
+}
+
 func mustGetDeliveryOrderItem(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.DeliveryOrderItem {
 	deliveryOrderItem, err := repositoryManager.DeliveryOrderItemRepository().Get(ctx, id)
 	panicIfRepositoryError(err, "DELIVERY_ORDER_ITEM.NOT_FOUND", isValidate)

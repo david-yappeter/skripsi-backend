@@ -57,6 +57,10 @@ type DeliveryOrderGetRequest struct {
 	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderGetRequest
 
+type LatestDeliveryLocationRequest struct {
+	DeliveryOrderId string `json:"-" swaggerignore:"true"`
+} // @name LatestDeliveryLocationRequest
+
 type DeliveryOrderMarkOngoingRequest struct {
 	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderMarkOngoingRequest
