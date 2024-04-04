@@ -7,3 +7,7 @@ type TransactionCheckoutCartRequest struct {
 	CashPaid        *float64                         `json:"cash_paid" validate:"omitempty,gte=0" extensions:"x-nullable"`
 	ReferenceNumber *string                          `json:"reference_number" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name TransactionCheckoutCartRequest
+
+type TransactionGetRequest struct {
+	TransactionId string `json:"-" swaggerignore:"true"`
+} // @name TransactionGetRequest

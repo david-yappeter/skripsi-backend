@@ -20,7 +20,7 @@ type SsrApi struct {
 //
 //	@Router		/ssr/maps/{delivery_order_id} [get]
 //	@Summary	Get SSR Maps Data
-//	@tags		Suppliers
+//	@tags		Server Sent Event
 //	@Accept		json
 //	@Param		delivery_order_id	path	string	true	"Delivery Order Id"
 //	@Produce	json

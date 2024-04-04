@@ -26,6 +26,19 @@ type CashierSessionGetRequest struct {
 	CashierSessionId string `json:"-" swaggerignore:"true"`
 } // @name CashierSessionGetRequest
 
+type CashierSessionFetchTransactionSorts []struct {
+	Field     string `json:"field" validate:"required,oneof=payment_at updated_at" example:"payment_at"`
+	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"desc"`
+} // @name CashierSessionFetchTransactionSorts
+
+type CashierSessionFetchTransactionRequest struct {
+	PaginationRequest
+	Sorts CashierSessionFetchTransactionSorts `json:"sorts" validate:"unique=Field,dive"`
+
+	CashierSessionId string                       `json:"cashier_session_id" validate:"required,not_empty,uuid"`
+	Status           *data_type.TransactionStatus `json:"status" validate:"omitempty,data_type_enum"`
+} // @name CashierSessionFetchTransactionRequest
+
 type CashierSessionDownloadReportRequest struct {
 	CashierSessionId string `json:"-" swaggerignore:"true"`
 } // @name CashierSessionDownloadReportRequest

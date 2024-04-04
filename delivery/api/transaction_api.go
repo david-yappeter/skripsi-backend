@@ -46,6 +46,39 @@ func (a *TransactionApi) Checkout() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/transactions/{id} [get]
+//	@Summary	Get Transaction
+//	@tags		Transactions
+//	@Accept		json
+//	@Param		id											path	string										true	"Transaction Id"
+//	@Param		dto_request.TransactionCheckoutCartRequest	body	dto_request.TransactionCheckoutCartRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{transaction=dto_response.TransactionResponse}}
+func (a *TransactionApi) Get() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionTransactionGet),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.TransactionGetRequest
+			ctx.mustBind(&request)
+			request.TransactionId = id
+
+			transaction := a.transactionUseCase.Get(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"transaction": dto_response.NewTransactionResponse(transaction),
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterTransactionApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := TransactionApi{
 		api:                newApi(useCaseManager),
@@ -54,4 +87,5 @@ func RegisterTransactionApi(router gin.IRouter, useCaseManager use_case.UseCaseM
 
 	routerGroup := router.Group("/transactions")
 	routerGroup.POST("/checkout", api.Checkout())
+	routerGroup.GET("/:id", api.Get())
 }

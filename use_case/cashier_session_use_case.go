@@ -25,6 +25,7 @@ type CashierSessionUseCase interface {
 
 	//  read
 	Fetch(ctx context.Context, request dto_request.CashierSessionFetchRequest) ([]model.CashierSession, int)
+	FetchTransaction(ctx context.Context, request dto_request.CashierSessionFetchTransactionRequest) ([]model.Transaction, int)
 	Get(ctx context.Context, request dto_request.CashierSessionGetRequest) model.CashierSession
 	DownloadReport(ctx context.Context, requets dto_request.CashierSessionDownloadReportRequest) (io.ReadCloser, int64, string, string)
 	GetByCurrentUser(ctx context.Context) *model.CashierSession
@@ -125,6 +126,27 @@ func (u *cashierSessionUseCase) Fetch(ctx context.Context, request dto_request.C
 	})
 
 	return cashierSessions, total
+}
+
+func (u *cashierSessionUseCase) FetchTransaction(ctx context.Context, request dto_request.CashierSessionFetchTransactionRequest) ([]model.Transaction, int) {
+	mustGetCashierSession(ctx, u.repositoryManager, request.CashierSessionId, true)
+	queryOption := model.TransactionQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts(request.Sorts),
+		),
+		CashierSessionId: &request.CashierSessionId,
+		Status:           request.Status,
+	}
+
+	transactions, err := u.repositoryManager.TransactionRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.TransactionRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	return transactions, total
 }
 
 func (u *cashierSessionUseCase) Get(ctx context.Context, request dto_request.CashierSessionGetRequest) model.CashierSession {

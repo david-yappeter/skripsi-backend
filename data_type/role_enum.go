@@ -243,12 +243,14 @@ func GetRoleCashier() []Permission {
 		PermissionCashierSessionFetch,
 		PermissionCashierSessionStart,
 		PermissionCashierSessionGet,
+		PermissionCashierSessionFetchTransaction,
 		PermissionCashierSessionDownloadReport,
 		PermissionCashierSessionGetCurrent,
 		PermissionCashierSessionEnd,
 
 		// transaction
 		PermissionTransactionCheckoutCart,
+		PermissionTransactionGet,
 	}
 }
 

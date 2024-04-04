@@ -16,9 +16,17 @@ import (
 	"golang.org/x/text/language"
 )
 
+type transactionLoaderParams struct {
+	items   bool
+	payment bool
+}
+
 type TransactionUseCase interface {
 	//  create
 	CheckoutCart(ctx context.Context, request dto_request.TransactionCheckoutCartRequest) (model.Transaction, []int16)
+
+	// read
+	Get(ctx context.Context, request dto_request.TransactionGetRequest) model.Transaction
 }
 
 type transactionUseCase struct {
@@ -51,6 +59,23 @@ func (u *transactionUseCase) shouldGetActiveCartByCashierSessionId(ctx context.C
 	panicIfErr(err, constant.ErrNoData)
 
 	return cart
+}
+
+func (u *transactionUseCase) mustLoadTransactionDatas(ctx context.Context, transactions []*model.Transaction, option transactionLoaderParams) {
+	transactionItemsLoader := loader.NewTransactionItemsLoader(u.repositoryManager.TransactionItemRepository())
+	transactionPaymentsLoader := loader.NewTransactionPaymentsLoader(u.repositoryManager.TransactionPaymentRepository())
+
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		for i := range transactions {
+			if option.items {
+				group.Go(transactionItemsLoader.TransactionFn(transactions[i]))
+			}
+
+			if option.payment {
+				group.Go(transactionPaymentsLoader.TransactionFn(transactions[i]))
+			}
+		}
+	}))
 }
 
 func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_request.TransactionCheckoutCartRequest) (model.Transaction, []int16) {
@@ -310,4 +335,15 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 	printerDataContent := printer_template.EscposReceiptTemplate(templateAttribute)
 
 	return transaction, util.ArrayUint8ToArrayInt16(printerDataContent)
+}
+
+func (u *transactionUseCase) Get(ctx context.Context, request dto_request.TransactionGetRequest) model.Transaction {
+	transaction := mustGetTransaction(ctx, u.repositoryManager, request.TransactionId, true)
+
+	u.mustLoadTransactionDatas(ctx, []*model.Transaction{&transaction}, transactionLoaderParams{
+		items:   true,
+		payment: true,
+	})
+
+	return transaction
 }
