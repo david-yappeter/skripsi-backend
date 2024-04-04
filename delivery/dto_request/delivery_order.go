@@ -76,6 +76,7 @@ type DeliveryOrderMarkCompletedRequest struct {
 type DeliveryOrderDeliveryLocationRequest struct {
 	Latitude  float64 `json:"latitude" validate:"latitude"`
 	Longitude float64 `json:"longitude" validate:"longitude"`
+	Bearing   float64 `json:"bearing" validate:"min=0,max=360"`
 
 	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderMarkCompletedRequest

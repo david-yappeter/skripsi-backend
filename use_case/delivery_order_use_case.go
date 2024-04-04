@@ -802,6 +802,7 @@ func (u *deliveryOrderUseCase) DeliveryLocation(ctx context.Context, request dto
 			DriverUserId:    authUser.Id,
 			Latitude:        request.Latitude,
 			Longitude:       request.Longitude,
+			Bearing:         request.Bearing,
 		}
 	} else {
 		if authUser.Id != deliveryOrderPosition.DriverUserId {

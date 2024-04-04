@@ -8,6 +8,7 @@ type DeliveryOrderPosition struct {
 	DriverUserId    string  `db:"driver_user_id"`
 	Latitude        float64 `db:"latitude"`
 	Longitude       float64 `db:"longitude"`
+	Bearing         float64 `db:"bearing"`
 
 	Timestamp
 }
@@ -27,6 +28,7 @@ func (m *DeliveryOrderPosition) ToMap() map[string]interface{} {
 		"driver_user_id":    m.DriverUserId,
 		"latitude":          m.Latitude,
 		"longitude":         m.Longitude,
+		"bearing":           m.Bearing,
 		"created_at":        m.CreatedAt,
 		"updated_at":        m.UpdatedAt,
 	}

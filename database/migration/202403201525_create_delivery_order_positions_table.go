@@ -10,6 +10,7 @@ func init() {
 				driver_user_id char(36) NOT NULL,
 				latitude DOUBLE PRECISION NOT NULL,
 				longitude DOUBLE PRECISION NOT NULL,
+				bearing DOUBLE PRECISION NOT NULL,
 				created_at timestamp NOT NULL,
 				updated_at timestamp NOT NULL,
 				CONSTRAINT delivery_order_positions_pk PRIMARY KEY (id),
