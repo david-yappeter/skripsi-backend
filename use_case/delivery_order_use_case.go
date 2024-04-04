@@ -802,8 +802,8 @@ func (u *deliveryOrderUseCase) DeliveryLocation(ctx context.Context, request dto
 	authUser := model.MustGetUserCtx(ctx)
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, false)
 
-	if deliveryOrder.Status != data_type.DeliveryOrderStatusOngoing {
-		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_ONGOING"))
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusDelivering {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_DELIVERING"))
 	}
 
 	deliveryOrderPosition := shouldGetDeliveryOrderPositionByDeliveryOrderId(ctx, u.repositoryManager, request.DeliveryOrderId)
