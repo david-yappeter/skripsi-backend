@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"myapp/delivery/dto_request"
+	"myapp/delivery/dto_response"
 	"myapp/use_case"
 	"time"
 
@@ -21,9 +22,9 @@ type SsrApi struct {
 //	@Summary	Get SSR Maps Data
 //	@tags		Suppliers
 //	@Accept		json
-//	@Param		delivery_order_id path string true "Delivery Order Id"
+//	@Param		delivery_order_id	path	string	true	"Delivery Order Id"
 //	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.ShopOrderResponse}}
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order_position=dto_response.DeliveryOrderPositionResponse}}
 func (a *SsrApi) Ssr() gin.HandlerFunc {
 	return a.Guest(
 		func(ctx apiContext) {
@@ -53,7 +54,17 @@ func (a *SsrApi) Ssr() gin.HandlerFunc {
 					return
 				case <-ticker.C:
 					deliveryOrderPosition := a.deliveryOrderUseCase.LatestDeliveryLocation(ctx.context(), request)
-					jsonData, err := json.Marshal(deliveryOrderPosition)
+
+					var resp *dto_response.DeliveryOrderPositionResponse
+					if deliveryOrderPosition != nil {
+						resp = dto_response.NewDeliveryOrderPositionResponseP(*deliveryOrderPosition)
+					}
+
+					jsonData, err := json.Marshal(dto_response.Response{
+						Data: dto_response.DataResponse{
+							"delivery_order_position": resp,
+						},
+					})
 					if err != nil {
 						fmt.Println("Error encoding JSON:", err)
 						return
