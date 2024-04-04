@@ -69,7 +69,10 @@ func (a *SsrApi) Ssr() gin.HandlerFunc {
 						fmt.Println("Error encoding JSON:", err)
 						return
 					}
-					ctx.ginCtx.Writer.WriteString(string(jsonData))
+
+					// this format 'data: ${JSON_DATA}\n\n" is important
+					event := fmt.Sprintf("data: %s\n\n", string(jsonData))
+					ctx.ginCtx.Writer.WriteString(string(event))
 					ctx.ginCtx.Writer.Flush()
 				}
 			}
