@@ -701,6 +701,7 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 						})
 
 						productStockMutation.BaseQtyLeft -= deductQtyLeft
+						deductQtyLeft = 0
 					}
 
 					if err := productStockMutationRepository.Update(ctx, productStockMutation); err != nil {
