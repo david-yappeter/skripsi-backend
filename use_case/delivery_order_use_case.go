@@ -800,13 +800,15 @@ func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_re
 
 func (u *deliveryOrderUseCase) DeliveryLocation(ctx context.Context, request dto_request.DeliveryOrderDeliveryLocationRequest) {
 	authUser := model.MustGetUserCtx(ctx)
-	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, false)
 
-	if deliveryOrder.Status != data_type.DeliveryOrderStatusDelivering {
-		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_DELIVERING"))
+	deliveryOrder, err := u.repositoryManager.DeliveryOrderRepository().GetByDriverUserIdAndStatusDelivering(ctx, authUser.Id)
+	panicIfErr(err, constant.ErrNoData)
+
+	if deliveryOrder == nil {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.NO_ACTIVE_DELIVERING"))
 	}
 
-	deliveryOrderPosition := shouldGetDeliveryOrderPositionByDeliveryOrderId(ctx, u.repositoryManager, request.DeliveryOrderId)
+	deliveryOrderPosition := shouldGetDeliveryOrderPositionByDeliveryOrderId(ctx, u.repositoryManager, deliveryOrder.Id)
 	isNewDeliveryOrderPosition := deliveryOrderPosition == nil
 
 	if isNewDeliveryOrderPosition {
