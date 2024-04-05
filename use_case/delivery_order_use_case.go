@@ -827,6 +827,7 @@ func (u *deliveryOrderUseCase) DeliveryLocation(ctx context.Context, request dto
 
 		deliveryOrderPosition.Latitude = request.Latitude
 		deliveryOrderPosition.Longitude = request.Longitude
+		deliveryOrderPosition.Bearing = request.Bearing
 	}
 
 	panicIfErr(
