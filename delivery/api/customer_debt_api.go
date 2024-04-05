@@ -115,7 +115,7 @@ func (a *CustomerDebtApi) Get() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/customer-debts/{id} [put]
+//	@Router		/customer-debts/{id}/payment [patch]
 //	@Summary	Payment
 //	@tags		Customer Debts
 //	@Accept		json
