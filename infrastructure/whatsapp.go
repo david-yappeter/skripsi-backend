@@ -49,6 +49,8 @@ func NewWhatsappManager(whatappConfig global.WhatsappConfig) WhatsappManager {
 	client := whatsmeow.NewClient(deviceStore, nil)
 	client.AddEventHandler(eventHandler)
 
+	client.Connect()
+
 	return &whatsappManager{
 		sqlstoreContainer: container,
 		client:            client,
@@ -95,9 +97,11 @@ func (i *whatsappManager) LoginQr(ctx context.Context) (chan (string), error) {
 }
 
 func (i *whatsappManager) SendMessage(ctx context.Context, to types.JID, message *waProto.Message) error {
-	_, err := i.client.SendMessage(ctx, to, message)
-	if err != nil {
-		return err
+	if i.client.Store.ID != nil {
+		_, err := i.client.SendMessage(ctx, to, message)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
