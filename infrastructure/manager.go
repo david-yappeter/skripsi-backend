@@ -19,11 +19,16 @@ type InfrastructureManager interface {
 
 	// logger stack
 	GetLoggerStack() LoggerStack
+
+	// whatsapp manager
+	GetWhatsappManager() WhatsappManager
+	CloseWhatsappManager()
 }
 
 type infrastructureManager struct {
-	sqlDB       *sqlx.DB
-	loggerStack LoggerStack
+	sqlDB           *sqlx.DB
+	loggerStack     LoggerStack
+	whatsappManager WhatsappManager
 }
 
 func (i *infrastructureManager) createDB() error {
@@ -134,9 +139,18 @@ func (i infrastructureManager) CloseDB() error {
 	return nil
 }
 
+func (i infrastructureManager) GetWhatsappManager() WhatsappManager {
+	return i.whatsappManager
+}
+
+func (i infrastructureManager) CloseWhatsappManager() {
+	i.whatsappManager.Disconnect()
+}
+
 func NewInfrastructureManager() InfrastructureManager {
 	return &infrastructureManager{
-		sqlDB:       NewPostgreSqlDB(global.GetPostgresConfig()),
-		loggerStack: NewLoggerStack(),
+		sqlDB:           NewPostgreSqlDB(global.GetPostgresConfig()),
+		loggerStack:     NewLoggerStack(),
+		whatsappManager: NewWhatsappManager(global.GetWhatsappConfig()),
 	}
 }

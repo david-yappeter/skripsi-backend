@@ -32,6 +32,7 @@ type UseCaseManager interface {
 	UnitUseCase() UnitUseCase
 	UserUseCase() UserUseCase
 	WebhookUseCase() WebhookUseCase
+	WhatsappUseCase() WhatsappUseCase
 }
 
 type useCaseManager struct {
@@ -59,6 +60,7 @@ type useCaseManager struct {
 	unitUseCase            UnitUseCase
 	userUseCase            UserUseCase
 	webhookUseCase         WebhookUseCase
+	whatsappUseCase        WhatsappUseCase
 }
 
 func (u *useCaseManager) AuthUseCase() AuthUseCase {
@@ -157,11 +159,16 @@ func (u *useCaseManager) WebhookUseCase() WebhookUseCase {
 	return u.webhookUseCase
 }
 
+func (u *useCaseManager) WhatsappUseCase() WhatsappUseCase {
+	return u.whatsappUseCase
+}
+
 func NewUseCaseManager(
 	repositoryManager repository.RepositoryManager,
 	filesystemManager filesystemInternal.FilesystemManager,
 	jwt jwtInternal.Jwt,
 	loggerStack infrastructure.LoggerStack,
+	whatsappManager infrastructure.WhatsappManager,
 ) UseCaseManager {
 	return &useCaseManager{
 		authUseCase: NewAuthUseCase(
@@ -245,6 +252,10 @@ func NewUseCaseManager(
 		),
 		webhookUseCase: NewWebhookUseCase(
 			repositoryManager,
+		),
+		whatsappUseCase: NewWhatsappUseCase(
+			repositoryManager,
+			whatsappManager,
 		),
 	}
 }

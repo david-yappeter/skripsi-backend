@@ -52,3 +52,6 @@ docs
 
 # Main Benchmark
 benchmark_test.go
+
+# whatsapp store
+whatsapp_store.db

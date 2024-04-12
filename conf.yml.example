@@ -17,6 +17,8 @@ postgres:
   username: postgres
   password: secret
   database: skripsi
+whatsapp:
+  sql_store_file_path: .\\storage\\whatsapp\\store.db
 jwt:
   private_key_file_path: ./storage/jwt/private.key
   public_key_file_path: ./storage/jwt/public.key

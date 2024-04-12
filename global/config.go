@@ -29,6 +29,10 @@ type PostgresConfig struct {
 	Database string `yaml:"database"`
 }
 
+type WhatsappConfig struct {
+	SqlStoreFilePath string `yaml:"sql_store_file_path"`
+}
+
 type JwtConfig struct {
 	PrivateKeyFilePath string `yaml:"private_key_file_path"`
 	PublicKeyFilePath  string `yaml:"public_key_file_path"`
@@ -54,6 +58,7 @@ type YamlConfig struct {
 	PdfGeneratorUrl    string            `yaml:"pdf_generator_url"`
 	CorsAllowedOrigins []string          `yaml:"cors_allowed_origins"`
 	Postgres           PostgresConfig    `yaml:"postgres"`
+	Whatsapp           WhatsappConfig    `yaml:"whatsapp"`
 	JwtConfig          JwtConfig         `yaml:"jwt"`
 	TelegramBotConfig  TelegramBotConfig `yaml:"telegram"`
 }
@@ -145,6 +150,10 @@ func GetFilesystem() string {
 
 func GetPostgresConfig() PostgresConfig {
 	return config.Postgres
+}
+
+func GetWhatsappConfig() WhatsappConfig {
+	return config.Whatsapp
 }
 
 func GetTelegramConfig() TelegramBotConfig {

@@ -69,6 +69,8 @@ func (c Container) Close() error {
 		return err
 	}
 
+	c.infrastructureManager.CloseWhatsappManager()
+
 	return nil
 }
 
@@ -96,6 +98,7 @@ func NewContainer(config Config) *Container {
 			container.filesystemManager,
 			container.jwt,
 			container.LoggerStack(),
+			container.infrastructureManager.GetWhatsappManager(),
 		)
 	}
 
