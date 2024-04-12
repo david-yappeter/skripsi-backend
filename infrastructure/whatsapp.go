@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"myapp/global"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 	"go.mau.fi/whatsmeow"
@@ -55,6 +56,10 @@ func NewWhatsappManager(whatappConfig global.WhatsappConfig) WhatsappManager {
 }
 
 func (i *whatsappManager) IsLoggedIn(ctx context.Context) (isLoggedIn bool) {
+	i.client.Connect()
+
+	time.Sleep(1 * time.Second)
+
 	return i.client.IsLoggedIn()
 }
 
@@ -70,9 +75,6 @@ func (i *whatsappManager) LoginQr(ctx context.Context) (chan (string), error) {
 
 		// Assuming i.client is your WhatsMeow client
 		if i.client.Store.ID == nil {
-			// ctxWithCancel, cancel := context.WithTimeout(ctx, time.Minute)
-			// defer cancel()
-
 			qrChan, _ := i.client.GetQRChannel(ctx)
 
 			i.client.Connect()
@@ -82,47 +84,14 @@ func (i *whatsappManager) LoginQr(ctx context.Context) (chan (string), error) {
 					// Assuming evt.Code contains the QR code string
 					qrStringChan <- evt.Code
 				} else {
-					fmt.Println("Login event:", evt.Event)
+					break
 				}
 			}
 		}
-
 		qrStringChan <- "" // Return an empty string if QR code retrieval fails
 	}()
 
 	return qrStringChan, nil
-	// Wait for the QR code string or timeout
-	// select {
-	// case qrLogin := <-qrStringChan:
-	// 	return qrLogin, nil
-	// 	// case <-ctxWithCancel.Done():
-	// 	// 	return "", ctxWithCancel.Err() // Return error if context timeout occurs
-	// }
-
-	// var qrLogin = ""
-	// if i.client.Store.ID == nil {
-	// 	qrChan, err := i.client.GetQRChannel(ctx)
-	// 	if err != nil {
-	// 		return qrLogin, err
-	// 	}
-
-	// 	err = i.client.Connect()
-	// 	if err != nil {
-	// 		return qrLogin, err
-	// 	}
-
-	// 	for evt := range qrChan {
-	// 		if evt.Event == "code" {
-	// 			// Assuming evt.Code contains the QR code string
-	// 			qrLogin = evt.Code
-	// 			break
-	// 		}
-	// 	}
-
-	// 	return qrLogin, nil
-	// }
-
-	// return qrLogin, nil
 }
 
 func (i *whatsappManager) SendMessage(ctx context.Context, to types.JID, message *waProto.Message) error {

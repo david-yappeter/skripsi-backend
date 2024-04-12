@@ -7,6 +7,7 @@ import (
 )
 
 type WhatsappUseCase interface {
+	IsLoggedIn(ctx context.Context) bool
 	Login(ctx context.Context) chan (string)
 }
 
@@ -23,6 +24,10 @@ func NewWhatsappUseCase(
 		repositoryManager: repositoryManager,
 		whatsappManager:   whatsappManager,
 	}
+}
+
+func (u *whatsappUseCase) IsLoggedIn(ctx context.Context) bool {
+	return u.whatsappManager.IsLoggedIn(ctx)
 }
 
 func (u *whatsappUseCase) Login(ctx context.Context) chan (string) {

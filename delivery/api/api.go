@@ -228,6 +228,7 @@ func registerRoutes(router gin.IRouter, useCaseManager use_case.UseCaseManager) 
 	RegisterTransactionApi(router, useCaseManager)
 	RegisterUnitApi(router, useCaseManager)
 	RegisterUserApi(router, useCaseManager)
+	RegisterWhatsappApi(router, useCaseManager)
 
 	RegisterAuthApi(router, useCaseManager)
 

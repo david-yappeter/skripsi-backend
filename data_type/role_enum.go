@@ -52,6 +52,9 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionShopOrderFetch,
 		PermissionShopOrderGet,
 
+		// ssr
+		PermissionSsrWhatsappLogin,
+
 		// supplier
 		PermissionSupplierCreate,
 		PermissionSupplierFetch,
@@ -91,6 +94,9 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionUnitDelete,
 		PermissionUnitOptionForProductUnitForm,
 		PermissionUnitOptionForProductUnitToUnitForm,
+
+		// whatsapp
+		PermissionWhatsappIsLoggedIn,
 	}
 }
 

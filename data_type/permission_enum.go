@@ -127,6 +127,9 @@ const (
 	PermissionShopOrderFetch // SHOP_ORDER_FETCH
 	PermissionShopOrderGet   // SHOP_ORDER_GET
 
+	// ssr
+	PermissionSsrWhatsappLogin // SSR_WHATSAPP_LOGIN
+
 	// supplier
 	PermissionSupplierCreate                        // SUPPLIER_CREATE
 	PermissionSupplierFetch                         // SUPPLIER_FETCH
@@ -182,4 +185,7 @@ const (
 	PermissionUnitDelete                         // UNIT_DELETE
 	PermissionUnitOptionForProductUnitForm       // UNIT_OPTION_FOR_PRODUCT_UNIT_FORM
 	PermissionUnitOptionForProductUnitToUnitForm // UNIT_OPTION_FOR_PRODUCT_UNIT_TO_UNIT_FORM
+
+	// whatsapp
+	PermissionWhatsappIsLoggedIn // WHATSAPP_IS_LOGGED_IN
 )
