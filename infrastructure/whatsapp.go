@@ -50,8 +50,6 @@ func NewWhatsappManager(whatappConfig global.WhatsappConfig) WhatsappManager {
 	client := whatsmeow.NewClient(deviceStore, nil)
 	client.AddEventHandler(eventHandler)
 
-	client.Connect()
-
 	return &whatsappManager{
 		sqlstoreContainer: container,
 		client:            client,
@@ -59,7 +57,9 @@ func NewWhatsappManager(whatappConfig global.WhatsappConfig) WhatsappManager {
 }
 
 func (i *whatsappManager) IsLoggedIn(ctx context.Context) (isLoggedIn bool) {
-	i.client.Connect()
+	if !i.client.IsConnected() {
+		i.client.Connect()
+	}
 
 	time.Sleep(1 * time.Second)
 
@@ -99,6 +99,10 @@ func (i *whatsappManager) LoginQr(ctx context.Context) (chan (string), error) {
 
 func (i *whatsappManager) SendMessage(ctx context.Context, to types.JID, message *waProto.Message) error {
 	if i.client.Store.ID != nil {
+		if !i.client.IsConnected() {
+			i.client.Connect()
+		}
+
 		_, err := i.client.SendMessage(ctx, to, message)
 		if err != nil {
 			return err
