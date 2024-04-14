@@ -850,8 +850,8 @@ Salam hangat,
 func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_request.DeliveryOrderMarkCompletedRequest) model.DeliveryOrder {
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
 
-	if deliveryOrder.Status != data_type.DeliveryOrderStatusPending {
-		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusDelivering {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_DELIVERING"))
 	}
 
 	deliveryOrder.Status = data_type.DeliveryOrderStatusCompleted
