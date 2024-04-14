@@ -882,20 +882,20 @@ func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_re
 			Conversation: util.Pointer(fmt.Sprintf(
 				`🚚 Pengiriman Selesai - Berikan Ulasan Anda!
 
-				Halo %s,
-				
-				Kami senang memberitahu Anda bahwa pesanan Anda telah sukses dikirim! 🎉 Kami berharap pesanan tersebut tiba dengan baik dan memenuhi harapan Anda.
-				
-				Jika Anda memiliki waktu, kami sangat menghargai ulasan dan masukan Anda tentang pengalaman berbelanja bersama kami. Ini akan membantu kami terus meningkatkan layanan kami kepada pelanggan.
-				
-				🌟 Berikan Ulasan Anda: %s
-				
-				Namun, jika Anda tidak memiliki waktu saat ini atau memiliki pertanyaan lebih lanjut, jangan ragu untuk menghubungi kami di nomor ini.
-				
-				Terima kasih atas dukungan dan kepercayaan Anda kepada kami!
-				
-				Salam hangat,
-				%s
+Halo %s,
+
+Kami senang memberitahu Anda bahwa pesanan Anda telah sukses dikirim! 🎉 Kami berharap pesanan tersebut tiba dengan baik dan memenuhi harapan Anda.
+
+Jika Anda memiliki waktu, kami sangat menghargai ulasan dan masukan Anda tentang pengalaman berbelanja bersama kami. Ini akan membantu kami terus meningkatkan layanan kami kepada pelanggan.
+
+🌟 Berikan Ulasan Anda: %s
+
+Namun, jika Anda tidak memiliki waktu saat ini atau memiliki pertanyaan lebih lanjut, jangan ragu untuk menghubungi kami di nomor ini.
+
+Terima kasih atas dukungan dan kepercayaan Anda kepada kami!
+
+Salam hangat,
+%s
 `,
 				deliveryOrder.Customer.Name,
 				fmt.Sprintf("%s/delivery-orders/testing-api/%s", global.GetConfig().Uri, deliveryOrder.Id),
