@@ -64,6 +64,7 @@ func (r *sequenceRepository) InsertMany(ctx context.Context, sequences []model.S
 
 func (r *sequenceRepository) GetLatestByUniqueIdentifier(ctx context.Context, uniqueIdentifier string) (*model.Sequence, error) {
 	stmt := stmtBuilder.Select("*").
+		From(model.SequenceTableName).
 		Where(squirrel.Eq{"unique_identifier": uniqueIdentifier}).
 		Limit(1).
 		OrderBy("sequence DESC")
