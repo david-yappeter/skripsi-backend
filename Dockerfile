@@ -1,4 +1,4 @@
-FROM  golang:1.21.9-alpine as builder
+FROM  golang:1.21.9 as builder
 
 WORKDIR /project/capstone
 
@@ -8,7 +8,7 @@ COPY go.sum ./
 RUN go mod download
 
 # fix "gcc" not found
-RUN apk add build-base
+RUN apt-get install gcc
 
 COPY . .
 RUN CGO_ENABLED=1 go build -tags http -o /project/capstone/build/capstone .
@@ -16,7 +16,7 @@ RUN CGO_ENABLED=1 go build -tags http -o /project/capstone/build/capstone .
 FROM alpine:latest
 
 # to fix timezone not loaded
-RUN apk add --no-cache tzdata
+RUN apt-get install -y tzdata
 
 
 COPY --from=builder /project/capstone/build/capstone /project/capstone/build/capstone
