@@ -100,7 +100,7 @@ func (u *deliveryOrderUseCase) mustGenerateInvoiceNumber(ctx context.Context) st
 	prefix := fmt.Sprintf(
 		"DO-%d%d%d-",
 		currentDate.Time().Year(),
-		currentDate.Time().Month,
+		currentDate.Time().Month(),
 		currentDate.Time().Day(),
 	)
 	return generateSequence(ctx, u.repositoryManager, prefix)
@@ -800,13 +800,13 @@ func (u *deliveryOrderUseCase) Delivering(ctx context.Context, request dto_reque
 			return
 		}
 
-		customerJID, err := types.ParseJID(fmt.Sprintf("%s@s.whatsapp.net"))
+		customerJID, err := types.ParseJID(fmt.Sprintf("%s@s.whatsapp.net", deliveryOrder.Customer.Phone))
 		if err != nil {
 			log.Println(err)
 			return
 		}
 
-		(*u.whatsappManager).SendMessage(context.Background(), customerJID, &proto.Message{
+		err = (*u.whatsappManager).SendMessage(context.Background(), customerJID, &proto.Message{
 			Conversation: util.Pointer(fmt.Sprintf(
 				`🚚 Pemberitahuan Pengiriman Pesanan
 
@@ -836,6 +836,11 @@ Salam hangat,
 				"Toko Setia Abadi",
 			)),
 		})
+
+		if err != nil {
+			log.Println(err)
+			return
+		}
 	}()
 
 	return deliveryOrder
@@ -866,13 +871,13 @@ func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_re
 			return
 		}
 
-		customerJID, err := types.ParseJID(fmt.Sprintf("%s@s.whatsapp.net"))
+		customerJID, err := types.ParseJID(fmt.Sprintf("%s@s.whatsapp.net", deliveryOrder.Customer.Phone))
 		if err != nil {
 			log.Println(err)
 			return
 		}
 
-		(*u.whatsappManager).SendMessage(context.Background(), customerJID, &proto.Message{
+		err = (*u.whatsappManager).SendMessage(context.Background(), customerJID, &proto.Message{
 			Conversation: util.Pointer(fmt.Sprintf(
 				`🚚 Pengiriman Selesai - Berikan Ulasan Anda!
 
@@ -896,6 +901,11 @@ func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_re
 				"Toko Setia Abadi",
 			)),
 		})
+
+		if err != nil {
+			log.Println(err)
+			return
+		}
 	}()
 
 	return deliveryOrder
