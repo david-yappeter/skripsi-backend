@@ -17,6 +17,7 @@ import (
 	"myapp/repository"
 	"myapp/util"
 	"path"
+	"strings"
 
 	"go.mau.fi/whatsmeow/binary/proto"
 	"go.mau.fi/whatsmeow/types"
@@ -800,7 +801,7 @@ func (u *deliveryOrderUseCase) Delivering(ctx context.Context, request dto_reque
 			return
 		}
 
-		customerJID, err := types.ParseJID(fmt.Sprintf("%s@s.whatsapp.net", deliveryOrder.Customer.Phone))
+		customerJID, err := types.ParseJID(fmt.Sprintf("%s@s.whatsapp.net", strings.Trim(deliveryOrder.Customer.Phone, "+")))
 		if err != nil {
 			log.Println(err)
 			return
@@ -871,7 +872,7 @@ func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_re
 			return
 		}
 
-		customerJID, err := types.ParseJID(fmt.Sprintf("%s@s.whatsapp.net", deliveryOrder.Customer.Phone))
+		customerJID, err := types.ParseJID(fmt.Sprintf("%s@s.whatsapp.net", strings.Trim(deliveryOrder.Customer.Phone, "+")))
 		if err != nil {
 			log.Println(err)
 			return
