@@ -198,6 +198,7 @@ func NewUseCaseManager(
 		),
 		deliveryOrderUseCase: NewDeliveryOrderUseCase(
 			repositoryManager,
+			whatsappManager,
 			filesystemManager.Main(),
 			filesystemManager.Tmp(),
 		),

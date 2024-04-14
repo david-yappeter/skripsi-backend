@@ -2,12 +2,14 @@ package use_case
 
 import (
 	"context"
+	"fmt"
 	"myapp/constant"
 	"myapp/delivery/dto_response"
 	"myapp/internal/filesystem"
 	validatorInternal "myapp/internal/gin/validator"
 	"myapp/model"
 	"myapp/repository"
+	"myapp/util"
 	"sync"
 )
 
@@ -460,4 +462,26 @@ func execWebhookMutex(fn func()) {
 	defer m.Unlock()
 
 	fn()
+}
+
+func generateSequence(ctx context.Context, repositoryManager repository.RepositoryManager, uniqueIdentifier string) string {
+	sequence, err := repositoryManager.SequenceRepository().GetLatestByUniqueIdentifier(ctx, uniqueIdentifier)
+	panicIfErr(err, constant.ErrNoData)
+
+	if sequence == nil {
+		sequence = &model.Sequence{
+			Id:               util.NewUuid(),
+			UniqueIdentifier: uniqueIdentifier,
+			Sequence:         1,
+		}
+	} else {
+		sequence.Id = util.NewUuid()
+		sequence.Sequence++
+	}
+
+	panicIfErr(
+		repositoryManager.SequenceRepository().Insert(ctx, sequence),
+	)
+
+	return fmt.Sprintf("%s%04d", sequence.UniqueIdentifier, sequence.Sequence)
 }

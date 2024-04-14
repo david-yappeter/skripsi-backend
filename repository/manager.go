@@ -45,6 +45,7 @@ type RepositoryManager interface {
 	ProductUnitRepository() ProductUnitRepository
 	RolePermissionRepository() RolePermissionRepository
 	RoleRepository() RoleRepository
+	SequenceRepository() SequenceRepository
 	ShopOrderRepository() ShopOrderRepository
 	ShopOrderItemRepository() ShopOrderItemRepository
 	SupplierRepository() SupplierRepository
@@ -94,6 +95,7 @@ type repositoryManager struct {
 	productUnitRepository           ProductUnitRepository
 	rolePermissionRepository        RolePermissionRepository
 	roleRepository                  RoleRepository
+	sequenceRepository              SequenceRepository
 	shopOrderRepository             ShopOrderRepository
 	shopOrderItemRepository         ShopOrderItemRepository
 	supplierRepository              SupplierRepository
@@ -255,6 +257,10 @@ func (r *repositoryManager) RolePermissionRepository() RolePermissionRepository 
 
 func (r *repositoryManager) RoleRepository() RoleRepository {
 	return r.roleRepository
+}
+
+func (r *repositoryManager) SequenceRepository() SequenceRepository {
+	return r.sequenceRepository
 }
 
 func (r *repositoryManager) ShopOrderRepository() ShopOrderRepository {
@@ -433,6 +439,10 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		roleRepository: NewRoleRepository(
+			db,
+			loggerStack,
+		),
+		sequenceRepository: NewSequenceRepository(
 			db,
 			loggerStack,
 		),

@@ -3,11 +3,14 @@ package use_case
 import (
 	"context"
 	"fmt"
+	"log"
 	"math"
 	"myapp/constant"
 	"myapp/data_type"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
+	"myapp/global"
+	"myapp/infrastructure"
 	"myapp/internal/filesystem"
 	"myapp/loader"
 	"myapp/model"
@@ -15,6 +18,8 @@ import (
 	"myapp/util"
 	"path"
 
+	"go.mau.fi/whatsmeow/binary/proto"
+	"go.mau.fi/whatsmeow/types"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -62,12 +67,15 @@ type deliveryOrderUseCase struct {
 
 	baseFileUseCase baseFileUseCase
 
+	whatsappManager *infrastructure.WhatsappManager
+
 	mainFilesystem filesystem.Client
 	tmpFilesystem  filesystem.Client
 }
 
 func NewDeliveryOrderUseCase(
 	repositoryManager repository.RepositoryManager,
+	whatsappManager *infrastructure.WhatsappManager,
 
 	mainFilesystem filesystem.Client,
 	tmpFilesystem filesystem.Client,
@@ -79,9 +87,23 @@ func NewDeliveryOrderUseCase(
 			mainFilesystem,
 			tmpFilesystem,
 		),
+
+		whatsappManager: whatsappManager,
+
 		mainFilesystem: mainFilesystem,
 		tmpFilesystem:  tmpFilesystem,
 	}
+}
+
+func (u *deliveryOrderUseCase) mustGenerateInvoiceNumber(ctx context.Context) string {
+	currentDate := util.CurrentDate()
+	prefix := fmt.Sprintf(
+		"DO-%d%d%d-",
+		currentDate.Time().Year(),
+		currentDate.Time().Month,
+		currentDate.Time().Day(),
+	)
+	return generateSequence(ctx, u.repositoryManager, prefix)
 }
 
 func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, deliveryOrders []*model.DeliveryOrder, option deliveryOrdersLoaderParams) {
@@ -205,7 +227,7 @@ func (u *deliveryOrderUseCase) Create(ctx context.Context, request dto_request.D
 		Id:            util.NewUuid(),
 		CustomerId:    request.CustomerId,
 		UserId:        authUser.Id,
-		InvoiceNumber: "",
+		InvoiceNumber: u.mustGenerateInvoiceNumber(ctx),
 		Date:          request.Date,
 		Status:        data_type.DeliveryOrderStatusPending,
 		TotalPrice:    0,
@@ -773,6 +795,49 @@ func (u *deliveryOrderUseCase) Delivering(ctx context.Context, request dto_reque
 		deliveryOrderDrivers: true,
 	})
 
+	go func() {
+		if u.whatsappManager == nil {
+			return
+		}
+
+		customerJID, err := types.ParseJID(fmt.Sprintf("%s@s.whatsapp.net"))
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		(*u.whatsappManager).SendMessage(context.Background(), customerJID, &proto.Message{
+			Conversation: util.Pointer(fmt.Sprintf(
+				`🚚 Pemberitahuan Pengiriman Pesanan
+
+Halo %s,
+
+Kami senang memberitahu Anda bahwa pesanan Anda telah diproses dan siap untuk dikirim! 🎉
+
+Berikut adalah rincian pengiriman pesanan Anda:
+
+📦	Nomor Pesanan: %s
+📍	Alamat Pengiriman: %s
+🚚	Link Live Tracking: %s
+
+📢 Penting: Mohon pastikan ada seseorang di alamat yang tercantum untuk menerima pesanan Anda pada waktu yang ditentukan.
+
+Jika Anda memiliki pertanyaan atau membutuhkan bantuan tambahan, jangan ragu untuk menghubungi kami di nomor ini.
+
+Terima kasih atas kepercayaan Anda kepada kami!
+
+Salam hangat,
+%s
+`,
+				deliveryOrder.Customer.Name,
+				deliveryOrder.InvoiceNumber,
+				fmt.Sprintf("%s/delivery-orders/testing-api/%s", global.GetConfig().Uri, deliveryOrder.Id),
+				deliveryOrder.Customer.Address,
+				"Toko Setia Abadi",
+			)),
+		})
+	}()
+
 	return deliveryOrder
 }
 
@@ -795,6 +860,43 @@ func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_re
 		deliveryOrderImages:  true,
 		deliveryOrderDrivers: true,
 	})
+
+	go func() {
+		if u.whatsappManager == nil {
+			return
+		}
+
+		customerJID, err := types.ParseJID(fmt.Sprintf("%s@s.whatsapp.net"))
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		(*u.whatsappManager).SendMessage(context.Background(), customerJID, &proto.Message{
+			Conversation: util.Pointer(fmt.Sprintf(
+				`🚚 Pengiriman Selesai - Berikan Ulasan Anda!
+
+				Halo %s,
+				
+				Kami senang memberitahu Anda bahwa pesanan Anda telah sukses dikirim! 🎉 Kami berharap pesanan tersebut tiba dengan baik dan memenuhi harapan Anda.
+				
+				Jika Anda memiliki waktu, kami sangat menghargai ulasan dan masukan Anda tentang pengalaman berbelanja bersama kami. Ini akan membantu kami terus meningkatkan layanan kami kepada pelanggan.
+				
+				🌟 Berikan Ulasan Anda: %s
+				
+				Namun, jika Anda tidak memiliki waktu saat ini atau memiliki pertanyaan lebih lanjut, jangan ragu untuk menghubungi kami di nomor ini.
+				
+				Terima kasih atas dukungan dan kepercayaan Anda kepada kami!
+				
+				Salam hangat,
+				%s
+`,
+				deliveryOrder.Customer.Name,
+				fmt.Sprintf("%s/delivery-orders/testing-api/%s", global.GetConfig().Uri, deliveryOrder.Id),
+				"Toko Setia Abadi",
+			)),
+		})
+	}()
 
 	return deliveryOrder
 }
