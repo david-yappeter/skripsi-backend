@@ -168,7 +168,7 @@ func NewUseCaseManager(
 	filesystemManager filesystemInternal.FilesystemManager,
 	jwt jwtInternal.Jwt,
 	loggerStack infrastructure.LoggerStack,
-	whatsappManager infrastructure.WhatsappManager,
+	whatsappManager *infrastructure.WhatsappManager,
 ) UseCaseManager {
 	return &useCaseManager{
 		authUseCase: NewAuthUseCase(

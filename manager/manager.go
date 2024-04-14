@@ -5,6 +5,7 @@ import (
 	"myapp/infrastructure"
 	filesystemInternal "myapp/internal/filesystem"
 	jwtInternal "myapp/internal/jwt"
+	"myapp/util"
 
 	"myapp/repository"
 	"myapp/use_case"
@@ -15,9 +16,11 @@ type Config int
 const (
 	LoadDefault Config = 1 << iota
 	LoadUseCase
+	LoadWhatsapp
 )
 
 const DefaultConfig = LoadDefault | LoadUseCase
+const FullConfig = LoadDefault | LoadUseCase | LoadWhatsapp
 
 type Container struct {
 	config Config
@@ -32,6 +35,10 @@ type Container struct {
 
 func (c *Container) withUseCase() bool {
 	return c.config&LoadUseCase != 0
+}
+
+func (c *Container) withWhatsapp() bool {
+	return c.config&LoadWhatsapp != 0
 }
 
 func (c *Container) RepositoryManager() repository.RepositoryManager {
@@ -93,12 +100,18 @@ func NewContainer(config Config) *Container {
 			global.GetJwtPublicKeyFilePath(),
 		)
 
+		var whatsappManager *infrastructure.WhatsappManager = nil
+
+		if container.withWhatsapp() {
+			whatsappManager = util.Pointer(container.infrastructureManager.GetWhatsappManager())
+		}
+
 		container.useCaseManager = use_case.NewUseCaseManager(
 			container.repositoryManager,
 			container.filesystemManager,
 			container.jwt,
 			container.LoggerStack(),
-			container.infrastructureManager.GetWhatsappManager(),
+			whatsappManager,
 		)
 	}
 

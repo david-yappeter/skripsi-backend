@@ -14,12 +14,12 @@ type WhatsappUseCase interface {
 
 type whatsappUseCase struct {
 	repositoryManager repository.RepositoryManager
-	whatsappManager   infrastructure.WhatsappManager
+	whatsappManager   *infrastructure.WhatsappManager
 }
 
 func NewWhatsappUseCase(
 	repositoryManager repository.RepositoryManager,
-	whatsappManager infrastructure.WhatsappManager,
+	whatsappManager *infrastructure.WhatsappManager,
 ) WhatsappUseCase {
 	return &whatsappUseCase{
 		repositoryManager: repositoryManager,
@@ -28,16 +28,28 @@ func NewWhatsappUseCase(
 }
 
 func (u *whatsappUseCase) IsLoggedIn(ctx context.Context) bool {
-	return u.whatsappManager.IsLoggedIn(ctx)
+	if u.whatsappManager == nil {
+		return false
+	}
+
+	return (*u.whatsappManager).IsLoggedIn(ctx)
 }
 
 func (u *whatsappUseCase) Login(ctx context.Context) chan (string) {
-	qrString, _ := u.whatsappManager.LoginQr(ctx)
+	if u.whatsappManager == nil {
+		return nil
+	}
+
+	qrString, _ := (*u.whatsappManager).LoginQr(ctx)
 	return qrString
 }
 
 func (u *whatsappUseCase) Logout(ctx context.Context) {
+	if u.whatsappManager == nil {
+		return
+	}
+
 	panicIfErr(
-		u.whatsappManager.Logout(),
+		(*u.whatsappManager).Logout(),
 	)
 }

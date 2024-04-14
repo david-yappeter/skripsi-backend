@@ -22,7 +22,7 @@ var rootCmd = &cobra.Command{
 			return
 		}
 
-		container := manager.NewContainer(manager.DefaultConfig)
+		container := manager.NewContainer(manager.FullConfig)
 		defer func() {
 			if err := container.Close(); err != nil {
 				panic(err)
