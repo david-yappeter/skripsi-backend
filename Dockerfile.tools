@@ -18,6 +18,8 @@ FROM alpine:latest
 # to fix timezone not loaded
 RUN apk add --no-cache tzdata
 
+# fix "gcc" not found
+RUN apk add build-base
 
 COPY --from=builder /project/capstone/build/capstone-tools /project/capstone/build/capstone-tools
 
