@@ -8,7 +8,7 @@ import (
 
 var (
 	CustomerOne = model.Customer{
-		Id:             "717244a6-8318-49ca-b61b-f8cb1e58a63d",
+		Id:             "f74d78f8-26ee-4699-89da-134cfbcda903",
 		CustomerTypeId: &CustomerTypeOne.Id,
 		Name:           "Bobby Doe",
 		Email:          "bobby@gmail.com",
