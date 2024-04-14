@@ -9,6 +9,7 @@ import (
 type WhatsappUseCase interface {
 	IsLoggedIn(ctx context.Context) bool
 	Login(ctx context.Context) chan (string)
+	Logout(ctx context.Context)
 }
 
 type whatsappUseCase struct {
@@ -33,4 +34,10 @@ func (u *whatsappUseCase) IsLoggedIn(ctx context.Context) bool {
 func (u *whatsappUseCase) Login(ctx context.Context) chan (string) {
 	qrString, _ := u.whatsappManager.LoginQr(ctx)
 	return qrString
+}
+
+func (u *whatsappUseCase) Logout(ctx context.Context) {
+	panicIfErr(
+		u.whatsappManager.Logout(),
+	)
 }

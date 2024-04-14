@@ -97,6 +97,7 @@ func GetRoleSuperPermissions() []Permission {
 
 		// whatsapp
 		PermissionWhatsappIsLoggedIn,
+		PermissionWhatsappLogout,
 	}
 }
 

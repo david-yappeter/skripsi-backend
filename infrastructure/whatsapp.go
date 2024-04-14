@@ -19,6 +19,7 @@ type WhatsappManager interface {
 	LoginQr(ctx context.Context) (qrLogin chan (string), err error)
 	SendMessage(ctx context.Context, to types.JID, message *waProto.Message) (err error)
 	Disconnect()
+	Logout() error
 }
 
 type whatsappManager struct {
@@ -109,4 +110,8 @@ func (i *whatsappManager) SendMessage(ctx context.Context, to types.JID, message
 
 func (i *whatsappManager) Disconnect() {
 	i.client.Disconnect()
+}
+
+func (i *whatsappManager) Logout() error {
+	return i.client.Logout()
 }

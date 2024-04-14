@@ -188,4 +188,5 @@ const (
 
 	// whatsapp
 	PermissionWhatsappIsLoggedIn // WHATSAPP_IS_LOGGED_IN
+	PermissionWhatsappLogout     // WHATSAPP_LOGOUT
 )
