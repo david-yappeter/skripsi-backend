@@ -127,7 +127,7 @@ func (u *customerUseCase) Get(ctx context.Context, request dto_request.CustomerG
 func (u *customerUseCase) Update(ctx context.Context, request dto_request.CustomerUpdateRequest) model.Customer {
 	customer := mustGetCustomer(ctx, u.repositoryManager, request.CustomerId, true)
 
-	if customer.CustomerTypeId != nil {
+	if request.CustomerTypeId != nil {
 		mustGetCustomerType(ctx, u.repositoryManager, *request.CustomerTypeId, true)
 	}
 
