@@ -817,9 +817,9 @@ Kami senang memberitahu Anda bahwa pesanan Anda telah diproses dan siap untuk di
 
 Berikut adalah rincian pengiriman pesanan Anda:
 
-📦	Nomor Pesanan: %s
-📍	Alamat Pengiriman: %s
-🚚	Link Live Tracking: %s
+📦	Nomor Pesanan		: *%s*
+📍	Alamat Pengiriman	: %s
+🚚	Link Live Tracking	: %s
 
 📢 Penting: Mohon pastikan ada seseorang di alamat yang tercantum untuk menerima pesanan Anda pada waktu yang ditentukan.
 
@@ -828,7 +828,7 @@ Jika Anda memiliki pertanyaan atau membutuhkan bantuan tambahan, jangan ragu unt
 Terima kasih atas kepercayaan Anda kepada kami!
 
 Salam hangat,
-%s
+*%s*
 `,
 				deliveryOrder.Customer.Name,
 				deliveryOrder.InvoiceNumber,
@@ -895,7 +895,7 @@ Namun, jika Anda tidak memiliki waktu saat ini atau memiliki pertanyaan lebih la
 Terima kasih atas dukungan dan kepercayaan Anda kepada kami!
 
 Salam hangat,
-%s
+*%s*
 `,
 				deliveryOrder.Customer.Name,
 				fmt.Sprintf("%s/delivery-orders/testing-api/%s", global.GetConfig().Uri, deliveryOrder.Id),

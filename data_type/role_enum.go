@@ -232,6 +232,10 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionUnitDelete,
 		PermissionUnitOptionForProductUnitForm,
 		PermissionUnitOptionForProductUnitToUnitForm,
+
+		// whatsapp
+		PermissionWhatsappProductPriceChangeBroadcast,
+		PermissionWhatsappCustomerTypeDiscountBroadcast,
 	}
 }
 

@@ -257,6 +257,8 @@ func NewUseCaseManager(
 		whatsappUseCase: NewWhatsappUseCase(
 			repositoryManager,
 			whatsappManager,
+			filesystemManager.Main(),
+			filesystemManager.Tmp(),
 		),
 	}
 }

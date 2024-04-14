@@ -2,6 +2,7 @@ package api
 
 import (
 	"myapp/data_type"
+	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
 	"myapp/use_case"
 	"net/http"
@@ -65,6 +66,62 @@ func (a *WhatsappApi) Logout() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/whatsapp/broadcast/product-price-change [post]
+//	@Summary	Broadcast Product Price Change
+//	@tags		Whatsapps
+//	@Accept		json
+//	@Param	dto_request.WhatsappProductPriceChangeBroadcastRequest body dto_request.WhatsappProductPriceChangeBroadcastRequest true "Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.SuccessResponse
+func (a *WhatsappApi) ProductPriceChangeBroadcast() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionWhatsappProductPriceChangeBroadcast),
+		func(ctx apiContext) {
+			var request dto_request.WhatsappProductPriceChangeBroadcastRequest
+			ctx.mustBind(&request)
+
+			a.whatsappUseCase.ProductPriceChangeBroadcast(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.SuccessResponse{
+					Message: "OK",
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/whatsapp/broadcast/customer-type-discount [post]
+//	@Summary	Broadcast Customer Type Discount
+//	@tags		Whatsapps
+//	@Accept		json
+//	@Param	dto_request.WhatsappCustomerTypeDiscountBroadcastRequest body dto_request.WhatsappCustomerTypeDiscountBroadcastRequest true "Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.SuccessResponse
+func (a *WhatsappApi) CustomerTypeDiscountBroadcast() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionWhatsappCustomerTypeDiscountBroadcast),
+		func(ctx apiContext) {
+			var request dto_request.WhatsappCustomerTypeDiscountBroadcastRequest
+			ctx.mustBind(&request)
+
+			a.whatsappUseCase.CustomerTypeDiscountBroadcast(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.SuccessResponse{
+					Message: "OK",
+				},
+			)
+		},
+	)
+}
+
 func RegisterWhatsappApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := WhatsappApi{
 		api:             newApi(useCaseManager),
@@ -74,4 +131,8 @@ func RegisterWhatsappApi(router gin.IRouter, useCaseManager use_case.UseCaseMana
 	routerGroup := router.Group("/whatsapp")
 	routerGroup.GET("/is-logged-in", api.IsLoggedIn())
 	routerGroup.POST("/logout", api.Logout())
+
+	broadcastRouterGroup := routerGroup.Group("/broadcast")
+	broadcastRouterGroup.POST("/product-price-change", api.ProductPriceChangeBroadcast())
+	broadcastRouterGroup.POST("/customer-type-discount", api.CustomerTypeDiscountBroadcast())
 }

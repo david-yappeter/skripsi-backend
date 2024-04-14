@@ -381,7 +381,9 @@ func (u *productUseCase) Update(ctx context.Context, request dto_request.Product
 		}),
 	)
 
-	u.baseFileUseCase.mainFilesystem.Delete(toBeDeletedImageFile.Path)
+	if toBeDeletedImageFile != nil {
+		u.baseFileUseCase.mainFilesystem.Delete(toBeDeletedImageFile.Path)
+	}
 
 	u.mustLoadProductDatas(ctx, []*model.Product{&product}, productLoaderParams{
 		productStock: true,

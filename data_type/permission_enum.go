@@ -187,6 +187,8 @@ const (
 	PermissionUnitOptionForProductUnitToUnitForm // UNIT_OPTION_FOR_PRODUCT_UNIT_TO_UNIT_FORM
 
 	// whatsapp
-	PermissionWhatsappIsLoggedIn // WHATSAPP_IS_LOGGED_IN
-	PermissionWhatsappLogout     // WHATSAPP_LOGOUT
+	PermissionWhatsappIsLoggedIn                    // WHATSAPP_IS_LOGGED_IN
+	PermissionWhatsappProductPriceChangeBroadcast   // WHATSAPP_PRODUCT_PRICE_CHANGE_BROADCAST
+	PermissionWhatsappCustomerTypeDiscountBroadcast // WHATSAPP_CUSTOMER_TYPE_DISCOUNT_BROADCAST
+	PermissionWhatsappLogout                        // WHATSAPP_LOGOUT
 )

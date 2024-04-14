@@ -106,6 +106,24 @@ func (l *localClient) Open(path string) (io.ReadSeekCloser, error) {
 	return f, err
 }
 
+func (l *localClient) ReadFile(path string) ([]byte, error) {
+	fullpath, err := l.fullpath(path)
+	if err != nil {
+		return nil, err
+	}
+
+	f, err := os.ReadFile(fullpath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, ErrFileNotExist
+		}
+
+		return nil, err
+	}
+
+	return f, err
+}
+
 func (l *localClient) Stream(ctx context.Context, path string) (ReadCloserWithContent, error) {
 	fullpath, err := l.fullpath(path)
 	if err != nil {

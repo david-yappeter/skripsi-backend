@@ -18,6 +18,7 @@ type WhatsappManager interface {
 	IsLoggedIn(ctx context.Context) (isLoggedIn bool)
 	LoginQr(ctx context.Context) (qrLogin chan (string), err error)
 	SendMessage(ctx context.Context, to types.JID, message *waProto.Message) (err error)
+	UploadImage(ctx context.Context, imageBytes []byte) (*whatsmeow.UploadResponse, error)
 	Disconnect()
 	Logout() error
 }
@@ -114,6 +115,18 @@ func (i *whatsappManager) SendMessage(ctx context.Context, to types.JID, message
 
 func (i *whatsappManager) Disconnect() {
 	i.client.Disconnect()
+}
+
+func (i *whatsappManager) UploadImage(ctx context.Context, imageBytes []byte) (*whatsmeow.UploadResponse, error) {
+	if i.client.Store.ID != nil {
+		if !i.client.IsConnected() {
+			i.client.Connect()
+		}
+		resp, err := i.client.Upload(ctx, imageBytes, whatsmeow.MediaImage)
+		return &resp, err
+	}
+
+	return nil, nil
 }
 
 func (i *whatsappManager) Logout() error {

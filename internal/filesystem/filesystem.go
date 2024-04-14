@@ -13,6 +13,7 @@ type Client interface {
 	DeleteFolderContents(folderPath string) error
 	Has(path string) (bool, error)
 	Open(path string) (io.ReadSeekCloser, error)
+	ReadFile(path string) ([]byte, error)
 	Stream(ctx context.Context, path string) (ReadCloserWithContent, error)
 	Url(path string) string
 	CopyTo(ctx context.Context, fromPath string, toPath string) error
