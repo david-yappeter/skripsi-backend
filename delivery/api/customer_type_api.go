@@ -179,41 +179,6 @@ func (a *CustomerTypeApi) Delete() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/customer-types/options/customer-form [post]
-//	@Summary	Option for Customer Form
-//	@tags		Customer Types
-//	@Accept		json
-//	@Param		dto_request.CustomerTypeOptionForCustomerFormRequest	body	dto_request.CustomerTypeOptionForCustomerFormRequest	true	"Body Request"
-//	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.CustomerTypeResponse}}
-func (a *CustomerTypeApi) OptionForCustomerForm() gin.HandlerFunc {
-	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionCustomerTypeOptionForCustomerForm),
-		func(ctx apiContext) {
-			var request dto_request.CustomerTypeOptionForCustomerFormRequest
-			ctx.mustBind(&request)
-
-			customerTypes, total := a.customerTypeUseCase.OptionForCustomerForm(ctx.context(), request)
-
-			nodes := util.ConvertArray(customerTypes, dto_response.NewCustomerTypeResponse)
-
-			ctx.json(
-				http.StatusOK,
-				dto_response.Response{
-					Data: dto_response.PaginationResponse{
-						Page:  request.Page,
-						Limit: request.Limit,
-						Total: total,
-						Nodes: nodes,
-					},
-				},
-			)
-		},
-	)
-}
-
-// API:
-//
 //	@Router		/customer-types/{id}/discount [post]
 //	@Summary	Add Discount
 //	@tags		Customer Types
@@ -318,6 +283,76 @@ func (a *CustomerTypeApi) DeleteDiscount() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/customer-types/options/customer-form [post]
+//	@Summary	Option for Customer Form
+//	@tags		Customer Types
+//	@Accept		json
+//	@Param		dto_request.CustomerTypeOptionForCustomerFormRequest	body	dto_request.CustomerTypeOptionForCustomerFormRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.CustomerTypeResponse}}
+func (a *CustomerTypeApi) OptionForCustomerForm() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCustomerTypeOptionForCustomerForm),
+		func(ctx apiContext) {
+			var request dto_request.CustomerTypeOptionForCustomerFormRequest
+			ctx.mustBind(&request)
+
+			customerTypes, total := a.customerTypeUseCase.OptionForCustomerForm(ctx.context(), request)
+
+			nodes := util.ConvertArray(customerTypes, dto_response.NewCustomerTypeResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Total: total,
+						Nodes: nodes,
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/customer-types/options/whatsapp-product-price-change-broadcast-form [post]
+//	@Summary	Option for Customer Form
+//	@tags		Customer Types
+//	@Accept		json
+//	@Param		dto_request.CustomerTypeOptionForWhatsappProductPriceChangeBroadcastFormRequest	body	dto_request.CustomerTypeOptionForWhatsappProductPriceChangeBroadcastFormRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.CustomerTypeResponse}}
+func (a *CustomerTypeApi) OptionForWhatsappProductPriceChangeBroadcastForm() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCustomerTypeOptionForWhatsappProductPriceChangeBroadcastForm),
+		func(ctx apiContext) {
+			var request dto_request.CustomerTypeOptionForWhatsappProductPriceChangeBroadcastFormRequest
+			ctx.mustBind(&request)
+
+			customerTypes, total := a.customerTypeUseCase.OptionForWhatsappProductPriceChangeBroadcastForm(ctx.context(), request)
+
+			nodes := util.ConvertArray(customerTypes, dto_response.NewCustomerTypeResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Total: total,
+						Nodes: nodes,
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterCustomerTypeApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := CustomerTypeApi{
 		api:                 newApi(useCaseManager),
@@ -336,4 +371,5 @@ func RegisterCustomerTypeApi(router gin.IRouter, useCaseManager use_case.UseCase
 
 	optionRouterGroup := routerGroup.Group("/options")
 	optionRouterGroup.POST("/customer-form", api.OptionForCustomerForm())
+	optionRouterGroup.POST("/whatsapp-product-price-change-broadcast-form", api.OptionForWhatsappProductPriceChangeBroadcastForm())
 }

@@ -8,6 +8,7 @@ type CustomerTypeResponse struct {
 	Description *string `json:"description" extensions:"x-nullable"`
 	Timestamp
 
+	Customers []CustomerResponse             `json:"customers"`
 	Discounts []CustomerTypeDiscountResponse `json:"discounts" extensions:"x-nullable"`
 } // @name CustomerTypeResponse
 
@@ -21,6 +22,10 @@ func NewCustomerTypeResponse(customerType model.CustomerType) CustomerTypeRespon
 
 	for _, discount := range customerType.CustomerTypeDiscounts {
 		r.Discounts = append(r.Discounts, NewCustomerTypeDiscountResponse(discount))
+	}
+
+	for _, customer := range customerType.Customers {
+		r.Customers = append(r.Customers, NewCustomerResponse(customer))
 	}
 
 	return r

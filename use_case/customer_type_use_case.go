@@ -14,6 +14,7 @@ import (
 
 type customerTypeLoaderParams struct {
 	customerTypeDiscounts bool
+	customers             bool
 }
 
 type CustomerTypeUseCase interface {
@@ -35,6 +36,7 @@ type CustomerTypeUseCase interface {
 
 	// option
 	OptionForCustomerForm(ctx context.Context, request dto_request.CustomerTypeOptionForCustomerFormRequest) ([]model.CustomerType, int)
+	OptionForWhatsappProductPriceChangeBroadcastForm(ctx context.Context, request dto_request.CustomerTypeOptionForWhatsappProductPriceChangeBroadcastFormRequest) ([]model.CustomerType, int)
 }
 
 type customerTypeUseCase struct {
@@ -69,12 +71,17 @@ func (u *customerTypeUseCase) mustValidateAllowDeleteCustomerType(ctx context.Co
 
 func (u *customerTypeUseCase) mustLoadCustomerTypesData(ctx context.Context, customerTypes []*model.CustomerType, option customerTypeLoaderParams) {
 	customerTypeDiscountsLoader := loader.NewCustomerTypeDiscountsLoader(u.repositoryManager.CustomerTypeDiscountRepository())
+	customersLoader := loader.NewCustomersLoader(u.repositoryManager.CustomerRepository())
 
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
-			if option.customerTypeDiscounts {
-				for i := range customerTypes {
+			for i := range customerTypes {
+				if option.customerTypeDiscounts {
 					group.Go(customerTypeDiscountsLoader.CustomerTypeFn(customerTypes[i]))
+				}
+
+				if option.customers {
+					group.Go(customersLoader.CustomerTypeFn(customerTypes[i]))
 				}
 			}
 		}),
@@ -244,6 +251,29 @@ func (u *customerTypeUseCase) OptionForCustomerForm(ctx context.Context, request
 
 	total, err := u.repositoryManager.CustomerTypeRepository().Count(ctx, queryOption)
 	panicIfErr(err)
+
+	return customerTypes, total
+}
+
+func (u *customerTypeUseCase) OptionForWhatsappProductPriceChangeBroadcastForm(ctx context.Context, request dto_request.CustomerTypeOptionForWhatsappProductPriceChangeBroadcastFormRequest) ([]model.CustomerType, int) {
+	queryOption := model.CustomerTypeQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts(request.Sorts),
+		),
+		Phrase: request.Phrase,
+	}
+
+	customerTypes, err := u.repositoryManager.CustomerTypeRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.CustomerTypeRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	u.mustLoadCustomerTypesData(ctx, util.SliceValueToSlicePointer(customerTypes), customerTypeLoaderParams{
+		customers: true,
+	})
 
 	return customerTypes, total
 }

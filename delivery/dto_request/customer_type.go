@@ -36,12 +36,6 @@ type CustomerTypeOptionForCustomerFormSorts []struct {
 	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
 } // @name CustomerTypeOptionForCustomerFormSorts
 
-type CustomerTypeOptionForCustomerFormRequest struct {
-	PaginationRequest
-	Sorts  CustomerTypeOptionForCustomerFormSorts `json:"sorts" validate:"unique=Field,dive"`
-	Phrase *string                                `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
-} // @name CustomerTypeOptionForCustomerFormRequest
-
 type CustomerTypeAddDiscountRequest struct {
 	ProductId          string   `json:"product_id" validate:"required,not_empty,uuid"`
 	IsActive           bool     `json:"is_active"`
@@ -64,3 +58,15 @@ type CustomerTypeDeleteDiscountRequest struct {
 	CustomerTypeDiscountId string `json:"-" swaggerignore:"true"`
 	CustomerTypeId         string `json:"-" swaggerignore:"true"`
 } // @name CustomerTypeDeleteDiscountRequest
+
+type CustomerTypeOptionForCustomerFormRequest struct {
+	PaginationRequest
+	Sorts  CustomerTypeOptionForCustomerFormSorts `json:"sorts" validate:"unique=Field,dive"`
+	Phrase *string                                `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name CustomerTypeOptionForCustomerFormRequest
+
+type CustomerTypeOptionForWhatsappProductPriceChangeBroadcastFormRequest struct {
+	PaginationRequest
+	Sorts  CustomerTypeOptionForCustomerFormSorts `json:"sorts" validate:"unique=Field,dive"`
+	Phrase *string                                `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name CustomerTypeOptionForWhatsappProductPriceChangeBroadcastFormRequest
