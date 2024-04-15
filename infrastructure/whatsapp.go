@@ -57,14 +57,18 @@ func NewWhatsappManager(whatappConfig global.WhatsappConfig) WhatsappManager {
 	}
 }
 
-func (i *whatsappManager) IsLoggedIn(ctx context.Context) (isLoggedIn bool) {
-	if !i.client.IsConnected() {
-		i.client.Connect()
+func (i *whatsappManager) IsLoggedIn(ctx context.Context) bool {
+	if i.client.Store.ID != nil {
+		if !i.client.IsConnected() {
+			i.client.Connect()
+		}
+
+		time.Sleep(1 * time.Second)
+
+		return i.client.IsLoggedIn()
 	}
 
-	time.Sleep(1 * time.Second)
-
-	return i.client.IsLoggedIn()
+	return false
 }
 
 func (i *whatsappManager) LoginQr(ctx context.Context) (chan (string), error) {
