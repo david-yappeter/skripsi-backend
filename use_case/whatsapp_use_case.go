@@ -190,7 +190,7 @@ func (u *whatsappUseCase) ProductPriceChangeBroadcast(ctx context.Context, reque
 	// guess mimetypes
 	mimeType := http.DetectContentType(data)
 
-	customers, err := u.repositoryManager.CustomerRepository().FetchByCustomerTypeId(ctx, nil)
+	customers, err := u.repositoryManager.CustomerRepository().FetchByCustomerTypeId(ctx, &request.CustomerTypeId)
 	panicIfErr(err)
 
 	messageTemplate := `🛍️ Pemberitahuan Pergantian Harga Barang
