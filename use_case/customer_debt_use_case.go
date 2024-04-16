@@ -124,7 +124,9 @@ func (u *customerDebtUseCase) Fetch(ctx context.Context, request dto_request.Cus
 			request.Limit,
 			model.Sorts(request.Sorts),
 		),
-		Phrase: request.Phrase,
+		Status:     request.Status,
+		CustomerId: request.CustomerId,
+		Phrase:     request.Phrase,
 	}
 
 	customerDebts, err := u.repositoryManager.CustomerDebtRepository().Fetch(ctx, queryOption)

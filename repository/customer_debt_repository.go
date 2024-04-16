@@ -64,12 +64,13 @@ func (r *customerDebtRepository) get(ctx context.Context, stmt squirrel.Sqlizer)
 
 func (r *customerDebtRepository) prepareQuery(option model.CustomerDebtQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s cd", model.CustomerDebtTableName))
+		From(fmt.Sprintf("%s cd", model.CustomerDebtTableName)).
+		InnerJoin(fmt.Sprintf("%s c ON cd.customer_id = c.id", model.CustomerTableName))
 
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
 		stmt = stmt.Where(squirrel.Or{
-			squirrel.ILike{"cd.name": phrase},
+			squirrel.ILike{"c.name": phrase},
 		})
 	}
 
