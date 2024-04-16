@@ -378,7 +378,7 @@ func (a *DeliveryOrderApi) Fetch() gin.HandlerFunc {
 //	@Accept		json
 //	@Param		dto_request.DeliveryOrderFetchDriverRequest	body	dto_request.DeliveryOrderFetchDriverRequest	true	"Body Request"
 //	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.DeliveryOrderResponse}}
+//	@Success	200	{object}	dto_response.DataResponse{data=dto_response.PaginationResponse{nodes=[]dto_response.DeliveryOrderResponse},have_active_delivery=bool}
 func (a *DeliveryOrderApi) FetchDriver() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionDeliveryOrderFetchDriver),
@@ -387,18 +387,20 @@ func (a *DeliveryOrderApi) FetchDriver() gin.HandlerFunc {
 			ctx.mustBind(&request)
 
 			deliveryOrders, total := a.deliveryOrderUseCase.FetchDriver(ctx.context(), request)
+			activeDeliveryOrder := a.deliveryOrderUseCase.ActiveForDriver(ctx.context())
 
 			nodes := util.ConvertArray(deliveryOrders, dto_response.NewDeliveryOrderResponse)
 
 			ctx.json(
 				http.StatusOK,
-				dto_response.Response{
-					Data: dto_response.PaginationResponse{
+				dto_response.DataResponse{
+					"data": dto_response.PaginationResponse{
 						Page:  request.Page,
 						Limit: request.Limit,
 						Total: total,
 						Nodes: nodes,
 					},
+					"have_active_delivery": activeDeliveryOrder != nil,
 				},
 			)
 		},
