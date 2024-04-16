@@ -270,6 +270,7 @@ func GetRoleDriver() []Permission {
 	return []Permission{
 		// delivery order
 		PermissionDeliveryOrderFetchDriver,
+		PermissionDeliveryOrderGet,
 		PermissionDeliveryOrderDelivering,
 		PermissionDeliveryOrderMarkCompleted,
 		PermissionDeliveryOrderActiveForDriver,
