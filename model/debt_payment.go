@@ -14,6 +14,7 @@ type DebtPayment struct {
 	PaidAt      data_type.DateTime `db:"paid_at"`
 
 	Timestamp
+	ImageFile *File `db:"-"`
 }
 
 func (m *DebtPayment) TableName() string {

@@ -56,6 +56,12 @@ const (
 	PermissionCustomerTypeOptionForCustomerForm                            // CUSTOMER_TYPE_OPTION_FOR_CUSTOMER_FORM
 	PermissionCustomerTypeOptionForWhatsappProductPriceChangeBroadcastForm // CUSTOMER_TYPE_OPTION_FOR_WHATSAPP_PRODUCT_PRICE_CHANGE_BROADCAST_FORM
 
+	// debt
+	PermissionDebtUploadImage // DEBT_UPLOAD_IMAGE
+	PermissionDebtFetch       // DEBT_FETCH
+	PermissionDebtGet         // DEBT_GET
+	PermissionDebtPayment     // DEBT_PAYMENT
+
 	// delivery order
 	PermissionDeliveryOrderCreate           // DELIVERY_ORDER_CREATE
 	PermissionDeliveryOrderUpload           // DELIVERY_ORDER_UPLOAD

@@ -369,6 +369,12 @@ func mustGetCustomerTypeDiscount(ctx context.Context, repositoryManager reposito
 	return *customerTypeDiscount
 }
 
+func mustGetDebt(ctx context.Context, repositoryManager repository.RepositoryManager, debtId string, isValidate bool) model.Debt {
+	debt, err := repositoryManager.DebtRepository().Get(ctx, debtId)
+	panicIfRepositoryError(err, "DEBT.NOT_FOUND", isValidate)
+	return *debt
+}
+
 func mustGetProductDiscountByProductId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string, isValidate bool) model.ProductDiscount {
 	productDiscount := shouldGetProductDiscountByProductId(ctx, repositoryManager, productId)
 

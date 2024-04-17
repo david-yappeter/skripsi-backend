@@ -63,6 +63,19 @@ func (l *FileLoader) CustomerPaymentFn(customerPayment *model.CustomerPayment) f
 	}
 }
 
+func (l *FileLoader) DebtPaymentFn(debtPayment *model.DebtPayment) func() error {
+	return func() error {
+		file, err := l.load(debtPayment.ImageFileId)
+		if err != nil {
+			return err
+		}
+
+		debtPayment.ImageFile = file
+
+		return nil
+	}
+}
+
 func (l *FileLoader) ProductFn(product *model.Product) func() error {
 	return func() error {
 		file, err := l.load(product.ImageFileId)
