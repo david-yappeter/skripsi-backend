@@ -45,6 +45,8 @@ func (m *DeliveryOrder) ToMap() map[string]interface{} {
 type DeliveryOrderQueryOption struct {
 	QueryOption
 
+	SortStatusImportance bool
+
 	ExcludeStatuses []data_type.DeliveryOrderStatus
 	Status          *data_type.DeliveryOrderStatus
 	CustomerId      *string

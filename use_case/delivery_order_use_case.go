@@ -501,8 +501,9 @@ func (u *deliveryOrderUseCase) FetchDriver(ctx context.Context, request dto_requ
 		ExcludeStatuses: []data_type.DeliveryOrderStatus{
 			data_type.DeliveryOrderStatusPending,
 		},
-		Status:       request.Status,
-		DriverUserId: &authUser.Id,
+		SortStatusImportance: true,
+		Status:               request.Status,
+		DriverUserId:         &authUser.Id,
 	}
 
 	deliveryOrders, err := u.repositoryManager.DeliveryOrderRepository().Fetch(ctx, queryOption)

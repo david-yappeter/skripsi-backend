@@ -70,6 +70,17 @@ func (r *deliveryOrderRepository) prepareQuery(option model.DeliveryOrderQueryOp
 	if option.Phrase != nil {
 	}
 
+	if option.SortStatusImportance {
+		stmt = stmt.OrderBy(`CASE dorder.status
+WHEN 'DELIVERING' THEN 1
+WHEN 'ONGOING' THEN 2
+WHEN 'COMPLETED' THEN 3
+WHEN 'CANCELED' THEN 4
+ELSE 999
+END`,
+		)
+	}
+
 	if option.DriverUserId != nil {
 		stmt = stmt.Where(
 			stmtBuilder.Select("1").
