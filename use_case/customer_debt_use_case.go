@@ -190,7 +190,7 @@ func (u *customerDebtUseCase) Payment(ctx context.Context, request dto_request.C
 	imageFile := model.File{
 		Id:        util.NewUuid(),
 		Name:      "",
-		Type:      0,
+		Type:      data_type.FileTypeCustomerPaymentImage,
 		Path:      "",
 		Timestamp: model.Timestamp{},
 		Link:      new(string),

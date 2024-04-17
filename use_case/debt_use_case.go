@@ -94,7 +94,7 @@ func (u *debtUseCase) mustLoadDebtsData(ctx context.Context, debts []*model.Debt
 func (u *debtUseCase) UploadImage(ctx context.Context, request dto_request.DebtUploadImageRequest) string {
 	return u.baseFileUseCase.mustUploadFileToTemporary(
 		ctx,
-		constant.CustomerPaymentImagePath,
+		constant.DebtPaymentImagePath,
 		request.File.Filename,
 		request.File,
 		fileUploadTemporaryParams{
@@ -172,14 +172,14 @@ func (u *debtUseCase) Payment(ctx context.Context, request dto_request.DebtPayme
 	imageFile := model.File{
 		Id:   util.NewUuid(),
 		Name: "",
-		Type: 0,
+		Type: data_type.FileTypeDebtPaymentImage,
 		Path: "",
 		Link: new(string),
 	}
 
 	imageFile.Path, imageFile.Name = u.baseFileUseCase.mustUploadFileFromTemporaryToMain(
 		ctx,
-		constant.CustomerPaymentImagePath,
+		constant.DebtPaymentImagePath,
 		debtPayment.Id,
 		fmt.Sprintf("%s%s", imageFile.Id, path.Ext(request.ImageFilePath)),
 		request.ImageFilePath,

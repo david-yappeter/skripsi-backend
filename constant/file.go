@@ -7,6 +7,7 @@ const (
 	ProductReceiveImagePath  = "product_receive"
 	DeliveryOrderImagePath   = " delivery_order"
 	CustomerPaymentImagePath = " customer_payment"
+	DebtPaymentImagePath     = " debt_payment"
 
 	ReportPath             = PrivatePath + "/report"
 	ReportProductStockPath = ReportPath + "/product-stock"

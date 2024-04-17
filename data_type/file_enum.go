@@ -8,4 +8,5 @@ const (
 	FileTypeProductReceiveImage                      // PRODUCT_RECEIVE_IMAGE
 	FileTypeDeliveryOrderImage                       // DELIVERY_ORDER_IMAGE
 	FileTypeCustomerPaymentImage                     // CUSTOMER_PAYMENT_IMAGE
+	FileTypeDebtPaymentImage                         // DEBT_PAYMENT_IMAGE
 )

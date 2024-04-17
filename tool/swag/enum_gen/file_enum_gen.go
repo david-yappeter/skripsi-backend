@@ -15,6 +15,7 @@ func init() {
 				"PRODUCT_RECEIVE_IMAGE",
 				"DELIVERY_ORDER_IMAGE",
 				"CUSTOMER_PAYMENT_IMAGE",
+				"DEBT_PAYMENT_IMAGE",
 			},
 		},
 	}
