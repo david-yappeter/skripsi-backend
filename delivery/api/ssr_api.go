@@ -110,13 +110,16 @@ func (a *SsrApi) SsrWhatsappLogin() gin.HandlerFunc {
 
 			qrChan := a.whatsappUseCase.Login(ctx.context())
 
+			fmt.Println("REQUEST IN")
 			for {
 				select {
 				case <-closeNotify:
+					fmt.Println("CLOSE NOTIFY")
 					// Client connection closed, exit the handler
 					return
 				case qrString := <-qrChan:
 					if qrString == "" {
+						fmt.Println("QR STRING EMPTY")
 						// disconnect
 						return
 					}
