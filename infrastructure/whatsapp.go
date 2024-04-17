@@ -57,6 +57,27 @@ func NewWhatsappManager(whatappConfig global.WhatsappConfig) WhatsappManager {
 	}
 }
 
+func NewWhatsappManager2(whatappConfig global.WhatsappConfig) whatsappManager {
+	// import sqlite3
+	container, err := sqlstore.New("sqlite3", fmt.Sprintf("file:%s?_foreign_keys=on", whatappConfig.SqlStoreFilePath), nil)
+	if err != nil {
+		panic(err)
+	}
+	// If you want multiple sessions, remember their JIDs and use .GetDevice(jid) or .GetAllDevices() instead.
+	deviceStore, err := container.GetFirstDevice()
+	if err != nil {
+		panic(err)
+	}
+	// clientLog := waLog.Stdout("Client", "DEBUG", true)
+	client := whatsmeow.NewClient(deviceStore, nil)
+	client.AddEventHandler(eventHandler)
+
+	return whatsappManager{
+		sqlstoreContainer: container,
+		client:            client,
+	}
+}
+
 func (i *whatsappManager) IsLoggedIn(ctx context.Context) bool {
 	if i.client.Store.ID != nil {
 		if !i.client.IsConnected() {
@@ -83,6 +104,7 @@ func (i *whatsappManager) LoginQr(ctx context.Context) (chan (string), error) {
 
 		// Assuming i.client is your WhatsMeow client
 		if i.client.Store.ID == nil {
+			*i = NewWhatsappManager2(global.GetConfig().Whatsapp)
 			qrChan, _ := i.client.GetQRChannel(ctx)
 
 			i.client.Connect()
@@ -97,11 +119,9 @@ func (i *whatsappManager) LoginQr(ctx context.Context) (chan (string), error) {
 					break
 				}
 			}
-			fmt.Println("AFTER LOOP", i.client.Store.ID == nil)
-		} else {
-			fmt.Println("RETURN QR STRING EMPTY", i.client.Store.ID == nil)
-			qrStringChan <- "" // Return an empty string if QR code retrieval fails
 		}
+		fmt.Println("RETURN QR CLOSED STRING", i.client.Store.ID == nil)
+		qrStringChan <- "closed" // Return an empty string if QR code retrieval fails
 	}()
 
 	return qrStringChan, nil

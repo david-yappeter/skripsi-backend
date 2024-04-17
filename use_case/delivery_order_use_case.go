@@ -869,6 +869,7 @@ func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_re
 	})
 
 	go func() {
+		fmt.Printf("WHATSAPP MANAGER NIL", u.whatsappManager)
 		if u.whatsappManager == nil {
 			return
 		}
