@@ -94,7 +94,7 @@ func (a *SsrApi) SsrMaps() gin.HandlerFunc {
 //	@tags		Server Sent Event
 //	@Accept		json
 //	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{base64_qr=string}}
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{base64_qr=string,is_connected=bool}}
 func (a *SsrApi) SsrWhatsappLogin() gin.HandlerFunc {
 	return a.Guest(
 		// data_type.PermissionP(data_type.PermissionSsrWhatsappLogin),
@@ -122,6 +122,20 @@ func (a *SsrApi) SsrWhatsappLogin() gin.HandlerFunc {
 						fmt.Println("QR STRING EMPTY")
 						// disconnect
 						return
+					} else if qrString == "is_connected" {
+						jsonData, _ := json.Marshal(dto_response.Response{
+							Data: dto_response.DataResponse{
+								"base64_qr":    nil,
+								"is_connected": true,
+							},
+						})
+
+						// this format 'data: ${JSON_DATA}\n\n" is important
+						event := fmt.Sprintf("data: %s\n\n", string(jsonData))
+						ctx.ginCtx.Writer.WriteString(string(event))
+						ctx.ginCtx.Writer.Flush()
+
+						continue
 					}
 
 					// Create the barcode
@@ -138,7 +152,8 @@ func (a *SsrApi) SsrWhatsappLogin() gin.HandlerFunc {
 
 					jsonData, _ := json.Marshal(dto_response.Response{
 						Data: dto_response.DataResponse{
-							"base64_qr": base64Str,
+							"base64_qr":    base64Str,
+							"is_connected": false,
 						},
 					})
 
