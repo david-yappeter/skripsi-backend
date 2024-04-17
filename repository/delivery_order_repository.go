@@ -70,7 +70,7 @@ func (r *deliveryOrderRepository) prepareQuery(option model.DeliveryOrderQueryOp
 	if option.Phrase != nil {
 	}
 
-	if option.SortStatusImportance {
+	if !option.IsCount && option.SortStatusImportance {
 		stmt = stmt.OrderBy(`CASE dorder.status
 WHEN 'DELIVERING' THEN 1
 WHEN 'ONGOING' THEN 2
