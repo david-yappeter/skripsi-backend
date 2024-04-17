@@ -12,6 +12,14 @@ func JWTHandler(router gin.IRouter, authUseCase use_case.AuthUseCase) {
 	router.Use(func(ctx *gin.Context) {
 		token := ctx.Request.Header.Get("Authorization")
 		if token == "" {
+			// add a checking get token from cookie 'access_token' first
+			cookie, err := ctx.Request.Cookie("access_token")
+			if err == nil {
+				token = cookie.Value
+			}
+		}
+
+		if token == "" {
 			ctx.Next()
 			return
 		}
