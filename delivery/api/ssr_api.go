@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"image/png"
-	"myapp/data_type"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
 	"myapp/use_case"
@@ -97,8 +96,8 @@ func (a *SsrApi) SsrMaps() gin.HandlerFunc {
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{base64_qr=string}}
 func (a *SsrApi) SsrWhatsappLogin() gin.HandlerFunc {
-	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionSsrWhatsappLogin),
+	return a.Guest(
+		// data_type.PermissionP(data_type.PermissionSsrWhatsappLogin),
 		func(ctx apiContext) {
 			// set response headers for SSE
 			ctx.ginCtx.Header("Content-Type", "text/event-stream")
