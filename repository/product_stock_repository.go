@@ -6,6 +6,7 @@ import (
 	"myapp/data_type"
 	"myapp/infrastructure"
 	"myapp/model"
+	"myapp/util"
 
 	"github.com/Masterminds/squirrel"
 )
@@ -26,6 +27,7 @@ type ProductStockRepository interface {
 
 	// update
 	Update(ctx context.Context, productStock *model.ProductStock) error
+	UpdateDecrementQtyByProductId(ctx context.Context, productId string, stockDecrement float64) error
 
 	// delete
 	Delete(ctx context.Context, productStock *model.ProductStock) error
@@ -165,6 +167,17 @@ func (r *productStockRepository) IsExistByProductId(ctx context.Context, product
 
 func (r *productStockRepository) Update(ctx context.Context, productStock *model.ProductStock) error {
 	return defaultUpdate(r.db, ctx, productStock, "*", nil)
+}
+
+func (r *productStockRepository) UpdateDecrementQtyByProductId(ctx context.Context, productId string, stockDecrement float64) error {
+	args := map[string]interface{}{
+		"qty":        squirrel.Expr(fmt.Sprintf("qty - %f", stockDecrement)),
+		"updated_at": util.CurrentNullDateTime(),
+	}
+	whereStmt := squirrel.Eq{
+		"product_id": productId,
+	}
+	return update(r.db, ctx, model.ProductStockTableName, args, whereStmt)
 }
 
 func (r *productStockRepository) Delete(ctx context.Context, productStock *model.ProductStock) error {

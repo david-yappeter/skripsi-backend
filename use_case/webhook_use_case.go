@@ -2,7 +2,6 @@ package use_case
 
 import (
 	"context"
-	"fmt"
 	"myapp/constant"
 	"myapp/data_type"
 	"myapp/delivery/dto_request"
@@ -61,8 +60,9 @@ func (u *webhookUseCase) OrderStatusChange(ctx context.Context, request dto_requ
 		panicIfErr(err, constant.ErrNoData)
 
 		isNewOrderData := shopOrder == nil
+		mapProductStockUsedByProductId := map[string]float64{}
 
-		fmt.Printf("IS NEW ORDER DATA: %+v\n\n%+v\n\n", isNewOrderData, orderDetail.LineItems)
+		// fmt.Printf("IS NEW ORDER DATA: %+v\n\n%+v\n\n", isNewOrderData, orderDetail.LineItems)
 
 		if !isNewOrderData {
 			var trackingNumber *string = nil
@@ -106,6 +106,9 @@ func (u *webhookUseCase) OrderStatusChange(ctx context.Context, request dto_requ
 				if mapShopOrderItemByPlatformProductId[item.ProductId] == nil {
 					productUnit, err := u.repositoryManager.ProductUnitRepository().GetBaseProductUnitByProductId(ctx, item.SellerSku)
 					panicIfErr(err)
+					product := mustGetProduct(ctx, u.repositoryManager, item.SellerSku, true)
+
+					mapProductStockUsedByProductId[product.Id] += 1.0
 
 					mapShopOrderItemByPlatformProductId[item.ProductId] = &model.ShopOrderItem{
 						Id:                util.NewUuid(),
@@ -129,12 +132,19 @@ func (u *webhookUseCase) OrderStatusChange(ctx context.Context, request dto_requ
 
 		panicIfErr(
 			u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+				productStockRepository := u.repositoryManager.ProductStockRepository()
 				shopOrderRepository := u.repositoryManager.ShopOrderRepository()
 				shopOrderItemRepository := u.repositoryManager.ShopOrderItemRepository()
 
 				if isNewOrderData {
 					if err := shopOrderRepository.Insert(ctx, shopOrder); err != nil {
 						return err
+					}
+
+					for productId, qty := range mapProductStockUsedByProductId {
+						if err := productStockRepository.UpdateDecrementQtyByProductId(ctx, productId, qty); err != nil {
+							return err
+						}
 					}
 
 					if err := shopOrderItemRepository.InsertMany(ctx, shopOrderItems); err != nil {
