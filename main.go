@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"myapp/cmd"
 )
 
@@ -10,16 +9,5 @@ import (
 // @host		cp-api.mortalhealth.com
 // @BasePath	/
 func main() {
-	temp := true
-	if temp {
-		fmt.Println("TEMP")
-
-		temp = false
-	} else {
-		fmt.Println("OTHER")
-	}
-
-	return
-
 	cmd.Execute()
 }
