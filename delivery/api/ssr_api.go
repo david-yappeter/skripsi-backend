@@ -110,35 +110,28 @@ func (a *SsrApi) SsrWhatsappLogin() gin.HandlerFunc {
 
 			qrChan := a.whatsappUseCase.Login(ctx.context())
 
-			fmt.Println("REQUEST IN")
 			for {
 				select {
 				case <-closeNotify:
-					fmt.Println("CLOSE NOTIFY")
 					// Client connection closed, exit the handler
 					return
 				case qrString := <-qrChan:
 					if qrString == "closed" {
-						fmt.Println("QR CLOSEDDD")
-						// disconnect
-						// return
-						continue
+						// disconect
+						return
 					} else if qrString == "is_connected" {
-						go func() {
-							time.Sleep(5 * time.Second)
-							jsonData, _ := json.Marshal(dto_response.Response{
-								Data: dto_response.DataResponse{
-									"base64_qr":    nil,
-									"is_connected": true,
-								},
-							})
+						time.Sleep(5 * time.Second)
+						jsonData, _ := json.Marshal(dto_response.Response{
+							Data: dto_response.DataResponse{
+								"base64_qr":    nil,
+								"is_connected": true,
+							},
+						})
 
-							// this format 'data: ${JSON_DATA}\n\n" is important
-							event := fmt.Sprintf("data: %s\n\n", string(jsonData))
-							ctx.ginCtx.Writer.WriteString(string(event))
-							ctx.ginCtx.Writer.Flush()
-						}()
-
+						// this format 'data: ${JSON_DATA}\n\n" is important
+						event := fmt.Sprintf("data: %s\n\n", string(jsonData))
+						ctx.ginCtx.Writer.WriteString(string(event))
+						ctx.ginCtx.Writer.Flush()
 						continue
 					} else if qrString == "" {
 						continue

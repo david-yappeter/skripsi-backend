@@ -109,7 +109,6 @@ func (i *whatsappManager) LoginQr(ctx context.Context) (chan (string), error) {
 
 			i.client.Connect()
 
-			fmt.Println("BEFORE LOOP")
 			for evt := range qrChan {
 				if evt.Event == "code" {
 					// Assuming evt.Code contains the QR code string
@@ -120,7 +119,6 @@ func (i *whatsappManager) LoginQr(ctx context.Context) (chan (string), error) {
 				}
 			}
 		}
-		fmt.Println("RETURN QR CLOSED STRING", i.client.Store.ID == nil)
 		qrStringChan <- "closed" // Return an empty string if QR code retrieval fails
 	}()
 
