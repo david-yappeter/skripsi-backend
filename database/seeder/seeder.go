@@ -14,6 +14,7 @@ var Seeders = map[string]func(repositoryManager repository.RepositoryManager){
 	model.ProductStockTableName: ProductStockSeeder,
 	model.ProductUnitTableName:  ProductUnitSeeder,
 	model.RoleTableName:         RoleSeeder,
+	model.ShopeeConfigTableName: ShopeeConfigSeeder,
 	model.SupplierTypeTableName: SupplierTypeSeeder,
 	model.SupplierTableName:     SupplierSeeder,
 	model.TiktokConfigTableName: TiktokConfigSeeder,
@@ -35,7 +36,9 @@ func SeedAll(repositoryManager repository.RepositoryManager) {
 		model.RoleTableName,
 		model.UserTableName,
 		model.UserRoleTableName,
+
 		model.TiktokConfigTableName,
+		model.ShopeeConfigTableName,
 
 		model.FileTableName,
 

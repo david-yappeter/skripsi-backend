@@ -6,6 +6,7 @@ require (
 	github.com/Masterminds/squirrel v1.5.4
 	github.com/boombuler/barcode v1.0.1
 	github.com/david-yappeter/escpos v1.0.12
+	github.com/david-yappeter/go-shopee-v2 v0.0.1
 	github.com/david-yappeter/go-tiktok v0.1.23
 	github.com/gabriel-vasile/mimetype v1.4.3
 	github.com/ghodss/yaml v1.0.0
@@ -27,8 +28,6 @@ require (
 	github.com/jackc/pgx/v4 v4.18.1
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/mattn/go-sqlite3 v1.14.22
-	github.com/mdp/qrterminal v1.0.1
-	github.com/mdp/qrterminal/v3 v3.2.0
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/segmentio/ksuid v1.0.4
 	github.com/spf13/cobra v1.8.0
@@ -52,6 +51,7 @@ require (
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
+	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
@@ -92,8 +92,6 @@ require (
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/sys v0.18.0 // indirect
-	golang.org/x/term v0.18.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	rsc.io/qr v0.2.0 // indirect
 )
