@@ -177,6 +177,39 @@ func (a *DeliveryOrderApi) AddDriver() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/delivery-orders/{id} [put]
+//	@Summary	Update
+//	@tags		Delivery Orders
+//	@Accept		json
+//	@Param		id										path	string									true	"Id"
+//	@Param		dto_request.DeliveryOrderUpdateRequest	body	dto_request.DeliveryOrderUpdateRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
+func (a *DeliveryOrderApi) Update() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionDeliveryOrderUpdate),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.DeliveryOrderUpdateRequest
+			ctx.mustBind(&request)
+			request.DeliveryOrderId = id
+
+			deliveryOrder := a.deliveryOrderUseCase.Update(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"delivery_order": dto_response.NewDeliveryOrderResponse(deliveryOrder),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/delivery-orders/{id}/cancel [patch]
 //	@Summary	Cancel
 //	@tags		Delivery Orders
@@ -626,6 +659,7 @@ func RegisterDeliveryOrderApi(router gin.IRouter, useCaseManager use_case.UseCas
 	routerGroup.POST("/:id/images", api.AddImage())
 	routerGroup.POST("/:id/drivers", api.AddDriver())
 
+	routerGroup.PUT("/:id", api.Update())
 	routerGroup.PATCH("/:id/cancel", api.Cancel())
 	routerGroup.PATCH("/:id/on-going", api.OnGoing())
 	routerGroup.PATCH("/:id/delivering", api.Delivering())

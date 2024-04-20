@@ -50,6 +50,7 @@ type DeliveryOrderUseCase interface {
 	LatestDeliveryLocation(ctx context.Context, request dto_request.LatestDeliveryLocationRequest) *model.DeliveryOrderPosition
 
 	// update
+	Update(ctx context.Context, request dto_request.DeliveryOrderUpdateRequest) model.DeliveryOrder
 	MarkOngoing(ctx context.Context, request dto_request.DeliveryOrderMarkOngoingRequest) model.DeliveryOrder
 	Delivering(ctx context.Context, request dto_request.DeliveryOrderDeliveringRequest) model.DeliveryOrder
 	Cancel(ctx context.Context, request dto_request.DeliveryOrderCancelRequest) model.DeliveryOrder
@@ -651,6 +652,29 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 		customer:             true,
 		deliveryOrderItems:   true,
 		deliveryOrderImages:  true,
+		deliveryOrderDrivers: true,
+	})
+
+	return deliveryOrder
+}
+
+func (u *deliveryOrderUseCase) Update(ctx context.Context, request dto_request.DeliveryOrderUpdateRequest) model.DeliveryOrder {
+	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
+
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusPending {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
+	}
+
+	deliveryOrder.Date = request.Date
+
+	panicIfErr(
+		u.repositoryManager.DeliveryOrderRepository().Update(ctx, &deliveryOrder),
+	)
+
+	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		customer:             true,
+		deliveryOrderImages:  true,
+		deliveryOrderItems:   true,
 		deliveryOrderDrivers: true,
 	})
 

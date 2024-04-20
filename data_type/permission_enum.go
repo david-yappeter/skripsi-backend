@@ -74,6 +74,7 @@ const (
 	PermissionDeliveryOrderActiveForDriver  // DELIVERY_ORDER_ACTIVE_FOR_DRIVER
 	PermissionDeliveryOrderMarkOngoing      // DELIVERY_ORDER_MARK_ONGOING
 	PermissionDeliveryOrderDelivering       // DELIVERY_ORDER_DELIVERING
+	PermissionDeliveryOrderUpdate           // DELIVERY_ORDER_UPDATE
 	PermissionDeliveryOrderCancel           // DELIVERY_ORDER_CANCEL
 	PermissionDeliveryOrderMarkCompleted    // DELIVERY_ORDER_MARK_COMPLETED
 	PermissionDeliveryOrderDeliveryLocation // DELIVERY_ORDER_DELIVERY_LOCATION

@@ -145,6 +145,7 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionDeliveryOrderFetch,
 		PermissionDeliveryOrderGet,
 		PermissionDeliveryOrderMarkOngoing,
+		PermissionDeliveryOrderUpdate,
 		PermissionDeliveryOrderCancel,
 		PermissionDeliveryOrderDelete,
 		PermissionDeliveryOrderDeleteItem,

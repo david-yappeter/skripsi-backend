@@ -69,6 +69,12 @@ type DeliveryOrderDeliveringRequest struct {
 	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderDeliveringRequest
 
+type DeliveryOrderUpdateRequest struct {
+	Date data_type.Date `json:"date"`
+
+	DeliveryOrderId string `json:"-" swaggerignore:"true"`
+} // @name DeliveryOrderUpdateRequest
+
 type DeliveryOrderCancelRequest struct {
 	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderCancelRequest
