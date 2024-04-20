@@ -7,6 +7,8 @@ import (
 	"myapp/infrastructure"
 	"runtime/debug"
 
+	internalI18n "myapp/internal/i18n"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,6 +24,13 @@ func PanicHandler(router gin.IRouter, loggerStack infrastructure.LoggerStack) {
 				switch v := r.(type) {
 				case dto_response.ErrorResponse:
 					instantResponse := v
+
+					localizer, _ := ctx.MustGet("i18n").(*internalI18n.Localizer)
+					localization, err := localizer.Translate(instantResponse.Message)
+					if err == nil {
+						instantResponse.Message = localization
+					}
+
 					ctx.AbortWithStatusJSON(instantResponse.Code, instantResponse)
 					return
 

@@ -1,0 +1,96 @@
+# auth_use_case.go
+AUTH.WRONG_PASSWORD: "Username atau password salah"
+
+# cart_use_case.go
+CART.USER_MUST_HAVE_ACTIVE_CASHIER_SESSION: "Cart harus punya sesi kasir aktif"
+CART.ACTIVE_NOT_FOUND: "Keranjang yang aktif tidak ditemukan"
+CART.CART_ITEM_NOT_FOUND: "Barang keranjang tidak ditemukan"
+CART.PRODUCT_MUST_HAVE_UNIT: "Produk harus punya minimal satu unit"
+CART_ITEM.NOT_FOUND: "Barang keranjang tidak ditemukan"
+CART.THERE_IS_AN_ACTIVE_CART: "Masih ada keranjang yang aktif"
+CART.NOT_FOUND: "Keranjang tidak ditemukan"
+CART.CANNOT_REMOVE_ACTIVE_CART: "Tidak bisa menghapus keranjang yang aktif"
+
+# cashier_session_use_case.go
+CASHIER_SESSION.USER_ALREADY_HAVE_CASHIER_SESSION: "User telah mempunyai sesi kasir aktif"
+CASHIER_SESSION.STILL_HAVE_CART: "Sesi kasir masih mempunyai keranjang"
+CASHIER_SESSION.STATUS_MUST_BE_COMPLETED: "Status sesi kasir harus 'Selesai'"
+CASHIER_SESSION.STATUS_MUST_BE_ACTIVE: "Status sesi kasir harus aktif"
+
+# customer_debt_use_case.go
+CUSTOMER_DEBT.STATUS_MUST_BE_UNPAID: "Status hutang harus 'belum dibayar'"
+CUSTOMER_DEBT.PAYMENT_INVALID_AMOUNT: "Jumlah tidak valid"
+
+# customer_type_use_case.go
+CUSTOMER_TYPE.NAME.ALREADY_EXIST: "Nama sudah digunakan"
+CUSTOMER_TYPE.IN_USED_BY_CUSTOMERS: "Tipe pelanggan telah digunakan"
+
+# debt_use_case.go
+DEBT.STATUS_MUST_BE_UNPAID: "Status hutang harus 'belum dibayar'"
+DEBT.PAYMENT_INVALID_AMOUNT: "Jumlah tidak valid"
+
+# delivery_order_use_case.go
+DELIVERY_ORDER.STATUS.MUST_BE_PENDING: "Status harus 'menunggu'"
+DELIVERY_ORDER.PRODUCT_OUT_OF_STOCK: "Stok produk habis"
+DELIVERY_ORDER.DRIVER_ALREADY_ADDED: "Driver sudah ditambahkan"
+DELIVERY_ORDER.STATUS.MUST_BE_DELIVERING: "Status harus 'dalam pengiriman'"
+DELIVERY_ORDER.STATUS.ALREADY_COMPLETED: "Status sudah 'selesai'"
+DELIVERY_ORDER.STATUS.ALREADY_CANCELED: "Status sudah 'dibatalkan'"
+DELIVERY_ORDER.CURRENT_USER_ALREADY_HAVE_ACTIVE_DELIVERY: "User sudah punya pengiriman yang sedang berlangsung"
+DELIVERY_ORDER.STATUS.MUST_BE_ON_GOING: "Status harus 'diproses'"
+DELIVERY_ORDER.NO_ACTIVE_DELIVERING: "Tidak ada pengiriman yang dilaksanakan"
+DELIVERY_ORDER.INVALID_USER_FOR_LIVE_TRACKING: "User tidak valid untuk live tracking"
+DELIVERY_ORDER_ITEM.NOT_FOUND: "Barang tidak ditemukan"
+
+# product_discount_use_case.go
+PRODUCT_DISCOUNT.PRODUCT_ALREADY_HAVE_DISCOUNT: "Produk sudah punya diskon"
+
+# product_receive_use_case.go
+PRODUCT_RECEIVE.STATUS_MUST_BE_PENDING: "Status harus 'menunggu'"
+PRODUCT.NOT_FOUND: "Produk tidak ditemukan"
+PRODUCT_RECEIVE.STATUS.MUST_BE_PENDING: "Status harus 'menunggu'"
+PRODUCT_RECEIVE.ALREADY_CANCELED: "Sudah dibatalkan"
+PRODUCT_RECEIVE.PRODUCT_ALREADY_SOLD_CANNOT_BE_CANCELED: "Produk sudah terjual, tidak bisa dibatalkan"
+PRODUCT_RECEIVE_ITEM.NOT_FOUND: "Barang tidak ditemukan"
+
+# product_stock_use_case.go
+PRODUCT_STOCK.PRODUCT_MUST_BE_ACTIVE: "Product harus aktif"
+PRODUCT_STOCK.COST_PRICE_IS_REQUIRED_WHEN_ADDING_STOCK: "Harga pembelian wajib diisi ketika menambah stok"
+
+# product_unit_use_case.go
+PRODUCT_UNIT.ALREADY_EXIST: "Unit sudah ada"
+PRODUCT_UNIT.IN_USED_BY_OTHER_UNIT: "Unit telah digunakan oleh unit lain"
+
+# product_use_case.go
+PRODUCT.NAME.ALREADY_EXIST: "Nama sudah digunakan"
+PRODUCT.ALREADY_HAVE_PRODUCT_RECEIVE: "Produk sudah punya penerimaan produk"
+ACTIVE_PRODUCT.MUST_HAVE_AN_UNIT: "Produk yang aktif harus punya unit"
+ACTIVE_PRODUCT.MUST_HAVE_PRICE: "Produk yang aktif harus punya harga"
+
+# supplier_type_use_case.go
+SUPPLIER_TYPE.NAME.ALREADY_EXIST: "Nama sudah ada"
+SUPPLIER_TYPE.IN_USED_BY.SUPPLIER: "Tipe supplier sudah dipakai"
+
+# supplier_use_case.go
+SUPPLIER.CODE.ALREADY_EXIST: "Kode sudah digunakan"
+SUPPLIER.IN_USED_BY_PRODUCT_RECEIVE: "Supplier sudah digunakan penerimaan produk"
+
+# tiktok_product_use_case.go
+TIKTOK_PRODUCT.ALREADY_EXIST: "Sudah ada"
+
+# transaction_use_case.go
+TRANSACTION.USER_MUST_HAVE_ACTIVE_CASHIER_SESSION: "User harus punya sesi kasir aktif"
+TRANSACTION.PAYMENT_TYPE_CASH_REQUIRED_CASH_PAID: "Tipe pembayaran cash harus punya jumlah pembayaran"
+TRANSACTION.NO_ACTIVE_CART: "Tidak ada keranjang aktif"
+TRANSACTION.CART_ITEMS_EMPTY: "Keranjang kosong"
+TRANSACTION.INVALID_CASH_PAID_AMOUNT: "Jumlah pembayaran tidak valid"
+
+# unit_use_case.go
+UNIT.NAME.ALREADY_EXIST: "Nama sudah ada"
+
+# user_use_case.go
+USER.UNIQUE_USERNAME: "Username sudah dipakai"
+USER.ROLE_ALREADY_EXIST: "Role sudah ada"
+
+# whatsapp_use_case.go
+WHATSAPP.PRODUCT_MUST_HAVE_PRICE: "Produk harus mempunyai harga"

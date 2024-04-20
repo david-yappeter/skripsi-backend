@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"myapp/internal/gin/validator"
+	internalI18n "myapp/internal/i18n"
 	"myapp/internal/number_speller"
 	"myapp/internal/time_speller"
 	"myapp/model"
@@ -14,8 +15,8 @@ func TranslatorHandler(router gin.IRouter) {
 	router.Use(func(ctx *gin.Context) {
 		var (
 			matcher = language.NewMatcher([]language.Tag{
-				language.English, // The first language is used as fallback.
 				language.Indonesian,
+				language.English,
 			})
 			accept = ctx.GetHeader("Accept-Language")
 		)
@@ -34,6 +35,9 @@ func TranslatorHandler(router gin.IRouter) {
 		if validatorTranslator, ok := validator.Translators[locale]; ok {
 			ctx.Request = ctx.Request.WithContext(model.SetValidatorTranslatorCtx(ctx.Request.Context(), validatorTranslator))
 		}
+
+		// i18n
+		ctx.Set("i18n", internalI18n.NewLocalizer(locale))
 
 		ctx.Next()
 	})

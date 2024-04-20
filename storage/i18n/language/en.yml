@@ -1,0 +1,96 @@
+# auth_use_case.go
+AUTH.WRONG_PASSWORD: "Wrong username or password"
+
+# cart_use_case.go
+CART.USER_MUST_HAVE_ACTIVE_CASHIER_SESSION: "Cart must have an active cashier session"
+CART.ACTIVE_NOT_FOUND: "No active cart found"
+CART.CART_ITEM_NOT_FOUND: "Cart item not found"
+CART.PRODUCT_MUST_HAVE_UNIT: "Product must have at least one unit"
+CART_ITEM.NOT_FOUND: "Cart item not found"
+CART.THERE_IS_AN_ACTIVE_CART: "Active cart exist"
+CART.NOT_FOUND: "Cart not found"
+CART.CANNOT_REMOVE_ACTIVE_CART: "Can't remove active cart"
+
+# cashier_session_use_case.go
+CASHIER_SESSION.USER_ALREADY_HAVE_CASHIER_SESSION: "User already have active session"
+CASHIER_SESSION.STILL_HAVE_CART: "Cashier session still have carts"
+CASHIER_SESSION.STATUS_MUST_BE_COMPLETED: "Cashier session status must be completed"
+CASHIER_SESSION.STATUS_MUST_BE_ACTIVE: "Cashier session status must be active"
+
+# customer_debt_use_case.go
+CUSTOMER_DEBT.STATUS_MUST_BE_UNPAID: "Debt status must be unpaid"
+CUSTOMER_DEBT.PAYMENT_INVALID_AMOUNT: "Invalid payment amount"
+
+# customer_type_use_case.go
+CUSTOMER_TYPE.NAME.ALREADY_EXIST: "Name already exist"
+CUSTOMER_TYPE.IN_USED_BY_CUSTOMERS: "In used by customers"
+
+# debt_use_case.go
+DEBT.STATUS_MUST_BE_UNPAID: "Debt status must be unpaid"
+DEBT.PAYMENT_INVALID_AMOUNT: "Invalid payment amount"
+
+# delivery_order_use_case.go
+DELIVERY_ORDER.STATUS.MUST_BE_PENDING: "Status must be pending"
+DELIVERY_ORDER.PRODUCT_OUT_OF_STOCK: "Product out of stock"
+DELIVERY_ORDER.DRIVER_ALREADY_ADDED: "Driver already added"
+DELIVERY_ORDER.STATUS.MUST_BE_DELIVERING: "Status must be delivering"
+DELIVERY_ORDER.STATUS.ALREADY_COMPLETED: "Status already completed"
+DELIVERY_ORDER.STATUS.ALREADY_CANCELED: "Status already canceled"
+DELIVERY_ORDER.CURRENT_USER_ALREADY_HAVE_ACTIVE_DELIVERY: "Current user have an active delivery"
+DELIVERY_ORDER.STATUS.MUST_BE_ON_GOING: "Status must be ongoing"
+DELIVERY_ORDER.NO_ACTIVE_DELIVERING: "There is no active delivering"
+DELIVERY_ORDER.INVALID_USER_FOR_LIVE_TRACKING: "Invalid user for live tracking"
+DELIVERY_ORDER_ITEM.NOT_FOUND: "Delivery order item not found"
+
+# product_discount_use_case.go
+PRODUCT_DISCOUNT.PRODUCT_ALREADY_HAVE_DISCOUNT: "Product already have a discount"
+
+# product_receive_use_case.go
+PRODUCT_RECEIVE.STATUS_MUST_BE_PENDING: "Status must be pending"
+PRODUCT.NOT_FOUND: "Product not found"
+PRODUCT_RECEIVE.STATUS.MUST_BE_PENDING: "Status must be pending"
+PRODUCT_RECEIVE.ALREADY_CANCELED: "Already canceled"
+PRODUCT_RECEIVE.PRODUCT_ALREADY_SOLD_CANNOT_BE_CANCELED: "Product already sold, can't be canceled"
+PRODUCT_RECEIVE_ITEM.NOT_FOUND: "Product receive item not found"
+
+# product_stock_use_case.go
+PRODUCT_STOCK.PRODUCT_MUST_BE_ACTIVE: "Product must be active"
+PRODUCT_STOCK.COST_PRICE_IS_REQUIRED_WHEN_ADDING_STOCK: "Cost price is required when adding stock"
+
+# product_unit_use_case.go
+PRODUCT_UNIT.ALREADY_EXIST: "Unit already exist"
+PRODUCT_UNIT.IN_USED_BY_OTHER_UNIT: "Unit is in used by other unit"
+
+# product_use_case.go
+PRODUCT.NAME.ALREADY_EXIST: "Name already exist"
+PRODUCT.ALREADY_HAVE_PRODUCT_RECEIVE: "Product already have product receive"
+ACTIVE_PRODUCT.MUST_HAVE_AN_UNIT: "Active product must have an unit"
+ACTIVE_PRODUCT.MUST_HAVE_PRICE: "Active product must have a price"
+
+# supplier_type_use_case.go
+SUPPLIER_TYPE.NAME.ALREADY_EXIST: "Name already exist"
+SUPPLIER_TYPE.IN_USED_BY.SUPPLIER: "Supplier type in used by supplier"
+
+# supplier_use_case.go
+SUPPLIER.CODE.ALREADY_EXIST: "Code already exist"
+SUPPLIER.IN_USED_BY_PRODUCT_RECEIVE: "Supplier in used by product receive"
+
+# tiktok_product_use_case.go
+TIKTOK_PRODUCT.ALREADY_EXIST: "Already exist"
+
+# transaction_use_case.go
+TRANSACTION.USER_MUST_HAVE_ACTIVE_CASHIER_SESSION: "User must have active cashier session"
+TRANSACTION.PAYMENT_TYPE_CASH_REQUIRED_CASH_PAID: "Cash payment type required cash paid amount"
+TRANSACTION.NO_ACTIVE_CART: "No active cart"
+TRANSACTION.CART_ITEMS_EMPTY: "Cart is empty"
+TRANSACTION.INVALID_CASH_PAID_AMOUNT: "Invalid cash paid amount"
+
+# unit_use_case.go
+UNIT.NAME.ALREADY_EXIST: "Name already exist"
+
+# user_use_case.go
+USER.UNIQUE_USERNAME: "Username must be unique"
+USER.ROLE_ALREADY_EXIST: "Role already exist"
+
+# whatsapp_use_case.go
+WHATSAPP.PRODUCT_MUST_HAVE_PRICE: "Product must have a price"
