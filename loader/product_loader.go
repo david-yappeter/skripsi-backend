@@ -63,6 +63,19 @@ func (l *ProductLoader) CustomerTypeDiscountFn(customerTypeDiscount *model.Custo
 	}
 }
 
+func (l *ProductLoader) ProductDiscountFn(productDiscount *model.ProductDiscount) func() error {
+	return func() error {
+		product, err := l.loadById(productDiscount.ProductId)
+		if err != nil {
+			return err
+		}
+
+		productDiscount.Product = product
+
+		return nil
+	}
+}
+
 func NewProductLoader(productRepository repository.ProductRepository) *ProductLoader {
 	batchByProductIdFn := func(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
 		ids := make([]string, len(keys))

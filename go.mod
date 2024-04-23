@@ -6,7 +6,6 @@ require (
 	github.com/Masterminds/squirrel v1.5.4
 	github.com/boombuler/barcode v1.0.1
 	github.com/david-yappeter/escpos v1.0.12
-	github.com/david-yappeter/go-shopee-v2 v0.0.1
 	github.com/david-yappeter/go-tiktok v0.1.23
 	github.com/gabriel-vasile/mimetype v1.4.3
 	github.com/ghodss/yaml v1.0.0
@@ -52,7 +51,6 @@ require (
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
-	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect

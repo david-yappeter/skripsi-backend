@@ -72,7 +72,7 @@ func (a *WhatsappApi) Logout() gin.HandlerFunc {
 //	@Summary	Broadcast Product Price Change
 //	@tags		Whatsapps
 //	@Accept		json
-//	@Param	dto_request.WhatsappProductPriceChangeBroadcastRequest body dto_request.WhatsappProductPriceChangeBroadcastRequest true "Body Request"
+//	@Param		dto_request.WhatsappProductPriceChangeBroadcastRequest	body	dto_request.WhatsappProductPriceChangeBroadcastRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.SuccessResponse
 func (a *WhatsappApi) ProductPriceChangeBroadcast() gin.HandlerFunc {
@@ -100,7 +100,7 @@ func (a *WhatsappApi) ProductPriceChangeBroadcast() gin.HandlerFunc {
 //	@Summary	Broadcast Customer Type Discount
 //	@tags		Whatsapps
 //	@Accept		json
-//	@Param	dto_request.WhatsappCustomerTypeDiscountBroadcastRequest body dto_request.WhatsappCustomerTypeDiscountBroadcastRequest true "Body Request"
+//	@Param		dto_request.WhatsappCustomerTypeDiscountBroadcastRequest	body	dto_request.WhatsappCustomerTypeDiscountBroadcastRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.SuccessResponse
 func (a *WhatsappApi) CustomerTypeDiscountBroadcast() gin.HandlerFunc {

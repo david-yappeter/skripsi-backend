@@ -119,7 +119,7 @@ func (a *DebtApi) Get() gin.HandlerFunc {
 //	@Summary	Payment
 //	@tags		Customer Debts
 //	@Accept		json
-//	@Param		id										path	string									true	"Id"
+//	@Param		id								path	string							true	"Id"
 //	@Param		dto_request.DebtPaymentRequest	body	dto_request.DebtPaymentRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{customer_debt=dto_response.DebtResponse}}

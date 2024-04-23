@@ -67,13 +67,22 @@ func (r *productDiscountRepository) get(ctx context.Context, stmt squirrel.Sqliz
 
 func (r *productDiscountRepository) prepareQuery(option model.ProductDiscountQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s pd", model.ProductDiscountTableName))
+		From(fmt.Sprintf("%s pd", model.ProductDiscountTableName)).
+		InnerJoin(fmt.Sprintf("%s p ON pd.product_id = p.id", model.ProductTableName))
 
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
 		stmt = stmt.Where(squirrel.Or{
-			squirrel.ILike{"pd.name": phrase},
+			squirrel.ILike{"p.name": phrase},
 		})
+	}
+
+	if option.ProductId != nil {
+		stmt = stmt.Where(squirrel.Eq{"pd.product_id": option.ProductId})
+	}
+
+	if option.IsActive != nil {
+		stmt = stmt.Where(squirrel.Eq{"pd.is_active": option.IsActive})
 	}
 
 	stmt = model.Prepare(stmt, &option)

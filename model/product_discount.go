@@ -11,6 +11,8 @@ type ProductDiscount struct {
 	DiscountAmount     *float64 `db:"discount_amount"`
 
 	Timestamp
+
+	Product *Product `db:"-"`
 }
 
 func (m *ProductDiscount) TableName() string {
@@ -37,7 +39,9 @@ func (m *ProductDiscount) ToMap() map[string]interface{} {
 type ProductDiscountQueryOption struct {
 	QueryOption
 
-	Phrase *string
+	ProductId *string
+	IsActive  *bool
+	Phrase    *string
 }
 
 var _ PrepareOption = &ProductDiscountQueryOption{}

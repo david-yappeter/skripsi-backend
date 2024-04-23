@@ -227,6 +227,8 @@ func NewUseCaseManager(
 		),
 		productDiscountUseCase: NewProductDiscountUseCase(
 			repositoryManager,
+			filesystemManager.Main(),
+			filesystemManager.Tmp(),
 		),
 		productUseCase: NewProductUseCase(
 			repositoryManager,

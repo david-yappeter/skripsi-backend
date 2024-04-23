@@ -101,6 +101,8 @@ const (
 
 	// product discount
 	PermissionProductDiscountCreate // PRODUCT_DISCOUNT_CREATE
+	PermissionProductDiscountFetch  // PRODUCT_DISCOUNT_FETCH
+	PermissionProductDiscountGet    // PRODUCT_DISCOUNT_GET
 	PermissionProductDiscountUpdate // PRODUCT_DISCOUNT_UPDATE
 	PermissionProductDiscountDelete // PRODUCT_DISCOUNT_DELETE
 

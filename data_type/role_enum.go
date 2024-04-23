@@ -170,6 +170,8 @@ func GetRoleInventoryPermissions() []Permission {
 
 		// product discount
 		PermissionProductDiscountCreate,
+		PermissionProductDiscountFetch,
+		PermissionProductDiscountGet,
 		PermissionProductDiscountUpdate,
 		PermissionProductDiscountDelete,
 
