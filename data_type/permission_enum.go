@@ -98,6 +98,7 @@ const (
 	PermissionProductOptionForDeliveryOrderItemForm    // PRODUCT_OPTION_FOR_DELIVERY_ORDER_ITEM_FORM
 	PermissionProductOptionForCustomerTypeDiscountForm // PRODUCT_OPTION_FOR_CUSTOMER_TYPE_DISCOUNT_FORM
 	PermissionProductOptionForCartAddItemForm          // PRODUCT_OPTION_FOR_CART_ADD_ITEM_FORM
+	PermissionProductOptionForProductDiscountForm      // PRODUCT_OPTION_FOR_PRODUCT_DISCOUNT_FORM
 
 	// product discount
 	PermissionProductDiscountCreate // PRODUCT_DISCOUNT_CREATE

@@ -86,3 +86,14 @@ type ProductOptionForCartAddItemFormRequest struct {
 	Sorts  ProductOptionForCartAddItemFormSorts `json:"sorts" validate:"unique=Field,dive"`
 	Phrase *string                              `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name ProductOptionForCartAddItemFormRequest
+
+type ProductOptionForProductDiscountFormSorts []struct {
+	Field     string `json:"field" validate:"required,oneof=name created_at updated_at" example:"name"`
+	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
+} // @name ProductOptionForProductDiscountFormSorts
+
+type ProductOptionForProductDiscountFormRequest struct {
+	PaginationRequest
+	Sorts  ProductOptionForProductDiscountFormSorts `json:"sorts" validate:"unique=Field,dive"`
+	Phrase *string                                  `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name ProductOptionForProductDiscountFormRequest

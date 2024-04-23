@@ -45,6 +45,7 @@ type ProductUseCase interface {
 	OptionForDeliveryOrderItemForm(ctx context.Context, request dto_request.ProductOptionForDeliveryOrderItemFormRequest) ([]model.Product, int)
 	OptionForCustomerTypeDiscountForm(ctx context.Context, request dto_request.ProductOptionForCustomerTypeDiscountFormRequest) ([]model.Product, int)
 	OptionForCartAddItemForm(ctx context.Context, request dto_request.ProductOptionForCartAddItemFormRequest) ([]model.Product, int)
+	OptionForProductDiscountForm(ctx context.Context, request dto_request.ProductOptionForProductDiscountFormRequest) ([]model.Product, int)
 }
 
 type productUseCase struct {
@@ -503,6 +504,31 @@ func (u *productUseCase) OptionForCustomerTypeDiscountForm(ctx context.Context, 
 }
 
 func (u *productUseCase) OptionForCartAddItemForm(ctx context.Context, request dto_request.ProductOptionForCartAddItemFormRequest) ([]model.Product, int) {
+	queryOption := model.ProductQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts(request.Sorts),
+		),
+		IsActive: util.BoolP(true),
+		Phrase:   request.Phrase,
+	}
+
+	products, err := u.repositoryManager.ProductRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.ProductRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	u.mustLoadProductDatas(ctx, util.SliceValueToSlicePointer(products), productLoaderParams{
+		productImage: true,
+		productStock: true,
+	})
+
+	return products, total
+}
+
+func (u *productUseCase) OptionForProductDiscountForm(ctx context.Context, request dto_request.ProductOptionForProductDiscountFormRequest) ([]model.Product, int) {
 	queryOption := model.ProductQueryOption{
 		QueryOption: model.NewQueryOptionWithPagination(
 			request.Page,
