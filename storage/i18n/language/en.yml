@@ -94,3 +94,36 @@ USER.ROLE_ALREADY_EXIST: "Role already exist"
 
 # whatsapp_use_case.go
 WHATSAPP.PRODUCT_MUST_HAVE_PRICE: "Product must have a price"
+
+# delivery_order_review_use_case.go
+DELIVERY_ORDER_REVIEW.ALREADY_EXIST: "Review already exist"
+DELIVERY_ORDER_REVIEW.DELIVERY_ORDER_MUST_BE_COMPLETED: "Delivery order status must be completed"
+DELIVERY_ORDER_REVIEW.PASS_2_DAYS_CANNOT_REVIEW_ANYMORE: "Review not allowed anymore"
+
+# use_case.go
+USER.NOT_FOUND:  User not found
+ROLE.NOT_FOUND:  Role not found
+USER_ROLE.NOT_FOUND:  UserRole not found
+UNIT.NOT_FOUND:  Unit not found
+SUPPLIER_TYPE.NOT_FOUND:  Supplier type not found
+SUPPLIER.NOT_FOUND:  Supplier not found
+CUSTOMER.NOT_FOUND:  Customer not found
+PRODUCT_UNIT.NOT_FOUND:  Product unit not found
+PRODUCT_DISCOUNT.NOT_FOUND:  Product discount not found
+FILE.NOT_FOUND:  File not found
+BALANCE.NOT_FOUND:  Balance not found
+TRANSACTION.NOT_FOUND:  Transaction not found
+PRODUCT_RECEIVE.NOT_FOUND:  Product receive not found
+PRODUCT_RECEIVE_IMAGE.NOT_FOUND:  Product receive image not found
+DELIVERY_ORDER.NOT_FOUND:  Delivery order not found
+DELIVERY_ORDER_POSITION.NOT_FOUND:  Delivery order position not found
+DELIVERY_ORDER_IMAGE.NOT_FOUND:  Delivery order image not found
+CASHIER_SESSION.NOT_FOUND:  Cashier session not found
+PRODUCT_STOCK.NOT_FOUND:  Produck stock not found
+CUSTOMER_DEBT.NOT_FOUND:  Customer debt not found
+TIKTOK_PRODUCT.NOT_FOUND:  Tiktok product not found
+SHOP_ORDER.NOT_FOUND:  Shop order not found
+DELIVERY_ORDER_REVIEW.NOT_FOUND:  Delivery order review not found
+CUSTOMER_TYPE.NOT_FOUND:  Customer type not found
+CUSTOMER_TYPE_DISCOUNT.NOT_FOUND:  Customer type discount not found
+DEBT.NOT_FOUND:  Debt not found

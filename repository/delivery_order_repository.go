@@ -18,6 +18,7 @@ type DeliveryOrderRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.DeliveryOrderQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.DeliveryOrderQueryOption) ([]model.DeliveryOrder, error)
+	FetchByIds(ctx context.Context, ids []string) ([]model.DeliveryOrder, error)
 	Get(ctx context.Context, id string) (*model.DeliveryOrder, error)
 	GetByDriverUserIdAndStatusDelivering(ctx context.Context, driverUserId string) (*model.DeliveryOrder, error)
 	IsExistByDriverUserIdAndStatusDelivering(ctx context.Context, driverUserId string) (bool, error)
@@ -142,6 +143,14 @@ func (r *deliveryOrderRepository) Fetch(ctx context.Context, options ...model.De
 	}
 
 	stmt := r.prepareQuery(option)
+
+	return r.fetch(ctx, stmt)
+}
+
+func (r *deliveryOrderRepository) FetchByIds(ctx context.Context, ids []string) ([]model.DeliveryOrder, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.DeliveryOrderTableName).
+		Where(squirrel.Eq{"id": ids})
 
 	return r.fetch(ctx, stmt)
 }

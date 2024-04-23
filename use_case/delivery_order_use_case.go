@@ -32,6 +32,8 @@ type deliveryOrdersLoaderParams struct {
 
 	deliveryOrderItemCosts    bool
 	deliveryOrderProductStock bool
+
+	review bool
 }
 
 type DeliveryOrderUseCase interface {
@@ -113,6 +115,7 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 	deliveryOrderItemsLoader := loader.NewDeliveryOrderItemsLoader(u.repositoryManager.DeliveryOrderItemRepository())
 	deliveryOrderImagesLoader := loader.NewDeliveryOrderImagesLoader(u.repositoryManager.DeliveryOrderImageRepository())
 	deliveryOrderDriversLoader := loader.NewDeliveryOrderDriversLoader(u.repositoryManager.DeliveryOrderDriverRepository())
+	deliveryOrderReviewLoader := loader.NewDeliveryOrderReviewLoader(u.repositoryManager.DeliveryOrderReviewRepository())
 
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
@@ -131,6 +134,10 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 
 				if option.deliveryOrderDrivers {
 					group.Go(deliveryOrderDriversLoader.DeliveryOrderFn(deliveryOrders[i]))
+				}
+
+				if option.review {
+					group.Go(deliveryOrderReviewLoader.DeliveryOrderFn(deliveryOrders[i]))
 				}
 			}
 		}),
@@ -528,6 +535,8 @@ func (u *deliveryOrderUseCase) Get(ctx context.Context, request dto_request.Deli
 		deliveryOrderItems:   true,
 		deliveryOrderImages:  true,
 		deliveryOrderDrivers: true,
+
+		review: true,
 	})
 
 	return deliveryOrder

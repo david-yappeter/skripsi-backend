@@ -83,6 +83,10 @@ const (
 	PermissionDeliveryOrderDeleteImage      // DELIVERY_ORDER_DELETE_IMAGE
 	PermissionDeliveryOrderDeleteDriver     // DELIVERY_ORDER_DELETE_DRIVER
 
+	// delivery order review
+	PermissionDeliveryOrderReviewFetch // DELIVERY_ORDER_REVIEW_FETCH
+	PermissionDeliveryOrderReviewGet   // DELIVERY_ORDER_REVIEW_GET
+
 	// product
 	PermissionProductCreate                            // PRODUCT_CREATE
 	PermissionProductUpload                            // PRODUCT_UPLOAD

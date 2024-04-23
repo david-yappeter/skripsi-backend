@@ -357,6 +357,12 @@ func mustGetShopOrder(ctx context.Context, repositoryManager repository.Reposito
 	return *shopOrder
 }
 
+func mustGetDeliveryOrderReview(ctx context.Context, repositoryManager repository.RepositoryManager, deliveryOrderReviewId string, isValidate bool) model.DeliveryOrderReview {
+	deliveryOrderReview, err := repositoryManager.DeliveryOrderReviewRepository().Get(ctx, deliveryOrderReviewId)
+	panicIfRepositoryError(err, "DELIVERY_ORDER_REVIEW.NOT_FOUND", isValidate)
+	return *deliveryOrderReview
+}
+
 func mustGetCustomerType(ctx context.Context, repositoryManager repository.RepositoryManager, customerTypeId string, isValidate bool) model.CustomerType {
 	customerType, err := repositoryManager.CustomerTypeRepository().Get(ctx, customerTypeId)
 	panicIfRepositoryError(err, "CUSTOMER_TYPE.NOT_FOUND", isValidate)

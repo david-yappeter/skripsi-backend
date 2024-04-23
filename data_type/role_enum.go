@@ -152,6 +152,10 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionDeliveryOrderDeleteImage,
 		PermissionDeliveryOrderDeleteDriver,
 
+		// delivery order review
+		PermissionDeliveryOrderReviewFetch,
+		PermissionDeliveryOrderReviewGet,
+
 		// product
 		PermissionProductCreate,
 		PermissionProductUpload,

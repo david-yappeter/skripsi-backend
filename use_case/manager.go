@@ -17,6 +17,7 @@ type UseCaseManager interface {
 	CustomerTypeUseCase() CustomerTypeUseCase
 	DebtUseCase() DebtUseCase
 	DeliveryOrderUseCase() DeliveryOrderUseCase
+	DeliveryOrderReviewUseCase() DeliveryOrderReviewUseCase
 	PermissionUseCase() PermissionUseCase
 	ProductDiscountUseCase() ProductDiscountUseCase
 	ProductUseCase() ProductUseCase
@@ -37,32 +38,33 @@ type UseCaseManager interface {
 }
 
 type useCaseManager struct {
-	authUseCase            AuthUseCase
-	balanceUseCase         BalanceUseCase
-	cartUseCase            CartUseCase
-	cashierSessionUseCase  CashierSessionUseCase
-	customerUseCase        CustomerUseCase
-	customerDebtUseCase    CustomerDebtUseCase
-	customerTypeUseCase    CustomerTypeUseCase
-	debtUseCase            DebtUseCase
-	deliveryOrderUseCase   DeliveryOrderUseCase
-	permissionUseCase      PermissionUseCase
-	productDiscountUseCase ProductDiscountUseCase
-	productUseCase         ProductUseCase
-	productReceiveUseCase  ProductReceiveUseCase
-	productStockUseCase    ProductStockUseCase
-	productUnitUseCase     ProductUnitUseCase
-	roleUseCase            RoleUseCase
-	shopOrderUseCase       ShopOrderUseCase
-	supplierTypeUseCase    SupplierTypeUseCase
-	supplierUseCase        SupplierUseCase
-	tiktokConfigUseCase    TiktokConfigUseCase
-	tiktokProductUseCase   TiktokProductUseCase
-	transactionUseCase     TransactionUseCase
-	unitUseCase            UnitUseCase
-	userUseCase            UserUseCase
-	webhookUseCase         WebhookUseCase
-	whatsappUseCase        WhatsappUseCase
+	authUseCase                AuthUseCase
+	balanceUseCase             BalanceUseCase
+	cartUseCase                CartUseCase
+	cashierSessionUseCase      CashierSessionUseCase
+	customerUseCase            CustomerUseCase
+	customerDebtUseCase        CustomerDebtUseCase
+	customerTypeUseCase        CustomerTypeUseCase
+	debtUseCase                DebtUseCase
+	deliveryOrderUseCase       DeliveryOrderUseCase
+	deliveryOrderReviewUseCase DeliveryOrderReviewUseCase
+	permissionUseCase          PermissionUseCase
+	productDiscountUseCase     ProductDiscountUseCase
+	productUseCase             ProductUseCase
+	productReceiveUseCase      ProductReceiveUseCase
+	productStockUseCase        ProductStockUseCase
+	productUnitUseCase         ProductUnitUseCase
+	roleUseCase                RoleUseCase
+	shopOrderUseCase           ShopOrderUseCase
+	supplierTypeUseCase        SupplierTypeUseCase
+	supplierUseCase            SupplierUseCase
+	tiktokConfigUseCase        TiktokConfigUseCase
+	tiktokProductUseCase       TiktokProductUseCase
+	transactionUseCase         TransactionUseCase
+	unitUseCase                UnitUseCase
+	userUseCase                UserUseCase
+	webhookUseCase             WebhookUseCase
+	whatsappUseCase            WhatsappUseCase
 }
 
 func (u *useCaseManager) AuthUseCase() AuthUseCase {
@@ -99,6 +101,10 @@ func (u *useCaseManager) DebtUseCase() DebtUseCase {
 
 func (u *useCaseManager) DeliveryOrderUseCase() DeliveryOrderUseCase {
 	return u.deliveryOrderUseCase
+}
+
+func (u *useCaseManager) DeliveryOrderReviewUseCase() DeliveryOrderReviewUseCase {
+	return u.deliveryOrderReviewUseCase
 }
 
 func (u *useCaseManager) PermissionUseCase() PermissionUseCase {
@@ -212,6 +218,9 @@ func NewUseCaseManager(
 			whatsappManager,
 			filesystemManager.Main(),
 			filesystemManager.Tmp(),
+		),
+		deliveryOrderReviewUseCase: NewDeliveryOrderReviewUseCase(
+			repositoryManager,
 		),
 		permissionUseCase: NewPermissionUseCase(
 			repositoryManager,
