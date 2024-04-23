@@ -474,6 +474,37 @@ func (a *DeliveryOrderApi) Get() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/delivery-orders/{id}/guest [get]
+//	@Summary	Get For Tracking Maps
+//	@tags		Delivery Orders
+//	@Param		id	path	string	true	"Id"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
+func (a *DeliveryOrderApi) GetGuest() gin.HandlerFunc {
+	return a.Guest(
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.DeliveryOrderGetRequest
+			ctx.mustBind(&request)
+
+			request.DeliveryOrderId = id
+
+			deliveryOrder := a.deliveryOrderUseCase.Get(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"delivery_order": dto_response.NewDeliveryOrderResponse(deliveryOrder),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/delivery-orders/active-driver [get]
 //	@Summary	Get Active For Driver (Mobile)
 //	@tags		Delivery Orders
@@ -652,6 +683,7 @@ func RegisterDeliveryOrderApi(router gin.IRouter, useCaseManager use_case.UseCas
 	routerGroup.POST("/filter", api.Fetch())
 	routerGroup.POST("/filter-driver", api.FetchDriver())
 	routerGroup.GET("/:id", api.Get())
+	routerGroup.GET("/:id/guest", api.GetGuest())
 	routerGroup.GET("/active-driver", api.ActiveForDriver())
 	routerGroup.DELETE("/:id", api.Delete())
 
