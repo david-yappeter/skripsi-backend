@@ -18,6 +18,7 @@ type DeliveryOrderImageRepository interface {
 	FetchByDeliveryOrderIds(ctx context.Context, deliveryOrderIds []string) ([]model.DeliveryOrderImage, error)
 	Get(ctx context.Context, id string) (*model.DeliveryOrderImage, error)
 	GetByDeliveryOrderIdAndFileId(ctx context.Context, deliveryOrderId string, fileId string) (*model.DeliveryOrderImage, error)
+	GetByIdAndDeliveryOrderId(ctx context.Context, id string, deliveryOrderId string) (*model.DeliveryOrderImage, error)
 	IsExistByName(ctx context.Context, name string) (bool, error)
 	IsExistByDeliveryOrderIds(ctx context.Context, deliveryOrderIds []string) (bool, error)
 
@@ -96,6 +97,15 @@ func (r *deliveryOrderImageRepository) GetByDeliveryOrderIdAndFileId(ctx context
 		From(model.DeliveryOrderImageTableName).
 		Where(squirrel.Eq{"delivery_order_id": deliveryOrderId}).
 		Where(squirrel.Eq{"file_id": fileId})
+
+	return r.get(ctx, stmt)
+}
+
+func (r *deliveryOrderImageRepository) GetByIdAndDeliveryOrderId(ctx context.Context, id string, deliveryOrderId string) (*model.DeliveryOrderImage, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.DeliveryOrderImageTableName).
+		Where(squirrel.Eq{"id": id}).
+		Where(squirrel.Eq{"delivery_order_id": deliveryOrderId})
 
 	return r.get(ctx, stmt)
 }

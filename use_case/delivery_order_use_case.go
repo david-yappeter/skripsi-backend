@@ -674,6 +674,11 @@ func (u *deliveryOrderUseCase) Update(ctx context.Context, request dto_request.D
 		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
 	}
 
+	if deliveryOrder.CustomerId != request.CustomerId {
+		mustGetCustomer(ctx, u.repositoryManager, request.CustomerId, true)
+	}
+
+	deliveryOrder.CustomerId = request.CustomerId
 	deliveryOrder.Date = request.Date
 
 	panicIfErr(
@@ -1035,8 +1040,8 @@ func (u *deliveryOrderUseCase) DeleteImage(ctx context.Context, request dto_requ
 		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_PENDING"))
 	}
 
-	file := mustGetFile(ctx, u.repositoryManager, request.FileId, true)
-	deliveryOrderImage := mustGetDeliveryOrderImageByDeliveryOrderIdAndFileId(ctx, u.repositoryManager, request.DeliveryOrderId, request.FileId, true)
+	deliveryOrderImage := mustGetDeliveryOrderImageByIdAndDeliveryOrderId(ctx, u.repositoryManager, request.DeliveryOrderId, request.DeliveryOrderImageId, true)
+	file := mustGetFile(ctx, u.repositoryManager, deliveryOrderImage.FileId, true)
 
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
@@ -1055,7 +1060,9 @@ func (u *deliveryOrderUseCase) DeleteImage(ctx context.Context, request dto_requ
 		}),
 	)
 
-	u.mainFilesystem.Delete(file.Path)
+	go func() {
+		u.mainFilesystem.Delete(file.Path)
+	}()
 
 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
 		customer:             true,

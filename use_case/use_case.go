@@ -295,6 +295,12 @@ func mustGetDeliveryOrderImageByDeliveryOrderIdAndFileId(ctx context.Context, re
 	return *deliveryOrderImage
 }
 
+func mustGetDeliveryOrderImageByIdAndDeliveryOrderId(ctx context.Context, repositoryManager repository.RepositoryManager, id string, deliveryOrderId string, isValidate bool) model.DeliveryOrderImage {
+	deliveryOrderImage, err := repositoryManager.DeliveryOrderImageRepository().GetByDeliveryOrderIdAndFileId(ctx, id, deliveryOrderId)
+	panicIfRepositoryError(err, "DELIVERY_ORDER_IMAGE.NOT_FOUND", isValidate)
+	return *deliveryOrderImage
+}
+
 func mustGetDeliveryOrderItemByDeliveryOrderIdAndProductUnitId(ctx context.Context, repositoryManager repository.RepositoryManager, deliveryOrderId string, productUnitId string, isValidate bool) model.DeliveryOrderItem {
 	deliveryOrderItem, err := repositoryManager.DeliveryOrderItemRepository().GetByDeliveryOrderIdAndProductUnitId(ctx, deliveryOrderId, productUnitId)
 	panicIfRepositoryError(err, "DELIVERY_ORDER_ITEM.NOT_FOUND", isValidate)

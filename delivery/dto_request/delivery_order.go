@@ -70,7 +70,8 @@ type DeliveryOrderDeliveringRequest struct {
 } // @name DeliveryOrderDeliveringRequest
 
 type DeliveryOrderUpdateRequest struct {
-	Date data_type.Date `json:"date"`
+	CustomerId string         `json:"customer_id" validate:"required,not_empty,uuid"`
+	Date       data_type.Date `json:"date"`
 
 	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderUpdateRequest
@@ -94,8 +95,8 @@ type DeliveryOrderDeleteRequest struct {
 } // @name DeliveryOrderDeleteRequest
 
 type DeliveryOrderDeleteImageRequest struct {
-	FileId          string `json:"-" swaggerignore:"true"`
-	DeliveryOrderId string `json:"-" swaggerignore:"true"`
+	DeliveryOrderImageId string `json:"-" swaggerignore:"true"`
+	DeliveryOrderId      string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderDeleteImageRequest
 
 type DeliveryOrderDeleteItemRequest struct {

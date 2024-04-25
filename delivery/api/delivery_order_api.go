@@ -601,12 +601,12 @@ func (a *DeliveryOrderApi) DeleteItem() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/delivery-orders/{id}/images/{file_id} [delete]
+//	@Router		/delivery-orders/{id}/images/{delivery_order_image_id} [delete]
 //	@Summary	Delete File
 //	@tags		Delivery Orders
 //	@Accept		json
 //	@Param		id											path	string										true	"Id"
-//	@Param		file_id										path	string										true	"Id"
+//	@Param		delivery_order_image_id										path	string										true	"Id"
 //	@Param		dto_request.DeliveryOrderDeleteImageRequest	body	dto_request.DeliveryOrderDeleteImageRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
@@ -615,11 +615,11 @@ func (a *DeliveryOrderApi) DeleteImage() gin.HandlerFunc {
 		data_type.PermissionP(data_type.PermissionDeliveryOrderDeleteImage),
 		func(ctx apiContext) {
 			id := ctx.getUuidParam("id")
-			fileId := ctx.getUuidParam("file_id")
+			deliveryOrderImageId := ctx.getUuidParam("delivery_order_image_id")
 			var request dto_request.DeliveryOrderDeleteImageRequest
 			ctx.mustBind(&request)
 			request.DeliveryOrderId = id
-			request.FileId = fileId
+			request.DeliveryOrderImageId = deliveryOrderImageId
 
 			deliveryOrder := a.deliveryOrderUseCase.DeleteImage(ctx.context(), request)
 
@@ -699,6 +699,6 @@ func RegisterDeliveryOrderApi(router gin.IRouter, useCaseManager use_case.UseCas
 	routerGroup.PATCH("delivery-location", api.DeliveryLocation())
 
 	routerGroup.DELETE("/:id/items/:delivery_order_item_id", api.DeleteItem())
-	routerGroup.DELETE("/:id/images/:file_id", api.DeleteImage())
+	routerGroup.DELETE("/:id/images/:delivery_order_image_id", api.DeleteImage())
 	routerGroup.DELETE("/:id/drivers/:driver_user_id", api.DeleteDriver())
 }
