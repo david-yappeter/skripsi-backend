@@ -12,16 +12,16 @@ type TiktokProductCreateRequest struct {
 	Title           string                                          `json:"title" validate:"required,not_empty,min=25"`
 	Description     string                                          `json:"description" validate:"required,not_empty"`
 	CategoryId      string                                          `json:"category_id" validate:"required,not_empty"`
-	BrandId         *string                                         `json:"brand_id" validate:"omitempty,not_empty"`
+	BrandId         *string                                         `json:"brand_id" validate:"omitempty,not_empty" extensions:"x-nullable"`
 	ImagesUri       []string                                        `json:"images_uri" validate:"min=1"`
-	DimensionHeight *float64                                        `json:"dimension_height" validate:"required_with=DimensionUnit,omitempty,gt=0"`
-	DimensionWidth  *float64                                        `json:"dimension_width" validate:"required_with=DimensionUnit,omitempty,gt=0"`
-	DimensionLength *float64                                        `json:"dimension_length" validate:"required_with=DimensionUnit,omitempty,gt=0"`
-	DimensionUnit   *data_type.TiktokProductDimensionUnit           `json:"dimension_unit" validate:"omitempty,data_type_enum"`
+	DimensionHeight *float64                                        `json:"dimension_height" validate:"required_with=DimensionUnit,omitempty,gt=0" extensions:"x-nullable"`
+	DimensionWidth  *float64                                        `json:"dimension_width" validate:"required_with=DimensionUnit,omitempty,gt=0" extensions:"x-nullable"`
+	DimensionLength *float64                                        `json:"dimension_length" validate:"required_with=DimensionUnit,omitempty,gt=0" extensions:"x-nullable"`
+	DimensionUnit   *data_type.TiktokProductDimensionUnit           `json:"dimension_unit" validate:"omitempty,data_type_enum" extensions:"x-nullable"`
 	Weight          float64                                         `json:"weight" validate:"required,gt=0"`
 	WeightUnit      data_type.TiktokProductPackageWeight            `json:"weight_unit" validate:"required,data_type_enum"`
-	Attributes      []gotiktok.CreateProductRequestProductAttribute `json:"attributes"`
-	SizeChartUri    *string                                         `json:"size_chart_uri" validate:"omitempty,not_empty"`
+	Attributes      []gotiktok.CreateProductRequestProductAttribute `json:"attributes" extensions:"x-nullable"`
+	SizeChartUri    *string                                         `json:"size_chart_uri" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name TiktokProductCreateRequest
 
 type TiktokProductUploadImageRequest struct {

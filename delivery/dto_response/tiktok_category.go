@@ -6,7 +6,7 @@ type TiktokCategoryResponse struct {
 	Id                 string                   `json:"id"`
 	Name               string                   `json:"name"`
 	IsLeaf             bool                     `json:"is_leaf"`
-	ChildrenCategories []TiktokCategoryResponse `json:"children_categories"`
+	ChildrenCategories []TiktokCategoryResponse `json:"children_categories" extensions:"x-nullable"`
 } // @name TiktokCategoryResponse
 
 func NewTiktokCategoryResponse(tiktokCategory model.TiktokCategory) TiktokCategoryResponse {

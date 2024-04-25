@@ -8,7 +8,7 @@ type CustomerTypeResponse struct {
 	Description *string `json:"description" extensions:"x-nullable"`
 	Timestamp
 
-	Customers []CustomerResponse             `json:"customers"`
+	Customers []CustomerResponse             `json:"customers" extensions:"x-nullable"`
 	Discounts []CustomerTypeDiscountResponse `json:"discounts" extensions:"x-nullable"`
 } // @name CustomerTypeResponse
 
