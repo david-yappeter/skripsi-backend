@@ -24,10 +24,10 @@ func (l *DeliveryOrderReviewLoader) loadByDeliveryOrderId(id string) (*model.Del
 	return result.(*model.DeliveryOrderReview), nil
 }
 
-func (l *DeliveryOrderReviewLoader) DeliveryOrderFn(deliveryOrder *model.DeliveryOrder) func() error {
+func (l *DeliveryOrderReviewLoader) DeliveryOrderFnNotStrict(deliveryOrder *model.DeliveryOrder) func() error {
 	return func() error {
 		deliveryOrderReview, err := l.loadByDeliveryOrderId(deliveryOrder.Id)
-		if err != nil {
+		if err != nil && err != constant.ErrNoData {
 			return err
 		}
 

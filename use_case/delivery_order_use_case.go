@@ -137,7 +137,7 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 				}
 
 				if option.review {
-					group.Go(deliveryOrderReviewLoader.DeliveryOrderFn(deliveryOrders[i]))
+					group.Go(deliveryOrderReviewLoader.DeliveryOrderFnNotStrict(deliveryOrders[i]))
 				}
 			}
 		}),
