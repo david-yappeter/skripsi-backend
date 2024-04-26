@@ -395,13 +395,6 @@ func (u *deliveryOrderUseCase) AddImage(ctx context.Context, request dto_request
 		Description:     request.Description,
 	}
 
-	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
-		customer:             true,
-		deliveryOrderItems:   true,
-		deliveryOrderImages:  true,
-		deliveryOrderDrivers: true,
-	})
-
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
 			fileRepository := u.repositoryManager.FileRepository()
@@ -418,6 +411,13 @@ func (u *deliveryOrderUseCase) AddImage(ctx context.Context, request dto_request
 			return nil
 		}),
 	)
+
+	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		customer:             true,
+		deliveryOrderItems:   true,
+		deliveryOrderImages:  true,
+		deliveryOrderDrivers: true,
+	})
 
 	return deliveryOrder
 }
