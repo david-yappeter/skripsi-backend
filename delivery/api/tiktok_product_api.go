@@ -239,7 +239,8 @@ func (a *TiktokProductApi) Get() gin.HandlerFunc {
 //	@Summary	Update
 //	@tags		Tiktok Products
 //	@Accept		json
-//	@Param		id	path	string	true	"Product Id"
+//	@Param		dto_request.TiktokProductUpdateRequest	body	dto_request.TiktokProductUpdateRequest	true	"Body Request"
+//	@Param		id										path	string									true	"Product Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.SuccessResponse
 func (a *TiktokProductApi) Update() gin.HandlerFunc {
@@ -299,8 +300,7 @@ func (a *TiktokProductApi) RecommendedCategory() gin.HandlerFunc {
 //	@Summary	Activate Tiktok Product
 //	@tags		Tiktok Products
 //	@Accept		json
-//	@Param		id											path	string										true	"Product Id"
-//	@Param		dto_request.TiktokProductActivateRequest	body	dto_request.TiktokProductActivateRequest	true	"Body Request"
+//	@Param		id	path	string	true	"Product Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.SuccessResponse
 func (a *TiktokProductApi) Activate() gin.HandlerFunc {
@@ -330,8 +330,7 @@ func (a *TiktokProductApi) Activate() gin.HandlerFunc {
 //	@Summary	Deactivate Tiktok Product
 //	@tags		Tiktok Products
 //	@Accept		json
-//	@Param		id											path	string										true	"Product Id"
-//	@Param		dto_request.TiktokProductDeactivateRequest	body	dto_request.TiktokProductDeactivateRequest	true	"Body Request"
+//	@Param		id	path	string	true	"Product Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.SuccessResponse
 func (a *TiktokProductApi) Deactivate() gin.HandlerFunc {
