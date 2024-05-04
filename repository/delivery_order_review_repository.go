@@ -59,7 +59,7 @@ func (r *deliveryOrderReviewRepository) get(ctx context.Context, stmt squirrel.S
 
 func (r *deliveryOrderReviewRepository) prepareQuery(option model.DeliveryOrderReviewQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s u", model.DeliveryOrderReviewTableName))
+		From(fmt.Sprintf("%s dor", model.DeliveryOrderReviewTableName))
 
 	stmt = model.Prepare(stmt, &option)
 
