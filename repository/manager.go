@@ -29,6 +29,8 @@ type RepositoryManager interface {
 	DebtRepository() DebtRepository
 	DeliveryOrderPositionRepository() DeliveryOrderPositionRepository
 	DeliveryOrderRepository() DeliveryOrderRepository
+	DeliveryOrderReturnRepository() DeliveryOrderReturnRepository
+	DeliveryOrderReturnImageRepository() DeliveryOrderReturnImageRepository
 	DeliveryOrderReviewRepository() DeliveryOrderReviewRepository
 	DeliveryOrderDriverRepository() DeliveryOrderDriverRepository
 	DeliveryOrderImageRepository() DeliveryOrderImageRepository
@@ -38,6 +40,8 @@ type RepositoryManager interface {
 	PermissionRepository() PermissionRepository
 	ProductDiscountRepository() ProductDiscountRepository
 	ProductReceiveRepository() ProductReceiveRepository
+	ProductReceiveReturnRepository() ProductReceiveReturnRepository
+	ProductReceiveReturnImageRepository() ProductReceiveReturnImageRepository
 	ProductReceiveItemRepository() ProductReceiveItemRepository
 	ProductReceiveImageRepository() ProductReceiveImageRepository
 	ProductRepository() ProductRepository
@@ -68,52 +72,56 @@ type repositoryManager struct {
 	db          *sqlx.DB
 	loggerStack infrastructure.LoggerStack
 
-	balanceRepository               BalanceRepository
-	cartRepository                  CartRepository
-	cartItemRepository              CartItemRepository
-	cashierSessionRepository        CashierSessionRepository
-	customerDebtRepository          CustomerDebtRepository
-	customerPaymentRepository       CustomerPaymentRepository
-	customerRepository              CustomerRepository
-	customerTypeDiscountRepository  CustomerTypeDiscountRepository
-	customerTypeRepository          CustomerTypeRepository
-	debtPaymentRepository           DebtPaymentRepository
-	debtRepository                  DebtRepository
-	deliveryOrderPositionRepository DeliveryOrderPositionRepository
-	deliveryOrderRepository         DeliveryOrderRepository
-	deliveryOrderReviewRepository   DeliveryOrderReviewRepository
-	deliveryOrderDriverRepository   DeliveryOrderDriverRepository
-	deliveryOrderImageRepository    DeliveryOrderImageRepository
-	deliveryOrderItemCostRepository DeliveryOrderItemCostRepository
-	deliveryOrderItemRepository     DeliveryOrderItemRepository
-	fileRepository                  FileRepository
-	permissionRepository            PermissionRepository
-	productDiscountRepository       ProductDiscountRepository
-	productReceiveRepository        ProductReceiveRepository
-	productReceiveItemRepository    ProductReceiveItemRepository
-	productReceiveImageRepository   ProductReceiveImageRepository
-	productRepository               ProductRepository
-	productStockMutationRepository  ProductStockMutationRepository
-	productStockRepository          ProductStockRepository
-	productUnitRepository           ProductUnitRepository
-	rolePermissionRepository        RolePermissionRepository
-	roleRepository                  RoleRepository
-	sequenceRepository              SequenceRepository
-	shopeeConfigRepository          ShopeeConfigRepository
-	shopOrderRepository             ShopOrderRepository
-	shopOrderItemRepository         ShopOrderItemRepository
-	supplierRepository              SupplierRepository
-	supplierTypeRepository          SupplierTypeRepository
-	tiktokConfigRepository          TiktokConfigRepository
-	tiktokProductRepository         TiktokProductRepository
-	transactionItemCostRepository   TransactionItemCostRepository
-	transactionItemRepository       TransactionItemRepository
-	transactionPaymentRepository    TransactionPaymentRepository
-	transactionRepository           TransactionRepository
-	unitRepository                  UnitRepository
-	userAccessTokenRepository       UserAccessTokenRepository
-	userRepository                  UserRepository
-	userRoleRepository              UserRoleRepository
+	balanceRepository                   BalanceRepository
+	cartRepository                      CartRepository
+	cartItemRepository                  CartItemRepository
+	cashierSessionRepository            CashierSessionRepository
+	customerDebtRepository              CustomerDebtRepository
+	customerPaymentRepository           CustomerPaymentRepository
+	customerRepository                  CustomerRepository
+	customerTypeDiscountRepository      CustomerTypeDiscountRepository
+	customerTypeRepository              CustomerTypeRepository
+	debtPaymentRepository               DebtPaymentRepository
+	debtRepository                      DebtRepository
+	deliveryOrderPositionRepository     DeliveryOrderPositionRepository
+	deliveryOrderRepository             DeliveryOrderRepository
+	deliveryOrderReturnRepository       DeliveryOrderReturnRepository
+	deliveryOrderReturnImageRepository  DeliveryOrderReturnImageRepository
+	deliveryOrderReviewRepository       DeliveryOrderReviewRepository
+	deliveryOrderDriverRepository       DeliveryOrderDriverRepository
+	deliveryOrderImageRepository        DeliveryOrderImageRepository
+	deliveryOrderItemCostRepository     DeliveryOrderItemCostRepository
+	deliveryOrderItemRepository         DeliveryOrderItemRepository
+	fileRepository                      FileRepository
+	permissionRepository                PermissionRepository
+	productDiscountRepository           ProductDiscountRepository
+	productReceiveRepository            ProductReceiveRepository
+	productReceiveReturnRepository      ProductReceiveReturnRepository
+	productReceiveReturnImageRepository ProductReceiveReturnImageRepository
+	productReceiveItemRepository        ProductReceiveItemRepository
+	productReceiveImageRepository       ProductReceiveImageRepository
+	productRepository                   ProductRepository
+	productStockMutationRepository      ProductStockMutationRepository
+	productStockRepository              ProductStockRepository
+	productUnitRepository               ProductUnitRepository
+	rolePermissionRepository            RolePermissionRepository
+	roleRepository                      RoleRepository
+	sequenceRepository                  SequenceRepository
+	shopeeConfigRepository              ShopeeConfigRepository
+	shopOrderRepository                 ShopOrderRepository
+	shopOrderItemRepository             ShopOrderItemRepository
+	supplierRepository                  SupplierRepository
+	supplierTypeRepository              SupplierTypeRepository
+	tiktokConfigRepository              TiktokConfigRepository
+	tiktokProductRepository             TiktokProductRepository
+	transactionItemCostRepository       TransactionItemCostRepository
+	transactionItemRepository           TransactionItemRepository
+	transactionPaymentRepository        TransactionPaymentRepository
+	transactionRepository               TransactionRepository
+	unitRepository                      UnitRepository
+	userAccessTokenRepository           UserAccessTokenRepository
+	userRepository                      UserRepository
+	userRoleRepository                  UserRoleRepository
 }
 
 func (r *repositoryManager) Transaction(
@@ -199,6 +207,14 @@ func (r *repositoryManager) DeliveryOrderRepository() DeliveryOrderRepository {
 	return r.deliveryOrderRepository
 }
 
+func (r *repositoryManager) DeliveryOrderReturnRepository() DeliveryOrderReturnRepository {
+	return r.deliveryOrderReturnRepository
+}
+
+func (r *repositoryManager) DeliveryOrderReturnImageRepository() DeliveryOrderReturnImageRepository {
+	return r.deliveryOrderReturnImageRepository
+}
+
 func (r *repositoryManager) DeliveryOrderReviewRepository() DeliveryOrderReviewRepository {
 	return r.deliveryOrderReviewRepository
 }
@@ -233,6 +249,14 @@ func (r *repositoryManager) ProductDiscountRepository() ProductDiscountRepositor
 
 func (r *repositoryManager) ProductReceiveRepository() ProductReceiveRepository {
 	return r.productReceiveRepository
+}
+
+func (r *repositoryManager) ProductReceiveReturnRepository() ProductReceiveReturnRepository {
+	return r.productReceiveReturnRepository
+}
+
+func (r *repositoryManager) ProductReceiveReturnImageRepository() ProductReceiveReturnImageRepository {
+	return r.productReceiveReturnImageRepository
 }
 
 func (r *repositoryManager) ProductReceiveItemRepository() ProductReceiveItemRepository {
@@ -390,6 +414,14 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			db,
 			loggerStack,
 		),
+		deliveryOrderReturnRepository: NewDeliveryOrderReturnRepository(
+			db,
+			loggerStack,
+		),
+		deliveryOrderReturnImageRepository: NewDeliveryOrderReturnImageRepository(
+			db,
+			loggerStack,
+		),
 		deliveryOrderReviewRepository: NewDeliveryOrderReviewRepository(
 			db,
 			loggerStack,
@@ -423,6 +455,14 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		productReceiveRepository: NewProductReceiveRepository(
+			db,
+			loggerStack,
+		),
+		productReceiveReturnRepository: NewProductReceiveReturnRepository(
+			db,
+			loggerStack,
+		),
+		productReceiveReturnImageRepository: NewProductReceiveReturnImageRepository(
 			db,
 			loggerStack,
 		),
