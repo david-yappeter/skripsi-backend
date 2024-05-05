@@ -206,7 +206,7 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 					}
 				}
 
-				if option._return {
+				if option._return && deliveryOrders[i].DeliveryOrderReturn != nil {
 					for j := range deliveryOrders[i].DeliveryOrderReturn.DeliveryOrderReturnImages {
 						group.Go(fileLoader.DeliveryOrderReturnImageFn(&deliveryOrders[i].DeliveryOrderReturn.DeliveryOrderReturnImages[j]))
 					}
