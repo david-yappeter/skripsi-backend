@@ -11,7 +11,7 @@ func init() {
 				created_at timestamp NOT NULL,
 				updated_at timestamp NOT NULL,
 				CONSTRAINT delivery_order_return_images_pk PRIMARY KEY (id),
-				CONSTRAINT delivery_order_return_images_delivery_order_returns_fk FOREIGN KEY (delivery_order_return_id) REFERENCES delivery_order_returns (id)
+				CONSTRAINT delivery_order_return_images_delivery_order_returns_fk FOREIGN KEY (delivery_order_return_id) REFERENCES delivery_order_returns (id),
 				CONSTRAINT delivery_order_return_images_files_fk FOREIGN KEY (file_id) REFERENCES files (id)
 			);
 		`,
