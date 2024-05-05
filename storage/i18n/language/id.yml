@@ -41,6 +41,7 @@ DELIVERY_ORDER.STATUS.MUST_BE_ON_GOING: "Status harus 'diproses'"
 DELIVERY_ORDER.NO_ACTIVE_DELIVERING: "Tidak ada pengiriman yang dilaksanakan"
 DELIVERY_ORDER.INVALID_USER_FOR_LIVE_TRACKING: "User tidak valid untuk live tracking"
 DELIVERY_ORDER_ITEM.NOT_FOUND: "Barang tidak ditemukan"
+DELIVERY_ORDER.STATUS.MUST_BE_COMPLETED: "Status harus 'selesai'"
 
 # product_discount_use_case.go
 PRODUCT_DISCOUNT.PRODUCT_ALREADY_HAVE_DISCOUNT: "Produk sudah punya diskon"

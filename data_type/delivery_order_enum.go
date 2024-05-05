@@ -9,4 +9,5 @@ const (
 	DeliveryOrderStatusDelivering                                // DELIVERING
 	DeliveryOrderStatusCanceled                                  // CANCELED
 	DeliveryOrderStatusCompleted                                 // COMPLETED
+	DeliveryOrderStatusReturned                                  // RETURNED
 )

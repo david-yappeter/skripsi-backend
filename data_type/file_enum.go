@@ -4,9 +4,11 @@ package data_type
 type FileType int // @name FileTypeEnum
 
 const (
-	FileTypeProductImage         FileType = iota + 1 // PRODUCT_IMAGE
-	FileTypeProductReceiveImage                      // PRODUCT_RECEIVE_IMAGE
-	FileTypeDeliveryOrderImage                       // DELIVERY_ORDER_IMAGE
-	FileTypeCustomerPaymentImage                     // CUSTOMER_PAYMENT_IMAGE
-	FileTypeDebtPaymentImage                         // DEBT_PAYMENT_IMAGE
+	FileTypeProductImage              FileType = iota + 1 // PRODUCT_IMAGE
+	FileTypeProductReceiveImage                           // PRODUCT_RECEIVE_IMAGE
+	FileTypeDeliveryOrderImage                            // DELIVERY_ORDER_IMAGE
+	FileTypeCustomerPaymentImage                          // CUSTOMER_PAYMENT_IMAGE
+	FileTypeDebtPaymentImage                              // DEBT_PAYMENT_IMAGE
+	FileTypeDeliveryOrderReturnImage                      // DELIVERY_ORDER_RETURN_IMAGE
+	FileTypeProductReceiveReturnImage                     // PRODUCT_RECEIVE_RETURN_IMAGE
 )

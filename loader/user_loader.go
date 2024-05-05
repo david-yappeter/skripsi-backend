@@ -54,6 +54,36 @@ func (l *UserLoader) DeliveryOrderDriverFn(deliveryOrderDriver *model.DeliveryOr
 	}
 }
 
+func (l *UserLoader) DeliveryOrderReturnFn(deliveryOrderReturn *model.DeliveryOrderReturn) func() error {
+	return func() error {
+		if deliveryOrderReturn != nil {
+			user, err := l.load(deliveryOrderReturn.UserId)
+			if err != nil {
+				return err
+			}
+
+			deliveryOrderReturn.User = user
+		}
+
+		return nil
+	}
+}
+
+func (l *UserLoader) ProductReceiveReturnFn(productReceiveReturn *model.DeliveryOrderReturn) func() error {
+	return func() error {
+		if productReceiveReturn != nil {
+			user, err := l.load(productReceiveReturn.UserId)
+			if err != nil {
+				return err
+			}
+
+			productReceiveReturn.User = user
+		}
+
+		return nil
+	}
+}
+
 func NewUserLoader(userRepository repository.UserRepository) *UserLoader {
 	batchFn := func(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
 		ids := make([]string, len(keys))

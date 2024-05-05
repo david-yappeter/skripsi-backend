@@ -77,6 +77,7 @@ const (
 	PermissionDeliveryOrderUpdate           // DELIVERY_ORDER_UPDATE
 	PermissionDeliveryOrderCancel           // DELIVERY_ORDER_CANCEL
 	PermissionDeliveryOrderMarkCompleted    // DELIVERY_ORDER_MARK_COMPLETED
+	PermissionDeliveryOrderReturned         // DELIVERY_ORDER_RETURNED
 	PermissionDeliveryOrderDeliveryLocation // DELIVERY_ORDER_DELIVERY_LOCATION
 	PermissionDeliveryOrderDelete           // DELIVERY_ORDER_DELETE
 	PermissionDeliveryOrderDeleteItem       // DELIVERY_ORDER_DELETE_ITEM

@@ -17,6 +17,7 @@ type ProductReceive struct {
 	Supplier             *Supplier             `db:"-"`
 	ProductReceiveItems  []ProductReceiveItem  `db:"-"`
 	ProductReceiveImages []ProductReceiveImage `db:"-"`
+	ProductReceiveReturn *ProductReceiveReturn `db:"-"`
 }
 
 func (m *ProductReceive) TableName() string {

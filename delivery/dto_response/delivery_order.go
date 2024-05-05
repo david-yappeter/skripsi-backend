@@ -3,6 +3,7 @@ package dto_response
 import (
 	"myapp/data_type"
 	"myapp/model"
+	"myapp/util"
 )
 
 type DeliveryOrderResponse struct {
@@ -19,6 +20,7 @@ type DeliveryOrderResponse struct {
 	Items   []DeliveryOrderItemResponse  `json:"items" extensions:"x-nullable"`
 	Images  []DeliveryOrderImageResponse `json:"images" extensions:"x-nullable"`
 	Drivers []UserResponse               `json:"drivers" extensions:"x-nullable"`
+	Return  *DeliveryOrderReturnResponse `json:"return" extensions:"x-nullable"`
 } // @name DeliveryOrderResponse
 
 func NewDeliveryOrderResponse(deliveryOrder model.DeliveryOrder) DeliveryOrderResponse {
@@ -49,6 +51,10 @@ func NewDeliveryOrderResponse(deliveryOrder model.DeliveryOrder) DeliveryOrderRe
 		if deliveryOrderDriver.User != nil {
 			r.Drivers = append(r.Drivers, NewUserResponse(*deliveryOrderDriver.User))
 		}
+	}
+
+	if deliveryOrder.DeliveryOrderReturn != nil {
+		r.Return = util.Pointer(NewDeliveryOrderReturnResponse(*deliveryOrder.DeliveryOrderReturn))
 	}
 
 	return r

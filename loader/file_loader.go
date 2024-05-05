@@ -50,6 +50,32 @@ func (l *FileLoader) DeliveryOrderImageFn(deliveryOrderImage *model.DeliveryOrde
 	}
 }
 
+func (l *FileLoader) DeliveryOrderReturnImageFn(deliveryOrderReturnImage *model.DeliveryOrderReturnImage) func() error {
+	return func() error {
+		file, err := l.load(deliveryOrderReturnImage.FileId)
+		if err != nil {
+			return err
+		}
+
+		deliveryOrderReturnImage.File = file
+
+		return nil
+	}
+}
+
+func (l *FileLoader) ProductReceiveReturnImageFn(productReceiveReturnImage *model.ProductReceiveReturnImage) func() error {
+	return func() error {
+		file, err := l.load(productReceiveReturnImage.FileId)
+		if err != nil {
+			return err
+		}
+
+		productReceiveReturnImage.File = file
+
+		return nil
+	}
+}
+
 func (l *FileLoader) CustomerPaymentFn(customerPayment *model.CustomerPayment) func() error {
 	return func() error {
 		file, err := l.load(customerPayment.ImageFileId)

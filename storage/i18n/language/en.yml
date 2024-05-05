@@ -41,6 +41,7 @@ DELIVERY_ORDER.STATUS.MUST_BE_ON_GOING: "Status must be ongoing"
 DELIVERY_ORDER.NO_ACTIVE_DELIVERING: "There is no active delivering"
 DELIVERY_ORDER.INVALID_USER_FOR_LIVE_TRACKING: "Invalid user for live tracking"
 DELIVERY_ORDER_ITEM.NOT_FOUND: "Delivery order item not found"
+DELIVERY_ORDER.STATUS.MUST_BE_COMPLETED: "Status must be completed"
 
 # product_discount_use_case.go
 PRODUCT_DISCOUNT.PRODUCT_ALREADY_HAVE_DISCOUNT: "Product already have a discount"

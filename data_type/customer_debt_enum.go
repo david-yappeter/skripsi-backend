@@ -7,6 +7,7 @@ const (
 	CustomerDebtStatusUnpaid   CustomerDebtStatus = iota + 1 // UNPAID
 	CustomerDebtStatusCanceled                               // CANCELED
 	CustomerDebtStatusPaid                                   // PAID
+	CustomerDebtStatusReturned                               // RETURNED
 )
 
 type CustomerDebtDebtSource int // @name CustomerDebtDebtSourceEnum

@@ -50,7 +50,7 @@ type DeliveryOrderFetchRequest struct {
 
 type DeliveryOrderFetchDriverRequest struct {
 	PaginationRequest
-	Status *data_type.DeliveryOrderStatus `json:"status" validate:"omitempty,dive,data_type_enum"`
+	Status *data_type.DeliveryOrderStatus `json:"status" validate:"omitempty,data_type_enum"`
 } // @name DeliveryOrderFetchDriverRequest
 
 type DeliveryOrderGetRequest struct {
@@ -83,6 +83,13 @@ type DeliveryOrderCancelRequest struct {
 type DeliveryOrderMarkCompletedRequest struct {
 	DeliveryOrderId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderMarkCompletedRequest
+
+type DeliveryOrderReturnedRequest struct {
+	FilePaths   []string `json:"file_paths" validate:"dive,not_empty"`
+	Description *string  `json:"description" validate:"omitempty,not_empty"`
+
+	DeliveryOrderId string `json:"-" swaggerignore:"true"`
+} // @name DeliveryOrderReturnedRequest
 
 type DeliveryOrderDeliveryLocationRequest struct {
 	Latitude  float64 `json:"latitude" validate:"latitude"`

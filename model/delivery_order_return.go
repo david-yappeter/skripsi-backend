@@ -9,6 +9,9 @@ type DeliveryOrderReturn struct {
 	Description     *string `db:"description"`
 
 	Timestamp
+
+	User                      *User                      `db:"-"`
+	DeliveryOrderReturnImages []DeliveryOrderReturnImage `db:"-"`
 }
 
 func (m *DeliveryOrderReturn) TableName() string {

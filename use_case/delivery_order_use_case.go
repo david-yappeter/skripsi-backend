@@ -33,7 +33,8 @@ type deliveryOrdersLoaderParams struct {
 	deliveryOrderItemCosts    bool
 	deliveryOrderProductStock bool
 
-	review bool
+	review  bool
+	_return bool
 }
 
 type DeliveryOrderUseCase interface {
@@ -57,6 +58,7 @@ type DeliveryOrderUseCase interface {
 	Delivering(ctx context.Context, request dto_request.DeliveryOrderDeliveringRequest) model.DeliveryOrder
 	Cancel(ctx context.Context, request dto_request.DeliveryOrderCancelRequest) model.DeliveryOrder
 	MarkCompleted(ctx context.Context, request dto_request.DeliveryOrderMarkCompletedRequest) model.DeliveryOrder
+	Returned(ctx context.Context, request dto_request.DeliveryOrderReturnedRequest) model.DeliveryOrder
 	DeliveryLocation(ctx context.Context, request dto_request.DeliveryOrderDeliveryLocationRequest)
 
 	// delete
@@ -116,6 +118,7 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 	deliveryOrderImagesLoader := loader.NewDeliveryOrderImagesLoader(u.repositoryManager.DeliveryOrderImageRepository())
 	deliveryOrderDriversLoader := loader.NewDeliveryOrderDriversLoader(u.repositoryManager.DeliveryOrderDriverRepository())
 	deliveryOrderReviewLoader := loader.NewDeliveryOrderReviewLoader(u.repositoryManager.DeliveryOrderReviewRepository())
+	deliveryOrderReturnLoader := loader.NewDeliveryOrderReturnLoader(u.repositoryManager.DeliveryOrderReturnRepository())
 
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
@@ -139,6 +142,10 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 				if option.review {
 					group.Go(deliveryOrderReviewLoader.DeliveryOrderFnNotStrict(deliveryOrders[i]))
 				}
+
+				if option._return {
+					group.Go(deliveryOrderReturnLoader.DeliveryOrderFnNotStrict(deliveryOrders[i]))
+				}
 			}
 		}),
 	)
@@ -147,6 +154,7 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 	productUnitLoader := loader.NewProductUnitLoader(u.repositoryManager.ProductUnitRepository())
 	deliveryOrderItemCostsLoader := loader.NewDeliveryOrderItemCostsLoader(u.repositoryManager.DeliveryOrderItemCostRepository())
 	userLoader := loader.NewUserLoader(u.repositoryManager.UserRepository())
+	deliveryOrderReturnImagesLoader := loader.NewDeliveryOrderReturnImagesLoader(u.repositoryManager.DeliveryOrderReturnImageRepository())
 
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
@@ -174,6 +182,11 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 						group.Go(deliveryOrderItemCostsLoader.DeliveryOrderItemFn(&deliveryOrders[i].DeliveryOrderItems[j]))
 					}
 				}
+
+				if option._return {
+					group.Go(userLoader.DeliveryOrderReturnFn(deliveryOrders[i].DeliveryOrderReturn))
+					group.Go(deliveryOrderReturnImagesLoader.DeliveryOrderReturnFn(deliveryOrders[i].DeliveryOrderReturn))
+				}
 			}
 		}),
 	)
@@ -190,6 +203,12 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 
 					if option.deliveryOrderItems && option.deliveryOrderProductStock {
 						group.Go(productStockLoader.ProductUnitFn(deliveryOrders[i].DeliveryOrderItems[j].ProductUnit))
+					}
+				}
+
+				if option._return {
+					for j := range deliveryOrders[i].DeliveryOrderReturn.DeliveryOrderReturnImages {
+						group.Go(fileLoader.DeliveryOrderReturnImageFn(&deliveryOrders[i].DeliveryOrderReturn.DeliveryOrderReturnImages[j]))
 					}
 				}
 			}
@@ -535,6 +554,7 @@ func (u *deliveryOrderUseCase) Get(ctx context.Context, request dto_request.Deli
 		deliveryOrderItems:   true,
 		deliveryOrderImages:  true,
 		deliveryOrderDrivers: true,
+		_return:              true,
 
 		review: true,
 	})
@@ -907,7 +927,178 @@ func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_re
 	})
 
 	go func() {
-		fmt.Printf("WHATSAPP MANAGER NIL", u.whatsappManager)
+		if u.whatsappManager == nil {
+			return
+		}
+
+		customerJID, err := types.ParseJID(fmt.Sprintf("%s@s.whatsapp.net", strings.Trim(deliveryOrder.Customer.Phone, "+")))
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		err = (*u.whatsappManager).SendMessage(context.Background(), customerJID, &proto.Message{
+			Conversation: util.Pointer(fmt.Sprintf(
+				`🚚 Pengiriman Selesai - Berikan Ulasan Anda!
+
+Halo %s,
+
+Kami senang memberitahu Anda bahwa pesanan Anda telah sukses dikirim! 🎉 Kami berharap pesanan tersebut tiba dengan baik dan memenuhi harapan Anda.
+
+Jika Anda memiliki waktu, kami sangat menghargai ulasan dan masukan Anda tentang pengalaman berbelanja bersama kami. Ini akan membantu kami terus meningkatkan layanan kami kepada pelanggan.
+
+🌟 Berikan Ulasan Anda: %s
+
+Namun, jika Anda tidak memiliki waktu saat ini atau memiliki pertanyaan lebih lanjut, jangan ragu untuk menghubungi kami di nomor ini.
+
+Terima kasih atas dukungan dan kepercayaan Anda kepada kami!
+
+Salam hangat,
+*%s*
+`,
+				deliveryOrder.Customer.Name,
+				fmt.Sprintf("%s/delivery-orders/testing-api/%s", global.GetConfig().Uri, deliveryOrder.Id),
+				"Toko Setia Abadi",
+			)),
+		})
+
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	}()
+
+	return deliveryOrder
+}
+
+func (u *deliveryOrderUseCase) Returned(ctx context.Context, request dto_request.DeliveryOrderReturnedRequest) model.DeliveryOrder {
+	currentUser := model.MustGetUserCtx(ctx)
+	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
+
+	if deliveryOrder.Status != data_type.DeliveryOrderStatusCompleted {
+		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_COMPLETED"))
+	}
+
+	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		deliveryOrderItemCosts:    true,
+		deliveryOrderProductStock: true,
+	})
+
+	deliveryOrder.Status = data_type.DeliveryOrderStatusReturned
+
+	// initialize return
+	deliveryOrderReturn := model.DeliveryOrderReturn{
+		Id:              util.NewUuid(),
+		DeliveryOrderId: deliveryOrder.Id,
+		UserId:          currentUser.Id,
+		Description:     request.Description,
+	}
+
+	// initialize images
+	deliveryOrderReturnImages := []model.DeliveryOrderReturnImage{}
+
+	for _, filepath := range request.FilePaths {
+		imageFile := model.File{
+			Id:   util.NewUuid(),
+			Type: data_type.FileTypeDeliveryOrderReturnImage,
+		}
+
+		imageFile.Path, imageFile.Name = u.baseFileUseCase.mustUploadFileFromTemporaryToMain(
+			ctx,
+			constant.DeliveryOrderImageReturnPath,
+			deliveryOrderReturn.Id,
+			fmt.Sprintf("%s%s", imageFile.Id, path.Ext(filepath)),
+			filepath,
+			fileUploadTemporaryToMainParams{
+				deleteTmpOnSuccess: false,
+			},
+		)
+
+		deliveryOrderReturnImages = append(deliveryOrderReturnImages, model.DeliveryOrderReturnImage{
+			Id:                    util.NewUuid(),
+			DeliveryOrderReturnId: deliveryOrderReturn.Id,
+			FileId:                imageFile.Id,
+		})
+	}
+
+	// add back stock data and stock mutation
+	productStockAddedByProductId := map[string]float64{}
+	productStockMutations := []model.ProductStockMutation{}
+
+	for _, deliveryOrderItem := range deliveryOrder.DeliveryOrderItems {
+		productStockAddedByProductId[deliveryOrderItem.ProductUnit.ProductId] += deliveryOrderItem.BaseQty()
+
+		for _, cost := range deliveryOrderItem.DeliveryOrderItemCosts {
+			productStockMutations = append(productStockMutations, model.ProductStockMutation{
+				Id:            util.NewUuid(),
+				ProductUnitId: deliveryOrderItem.ProductUnitId,
+				Type:          data_type.ProductStockMutationTypeDeliveryOrderItemReturned,
+				IdentifierId:  deliveryOrderItem.Id,
+				Qty:           cost.Qty,
+				ScaleToBase:   deliveryOrderItem.ScaleToBase,
+				BaseQtyLeft:   cost.Qty * deliveryOrderItem.ScaleToBase,
+				BaseCostPrice: cost.BaseCostPrice,
+				MutatedAt:     data_type.DateTime{},
+				Timestamp:     model.Timestamp{},
+				ProductUnit:   &model.ProductUnit{},
+			})
+		}
+	}
+
+	// change customer debt status to returned
+	customerDebt, err := u.repositoryManager.CustomerDebtRepository().GetByDebtSourceAndDebtSourceId(ctx, data_type.CustomerDebtDebtSourceDeliveryOrder, deliveryOrder.Id)
+	panicIfErr(err)
+
+	customerDebt.Status = data_type.CustomerDebtStatusReturned
+
+	panicIfErr(
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			customerDebtRepository := u.repositoryManager.CustomerDebtRepository()
+			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
+			deliveryOrderReturnRepository := u.repositoryManager.DeliveryOrderReturnRepository()
+			deliveryOrderReturnImageRepository := u.repositoryManager.DeliveryOrderReturnImageRepository()
+			productStockRepository := u.repositoryManager.ProductStockRepository()
+			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
+
+			if err := customerDebtRepository.Update(ctx, customerDebt); err != nil {
+				return err
+			}
+
+			if err := deliveryOrderRepository.Update(ctx, &deliveryOrder); err != nil {
+				return err
+			}
+
+			if err := deliveryOrderReturnRepository.Insert(ctx, &deliveryOrderReturn); err != nil {
+				return err
+			}
+
+			if err := deliveryOrderReturnImageRepository.InsertMany(ctx, deliveryOrderReturnImages); err != nil {
+				return err
+			}
+
+			for productId, stockCount := range productStockAddedByProductId {
+				if err := productStockRepository.UpdateIncrementQtyByProductId(ctx, productId, stockCount); err != nil {
+					return err
+				}
+			}
+
+			if err := productStockMutationRepository.InsertMany(ctx, productStockMutations); err != nil {
+				return err
+			}
+
+			return nil
+		}),
+	)
+
+	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+		customer:             true,
+		deliveryOrderItems:   true,
+		deliveryOrderImages:  true,
+		deliveryOrderDrivers: true,
+		_return:              true,
+	})
+
+	go func() {
 		if u.whatsappManager == nil {
 			return
 		}

@@ -19,6 +19,7 @@ type DeliveryOrder struct {
 	DeliveryOrderImages  []DeliveryOrderImage  `db:"-"`
 	DeliveryOrderDrivers []DeliveryOrderDriver `db:"-"`
 	DeliveryOrderReview  *DeliveryOrderReview  `db:"-"`
+	DeliveryOrderReturn  *DeliveryOrderReturn  `db:"-"`
 }
 
 func (m *DeliveryOrder) TableName() string {

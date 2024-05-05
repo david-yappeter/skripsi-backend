@@ -9,6 +9,9 @@ type ProductReceiveReturn struct {
 	Description      *string `db:"description"`
 
 	Timestamp
+
+	User                       *User                       `db:"-"`
+	ProductReceiveReturnImages []ProductReceiveReturnImage `db:"-"`
 }
 
 func (m *ProductReceiveReturn) TableName() string {

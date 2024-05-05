@@ -15,7 +15,7 @@ type ProductReceiveReturnImageRepository interface {
 	InsertMany(ctx context.Context, productReceiveReturnImages []model.ProductReceiveReturnImage, options ...data_type.RepositoryOption) error
 
 	// read
-	FetchByProductReceiveReturnImageIds(ctx context.Context, productReceiveReturnImageIds []string) ([]model.ProductReceiveReturnImage, error)
+	FetchByProductReceiveReturnIds(ctx context.Context, productReceiveReturnIds []string) ([]model.ProductReceiveReturnImage, error)
 
 	// update
 	Update(ctx context.Context, productReceiveReturnImage *model.ProductReceiveReturnImage) error
@@ -68,10 +68,10 @@ func (r *productReceiveReturnImageRepository) InsertMany(ctx context.Context, pr
 	return defaultInsertMany(r.db, ctx, arr, "*")
 }
 
-func (r *productReceiveReturnImageRepository) FetchByProductReceiveReturnImageIds(ctx context.Context, productReceiveReturnImageIds []string) ([]model.ProductReceiveReturnImage, error) {
+func (r *productReceiveReturnImageRepository) FetchByProductReceiveReturnIds(ctx context.Context, productReceiveReturnIds []string) ([]model.ProductReceiveReturnImage, error) {
 	stmt := stmtBuilder.Select("*").
 		From(model.ProductReceiveReturnImageTableName).
-		Where(squirrel.Eq{"delivery_order_return_id": productReceiveReturnImageIds})
+		Where(squirrel.Eq{"product_receive_return_id": productReceiveReturnIds})
 
 	return r.fetch(ctx, stmt)
 }

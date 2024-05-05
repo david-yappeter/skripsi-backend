@@ -8,6 +8,8 @@ type ProductReceiveReturnImage struct {
 	FileId                 string `db:"file_id"`
 
 	Timestamp
+
+	File *File `db:"-"`
 }
 
 func (m *ProductReceiveReturnImage) TableName() string {

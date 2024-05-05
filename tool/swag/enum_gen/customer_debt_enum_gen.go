@@ -14,6 +14,7 @@ func init() {
 				"UNPAID",
 				"CANCELED",
 				"PAID",
+				"RETURNED",
 			},
 		},
 	}

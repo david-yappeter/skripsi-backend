@@ -37,3 +37,7 @@ func (m *DeliveryOrderItem) ToMap() map[string]interface{} {
 		"updated_at":        m.UpdatedAt,
 	}
 }
+
+func (m DeliveryOrderItem) BaseQty() float64 {
+	return m.Qty * m.ScaleToBase
+}

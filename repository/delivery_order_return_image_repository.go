@@ -15,7 +15,7 @@ type DeliveryOrderReturnImageRepository interface {
 	InsertMany(ctx context.Context, deliveryOrderReturnImages []model.DeliveryOrderReturnImage, options ...data_type.RepositoryOption) error
 
 	// read
-	FetchByDeliveryOrderReturnImageIds(ctx context.Context, deliveryOrderReturnImageIds []string) ([]model.DeliveryOrderReturnImage, error)
+	FetchByDeliveryOrderReturnIds(ctx context.Context, deliveryOrderReturnIds []string) ([]model.DeliveryOrderReturnImage, error)
 
 	// update
 	Update(ctx context.Context, deliveryOrderReturnImage *model.DeliveryOrderReturnImage) error
@@ -68,10 +68,10 @@ func (r *deliveryOrderReturnImageRepository) InsertMany(ctx context.Context, del
 	return defaultInsertMany(r.db, ctx, arr, "*")
 }
 
-func (r *deliveryOrderReturnImageRepository) FetchByDeliveryOrderReturnImageIds(ctx context.Context, deliveryOrderReturnImageIds []string) ([]model.DeliveryOrderReturnImage, error) {
+func (r *deliveryOrderReturnImageRepository) FetchByDeliveryOrderReturnIds(ctx context.Context, deliveryOrderReturnIds []string) ([]model.DeliveryOrderReturnImage, error) {
 	stmt := stmtBuilder.Select("*").
 		From(model.DeliveryOrderReturnImageTableName).
-		Where(squirrel.Eq{"delivery_order_return_id": deliveryOrderReturnImageIds})
+		Where(squirrel.Eq{"delivery_order_return_id": deliveryOrderReturnIds})
 
 	return r.fetch(ctx, stmt)
 }

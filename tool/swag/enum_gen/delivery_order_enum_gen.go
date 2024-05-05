@@ -16,6 +16,7 @@ func init() {
 				"DELIVERING",
 				"CANCELED",
 				"COMPLETED",
+				"RETURNED",
 			},
 		},
 	}

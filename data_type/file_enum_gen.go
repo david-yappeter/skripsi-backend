@@ -18,13 +18,15 @@ func _() {
 	_ = x[FileTypeDeliveryOrderImage-3]
 	_ = x[FileTypeCustomerPaymentImage-4]
 	_ = x[FileTypeDebtPaymentImage-5]
+	_ = x[FileTypeDeliveryOrderReturnImage-6]
+	_ = x[FileTypeProductReceiveReturnImage-7]
 }
 
-const _FileType_nameReadable = "PRODUCT_IMAGE, PRODUCT_RECEIVE_IMAGE, DELIVERY_ORDER_IMAGE, CUSTOMER_PAYMENT_IMAGE, DEBT_PAYMENT_IMAGE"
+const _FileType_nameReadable = "PRODUCT_IMAGE, PRODUCT_RECEIVE_IMAGE, DELIVERY_ORDER_IMAGE, CUSTOMER_PAYMENT_IMAGE, DEBT_PAYMENT_IMAGE, DELIVERY_ORDER_RETURN_IMAGE, PRODUCT_RECEIVE_RETURN_IMAGE"
 
-const _FileType_name = "PRODUCT_IMAGEPRODUCT_RECEIVE_IMAGEDELIVERY_ORDER_IMAGECUSTOMER_PAYMENT_IMAGEDEBT_PAYMENT_IMAGE"
+const _FileType_name = "PRODUCT_IMAGEPRODUCT_RECEIVE_IMAGEDELIVERY_ORDER_IMAGECUSTOMER_PAYMENT_IMAGEDEBT_PAYMENT_IMAGEDELIVERY_ORDER_RETURN_IMAGEPRODUCT_RECEIVE_RETURN_IMAGE"
 
-var _FileType_index = [...]uint8{0, 13, 34, 54, 76, 94}
+var _FileType_index = [...]uint8{0, 13, 34, 54, 76, 94, 121, 149}
 
 func (i *FileType) Determine(s string) {
 	switch s {
@@ -38,6 +40,10 @@ func (i *FileType) Determine(s string) {
 		*i = FileTypeCustomerPaymentImage
 	case "DEBT_PAYMENT_IMAGE":
 		*i = FileTypeDebtPaymentImage
+	case "DELIVERY_ORDER_RETURN_IMAGE":
+		*i = FileTypeDeliveryOrderReturnImage
+	case "PRODUCT_RECEIVE_RETURN_IMAGE":
+		*i = FileTypeProductReceiveReturnImage
 	default:
 		*i = 0
 	}
@@ -111,6 +117,8 @@ func ListFileType() []FileType {
 		FileTypeDeliveryOrderImage,
 		FileTypeCustomerPaymentImage,
 		FileTypeDebtPaymentImage,
+		FileTypeDeliveryOrderReturnImage,
+		FileTypeProductReceiveReturnImage,
 	}
 }
 
@@ -121,5 +129,7 @@ func ListFileTypeString() []string {
 		FileTypeDeliveryOrderImage.String(),
 		FileTypeCustomerPaymentImage.String(),
 		FileTypeDebtPaymentImage.String(),
+		FileTypeDeliveryOrderReturnImage.String(),
+		FileTypeProductReceiveReturnImage.String(),
 	}
 }

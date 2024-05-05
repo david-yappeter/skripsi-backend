@@ -16,13 +16,14 @@ func _() {
 	_ = x[CustomerDebtStatusUnpaid-1]
 	_ = x[CustomerDebtStatusCanceled-2]
 	_ = x[CustomerDebtStatusPaid-3]
+	_ = x[CustomerDebtStatusReturned-4]
 }
 
-const _CustomerDebtStatus_nameReadable = "UNPAID, CANCELED, PAID"
+const _CustomerDebtStatus_nameReadable = "UNPAID, CANCELED, PAID, RETURNED"
 
-const _CustomerDebtStatus_name = "UNPAIDCANCELEDPAID"
+const _CustomerDebtStatus_name = "UNPAIDCANCELEDPAIDRETURNED"
 
-var _CustomerDebtStatus_index = [...]uint8{0, 6, 14, 18}
+var _CustomerDebtStatus_index = [...]uint8{0, 6, 14, 18, 26}
 
 func (i *CustomerDebtStatus) Determine(s string) {
 	switch s {
@@ -32,6 +33,8 @@ func (i *CustomerDebtStatus) Determine(s string) {
 		*i = CustomerDebtStatusCanceled
 	case "PAID":
 		*i = CustomerDebtStatusPaid
+	case "RETURNED":
+		*i = CustomerDebtStatusReturned
 	default:
 		*i = 0
 	}
@@ -103,6 +106,7 @@ func ListCustomerDebtStatus() []CustomerDebtStatus {
 		CustomerDebtStatusUnpaid,
 		CustomerDebtStatusCanceled,
 		CustomerDebtStatusPaid,
+		CustomerDebtStatusReturned,
 	}
 }
 
@@ -111,6 +115,7 @@ func ListCustomerDebtStatusString() []string {
 		CustomerDebtStatusUnpaid.String(),
 		CustomerDebtStatusCanceled.String(),
 		CustomerDebtStatusPaid.String(),
+		CustomerDebtStatusReturned.String(),
 	}
 }
 
