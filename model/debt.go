@@ -5,13 +5,13 @@ import "myapp/data_type"
 const DebtTableName = "debts"
 
 type Debt struct {
-	Id              string               `db:"id"`
-	DebtSource      data_type.DebtSource `db:"debt_source"`
-	DebtSourceId    string               `db:"debt_source_id"`
-	DueDate         data_type.NullDate   `db:"due_date"`
-	Status          data_type.DebtStatus `db:"status"`
-	Amount          float64              `db:"amount"`
-	RemainingAmount float64              `db:"remaining_amount"`
+	Id                   string               `db:"id"`
+	DebtSource           data_type.DebtSource `db:"debt_source"`
+	DebtSourceIdentifier string               `db:"debt_source_identifier"`
+	DueDate              data_type.NullDate   `db:"due_date"`
+	Status               data_type.DebtStatus `db:"status"`
+	Amount               float64              `db:"amount"`
+	RemainingAmount      float64              `db:"remaining_amount"`
 
 	Timestamp
 	DebtPayments []DebtPayment `db:"-"`
@@ -27,15 +27,15 @@ func (m *Debt) TableIds() []string {
 
 func (m *Debt) ToMap() map[string]interface{} {
 	return map[string]interface{}{
-		"id":               m.Id,
-		"debt_source":      m.DebtSource,
-		"debt_source_id":   m.DebtSourceId,
-		"due_date":         m.DueDate,
-		"status":           m.Status,
-		"amount":           m.Amount,
-		"remaining_amount": m.RemainingAmount,
-		"created_at":       m.CreatedAt,
-		"updated_at":       m.UpdatedAt,
+		"id":                     m.Id,
+		"debt_source":            m.DebtSource,
+		"debt_source_identifier": m.DebtSourceIdentifier,
+		"due_date":               m.DueDate,
+		"status":                 m.Status,
+		"amount":                 m.Amount,
+		"remaining_amount":       m.RemainingAmount,
+		"created_at":             m.CreatedAt,
+		"updated_at":             m.UpdatedAt,
 	}
 }
 

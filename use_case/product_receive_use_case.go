@@ -554,13 +554,13 @@ func (u *productReceiveUseCase) MarkComplete(ctx context.Context, request dto_re
 
 	// initialize debt
 	debt := model.Debt{
-		Id:              util.NewUuid(),
-		DebtSource:      data_type.DebtSourceProductReceive,
-		DebtSourceId:    productReceive.Id,
-		DueDate:         data_type.NewNullDate(nil),
-		Status:          data_type.DebtStatusUnpaid,
-		Amount:          productReceive.TotalPrice,
-		RemainingAmount: productReceive.TotalPrice,
+		Id:                   util.NewUuid(),
+		DebtSource:           data_type.DebtSourceProductReceive,
+		DebtSourceIdentifier: productReceive.Id,
+		DueDate:              data_type.NewNullDate(nil),
+		Status:               data_type.DebtStatusUnpaid,
+		Amount:               productReceive.TotalPrice,
+		RemainingAmount:      productReceive.TotalPrice,
 	}
 
 	panicIfErr(

@@ -22,7 +22,7 @@ func NewDebtResponse(debt model.Debt) DebtResponse {
 	r := DebtResponse{
 		Id:              debt.Id,
 		DebtSource:      debt.DebtSource,
-		DebtSourceId:    debt.DebtSourceId,
+		DebtSourceId:    debt.DebtSourceIdentifier,
 		DueDate:         debt.DueDate,
 		Status:          debt.Status,
 		Amount:          debt.Amount,
