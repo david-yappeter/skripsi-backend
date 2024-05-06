@@ -116,6 +116,7 @@ const (
 	PermissionProductReceiveUpdate       // PRODUCT_RECEIVE_UPDATE
 	PermissionProductReceiveCancel       // PRODUCT_RECEIVE_CANCEL
 	PermissionProductReceiveMarkComplete // PRODUCT_RECEIVE_MARK_COMPLETE
+	PermissionProductReceiveReturned     // PRODUCT_RECEIVE_RETURNED
 	PermissionProductReceiveFetch        // PRODUCT_RECEIVE_FETCH
 	PermissionProductReceiveGet          // PRODUCT_RECEIVE_GET
 	PermissionProductReceiveDelete       // PRODUCT_RECEIVE_DELETE

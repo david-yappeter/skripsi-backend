@@ -53,6 +53,8 @@ PRODUCT_RECEIVE.STATUS.MUST_BE_PENDING: "Status must be pending"
 PRODUCT_RECEIVE.ALREADY_CANCELED: "Already canceled"
 PRODUCT_RECEIVE.PRODUCT_ALREADY_SOLD_CANNOT_BE_CANCELED: "Product already sold, can't be canceled"
 PRODUCT_RECEIVE_ITEM.NOT_FOUND: "Product receive item not found"
+PRODUCT_RECEIVE.STATUS.MUST_BE_COMPLETED: "Status must be completed"
+PRODUCT_RECEIVE.INSUFFICIENT_PRODUCT_STOCK: "Insufficient product stock"
 
 # product_stock_use_case.go
 PRODUCT_STOCK.PRODUCT_MUST_BE_ACTIVE: "Product must be active"

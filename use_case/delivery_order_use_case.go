@@ -234,6 +234,12 @@ func (u *deliveryOrderUseCase) mustLoadDeliveryOrdersData(ctx context.Context, d
 		for j := range deliveryOrders[i].DeliveryOrderItems {
 			deliveryOrders[i].DeliveryOrderItems[j].ProductUnit.Product.ImageFile.SetLink(u.mainFilesystem)
 		}
+
+		if deliveryOrders[i].DeliveryOrderReturn != nil {
+			for j := range deliveryOrders[i].DeliveryOrderReturn.DeliveryOrderReturnImages {
+				deliveryOrders[i].DeliveryOrderReturn.DeliveryOrderReturnImages[j].File.SetLink(u.mainFilesystem)
+			}
+		}
 	}
 }
 
@@ -1097,48 +1103,6 @@ func (u *deliveryOrderUseCase) Returned(ctx context.Context, request dto_request
 		deliveryOrderDrivers: true,
 		_return:              true,
 	})
-
-	go func() {
-		if u.whatsappManager == nil {
-			return
-		}
-
-		customerJID, err := types.ParseJID(fmt.Sprintf("%s@s.whatsapp.net", strings.Trim(deliveryOrder.Customer.Phone, "+")))
-		if err != nil {
-			log.Println(err)
-			return
-		}
-
-		err = (*u.whatsappManager).SendMessage(context.Background(), customerJID, &proto.Message{
-			Conversation: util.Pointer(fmt.Sprintf(
-				`🚚 Pengiriman Selesai - Berikan Ulasan Anda!
-
-Halo %s,
-
-Kami senang memberitahu Anda bahwa pesanan Anda telah sukses dikirim! 🎉 Kami berharap pesanan tersebut tiba dengan baik dan memenuhi harapan Anda.
-
-Jika Anda memiliki waktu, kami sangat menghargai ulasan dan masukan Anda tentang pengalaman berbelanja bersama kami. Ini akan membantu kami terus meningkatkan layanan kami kepada pelanggan.
-
-🌟 Berikan Ulasan Anda: %s
-
-Namun, jika Anda tidak memiliki waktu saat ini atau memiliki pertanyaan lebih lanjut, jangan ragu untuk menghubungi kami di nomor ini.
-
-Terima kasih atas dukungan dan kepercayaan Anda kepada kami!
-
-Salam hangat,
-*%s*
-`,
-				deliveryOrder.Customer.Name,
-				fmt.Sprintf("%s/delivery-orders/testing-api/%s", global.GetConfig().Uri, deliveryOrder.Id),
-				"Toko Setia Abadi",
-			)),
-		})
-
-		if err != nil {
-			log.Println(err)
-			return
-		}
-	}()
 
 	return deliveryOrder
 }

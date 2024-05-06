@@ -5,13 +5,13 @@ import "myapp/data_type"
 const DebtTableName = "debts"
 
 type Debt struct {
-	Id              string                   `db:"id"`
-	DebtSource      data_type.DebtDebtSource `db:"debt_source"`
-	DebtSourceId    string                   `db:"debt_source_id"`
-	DueDate         data_type.NullDate       `db:"due_date"`
-	Status          data_type.DebtStatus     `db:"status"`
-	Amount          float64                  `db:"amount"`
-	RemainingAmount float64                  `db:"remaining_amount"`
+	Id              string               `db:"id"`
+	DebtSource      data_type.DebtSource `db:"debt_source"`
+	DebtSourceId    string               `db:"debt_source_id"`
+	DueDate         data_type.NullDate   `db:"due_date"`
+	Status          data_type.DebtStatus `db:"status"`
+	Amount          float64              `db:"amount"`
+	RemainingAmount float64              `db:"remaining_amount"`
 
 	Timestamp
 	DebtPayments []DebtPayment `db:"-"`

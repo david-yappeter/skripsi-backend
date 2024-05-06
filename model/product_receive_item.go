@@ -8,6 +8,7 @@ type ProductReceiveItem struct {
 	ProductUnitId    string  `db:"product_unit_id"`
 	UserId           string  `db:"user_id"`
 	Qty              float64 `db:"qty"`
+	ScaleToBase      float64 `db:"scale_to_base"`
 	PricePerUnit     float64 `db:"price_per_unit"`
 	Timestamp
 
@@ -35,4 +36,8 @@ func (m *ProductReceiveItem) ToMap() map[string]interface{} {
 		"created_at":         m.CreatedAt,
 		"updated_at":         m.UpdatedAt,
 	}
+}
+
+func (m ProductReceiveItem) BaseQty() float64 {
+	return m.Qty * m.ScaleToBase
 }

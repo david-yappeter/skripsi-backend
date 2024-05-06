@@ -53,6 +53,8 @@ PRODUCT_RECEIVE.STATUS.MUST_BE_PENDING: "Status harus 'menunggu'"
 PRODUCT_RECEIVE.ALREADY_CANCELED: "Sudah dibatalkan"
 PRODUCT_RECEIVE.PRODUCT_ALREADY_SOLD_CANNOT_BE_CANCELED: "Produk sudah terjual, tidak bisa dibatalkan"
 PRODUCT_RECEIVE_ITEM.NOT_FOUND: "Barang tidak ditemukan"
+PRODUCT_RECEIVE.STATUS.MUST_BE_COMPLETED: "Status harus 'selesai'"
+PRODUCT_RECEIVE.INSUFFICIENT_PRODUCT_STOCK: "Stok produk tidak memadai"
 
 # product_stock_use_case.go
 PRODUCT_STOCK.PRODUCT_MUST_BE_ACTIVE: "Product harus aktif"

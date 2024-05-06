@@ -10,6 +10,7 @@ func init() {
 				product_unit_id char(36) NOT NULL,
 				user_id char(36) NOT NULL,
 				qty decimal(16,2) NOT NULL,
+				scale_to_base decimal(16,2) NOT NULL,
 				price_per_unit decimal(16,2) NOT NULL,
 				created_at timestamp NOT NULL,
 				updated_at timestamp NOT NULL,

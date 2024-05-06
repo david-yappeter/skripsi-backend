@@ -24,6 +24,8 @@ type productReceivesLoaderParams struct {
 
 	productReceiveProductStockMutation bool
 	productReceiveProductStock         bool
+
+	_return bool
 }
 
 type ProductReceiveUseCase interface {
@@ -41,6 +43,7 @@ type ProductReceiveUseCase interface {
 	Update(ctx context.Context, request dto_request.ProductReceiveUpdateRequest) model.ProductReceive
 	Cancel(ctx context.Context, request dto_request.ProductReceiveCancelRequest) model.ProductReceive
 	MarkComplete(ctx context.Context, request dto_request.ProductReceiveMarkCompleteRequest) model.ProductReceive
+	Returned(ctx context.Context, request dto_request.ProductReceiveReturnedRequest) model.ProductReceive
 
 	// delete
 	Delete(ctx context.Context, request dto_request.ProductReceiveDeleteRequest)
@@ -79,6 +82,7 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 	productReceiveItemsLoader := loader.NewProductReceiveItemsLoader(u.repositoryManager.ProductReceiveItemRepository())
 	productReceiveImagesLoader := loader.NewProductReceiveImagesLoader(u.repositoryManager.ProductReceiveImageRepository())
 	supplierLoader := loader.NewSupplierLoader(u.repositoryManager.SupplierRepository())
+	productReceiveReturnLoader := loader.NewProductReceiveReturnLoader(u.repositoryManager.ProductReceiveReturnRepository())
 
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
@@ -94,6 +98,10 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 				if option.supplier {
 					group.Go(supplierLoader.ProductReceiveFn(productReceives[i]))
 				}
+
+				if option._return {
+					group.Go(productReceiveReturnLoader.ProductReceiveFnNotStrict(productReceives[i]))
+				}
 			}
 		}),
 	)
@@ -101,6 +109,8 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 	productStockMutationLoader := loader.NewProductStockMutationLoader(u.repositoryManager.ProductStockMutationRepository())
 	productUnitLoader := loader.NewProductUnitLoader(u.repositoryManager.ProductUnitRepository())
 	fileLoader := loader.NewFileLoader(u.repositoryManager.FileRepository())
+	productReceiveReturnImagesLoader := loader.NewProductReceiveReturnImagesLoader(u.repositoryManager.ProductReceiveReturnImageRepository())
+
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
 			for i := range productReceives {
@@ -117,7 +127,10 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 							group.Go(productStockMutationLoader.ProductReceiveItemNotStrictFn(&productReceives[i].ProductReceiveItems[j]))
 						}
 					}
+				}
 
+				if option._return && productReceives[i].ProductReceiveReturn != nil {
+					group.Go(productReceiveReturnImagesLoader.ProductReceiveReturnFn(productReceives[i].ProductReceiveReturn))
 				}
 			}
 		}),
@@ -126,6 +139,7 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 	productLoader := loader.NewProductLoader(u.repositoryManager.ProductRepository())
 	unitLoader := loader.NewUnitLoader(u.repositoryManager.UnitRepository())
 	productStockLoader := loader.NewProductStockLoader(u.repositoryManager.ProductStockRepository())
+
 	panicIfErr(
 		util.Await(func(group *errgroup.Group) {
 			for i := range productReceives {
@@ -134,6 +148,12 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 					group.Go(unitLoader.ProductUnitFn(productReceives[i].ProductReceiveItems[j].ProductUnit))
 					if option.productReceiveItems && option.productReceiveProductStock {
 						group.Go(productStockLoader.ProductUnitFn(productReceives[i].ProductReceiveItems[j].ProductUnit))
+					}
+				}
+
+				if option._return && productReceives[i].ProductReceiveReturn != nil {
+					for j := range productReceives[i].ProductReceiveReturn.ProductReceiveReturnImages {
+						group.Go(fileLoader.ProductReceiveReturnImageFn(&productReceives[i].ProductReceiveReturn.ProductReceiveReturnImages[j]))
 					}
 				}
 			}
@@ -157,6 +177,12 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 
 		for j := range productReceives[i].ProductReceiveItems {
 			productReceives[i].ProductReceiveItems[j].ProductUnit.Product.ImageFile.SetLink(u.mainFilesystem)
+		}
+
+		if productReceives[i].ProductReceiveReturn != nil {
+			for j := range productReceives[i].ProductReceiveReturn.ProductReceiveReturnImages {
+				productReceives[i].ProductReceiveReturn.ProductReceiveReturnImages[j].File.SetLink(u.mainFilesystem)
+			}
 		}
 	}
 }
@@ -212,6 +238,7 @@ func (u *productReceiveUseCase) AddItem(ctx context.Context, request dto_request
 		ProductUnitId:    productUnit.Id,
 		UserId:           authUser.Id,
 		Qty:              request.Qty,
+		ScaleToBase:      productUnit.ScaleToBase,
 		PricePerUnit:     request.PricePerUnit,
 	}
 
@@ -345,6 +372,7 @@ func (u *productReceiveUseCase) Get(ctx context.Context, request dto_request.Pro
 		productReceiveProductStock: true,
 		productReceiveImages:       true,
 		supplier:                   true,
+		_return:                    true,
 	})
 
 	return productReceive
@@ -406,7 +434,7 @@ func (u *productReceiveUseCase) Cancel(ctx context.Context, request dto_request.
 
 		for _, productReceiveItem := range productReceive.ProductReceiveItems {
 			productStockByProductId[productReceiveItem.ProductUnit.ProductId] = *productReceiveItem.ProductUnit.ProductStock
-			toBeRemovedStockByProductId[productReceiveItem.ProductUnit.ProductId] += productReceiveItem.Qty * productReceiveItem.ProductUnit.ScaleToBase
+			toBeRemovedStockByProductId[productReceiveItem.ProductUnit.ProductId] += productReceiveItem.Qty * productReceiveItem.ScaleToBase
 
 			if productReceiveItem.ProductStockMutation != nil {
 				productStockMutation := productReceiveItem.ProductStockMutation
@@ -492,7 +520,7 @@ func (u *productReceiveUseCase) MarkComplete(ctx context.Context, request dto_re
 
 	for _, productReceiveItem := range productReceive.ProductReceiveItems {
 		productStockByProductId[productReceiveItem.ProductUnit.ProductId] = *productReceiveItem.ProductUnit.ProductStock
-		toBeAddedStockByProductId[productReceiveItem.ProductUnit.ProductId] += productReceiveItem.Qty * productReceiveItem.ProductUnit.ScaleToBase
+		toBeAddedStockByProductId[productReceiveItem.ProductUnit.ProductId] += productReceiveItem.BaseQty()
 
 		productStockMutations = append(productStockMutations, model.ProductStockMutation{
 			Id:            util.NewUuid(),
@@ -500,9 +528,9 @@ func (u *productReceiveUseCase) MarkComplete(ctx context.Context, request dto_re
 			Type:          data_type.ProductStockMutationTypeProductReceiveItem,
 			IdentifierId:  productReceiveItem.Id,
 			Qty:           productReceiveItem.Qty,
-			ScaleToBase:   productReceiveItem.ProductUnit.ScaleToBase,
-			BaseQtyLeft:   productReceiveItem.Qty * productReceiveItem.ProductUnit.ScaleToBase,
-			BaseCostPrice: productReceiveItem.PricePerUnit / productReceiveItem.ProductUnit.ScaleToBase,
+			ScaleToBase:   productReceiveItem.ScaleToBase,
+			BaseQtyLeft:   productReceiveItem.Qty * productReceiveItem.ScaleToBase,
+			BaseCostPrice: productReceiveItem.PricePerUnit / productReceiveItem.ScaleToBase,
 			MutatedAt:     currentDateTime,
 		})
 	}
@@ -521,13 +549,30 @@ func (u *productReceiveUseCase) MarkComplete(ctx context.Context, request dto_re
 
 	}
 
+	// change status
 	productReceive.Status = data_type.ProductReceiveStatusCompleted
+
+	// initialize debt
+	debt := model.Debt{
+		Id:              util.NewUuid(),
+		DebtSource:      data_type.DebtSourceProductReceive,
+		DebtSourceId:    productReceive.Id,
+		DueDate:         data_type.NewNullDate(nil),
+		Status:          data_type.DebtStatusUnpaid,
+		Amount:          productReceive.TotalPrice,
+		RemainingAmount: productReceive.TotalPrice,
+	}
 
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			debtRepository := u.repositoryManager.DebtRepository()
 			productReceiveRepository := u.repositoryManager.ProductReceiveRepository()
 			productStockRepository := u.repositoryManager.ProductStockRepository()
 			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
+
+			if err := debtRepository.Insert(ctx, &debt); err != nil {
+				return err
+			}
 
 			if err := productReceiveRepository.Update(ctx, &productReceive); err != nil {
 				return err
@@ -574,6 +619,151 @@ func (u *productReceiveUseCase) Delete(ctx context.Context, request dto_request.
 			return nil
 		}),
 	)
+}
+
+func (u *productReceiveUseCase) Returned(ctx context.Context, request dto_request.ProductReceiveReturnedRequest) model.ProductReceive {
+	currentUser := model.MustGetUserCtx(ctx)
+	productReceive := mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, true)
+
+	if productReceive.Status != data_type.ProductReceiveStatusCompleted {
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.STATUS.MUST_BE_COMPLETED"))
+	}
+
+	productReceive.Status = data_type.ProductReceiveStatusReturned
+
+	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
+		productReceiveItems: true,
+	})
+
+	// initialize return
+	productReceiveReturn := model.ProductReceiveReturn{
+		Id:               util.NewUuid(),
+		ProductReceiveId: productReceive.Id,
+		UserId:           currentUser.Id,
+		Description:      request.Description,
+	}
+
+	// initialize images
+	productReceiveReturnImages := []model.ProductReceiveReturnImage{}
+
+	for _, filepath := range request.FilePaths {
+		imageFile := model.File{
+			Id:   util.NewUuid(),
+			Type: data_type.FileTypeProductReceiveReturnImage,
+		}
+
+		imageFile.Path, imageFile.Name = u.baseFileUseCase.mustUploadFileFromTemporaryToMain(
+			ctx,
+			constant.ProductReceiveReturnPath,
+			productReceiveReturn.Id,
+			fmt.Sprintf("%s%s", imageFile.Id, path.Ext(filepath)),
+			filepath,
+			fileUploadTemporaryToMainParams{
+				deleteTmpOnSuccess: false,
+			},
+		)
+
+		productReceiveReturnImages = append(productReceiveReturnImages, model.ProductReceiveReturnImage{
+			Id:                     util.NewUuid(),
+			ProductReceiveReturnId: productReceiveReturn.Id,
+			FileId:                 imageFile.Id,
+		})
+	}
+
+	// remove stock data
+	productStockRemovedByProductId := map[string]float64{}
+	productStockMutations := []model.ProductStockMutation{}
+
+	for _, productReceiveItem := range productReceive.ProductReceiveItems {
+		productStockRemovedByProductId[productReceiveItem.ProductUnit.ProductId] += productReceiveItem.BaseQty()
+	}
+
+	// check sufficient amoun of stock to returned
+	for productId, stockRemoveCount := range productStockRemovedByProductId {
+		productStock, err := u.repositoryManager.ProductStockRepository().GetByProductId(ctx, productId)
+		panicIfErr(err)
+
+		if productStock.Qty < stockRemoveCount {
+			panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.INSUFFICIENT_PRODUCT_STOCK"))
+		}
+	}
+
+	// change debt status to returned
+	debt, err := u.repositoryManager.DebtRepository().GetByDebtSourceAndDebtSourceId(ctx, data_type.DebtSourceProductReceive, productReceive.Id)
+	panicIfErr(err)
+
+	debt.Status = data_type.DebtStatusReturned
+
+	panicIfErr(
+		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			debtRepository := u.repositoryManager.DebtRepository()
+			productReceiveRepository := u.repositoryManager.ProductReceiveRepository()
+			deliveryOrderReturnRepository := u.repositoryManager.ProductReceiveReturnRepository()
+			deliveryOrderReturnImageRepository := u.repositoryManager.ProductReceiveReturnImageRepository()
+			productStockRepository := u.repositoryManager.ProductStockRepository()
+			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
+
+			if err := debtRepository.Update(ctx, debt); err != nil {
+				return err
+			}
+
+			if err := productReceiveRepository.Update(ctx, &productReceive); err != nil {
+				return err
+			}
+
+			if err := deliveryOrderReturnRepository.Insert(ctx, &productReceiveReturn); err != nil {
+				return err
+			}
+
+			if err := deliveryOrderReturnImageRepository.InsertMany(ctx, productReceiveReturnImages); err != nil {
+				return err
+			}
+
+			for productId, stockRemoveCount := range productStockRemovedByProductId {
+				if err := productStockRepository.UpdateDecrementQtyByProductId(ctx, productId, stockRemoveCount); err != nil {
+					return err
+				}
+			}
+
+			if err := productStockMutationRepository.InsertMany(ctx, productStockMutations); err != nil {
+				return err
+			}
+
+			for _, productReceiveItem := range productReceive.ProductReceiveItems {
+				deductQtyLeft := productReceiveItem.Qty
+
+				for deductQtyLeft > 0 {
+					productStockMutation, err := u.repositoryManager.ProductStockMutationRepository().GetFIFOByProductIdAndBaseQtyLeftNotZero(ctx, productReceiveItem.ProductUnit.ProductId)
+					if err != nil {
+						return err
+					}
+
+					if deductQtyLeft > productStockMutation.BaseQtyLeft {
+						deductQtyLeft -= productStockMutation.BaseQtyLeft
+						productStockMutation.BaseQtyLeft = 0
+					} else {
+						productStockMutation.BaseQtyLeft -= deductQtyLeft
+						deductQtyLeft = 0
+					}
+
+					if err := productStockMutationRepository.Update(ctx, productStockMutation); err != nil {
+						return err
+					}
+				}
+			}
+
+			return nil
+		}),
+	)
+
+	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
+		productReceiveProductStock: true,
+		productReceiveImages:       true,
+		supplier:                   true,
+		_return:                    true,
+	})
+
+	return productReceive
 }
 
 func (u *productReceiveUseCase) DeleteImage(ctx context.Context, request dto_request.ProductReceiveDeleteImageRequest) model.ProductReceive {

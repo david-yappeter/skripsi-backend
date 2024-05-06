@@ -243,6 +243,39 @@ func (a *ProductReceiveApi) MarkComplete() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/product-receives/{id}/returned [patch]
+//	@Summary	Returned
+//	@tags		Product Receives
+//	@Accept		json
+//	@Param		id												path	string											true	"Id"
+//	@Param		dto_request.ProductReceiveReturnedRequest	body	dto_request.ProductReceiveReturnedRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_receive=dto_response.ProductReceiveResponse}}
+func (a *ProductReceiveApi) Returned() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionProductReceiveReturned),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.ProductReceiveReturnedRequest
+			ctx.mustBind(&request)
+			request.ProductReceiveId = id
+
+			productReceive := a.productReceiveUseCase.Returned(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"product_receive": dto_response.NewProductReceiveResponse(productReceive),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/product-receives/filter [post]
 //	@Summary	Filter
 //	@tags		Product Receives
@@ -429,6 +462,7 @@ func RegisterProductReceiveApi(router gin.IRouter, useCaseManager use_case.UseCa
 	routerGroup.PUT("/:id", api.Update())
 	routerGroup.PATCH("/:id/cancel", api.Cancel())
 	routerGroup.PATCH("/:id/completed", api.MarkComplete())
+	routerGroup.PATCH("/:id/returned", api.Returned())
 
 	routerGroup.DELETE("/:id/items/:product_receive_item_id", api.DeleteItem())
 	routerGroup.DELETE("/:id/images/:product_receive_image_id", api.DeleteImage())

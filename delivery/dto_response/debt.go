@@ -6,13 +6,13 @@ import (
 )
 
 type DebtResponse struct {
-	Id              string                   `json:"id"`
-	DebtSource      data_type.DebtDebtSource `json:"debt_source"`
-	DebtSourceId    string                   `json:"debt_source_id"`
-	DueDate         data_type.NullDate       `json:"due_date"`
-	Status          data_type.DebtStatus     `json:"status"`
-	Amount          float64                  `json:"amount"`
-	RemainingAmount float64                  `json:"remaining_amount"`
+	Id              string               `json:"id"`
+	DebtSource      data_type.DebtSource `json:"debt_source"`
+	DebtSourceId    string               `json:"debt_source_id"`
+	DueDate         data_type.NullDate   `json:"due_date"`
+	Status          data_type.DebtStatus `json:"status"`
+	Amount          float64              `json:"amount"`
+	RemainingAmount float64              `json:"remaining_amount"`
 
 	Timestamp
 	Payments []DebtPaymentResponse `json:"payments"`

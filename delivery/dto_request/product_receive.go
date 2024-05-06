@@ -63,6 +63,13 @@ type ProductReceiveMarkCompleteRequest struct {
 	ProductReceiveId string `json:"-" swaggerignore:"true"`
 } // @name ProductReceiveMarkCompleteRequest
 
+type ProductReceiveReturnedRequest struct {
+	FilePaths   []string `json:"file_paths" validate:"dive,not_empty" extensions:"x-nullable"`
+	Description *string  `json:"description" validate:"omitempty,not_empty" extensions:"x-nullable"`
+
+	ProductReceiveId string `json:"-" swaggerignore:"true"`
+} // @name ProductReceiveMarkCompleteRequest
+
 type ProductReceiveDeleteRequest struct {
 	ProductReceiveId string `json:"-" swaggerignore:"true"`
 } // @name ProductReceiveDeleteRequest
