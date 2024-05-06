@@ -22,10 +22,10 @@ func (m *DeliveryOrderReturnImage) TableIds() []string {
 
 func (m *DeliveryOrderReturnImage) ToMap() map[string]interface{} {
 	return map[string]interface{}{
-		"id":                      m.Id,
-		"delivery_order_image_id": m.DeliveryOrderReturnId,
-		"file_id":                 m.FileId,
-		"created_at":              m.CreatedAt,
-		"updated_at":              m.UpdatedAt,
+		"id":                       m.Id,
+		"delivery_order_return_id": m.DeliveryOrderReturnId,
+		"file_id":                  m.FileId,
+		"created_at":               m.CreatedAt,
+		"updated_at":               m.UpdatedAt,
 	}
 }
