@@ -28,6 +28,8 @@ func (m *Debt) TableIds() []string {
 func (m *Debt) ToMap() map[string]interface{} {
 	return map[string]interface{}{
 		"id":               m.Id,
+		"debt_source":      m.DebtSource,
+		"debt_source_id":   m.DebtSourceId,
 		"due_date":         m.DueDate,
 		"status":           m.Status,
 		"amount":           m.Amount,
