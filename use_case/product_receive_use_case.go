@@ -644,6 +644,7 @@ func (u *productReceiveUseCase) Returned(ctx context.Context, request dto_reques
 	}
 
 	// initialize images
+	files := []model.File{}
 	productReceiveReturnImages := []model.ProductReceiveReturnImage{}
 
 	for _, filepath := range request.FilePaths {
@@ -668,6 +669,7 @@ func (u *productReceiveUseCase) Returned(ctx context.Context, request dto_reques
 			ProductReceiveReturnId: productReceiveReturn.Id,
 			FileId:                 imageFile.Id,
 		})
+		files = append(files, imageFile)
 	}
 
 	// remove stock data
@@ -698,10 +700,15 @@ func (u *productReceiveUseCase) Returned(ctx context.Context, request dto_reques
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
 			debtRepository := u.repositoryManager.DebtRepository()
 			productReceiveRepository := u.repositoryManager.ProductReceiveRepository()
+			fileRepository := u.repositoryManager.FileRepository()
 			deliveryOrderReturnRepository := u.repositoryManager.ProductReceiveReturnRepository()
 			deliveryOrderReturnImageRepository := u.repositoryManager.ProductReceiveReturnImageRepository()
 			productStockRepository := u.repositoryManager.ProductStockRepository()
 			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
+
+			if err := fileRepository.InsertMany(ctx, files); err != nil {
+				return err
+			}
 
 			if err := debtRepository.Update(ctx, debt); err != nil {
 				return err

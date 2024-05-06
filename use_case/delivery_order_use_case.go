@@ -1001,6 +1001,7 @@ func (u *deliveryOrderUseCase) Returned(ctx context.Context, request dto_request
 	}
 
 	// initialize images
+	files := []model.File{}
 	deliveryOrderReturnImages := []model.DeliveryOrderReturnImage{}
 
 	for _, filepath := range request.FilePaths {
@@ -1025,6 +1026,7 @@ func (u *deliveryOrderUseCase) Returned(ctx context.Context, request dto_request
 			DeliveryOrderReturnId: deliveryOrderReturn.Id,
 			FileId:                imageFile.Id,
 		})
+		files = append(files, imageFile)
 	}
 
 	// add back stock data and stock mutation
@@ -1063,8 +1065,13 @@ func (u *deliveryOrderUseCase) Returned(ctx context.Context, request dto_request
 			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
 			deliveryOrderReturnRepository := u.repositoryManager.DeliveryOrderReturnRepository()
 			deliveryOrderReturnImageRepository := u.repositoryManager.DeliveryOrderReturnImageRepository()
+			fileRepository := u.repositoryManager.FileRepository()
 			productStockRepository := u.repositoryManager.ProductStockRepository()
 			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
+
+			if err := fileRepository.InsertMany(ctx, files); err != nil {
+				return err
+			}
 
 			if err := customerDebtRepository.Update(ctx, customerDebt); err != nil {
 				return err
