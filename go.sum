@@ -34,8 +34,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/david-yappeter/escpos v1.0.12 h1:c0uhi00jl5T0ktkLMnn8Knq546LvASSCmENl2ZJBZSs=
 github.com/david-yappeter/escpos v1.0.12/go.mod h1:B5dKDg++98s9uhg0WY7eLpoY01rSFA4Cg3OGRWANBN8=
-github.com/david-yappeter/go-tiktok v0.1.23 h1:5gAZzK/0jzLn1z4nWSLS7pRt2Dke0qtlVTbDzHnNlqo=
-github.com/david-yappeter/go-tiktok v0.1.23/go.mod h1:9LYJviEI1DdubuRxwLq9Tn1OJ69KN9N0nSYS1hOfOPk=
+github.com/david-yappeter/go-tiktok v0.1.24 h1:XhLR9ELxIa4EG5kTV+MJGJyasCMn49Dp1r5wH2vHyr8=
+github.com/david-yappeter/go-tiktok v0.1.24/go.mod h1:9LYJviEI1DdubuRxwLq9Tn1OJ69KN9N0nSYS1hOfOPk=
 github.com/dhui/dktest v0.3.16 h1:i6gq2YQEtcrjKbeJpBkWjE8MmLZPYllcjOFbTZuPDnw=
 github.com/dhui/dktest v0.3.16/go.mod h1:gYaA3LRmM8Z4vJl2MA0THIigJoZrwOansEOsp+kqxp0=
 github.com/docker/distribution v2.8.2+incompatible h1:T3de5rq0dB1j30rp0sA2rER+m322EBzniBPB6ZIzuh8=

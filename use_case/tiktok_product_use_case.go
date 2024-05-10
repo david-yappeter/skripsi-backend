@@ -110,6 +110,51 @@ func (u *tiktokProductUseCase) Create(ctx context.Context, request dto_request.T
 		}
 	}
 
+	listingResp, err := client.ListingCheckProduct(ctx,
+		gotiktok.CommonParam{
+			AccessToken: *tiktokConfig.AccessToken,
+			ShopCipher:  tiktokConfig.ShopCipher,
+			ShopId:      tiktokConfig.ShopId,
+		},
+		gotiktok.ListingCheckProductRequest{
+			Description: request.Description,
+			CategoryId:  request.CategoryId,
+			BrandId:     request.BrandId,
+			MainImages:  uriImages,
+			Skus: []gotiktok.CreateProductRequestSku{
+				{
+					Inventory: []gotiktok.CreateProductRequestSkuInventory{
+						{
+							WarehouseId: tiktokConfig.WarehouseId,
+							Quantity:    int(product.ProductStock.Qty),
+						},
+					},
+					SellerSku: &product.Id,
+					Price: gotiktok.CreateProductRequestSkuPrice{
+						Amount:   fmt.Sprintf("%+v", *product.Price),
+						Currency: "IDR",
+					},
+				},
+			},
+			Title:             request.Title,
+			IsCodAllowed:      false,
+			PackageDimensions: packageDimension,
+			ProductAttributes: request.Attributes,
+			PackageWeight: gotiktok.PackageWeight{
+				Unit:  request.WeightUnit.String(),
+				Value: fmt.Sprintf("%+v", request.Weight),
+			},
+			Video:     nil,
+			SizeChart: sizeChart,
+		},
+	)
+
+	if listingResp.CheckResult == "FAILED" {
+		if len(listingResp.FailReasons) > 0 {
+			panic(dto_response.NewBadRequestErrorResponse(listingResp.FailReasons[0].Message))
+		}
+	}
+
 	resp, err := client.CreateProduct(ctx,
 		gotiktok.CommonParam{
 			AccessToken: *tiktokConfig.AccessToken,
