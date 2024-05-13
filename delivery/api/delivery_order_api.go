@@ -280,7 +280,7 @@ func (a *DeliveryOrderApi) Completed() gin.HandlerFunc {
 //	@Summary	Returned
 //	@tags		Delivery Orders
 //	@Accept		json
-//	@Param		id												path	string											true	"Id"
+//	@Param		id											path	string										true	"Id"
 //	@Param		dto_request.DeliveryOrderReturnedRequest	body	dto_request.DeliveryOrderReturnedRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}

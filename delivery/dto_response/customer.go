@@ -47,3 +47,18 @@ func NewCustomerResponseP(customer model.Customer) *CustomerResponse {
 
 	return &r
 }
+
+type CustomerDebtSummaryResponse struct {
+	CustomerId   string  `json:"customer_id"`
+	CustomerName string  `json:"customer_name"`
+	TotalDebt    float64 `json:"total_debt"`
+}
+
+func NewCustomerDebtSummaryResponse(customerDebtSummary model.CustomerDebtSummary) CustomerDebtSummaryResponse {
+	r := CustomerDebtSummaryResponse{
+		CustomerId:   customerDebtSummary.CustomerId,
+		CustomerName: customerDebtSummary.CustomerName,
+		TotalDebt:    customerDebtSummary.TotalDebt,
+	}
+	return r
+}

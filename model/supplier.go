@@ -65,3 +65,9 @@ func (o *SupplierQueryOption) SetDefaultSorts() {
 		}
 	}
 }
+
+type SupplierDebtSummary struct {
+	SupplierId   string  `db:"supplier_id"`
+	SupplierName string  `db:"supplier_name"`
+	TotalDebt    float64 `db:"total_debt"`
+}

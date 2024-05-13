@@ -43,3 +43,18 @@ func NewSupplierResponseP(supplier model.Supplier) *SupplierResponse {
 	r := NewSupplierResponse(supplier)
 	return &r
 }
+
+type SupplierDebtSummaryResponse struct {
+	SupplierId   string  `json:"supplier_id"`
+	SupplierName string  `json:"supplier_name"`
+	TotalDebt    float64 `json:"total_debt"`
+}
+
+func NewSupplierDebtSummaryResponse(supplierDebtSummary model.SupplierDebtSummary) SupplierDebtSummaryResponse {
+	r := SupplierDebtSummaryResponse{
+		SupplierId:   supplierDebtSummary.SupplierId,
+		SupplierName: supplierDebtSummary.SupplierName,
+		TotalDebt:    supplierDebtSummary.TotalDebt,
+	}
+	return r
+}

@@ -65,3 +65,9 @@ func (o *CustomerQueryOption) SetDefaultSorts() {
 		}
 	}
 }
+
+type CustomerDebtSummary struct {
+	CustomerId   string  `db:"customer_id"`
+	CustomerName string  `db:"customer_name"`
+	TotalDebt    float64 `db:"total_debt"`
+}

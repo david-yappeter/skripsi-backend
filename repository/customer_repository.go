@@ -20,6 +20,7 @@ type CustomerRepository interface {
 	Fetch(ctx context.Context, options ...model.CustomerQueryOption) ([]model.Customer, error)
 	FetchByCustomerTypeId(ctx context.Context, customerTypeId *string) ([]model.Customer, error)
 	FetchByCustomerTypeIds(ctx context.Context, customerTypeIds []string) ([]model.Customer, error)
+	FetchTopNCustomerDebtSummaryOrderByTotalDebt(ctx context.Context, limit int) ([]model.CustomerDebtSummary, error)
 	FetchByIds(ctx context.Context, ids []string) ([]model.Customer, error)
 	Get(ctx context.Context, id string) (*model.Customer, error)
 	IsExistByCustomerTypeId(ctx context.Context, customerTypeId string) (bool, error)
@@ -147,6 +148,22 @@ func (r *customerRepository) FetchByCustomerTypeIds(ctx context.Context, custome
 		Where(squirrel.Eq{"customer_type_id": customerTypeIds})
 
 	return r.fetch(ctx, stmt)
+}
+
+func (r *customerRepository) FetchTopNCustomerDebtSummaryOrderByTotalDebt(ctx context.Context, limit int) ([]model.CustomerDebtSummary, error) {
+	stmt := stmtBuilder.Select("c.id as customer_id, c.name as customer_name, SUM(cd.remaining_amount) as total_debt").
+		From(fmt.Sprintf("%s c", model.CustomerTableName)).
+		InnerJoin(fmt.Sprintf("%s cd ON c.id = cd.customer_id", model.CustomerDebtTableName)).
+		Where(squirrel.Eq{"cd.status": data_type.CustomerDebtStatusUnpaid}).
+		GroupBy("c.id,c.name").
+		OrderBy("total_debt DESC")
+
+	customerDebtSummaries := []model.CustomerDebtSummary{}
+	if err := fetch(r.db, ctx, &customerDebtSummaries, stmt); err != nil {
+		return nil, err
+	}
+
+	return customerDebtSummaries, nil
 }
 
 func (r *customerRepository) FetchByIds(ctx context.Context, ids []string) ([]model.Customer, error) {

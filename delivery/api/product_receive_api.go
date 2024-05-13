@@ -247,7 +247,7 @@ func (a *ProductReceiveApi) MarkComplete() gin.HandlerFunc {
 //	@Summary	Returned
 //	@tags		Product Receives
 //	@Accept		json
-//	@Param		id												path	string											true	"Id"
+//	@Param		id											path	string										true	"Id"
 //	@Param		dto_request.ProductReceiveReturnedRequest	body	dto_request.ProductReceiveReturnedRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_receive=dto_response.ProductReceiveResponse}}

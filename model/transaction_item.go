@@ -1,5 +1,7 @@
 package model
 
+import "math"
+
 const TransactionItemTableName = "transaction_items"
 
 type TransactionItem struct {
@@ -34,4 +36,26 @@ func (m *TransactionItem) ToMap() map[string]interface{} {
 		"created_at":        m.CreatedAt,
 		"updated_at":        m.UpdatedAt,
 	}
+}
+
+func (m TransactionItem) GrossTotal() float64 {
+	if m.DiscountPerUnit != nil {
+		return m.Qty * math.Max(m.PricePerUnit-*m.DiscountPerUnit, 0)
+	} else {
+		return m.Qty * m.PricePerUnit
+	}
+}
+
+func (m TransactionItem) TotalCost() float64 {
+	totalCost := 0.0
+
+	for _, cost := range m.TransactionItemCosts {
+		totalCost += cost.TotalCostPrice
+	}
+
+	return totalCost
+}
+
+func (m TransactionItem) NetTotal() float64 {
+	return m.GrossTotal() - m.TotalCost()
 }

@@ -18,6 +18,7 @@ type SupplierRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.SupplierQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.SupplierQueryOption) ([]model.Supplier, error)
+	FetchTopNSupplierDebtSummaryOrderByTotalDebt(ctx context.Context, limit int) ([]model.SupplierDebtSummary, error)
 	FetchByIds(ctx context.Context, ids []string) ([]model.Supplier, error)
 	Get(ctx context.Context, id string) (*model.Supplier, error)
 	IsExistByCode(ctx context.Context, code string) (bool, error)
@@ -126,6 +127,23 @@ func (r *supplierRepository) Fetch(ctx context.Context, options ...model.Supplie
 	stmt := r.prepareQuery(option)
 
 	return r.fetch(ctx, stmt)
+}
+
+func (r *supplierRepository) FetchTopNSupplierDebtSummaryOrderByTotalDebt(ctx context.Context, limit int) ([]model.SupplierDebtSummary, error) {
+	stmt := stmtBuilder.Select("s.id as supplier_id, s.name as supplier_name, SUM(d.remaining_amount) as total_debt").
+		From(fmt.Sprintf("%s s", model.SupplierTableName)).
+		InnerJoin(fmt.Sprintf("%s pr ON s.id = pr.supplier_id", model.ProductReceiveTableName)).
+		InnerJoin(fmt.Sprintf("%s d ON pr.id = d.debt_source_identifier", model.DebtTableName)).
+		Where(squirrel.Eq{"d.status": data_type.DebtStatusUnpaid}).
+		GroupBy("s.id,s.name").
+		OrderBy("total_debt DESC")
+
+	supplierDebtSummaries := []model.SupplierDebtSummary{}
+	if err := fetch(r.db, ctx, &supplierDebtSummaries, stmt); err != nil {
+		return nil, err
+	}
+
+	return supplierDebtSummaries, nil
 }
 
 func (r *supplierRepository) FetchByIds(ctx context.Context, ids []string) ([]model.Supplier, error) {

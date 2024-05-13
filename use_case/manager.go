@@ -15,6 +15,7 @@ type UseCaseManager interface {
 	CustomerUseCase() CustomerUseCase
 	CustomerDebtUseCase() CustomerDebtUseCase
 	CustomerTypeUseCase() CustomerTypeUseCase
+	DashboardUseCase() DashboardUseCase
 	DebtUseCase() DebtUseCase
 	DeliveryOrderUseCase() DeliveryOrderUseCase
 	DeliveryOrderReviewUseCase() DeliveryOrderReviewUseCase
@@ -45,6 +46,7 @@ type useCaseManager struct {
 	customerUseCase            CustomerUseCase
 	customerDebtUseCase        CustomerDebtUseCase
 	customerTypeUseCase        CustomerTypeUseCase
+	dashboardUseCase           DashboardUseCase
 	debtUseCase                DebtUseCase
 	deliveryOrderUseCase       DeliveryOrderUseCase
 	deliveryOrderReviewUseCase DeliveryOrderReviewUseCase
@@ -93,6 +95,10 @@ func (u *useCaseManager) CustomerDebtUseCase() CustomerDebtUseCase {
 
 func (u *useCaseManager) CustomerTypeUseCase() CustomerTypeUseCase {
 	return u.customerTypeUseCase
+}
+
+func (u *useCaseManager) DashboardUseCase() DashboardUseCase {
+	return u.dashboardUseCase
 }
 
 func (u *useCaseManager) DebtUseCase() DebtUseCase {
@@ -206,6 +212,9 @@ func NewUseCaseManager(
 			filesystemManager.Tmp(),
 		),
 		customerTypeUseCase: NewCustomerTypeUseCase(
+			repositoryManager,
+		),
+		dashboardUseCase: NewDashboardUseCase(
 			repositoryManager,
 		),
 		debtUseCase: NewDebtUseCase(

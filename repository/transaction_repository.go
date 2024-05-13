@@ -73,6 +73,14 @@ func (r *transactionRepository) prepareQuery(option model.TransactionQueryOption
 		stmt = stmt.Where(squirrel.Eq{"t.status": option.Status})
 	}
 
+	if option.PaymentStartedAt.DateTimeP() != nil {
+		stmt = stmt.Where(squirrel.LtOrEq{"payment_at": option.PaymentStartedAt})
+	}
+
+	if option.PaymentEndedAt.DateTimeP() != nil {
+		stmt = stmt.Where(squirrel.GtOrEq{"payment_at": option.PaymentEndedAt})
+	}
+
 	stmt = model.Prepare(stmt, &option)
 
 	return stmt
