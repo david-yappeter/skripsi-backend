@@ -38,3 +38,25 @@ func NewTransactionResponse(transaction model.Transaction) TransactionResponse {
 
 	return r
 }
+
+type TransactionSummaryResponse struct {
+	Date            data_type.Date `json:"date"`
+	TotalGrossSales float64        `json:"total_gross_sales"`
+	TotalNetSales   float64        `json:"total_net_sales"`
+
+	Transactions []TransactionResponse `json:"transactions"`
+}
+
+func NewTransactionSummaryResponse(transactionSummary model.TransactionSummary) TransactionSummaryResponse {
+	r := TransactionSummaryResponse{
+		Date:            transactionSummary.Date,
+		TotalGrossSales: transactionSummary.TotalGrossSales,
+		TotalNetSales:   transactionSummary.TotalNetSales,
+	}
+
+	for _, transaction := range transactionSummary.Transactions {
+		r.Transactions = append(r.Transactions, NewTransactionResponse(transaction))
+	}
+
+	return r
+}

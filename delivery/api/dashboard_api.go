@@ -50,7 +50,7 @@ func (a *DashboardApi) SummarizeDebt() gin.HandlerFunc {
 //	@Accept		json
 //	@Param		dto_request.DashboardSummarizeTransactionRequest	body	dto_request.DashboardSummarizeTransactionRequest	true	"Body Request"
 //	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{customer_debt_summaries=[]dto_response.CustomerDebtSummaryResponse,supplier_debt_summaries=[]dto_response.SupplierDebtSummaryResponse}}
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{transaction_summaries=[]dto_response.TransactionSummaryResponse}}
 func (a *DashboardApi) SummarizeTransaction() gin.HandlerFunc {
 	return a.Guest(
 		// data_type.PermissionP(data_type.PermissionDashboardUploadImage),
@@ -64,8 +64,7 @@ func (a *DashboardApi) SummarizeTransaction() gin.HandlerFunc {
 				http.StatusOK,
 				dto_response.Response{
 					Data: dto_response.DataResponse{
-						"transaction_summaries": transactionSummaries,
-						// "customer_debt_summaries": util.ConvertArray(customerDebtSummaries, dto_response.NewCustomerDebtSummaryResponse),
+						"transaction_summaries": util.ConvertArray(transactionSummaries, dto_response.NewTransactionSummaryResponse),
 					},
 				},
 			)
