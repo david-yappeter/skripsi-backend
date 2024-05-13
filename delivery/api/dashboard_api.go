@@ -1,6 +1,7 @@
 package api
 
 import (
+	"myapp/data_type"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
 	"myapp/use_case"
@@ -24,8 +25,8 @@ type DashboardApi struct {
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{customer_debt_summaries=[]dto_response.CustomerDebtSummaryResponse,supplier_debt_summaries=[]dto_response.SupplierDebtSummaryResponse}}
 func (a *DashboardApi) SummarizeDebt() gin.HandlerFunc {
-	return a.Guest(
-		// data_type.PermissionP(data_type.PermissionDashboardUploadImage),
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionDashboardSummarizeDebt),
 		func(ctx apiContext) {
 			customerDebtSummaries, supplierDebtSummaries := a.dashboardUseCase.SummarizeDebt(ctx.context())
 
@@ -52,8 +53,8 @@ func (a *DashboardApi) SummarizeDebt() gin.HandlerFunc {
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{transaction_summaries=[]dto_response.TransactionSummaryResponse}}
 func (a *DashboardApi) SummarizeTransaction() gin.HandlerFunc {
-	return a.Guest(
-		// data_type.PermissionP(data_type.PermissionDashboardUploadImage),
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionDashboardSummarizeTransaction),
 		func(ctx apiContext) {
 			var request dto_request.DashboardSummarizeTransactionRequest
 			ctx.mustBind(&request)

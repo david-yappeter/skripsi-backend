@@ -56,6 +56,10 @@ const (
 	PermissionCustomerTypeOptionForCustomerForm                            // CUSTOMER_TYPE_OPTION_FOR_CUSTOMER_FORM
 	PermissionCustomerTypeOptionForWhatsappProductPriceChangeBroadcastForm // CUSTOMER_TYPE_OPTION_FOR_WHATSAPP_PRODUCT_PRICE_CHANGE_BROADCAST_FORM
 
+	// dashboard
+	PermissionDashboardSummarizeDebt        // DASHBOARD_SUMMARIZE_DEBT
+	PermissionDashboardSummarizeTransaction // DASHBOARD_SUMMARIZE_TRANSACTION
+
 	// debt
 	PermissionDebtUploadImage // DEBT_UPLOAD_IMAGE
 	PermissionDebtFetch       // DEBT_FETCH

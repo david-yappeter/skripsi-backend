@@ -48,6 +48,10 @@ func GetRoleSuperPermissions() []Permission {
 		// cashier session
 		PermissionCashierSessionFetch,
 
+		// dashboard
+		PermissionDashboardSummarizeDebt,
+		PermissionDashboardSummarizeTransaction,
+
 		// shop order
 		PermissionShopOrderFetch,
 		PermissionShopOrderGet,
@@ -123,6 +127,10 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionCustomerTypeDeleteDiscount,
 		PermissionCustomerTypeOptionForCustomerForm,
 		PermissionCustomerTypeOptionForWhatsappProductPriceChangeBroadcastForm,
+
+		// dashboard
+		PermissionDashboardSummarizeDebt,
+		PermissionDashboardSummarizeTransaction,
 
 		// customer debt
 		PermissionCustomerDebtUploadImage,
