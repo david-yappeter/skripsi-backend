@@ -1,4 +1,5 @@
 # auth_use_case.go
+AUTH.ACCOUNT_NOT_REGISTERED: "Akun tidak terdaftar"
 AUTH.WRONG_PASSWORD: "Username atau password salah"
 
 # cart_use_case.go
