@@ -26,9 +26,9 @@ func NewProductStockAdjustmentUseCase(
 
 func (u *productStockAdjustmentUseCase) Fetch(ctx context.Context, request dto_request.ProductStockAdjustmentFetchRequest) ([]model.ProductStockAdjustment, int) {
 	queryOption := model.ProductStockAdjustmentQueryOption{
-		QueryOption:    model.NewQueryOptionWithPagination(request.Page, request.Limit, model.Sorts(request.Sorts)),
-		UserId:         request.UserId,
-		ProductStockId: &request.ProductStockId,
+		QueryOption: model.NewQueryOptionWithPagination(request.Page, request.Limit, model.Sorts(request.Sorts)),
+		UserId:      request.UserId,
+		ProductId:   request.ProductId,
 	}
 
 	productStockAdjustments, err := u.repositoryManager.ProductStockAdjustmentRepository().Fetch(ctx, queryOption)

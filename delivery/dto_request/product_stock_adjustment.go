@@ -7,7 +7,7 @@ type ProductStockAdjustmentFetchSorts []struct {
 
 type ProductStockAdjustmentFetchRequest struct {
 	PaginationRequest
-	Sorts          ProductStockAdjustmentFetchSorts `json:"sorts" validate:"unique=Field,dive"`
-	UserId         *string                          `json:"user_id" validate:"omitempty,not_empty,uuid"`
-	ProductStockId string                           `json:"product_stock_id" validate:"required,not_empty,uuid"`
+	Sorts     ProductStockAdjustmentFetchSorts `json:"sorts" validate:"unique=Field,dive"`
+	UserId    *string                          `json:"user_id" validate:"omitempty,not_empty,uuid"`
+	ProductId *string                          `json:"product_id" validate:"omitempty,not_empty,uuid"`
 } // @name ProductStockAdjustmentFetchRequest

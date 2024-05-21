@@ -66,6 +66,16 @@ func (r *productStockAdjustmentRepository) prepareQuery(option model.ProductStoc
 		stmt = stmt.Where(squirrel.Eq{"psa.user_id": option.UserId})
 	}
 
+	if option.ProductId != nil {
+		stmt = stmt.Where(
+			stmtBuilder.Select("1").
+				From(fmt.Sprintf("%s ps", model.ProductStockTableName)).
+				Where(squirrel.Expr("ps.id = psa.product_stock_id")).
+				Where(squirrel.Eq{"ps.product_id": option.ProductId}).
+				Prefix("EXISTS (").Suffix(")"),
+		)
+	}
+
 	stmt = model.Prepare(stmt, &option)
 
 	return stmt

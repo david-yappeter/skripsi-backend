@@ -36,6 +36,7 @@ type ProductStockAdjustmentQueryOption struct {
 
 	UserId         *string
 	ProductStockId *string
+	ProductId      *string
 }
 
 var _ PrepareOption = &ProductStockAdjustmentQueryOption{}
