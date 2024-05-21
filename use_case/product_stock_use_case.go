@@ -196,8 +196,10 @@ func (u *productStockUseCase) DownloadReport(
 }
 
 func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_request.ProductStockAdjustmentRequest) model.ProductStock {
+	currentUser := model.MustGetUserCtx(ctx)
 	currentDateTime := util.CurrentDateTime()
 	productStock := mustGetProductStock(ctx, u.repositoryManager, request.ProductStockId, true)
+	previousProductStock := productStock
 
 	product := mustGetProduct(ctx, u.repositoryManager, productStock.ProductId, true)
 
@@ -216,6 +218,7 @@ func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_reques
 
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			productStockAdjustmentRepository := u.repositoryManager.ProductStockAdjustmentRepository()
 			productStockRepository := u.repositoryManager.ProductStockRepository()
 			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
 
@@ -267,6 +270,16 @@ func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_reques
 				if err := productStockMutationRepository.Insert(ctx, toBeAddedProductStockMutation); err != nil {
 					return err
 				}
+			}
+
+			if err := productStockAdjustmentRepository.Insert(ctx, &model.ProductStockAdjustment{
+				Id:             util.NewUuid(),
+				UserId:         currentUser.Id,
+				ProductStockId: productStock.Id,
+				PreviousQty:    previousProductStock.Qty,
+				UpdatedQty:     productStock.Qty,
+			}); err != nil {
+				return err
 			}
 
 			return nil
