@@ -200,6 +200,9 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionProductReceiveDeleteItem,
 		PermissionProductReceiveDeleteImage,
 
+		// product stock adjustment
+		PermissionProductStockAdjustmentFetch,
+
 		// product stock
 		PermissionProductStockFetch,
 		PermissionProductStockGet,
@@ -257,6 +260,9 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionUnitDelete,
 		PermissionUnitOptionForProductUnitForm,
 		PermissionUnitOptionForProductUnitToUnitForm,
+
+		// user
+		PermissionUserOptionForProductStockAdjustmentFilter,
 
 		// whatsapp
 		PermissionWhatsappProductPriceChangeBroadcast,

@@ -46,6 +46,7 @@ type RepositoryManager interface {
 	ProductReceiveImageRepository() ProductReceiveImageRepository
 	ProductRepository() ProductRepository
 	ProductStockMutationRepository() ProductStockMutationRepository
+	ProductStockAdjustmentRepository() ProductStockAdjustmentRepository
 	ProductStockRepository() ProductStockRepository
 	ProductUnitRepository() ProductUnitRepository
 	RolePermissionRepository() RolePermissionRepository
@@ -102,6 +103,7 @@ type repositoryManager struct {
 	productReceiveImageRepository       ProductReceiveImageRepository
 	productRepository                   ProductRepository
 	productStockMutationRepository      ProductStockMutationRepository
+	productStockAdjustmentRepository    ProductStockAdjustmentRepository
 	productStockRepository              ProductStockRepository
 	productUnitRepository               ProductUnitRepository
 	rolePermissionRepository            RolePermissionRepository
@@ -273,6 +275,10 @@ func (r *repositoryManager) ProductRepository() ProductRepository {
 
 func (r *repositoryManager) ProductStockMutationRepository() ProductStockMutationRepository {
 	return r.productStockMutationRepository
+}
+
+func (r *repositoryManager) ProductStockAdjustmentRepository() ProductStockAdjustmentRepository {
+	return r.productStockAdjustmentRepository
 }
 
 func (r *repositoryManager) ProductStockRepository() ProductStockRepository {
@@ -479,6 +485,10 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		productStockMutationRepository: NewProductStockMutationRepository(
+			db,
+			loggerStack,
+		),
+		productStockAdjustmentRepository: NewProductStockAdjustmentRepository(
 			db,
 			loggerStack,
 		),

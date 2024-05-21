@@ -127,6 +127,9 @@ const (
 	PermissionProductReceiveDeleteItem   // PRODUCT_RECEIVE_DELETE_ITEM
 	PermissionProductReceiveDeleteImage  // PRODUCT_RECEIVE_DELETE_IMAGE
 
+	// product stock adjustment
+	PermissionProductStockAdjustmentFetch // PRODUCT_STOCK_ADJUSTMENT_FETCH
+
 	// product stock
 	PermissionProductStockFetch          // PRODUCT_STOCK_FETCH
 	PermissionProductStockGet            // PRODUCT_STOCK_GET
@@ -186,17 +189,18 @@ const (
 	PermissionTransactionGet          // TRANSACTION_GET
 
 	// user
-	PermissionUserCreate                           // USER_CREATE
-	PermissionUserFetch                            // USER_FETCH
-	PermissionUserGet                              // USER_GET
-	PermissionUserUpdate                           // USER_UPDATE
-	PermissionUserUpdatePassword                   // USER_UPDATE_PASSWORD
-	PermissionUserUpdateActive                     // USER_UPDATE_ACTIVE
-	PermissionUserUpdateInActive                   // USER_UPDATE_INACTIVE
-	PermissionUserAddRole                          // USER_ADD_ROLE
-	PermissionUserDeleteRole                       // USER_DELETE_ROLE
-	PermissionUserOptionForCashierSessionFilter    // USER_OPTION_FOR_CASHIER_SESSION_FILTER
-	PermissionUserOptionForDeliveryOrderDriverForm // USER_OPTION_FOR_DELIVERY_ORDER_DRIVER_FORM
+	PermissionUserCreate                                // USER_CREATE
+	PermissionUserFetch                                 // USER_FETCH
+	PermissionUserGet                                   // USER_GET
+	PermissionUserUpdate                                // USER_UPDATE
+	PermissionUserUpdatePassword                        // USER_UPDATE_PASSWORD
+	PermissionUserUpdateActive                          // USER_UPDATE_ACTIVE
+	PermissionUserUpdateInActive                        // USER_UPDATE_INACTIVE
+	PermissionUserAddRole                               // USER_ADD_ROLE
+	PermissionUserDeleteRole                            // USER_DELETE_ROLE
+	PermissionUserOptionForCashierSessionFilter         // USER_OPTION_FOR_CASHIER_SESSION_FILTER
+	PermissionUserOptionForDeliveryOrderDriverForm      // USER_OPTION_FOR_DELIVERY_ORDER_DRIVER_FORM
+	PermissionUserOptionForProductStockAdjustmentFilter // USER_OPTION_FOR_PRODUCT_STOCK_ADJUSTMENT_FILTER
 
 	// unit
 	PermissionUnitCreate                         // UNIT_CREATE

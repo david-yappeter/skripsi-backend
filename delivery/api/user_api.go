@@ -344,6 +344,41 @@ func (a *UserApi) OptionForDeliveryOrderDriverForm() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/users/options/product-stock-adjustment-filter [post]
+//	@Summary	Option for Product Stock Adjustment Filter
+//	@tags		Users
+//	@Accept		json
+//	@Param		dto_request.UserOptionForProductStockAdjustmentFilterRequest	body	dto_request.UserOptionForProductStockAdjustmentFilterRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.UserResponse}}
+func (a *UserApi) OptionForProductStockAdjustmentFilter() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionUserOptionForProductStockAdjustmentFilter),
+		func(ctx apiContext) {
+			var request dto_request.UserOptionForProductStockAdjustmentFilterRequest
+			ctx.mustBind(&request)
+
+			users, total := a.userUseCase.OptionForProductStockAdjustmentFilter(ctx.context(), request)
+
+			nodes := util.ConvertArray(users, dto_response.NewUserResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Nodes: nodes,
+						Total: total,
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterUserApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := UserApi{
 		api:         newApi(useCaseManager),
@@ -364,4 +399,5 @@ func RegisterUserApi(router gin.IRouter, useCaseManager use_case.UseCaseManager)
 	optionRouterGroup := routerGroup.Group("/options")
 	optionRouterGroup.POST("/cashier-session-filter", api.OptionForCashierSessionFilter())
 	optionRouterGroup.POST("/delivery-order-driver-form", api.OptionForDeliveryOrderDriverForm())
+	optionRouterGroup.POST("/product-stock-adjustment-filter", api.OptionForProductStockAdjustmentFilter())
 }

@@ -39,6 +39,7 @@ type UserUseCase interface {
 	// option
 	OptionForCashierSessionFilter(ctx context.Context, request dto_request.UserOptionForCashierSessionFilterRequest) ([]model.User, int)
 	OptionForDeliveryOrderDriverForm(ctx context.Context, request dto_request.UserOptionForDeliveryOrderDriverFormRequest) ([]model.User, int)
+	OptionForProductStockAdjustmentFilter(ctx context.Context, request dto_request.UserOptionForProductStockAdjustmentFilterRequest) ([]model.User, int)
 }
 
 type userUseCase struct {
@@ -316,6 +317,25 @@ func (u *userUseCase) OptionForDeliveryOrderDriverForm(ctx context.Context, requ
 		ExcludedIds: excludedUserIds,
 		Phrase:      request.Phrase,
 		RoleIds:     []string{role.Id},
+	}
+
+	users, err := u.repositoryManager.UserRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.UserRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	return users, total
+}
+
+func (u *userUseCase) OptionForProductStockAdjustmentFilter(ctx context.Context, request dto_request.UserOptionForProductStockAdjustmentFilterRequest) ([]model.User, int) {
+	queryOption := model.UserQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts{{Field: "name", Direction: "asc"}},
+		),
+		Phrase: request.Phrase,
 	}
 
 	users, err := u.repositoryManager.UserRepository().Fetch(ctx, queryOption)
