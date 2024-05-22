@@ -3,6 +3,7 @@ package use_case
 import (
 	"context"
 	"myapp/delivery/dto_request"
+	"myapp/delivery/dto_response"
 	"myapp/loader"
 	"myapp/model"
 	"myapp/repository"
@@ -59,7 +60,12 @@ func (u *customerUseCase) mustLoadCustomersData(ctx context.Context, customers [
 }
 
 func (u *customerUseCase) mustValidateAllowDeleteCustomer(ctx context.Context, customerId string) {
+	isExist, err := u.repositoryManager.DeliveryOrderRepository().IsExistByCustomerId(ctx, customerId)
+	panicIfErr(err)
 
+	if isExist {
+		panic(dto_response.NewBadRequestErrorResponse("CUSTOMER.ALREADY_HAVE_DELIVERY_ORDER.CANNOT_BE_DELETED"))
+	}
 }
 
 func (u *customerUseCase) Create(ctx context.Context, request dto_request.CustomerCreateRequest) model.Customer {

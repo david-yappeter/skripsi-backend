@@ -22,6 +22,7 @@ type DeliveryOrderRepository interface {
 	Get(ctx context.Context, id string) (*model.DeliveryOrder, error)
 	GetByDriverUserIdAndStatusDelivering(ctx context.Context, driverUserId string) (*model.DeliveryOrder, error)
 	IsExistByDriverUserIdAndStatusDelivering(ctx context.Context, driverUserId string) (bool, error)
+	IsExistByCustomerId(ctx context.Context, customerId string) (bool, error)
 
 	// update
 	Update(ctx context.Context, deliveryOrder *model.DeliveryOrder) error
@@ -180,6 +181,17 @@ func (r *deliveryOrderRepository) IsExistByDriverUserIdAndStatusDelivering(ctx c
 			InnerJoin(fmt.Sprintf("%s dod ON dorder.id = dod.delivery_order_id", model.DeliveryOrderDriverTableName)).
 			Where(squirrel.Eq{"dorder.status": data_type.DeliveryOrderStatusDelivering}).
 			Where(squirrel.Eq{"dod.driver_user_id": driverUserId}).
+			Prefix("EXISTS (").Suffix(")"),
+	)
+
+	return isExist(r.db, ctx, stmt)
+}
+
+func (r *deliveryOrderRepository) IsExistByCustomerId(ctx context.Context, customerId string) (bool, error) {
+	stmt := stmtBuilder.Select().Column(
+		stmtBuilder.Select("1").
+			From(fmt.Sprintf("%s dorder", model.DeliveryOrderTableName)).
+			Where(squirrel.Eq{"dorder.customer_id": customerId}).
 			Prefix("EXISTS (").Suffix(")"),
 	)
 

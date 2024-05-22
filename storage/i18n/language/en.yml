@@ -26,6 +26,9 @@ CUSTOMER_DEBT.PAYMENT_INVALID_AMOUNT: "Invalid payment amount"
 CUSTOMER_TYPE.NAME.ALREADY_EXIST: "Name already exist"
 CUSTOMER_TYPE.IN_USED_BY_CUSTOMERS: "In used by customers"
 
+# customer_use_case.go
+CUSTOMER.ALREADY_HAVE_DELIVERY_ORDER.CANNOT_BE_DELETED: "Customer already have delivery order"
+
 # debt_use_case.go
 DEBT.STATUS_MUST_BE_UNPAID: "Debt status must be unpaid"
 DEBT.PAYMENT_INVALID_AMOUNT: "Invalid payment amount"

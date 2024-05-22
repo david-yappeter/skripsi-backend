@@ -26,6 +26,9 @@ CUSTOMER_DEBT.PAYMENT_INVALID_AMOUNT: "Jumlah tidak valid"
 CUSTOMER_TYPE.NAME.ALREADY_EXIST: "Nama sudah digunakan"
 CUSTOMER_TYPE.IN_USED_BY_CUSTOMERS: "Tipe pelanggan telah digunakan"
 
+# customer_use_case.go
+CUSTOMER.ALREADY_HAVE_DELIVERY_ORDER.CANNOT_BE_DELETED: "Pelanggan sudah mempunyai 'pengiriman barang'"
+
 # debt_use_case.go
 DEBT.STATUS_MUST_BE_UNPAID: "Status hutang harus 'belum dibayar'"
 DEBT.PAYMENT_INVALID_AMOUNT: "Jumlah tidak valid"
