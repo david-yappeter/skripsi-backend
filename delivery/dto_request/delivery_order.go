@@ -92,8 +92,8 @@ type DeliveryOrderReturnedRequest struct {
 } // @name DeliveryOrderReturnedRequest
 
 type DeliveryOrderDeliveryLocationRequest struct {
-	Latitude  float64 `json:"latitude" validate:"latitude"`
-	Longitude float64 `json:"longitude" validate:"longitude"`
+	Latitude  float64 `json:"latitude" validate:"min=-90,max=90"`
+	Longitude float64 `json:"longitude" validate:"min=-180,max=180"`
 	Bearing   float64 `json:"bearing" validate:"min=0,max=360"`
 } // @name DeliveryOrderMarkCompletedRequest
 

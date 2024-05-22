@@ -11,8 +11,8 @@ type CustomerResponse struct {
 	Name           string  `json:"name"`
 	Email          string  `json:"email"`
 	Address        string  `json:"address"`
-	Latitude       float64 `json:"latitude"`
-	Longitude      float64 `json:"longitude"`
+	Latitude       float64 `json:"latitude" validate:"min=-90,max=90"`
+	Longitude      float64 `json:"longitude" validate:"min=-180,max=180"`
 	Phone          string  `json:"phone"`
 	IsActive       bool    `json:"is_active"`
 

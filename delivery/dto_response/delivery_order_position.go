@@ -8,8 +8,8 @@ type DeliveryOrderPositionResponse struct {
 	Id              string  `json:"id"`
 	DeliveryOrderId string  `json:"delivery_order_id"`
 	DriverUserId    string  `json:"driver_user_id"`
-	Latitude        float64 `json:"latitude"`
-	Longitude       float64 `json:"longitude"`
+	Latitude        float64 `json:"latitude" validate:"min=-90,max=90"`
+	Longitude       float64 `json:"longitude" validate:"min=-180,max=180"`
 	Bearing         float64 `json:"bearing"`
 
 	Timestamp
