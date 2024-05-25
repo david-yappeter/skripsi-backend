@@ -119,7 +119,7 @@ func (r *deliveryOrderReviewRepository) Get(ctx context.Context, id string) (*mo
 }
 
 func (r *deliveryOrderReviewRepository) IsExistByDeliveryOrderId(ctx context.Context, deliveryOrderId string) (bool, error) {
-	stmt := stmtBuilder.Select("1").Column(
+	stmt := stmtBuilder.Select().Column(
 		stmtBuilder.Select("*").
 			From(model.DeliveryOrderReviewTableName).
 			Where(squirrel.Eq{"delivery_order_id ": deliveryOrderId}).
