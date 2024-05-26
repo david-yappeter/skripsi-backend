@@ -73,10 +73,12 @@ func (r *deliveryOrderRepository) prepareQuery(option model.DeliveryOrderQueryOp
 	if option.Phrase != nil {
 		phrase := "%" + *option.Phrase + "%"
 
-		stmt = stmt.Where(squirrel.ILike{
-			"c.name":                phrase,
-			"dorder.invoice_number": phrase,
-		})
+		stmt = stmt.Where(
+			squirrel.Or{
+				squirrel.ILike{"c.name": phrase},
+				squirrel.ILike{"dorder.invoice_number": phrase},
+			},
+		)
 	}
 
 	if !option.IsCount && option.SortStatusImportance {
