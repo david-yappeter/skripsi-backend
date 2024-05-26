@@ -95,8 +95,11 @@ func (a *ProductDiscountApi) Get() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionProductDiscountGet),
 		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
 			var request dto_request.ProductDiscountGetRequest
 			ctx.mustBind(&request)
+
+			request.ProductDiscountId = id
 
 			productDiscount := a.productDiscountUseCase.Get(ctx.context(), request)
 
@@ -126,8 +129,11 @@ func (a *ProductDiscountApi) Update() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionProductDiscountUpdate),
 		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
 			var request dto_request.ProductDiscountUpdateRequest
 			ctx.mustBind(&request)
+
+			request.ProductDiscountId = id
 
 			productDiscount := a.productDiscountUseCase.Update(ctx.context(), request)
 
@@ -157,8 +163,12 @@ func (a *ProductDiscountApi) Delete() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionProductDiscountDelete),
 		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+
 			var request dto_request.ProductDiscountDeleteRequest
 			ctx.mustBind(&request)
+
+			request.ProductDiscountId = id
 
 			a.productDiscountUseCase.Delete(ctx.context(), request)
 
