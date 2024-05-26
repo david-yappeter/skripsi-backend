@@ -138,7 +138,7 @@ func (r *debtRepository) GetByDebtSourceAndDebtSourceId(ctx context.Context, deb
 	stmt := stmtBuilder.Select("*").
 		From(model.DebtTableName).
 		Where(squirrel.Eq{"debt_source": debtSource}).
-		Where(squirrel.Eq{"debt_source_id": debtSourceId})
+		Where(squirrel.Eq{"debt_source_identifier": debtSourceId})
 
 	return r.get(ctx, stmt)
 }
