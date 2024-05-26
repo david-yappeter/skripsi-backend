@@ -32,6 +32,7 @@ func (m *ProductReceiveItem) ToMap() map[string]interface{} {
 		"product_unit_id":    m.ProductUnitId,
 		"user_id":            m.UserId,
 		"qty":                m.Qty,
+		"scale_to_base":      m.ScaleToBase,
 		"price_per_unit":     m.PricePerUnit,
 		"created_at":         m.CreatedAt,
 		"updated_at":         m.UpdatedAt,
