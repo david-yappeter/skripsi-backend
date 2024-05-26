@@ -62,8 +62,11 @@ func (a *ShopOrderApi) Get() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionShopOrderGet),
 		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
 			var request dto_request.ShopOrderGetRequest
 			ctx.mustBind(&request)
+
+			request.ShopOrderId = id
 
 			shopOrder := a.shopOrderUseCase.Get(ctx.context(), request)
 
