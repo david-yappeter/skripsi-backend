@@ -1374,10 +1374,7 @@ func RegisterEnTranslations(v *validator.Validate, trans ut.Translator) (err err
 		},
 	}
 
-	fmt.Println(len(translations))
-
 	for _, t := range translations {
-		fmt.Println(t.tag)
 		err = registerTranslation(v, trans, t)
 
 		if err != nil {
