@@ -67,9 +67,16 @@ func (r *deliveryOrderRepository) get(ctx context.Context, stmt squirrel.Sqlizer
 
 func (r *deliveryOrderRepository) prepareQuery(option model.DeliveryOrderQueryOption) squirrel.SelectBuilder {
 	stmt := stmtBuilder.Select().
-		From(fmt.Sprintf("%s dorder", model.DeliveryOrderTableName))
+		From(fmt.Sprintf("%s dorder", model.DeliveryOrderTableName)).
+		InnerJoin(fmt.Sprintf("%s c ON c.id = dorder.customer_id", model.CustomerTableName))
 
 	if option.Phrase != nil {
+		phrase := "%" + *option.Phrase + "%"
+
+		stmt = stmt.Where(squirrel.ILike{
+			"c.name":                phrase,
+			"dorder.invoice_number": phrase,
+		})
 	}
 
 	if !option.IsCount && option.SortStatusImportance {
