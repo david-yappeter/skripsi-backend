@@ -192,7 +192,7 @@ func RegisterProductDiscountApi(router gin.IRouter, useCaseManager use_case.UseC
 	routerGroup.POST("", api.Create())
 	routerGroup.POST("/filter", api.Fetch())
 
-	routerGroup.GET("/{id}", api.Get())
+	routerGroup.GET("/:id", api.Get())
 
 	routerGroup.PUT("/:id", api.Update())
 	routerGroup.DELETE("/:id", api.Delete())
