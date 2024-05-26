@@ -96,6 +96,7 @@ func (u *deliveryOrderReviewUseCase) Fetch(ctx context.Context, request dto_requ
 			request.Limit,
 			model.Sorts(request.Sorts),
 		),
+		StarRating: request.StarRating,
 	}
 
 	deliveryOrderReviews, err := u.repositoryManager.DeliveryOrderReviewRepository().Fetch(ctx, queryOption)

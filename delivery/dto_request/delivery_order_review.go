@@ -2,7 +2,7 @@ package dto_request
 
 type DeliveryOrderReviewCreateGuestRequest struct {
 	DeliveryOrderId string  `json:"delivery_order_id" validate:"required,not_empty,uuid"`
-	StarRating      int     `json:"star_rating" validate:"min=0,max=5"`
+	StarRating      int     `json:"star_rating" validate:"min=1,max=5"`
 	Description     *string `json:"description" validate:"omitempty,not_empty"`
 } // @name DeliveryOrderReviewCreateGuestRequest
 
@@ -14,6 +14,8 @@ type DeliveryOrderReviewFetchSorts []struct {
 type DeliveryOrderReviewFetchRequest struct {
 	PaginationRequest
 	Sorts DeliveryOrderReviewFetchSorts `json:"sorts" validate:"unique=Field,dive"`
+
+	StarRating *int `json:"star_rating" validate:"omitempty,min=1,max=5"`
 } // @name DeliveryOrderReviewFetchRequest
 
 type DeliveryOrderReviewGetRequest struct {

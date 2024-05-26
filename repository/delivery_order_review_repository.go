@@ -61,6 +61,10 @@ func (r *deliveryOrderReviewRepository) prepareQuery(option model.DeliveryOrderR
 	stmt := stmtBuilder.Select().
 		From(fmt.Sprintf("%s dor", model.DeliveryOrderReviewTableName))
 
+	if option.StarRating != nil {
+		stmt = stmt.Where(squirrel.Eq{"dor.star_rating": option.StarRating})
+	}
+
 	stmt = model.Prepare(stmt, &option)
 
 	return stmt

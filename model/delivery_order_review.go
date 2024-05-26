@@ -33,6 +33,8 @@ func (m *DeliveryOrderReview) ToMap() map[string]interface{} {
 
 type DeliveryOrderReviewQueryOption struct {
 	QueryOption
+
+	StarRating *int
 }
 
 var _ PrepareOption = &DeliveryOrderReviewQueryOption{}
