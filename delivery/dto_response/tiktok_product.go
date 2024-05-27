@@ -5,6 +5,25 @@ import (
 	"myapp/model"
 )
 
+type TiktokProductResponse struct {
+	TiktokProductId string                        `json:"tiktok_product_id"`
+	ProductId       string                        `json:"product_id"`
+	Status          data_type.TiktokProductStatus `json:"status"`
+
+	Timestamp
+} // @name TiktokProductResponse
+
+func NewTiktokProductResponse(tiktokProduct model.TiktokProduct) TiktokProductResponse {
+	r := TiktokProductResponse{
+		TiktokProductId: tiktokProduct.TiktokProductId,
+		ProductId:       tiktokProduct.ProductId,
+		Status:          tiktokProduct.Status,
+		Timestamp:       Timestamp(tiktokProduct.Timestamp),
+	}
+
+	return r
+}
+
 type TiktokPlatformProductResponse struct {
 	Id              string                                `json:"id"`
 	Status          string                                `json:"status"`

@@ -50,7 +50,7 @@ func (a *DebtApi) UploadImage() gin.HandlerFunc {
 //
 //	@Router		/debts/filter [post]
 //	@Summary	Filter
-//	@tags		Customer Debts
+//	@tags		Debts
 //	@Accept		json
 //	@Param		dto_request.DebtFetchRequest	body	dto_request.DebtFetchRequest	true	"Body Request"
 //	@Produce	json
@@ -85,7 +85,7 @@ func (a *DebtApi) Fetch() gin.HandlerFunc {
 //
 //	@Router		/debts/{id} [get]
 //	@Summary	Get
-//	@tags		Customer Debts
+//	@tags		Debts
 //	@Param		id	path	string	true	"Id"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{customer_debt=dto_response.DebtResponse}}
@@ -117,7 +117,7 @@ func (a *DebtApi) Get() gin.HandlerFunc {
 //
 //	@Router		/debts/{id}/payment [patch]
 //	@Summary	Payment
-//	@tags		Customer Debts
+//	@tags		Debts
 //	@Accept		json
 //	@Param		id								path	string							true	"Id"
 //	@Param		dto_request.DebtPaymentRequest	body	dto_request.DebtPaymentRequest	true	"Body Request"

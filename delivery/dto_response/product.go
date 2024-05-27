@@ -13,10 +13,11 @@ type ProductResponse struct {
 	IsActive    bool     `json:"is_active"`
 	Timestamp
 
-	ProductUnits []ProductUnitResponse    `json:"product_units" extensions:"x-nullable"`
-	Discount     *ProductDiscountResponse `json:"discount" extensions:"x-nullable"`
-	Stock        *ProductStockResponse    `json:"stock" extensions:"x-nullable"`
-	ImageFile    *FileResponse            `json:"image_file" extensions:"x-nullable"`
+	ProductUnits  []ProductUnitResponse    `json:"product_units" extensions:"x-nullable"`
+	Discount      *ProductDiscountResponse `json:"discount" extensions:"x-nullable"`
+	Stock         *ProductStockResponse    `json:"stock" extensions:"x-nullable"`
+	ImageFile     *FileResponse            `json:"image_file" extensions:"x-nullable"`
+	TiktokProduct *TiktokProductResponse   `json:"tiktok_product" extensions:"x-nullable"`
 } // @name ProductResponse
 
 func NewProductResponse(product model.Product) ProductResponse {
@@ -43,6 +44,10 @@ func NewProductResponse(product model.Product) ProductResponse {
 
 	if product.ProductDiscount != nil {
 		r.Discount = util.Pointer(NewProductDiscountResponse(*product.ProductDiscount))
+	}
+
+	if product.TiktokProduct != nil {
+		r.TiktokProduct = util.Pointer(NewTiktokProductResponse(*product.TiktokProduct))
 	}
 
 	return r
