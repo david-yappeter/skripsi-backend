@@ -10,6 +10,8 @@ type ProductStockAdjustmentResponse struct {
 	UpdatedQty     float64 `json:"updated_qty"`
 
 	Timestamp
+
+	User *UserResponse `json:"user" extensions:"x-nullable"`
 } // @name ProductStockAdjustmentResponse
 
 func NewProductStockAdjustmentResponse(productStockAdjustment model.ProductStockAdjustment) ProductStockAdjustmentResponse {
@@ -20,6 +22,10 @@ func NewProductStockAdjustmentResponse(productStockAdjustment model.ProductStock
 		PreviousQty:    productStockAdjustment.PreviousQty,
 		UpdatedQty:     productStockAdjustment.UpdatedQty,
 		Timestamp:      Timestamp(productStockAdjustment.Timestamp),
+	}
+
+	if productStockAdjustment.User != nil {
+		r.User = NewUserResponseP(*productStockAdjustment.User)
 	}
 
 	return r

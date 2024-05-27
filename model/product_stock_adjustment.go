@@ -9,6 +9,8 @@ type ProductStockAdjustment struct {
 	PreviousQty    float64 `db:"previous_qty"`
 	UpdatedQty     float64 `db:"updated_qty"`
 	Timestamp
+
+	User *User `db:"-"`
 }
 
 func (m *ProductStockAdjustment) TableName() string {

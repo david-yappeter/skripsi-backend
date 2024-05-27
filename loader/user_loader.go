@@ -39,6 +39,21 @@ func (l *UserLoader) CashierSessionFn(cashierSession *model.CashierSession) func
 	}
 }
 
+func (l *UserLoader) ProductStockAdjustmentFn(productStockAdjustment *model.ProductStockAdjustment) func() error {
+	return func() error {
+		if productStockAdjustment != nil {
+			user, err := l.load(productStockAdjustment.UserId)
+			if err != nil {
+				return err
+			}
+
+			productStockAdjustment.User = user
+		}
+
+		return nil
+	}
+}
+
 func (l *UserLoader) DeliveryOrderDriverFn(deliveryOrderDriver *model.DeliveryOrderDriver) func() error {
 	return func() error {
 		if deliveryOrderDriver != nil {
