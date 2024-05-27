@@ -20,7 +20,7 @@ type DebtApi struct {
 //
 //	@Router		/debts/upload [post]
 //	@Summary	Upload Image
-//	@tags		Customer Debts
+//	@tags		Debts
 //	@Accept		json
 //	@Param		dto_request.DebtUploadImageRequest	body	dto_request.DebtUploadImageRequest	true	"Body Request"
 //	@Produce	json
