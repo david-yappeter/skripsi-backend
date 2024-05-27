@@ -21,3 +21,7 @@ type DeliveryOrderReviewFetchRequest struct {
 type DeliveryOrderReviewGetRequest struct {
 	DeliveryOrderReviewId string `json:"-" swaggerignore:"true"`
 } // @name DeliveryOrderReviewGetRequest
+
+type DeliveryOrderReviewIsExistByDeliveryOrderRequest struct {
+	DeliveryOrderId string `json:"-" swaggerignore:"true"`
+} // @name DeliveryOrderReviewIsExistByDeliveryOrderRequest

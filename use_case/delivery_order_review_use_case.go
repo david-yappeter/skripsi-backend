@@ -9,7 +9,6 @@ import (
 	"myapp/model"
 	"myapp/repository"
 	"myapp/util"
-	"time"
 
 	"golang.org/x/sync/errgroup"
 )
@@ -24,6 +23,7 @@ type DeliveryOrderReviewUseCase interface {
 	//  read
 	Fetch(ctx context.Context, request dto_request.DeliveryOrderReviewFetchRequest) ([]model.DeliveryOrderReview, int)
 	Get(ctx context.Context, request dto_request.DeliveryOrderReviewGetRequest) model.DeliveryOrderReview
+	IsExistByDeliveryOrder(ctx context.Context, request dto_request.DeliveryOrderReviewIsExistByDeliveryOrderRequest) bool
 }
 
 type deliveryOrderReviewUseCase struct {
@@ -57,16 +57,16 @@ func (u *deliveryOrderReviewUseCase) mustLoadDeliveryOrderReviewsData(ctx contex
 }
 
 func (u *deliveryOrderReviewUseCase) CreateGuest(ctx context.Context, request dto_request.DeliveryOrderReviewCreateGuestRequest) model.DeliveryOrderReview {
-	currentDateTime := util.CurrentDateTime()
+	// currentDateTime := util.CurrentDateTime()
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
 
 	if deliveryOrder.Status != data_type.DeliveryOrderStatusCompleted {
 		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER_REVIEW.DELIVERY_ORDER_MUST_BE_COMPLETED"))
 	}
 
-	if deliveryOrder.UpdatedAt.Add(time.Hour * 24 * 2).IsLessThan(currentDateTime) {
-		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER_REVIEW.PASS_2_DAYS_CANNOT_REVIEW_ANYMORE"))
-	}
+	// if deliveryOrder.UpdatedAt.Add(time.Hour * 24 * 2).IsLessThan(currentDateTime) {
+	// 	panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER_REVIEW.PASS_2_DAYS_CANNOT_REVIEW_ANYMORE"))
+	// }
 
 	isExist, err := u.repositoryManager.DeliveryOrderReviewRepository().IsExistByDeliveryOrderId(ctx, request.DeliveryOrderId)
 	panicIfErr(err)
@@ -114,4 +114,11 @@ func (u *deliveryOrderReviewUseCase) Get(ctx context.Context, request dto_reques
 	u.mustLoadDeliveryOrderReviewsData(ctx, []*model.DeliveryOrderReview{&deliveryOrderReview}, deliveryOrderReviewLoaderParams{})
 
 	return deliveryOrderReview
+}
+
+func (u *deliveryOrderReviewUseCase) IsExistByDeliveryOrder(ctx context.Context, request dto_request.DeliveryOrderReviewIsExistByDeliveryOrderRequest) bool {
+	isExist, err := u.repositoryManager.DeliveryOrderReviewRepository().IsExistByDeliveryOrderId(ctx, request.DeliveryOrderId)
+	panicIfErr(err)
+
+	return isExist
 }
