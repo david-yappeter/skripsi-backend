@@ -18,7 +18,7 @@ type ProductStockAdjustmentApi struct {
 
 // API:
 //
-//	@Router		/product-stock-adjustments [post]
+//	@Router		/product-stock-adjustments/filter [post]
 //	@Summary	Fetch
 //	@tags		Product Stock Adjustments
 //	@Accept		json
@@ -58,5 +58,5 @@ func RegisterProductStockAdjustmentApi(router gin.IRouter, useCaseManager use_ca
 	}
 
 	routerGroup := router.Group("/product-stock-adjustments")
-	routerGroup.POST("", api.Fetch())
+	routerGroup.POST("/filter", api.Fetch())
 }
