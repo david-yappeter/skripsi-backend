@@ -4,8 +4,8 @@ import (
 	"myapp/cmd"
 )
 
-//	@title		Mortal Health - Clinic Pilot API
-//	@version	0.0.1
+//	@title		Toko Setia Abadi
+//	@version	1.0.0
 //	@host		cp-api.mortalhealth.com
 //	@BasePath	/
 func main() {
