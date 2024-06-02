@@ -15,6 +15,7 @@ type ShopOrderResponse struct {
 	RecipientFullAddress      string                            `json:"recipient_full_address"`
 	RecipientPhoneNumber      string                            `json:"recipient_phone_number"`
 	ShippingFee               float64                           `json:"shipping_fee"`
+	ServiceFee                float64                           `json:"service_fee"`
 	TotalOriginalProductPrice float64                           `json:"total_original_product_price"`
 	Subtotal                  float64                           `json:"subtotal"`
 	Tax                       float64                           `json:"tax"`
@@ -36,6 +37,7 @@ func NewShopOrderResponse(shopOrder model.ShopOrder) ShopOrderResponse {
 		RecipientFullAddress:      shopOrder.RecipientFullAddress,
 		RecipientPhoneNumber:      shopOrder.RecipientPhoneNumber,
 		ShippingFee:               shopOrder.ShippingFee,
+		ServiceFee:                shopOrder.ServiceFee,
 		TotalOriginalProductPrice: shopOrder.TotalOriginalProductPrice,
 		Subtotal:                  shopOrder.Subtotal,
 		Tax:                       shopOrder.Tax,
