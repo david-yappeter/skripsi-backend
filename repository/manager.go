@@ -49,6 +49,9 @@ type RepositoryManager interface {
 	ProductStockAdjustmentRepository() ProductStockAdjustmentRepository
 	ProductStockRepository() ProductStockRepository
 	ProductUnitRepository() ProductUnitRepository
+	PurchaseOrderRepository() PurchaseOrderRepository
+	PurchaseOrderImageRepository() PurchaseOrderImageRepository
+	PurchaseOrderItemRepository() PurchaseOrderItemRepository
 	RolePermissionRepository() RolePermissionRepository
 	RoleRepository() RoleRepository
 	SequenceRepository() SequenceRepository
@@ -106,6 +109,9 @@ type repositoryManager struct {
 	productStockAdjustmentRepository    ProductStockAdjustmentRepository
 	productStockRepository              ProductStockRepository
 	productUnitRepository               ProductUnitRepository
+	purchaseOrderRepository             PurchaseOrderRepository
+	purchaseOrderImageRepository        PurchaseOrderImageRepository
+	purchaseOrderItemRepository         PurchaseOrderItemRepository
 	rolePermissionRepository            RolePermissionRepository
 	roleRepository                      RoleRepository
 	sequenceRepository                  SequenceRepository
@@ -287,6 +293,18 @@ func (r *repositoryManager) ProductStockRepository() ProductStockRepository {
 
 func (r *repositoryManager) ProductUnitRepository() ProductUnitRepository {
 	return r.productUnitRepository
+}
+
+func (r *repositoryManager) PurchaseOrderRepository() PurchaseOrderRepository {
+	return r.purchaseOrderRepository
+}
+
+func (r *repositoryManager) PurchaseOrderImageRepository() PurchaseOrderImageRepository {
+	return r.purchaseOrderImageRepository
+}
+
+func (r *repositoryManager) PurchaseOrderItemRepository() PurchaseOrderItemRepository {
+	return r.purchaseOrderItemRepository
 }
 
 func (r *repositoryManager) RolePermissionRepository() RolePermissionRepository {
@@ -497,6 +515,18 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		productUnitRepository: NewProductUnitRepository(
+			db,
+			loggerStack,
+		),
+		purchaseOrderRepository: NewPurchaseOrderRepository(
+			db,
+			loggerStack,
+		),
+		purchaseOrderImageRepository: NewPurchaseOrderImageRepository(
+			db,
+			loggerStack,
+		),
+		purchaseOrderItemRepository: NewPurchaseOrderItemRepository(
 			db,
 			loggerStack,
 		),
