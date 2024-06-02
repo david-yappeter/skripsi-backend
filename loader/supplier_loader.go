@@ -37,6 +37,19 @@ func (l *SupplierLoader) ProductReceiveFn(productReceive *model.ProductReceive) 
 	}
 }
 
+func (l *SupplierLoader) PurchaseOrderFn(purchaseOrder *model.PurchaseOrder) func() error {
+	return func() error {
+		supplier, err := l.load(purchaseOrder.SupplierId)
+		if err != nil {
+			return err
+		}
+
+		purchaseOrder.Supplier = supplier
+
+		return nil
+	}
+}
+
 func NewSupplierLoader(supplierRepository repository.SupplierRepository) *SupplierLoader {
 	batchFn := func(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
 		ids := make([]string, len(keys))

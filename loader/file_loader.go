@@ -37,6 +37,19 @@ func (l *FileLoader) ProductReceiveImageFn(productReceiveImage *model.ProductRec
 	}
 }
 
+func (l *FileLoader) PurchaseOrderImageFn(purchaseOrderImage *model.PurchaseOrderImage) func() error {
+	return func() error {
+		file, err := l.load(purchaseOrderImage.FileId)
+		if err != nil {
+			return err
+		}
+
+		purchaseOrderImage.File = file
+
+		return nil
+	}
+}
+
 func (l *FileLoader) DeliveryOrderImageFn(deliveryOrderImage *model.DeliveryOrderImage) func() error {
 	return func() error {
 		file, err := l.load(deliveryOrderImage.FileId)

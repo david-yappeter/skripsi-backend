@@ -13,6 +13,7 @@ func init() {
 			Enum: []interface{}{
 				"PRODUCT_IMAGE",
 				"PRODUCT_RECEIVE_IMAGE",
+				"PURCHASE_ORDER_IMAGE",
 				"DELIVERY_ORDER_IMAGE",
 				"CUSTOMER_PAYMENT_IMAGE",
 				"DEBT_PAYMENT_IMAGE",

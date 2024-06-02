@@ -6,6 +6,7 @@ type FileType int // @name FileTypeEnum
 const (
 	FileTypeProductImage              FileType = iota + 1 // PRODUCT_IMAGE
 	FileTypeProductReceiveImage                           // PRODUCT_RECEIVE_IMAGE
+	FileTypePurchaseOrderImage                            // PURCHASE_ORDER_IMAGE
 	FileTypeDeliveryOrderImage                            // DELIVERY_ORDER_IMAGE
 	FileTypeCustomerPaymentImage                          // CUSTOMER_PAYMENT_IMAGE
 	FileTypeDebtPaymentImage                              // DEBT_PAYMENT_IMAGE

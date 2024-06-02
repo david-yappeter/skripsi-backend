@@ -218,6 +218,21 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionProductUnitOptionForDeliveryOrderItemForm,
 		PermissionProductOptionForProductReceiveItemForm,
 
+		// purchase order
+		PermissionPurchaseOrderCreate,
+		PermissionPurchaseOrderUpload,
+		PermissionPurchaseOrderAddItem,
+		PermissionPurchaseOrderAddImage,
+		PermissionPurchaseOrderUpdate,
+		PermissionPurchaseOrderCancel,
+		PermissionPurchaseOrderOngoing,
+		PermissionPurchaseOrderMarkComplete,
+		PermissionPurchaseOrderFetch,
+		PermissionPurchaseOrderGet,
+		PermissionPurchaseOrderDelete,
+		PermissionPurchaseOrderDeleteItem,
+		PermissionPurchaseOrderDeleteImage,
+
 		// supplier type
 		PermissionSupplierTypeCreate,
 		PermissionSupplierTypeFetch,

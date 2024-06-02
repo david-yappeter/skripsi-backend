@@ -50,6 +50,19 @@ func (l *ProductUnitLoader) ProductReceiveItemFn(productReceiveItem *model.Produ
 	}
 }
 
+func (l *ProductUnitLoader) PurchaseOrderItemFn(purchaseOrderItem *model.PurchaseOrderItem) func() error {
+	return func() error {
+		productUnit, err := l.load(purchaseOrderItem.ProductUnitId)
+		if err != nil {
+			return err
+		}
+
+		purchaseOrderItem.ProductUnit = productUnit
+
+		return nil
+	}
+}
+
 func (l *ProductUnitLoader) DeliveryOrderItemFn(deliveryOrderItem *model.DeliveryOrderItem) func() error {
 	return func() error {
 		productUnit, err := l.load(deliveryOrderItem.ProductUnitId)

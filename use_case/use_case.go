@@ -259,6 +259,24 @@ func mustGetProductReceiveImage(ctx context.Context, repositoryManager repositor
 	return *productReceiveImage
 }
 
+func mustGetPurchaseOrder(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.PurchaseOrder {
+	purchaseOrder, err := repositoryManager.PurchaseOrderRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "PURCHASE_ORDER.NOT_FOUND", isValidate)
+	return *purchaseOrder
+}
+
+func mustGetPurchaseOrderItem(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.PurchaseOrderItem {
+	purchaseOrderItem, err := repositoryManager.PurchaseOrderItemRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "PURCHASE_ORDER_ITEM.NOT_FOUND", isValidate)
+	return *purchaseOrderItem
+}
+
+func mustGetPurchaseOrderImage(ctx context.Context, repositoryManager repository.RepositoryManager, purchaseOrderImageId string, isValidate bool) model.PurchaseOrderImage {
+	purchaseOrderImage, err := repositoryManager.PurchaseOrderImageRepository().Get(ctx, purchaseOrderImageId)
+	panicIfRepositoryError(err, "PRODUCT_RECEIVE_IMAGE.NOT_FOUND", isValidate)
+	return *purchaseOrderImage
+}
+
 func mustGetProductReceiveImageByProductReceiveIdAndFileId(ctx context.Context, repositoryManager repository.RepositoryManager, productReceiveId string, fileId string, isValidate bool) model.ProductReceiveImage {
 	productReceiveImage, err := repositoryManager.ProductReceiveImageRepository().GetByProductReceiveIdAndFileId(ctx, productReceiveId, fileId)
 	panicIfRepositoryError(err, "PRODUCT_RECEIVE_IMAGE.NOT_FOUND", isValidate)

@@ -26,6 +26,7 @@ type UseCaseManager interface {
 	ProductStockAdjustmentUseCase() ProductStockAdjustmentUseCase
 	ProductStockUseCase() ProductStockUseCase
 	ProductUnitUseCase() ProductUnitUseCase
+	PurchaseOrderUseCase() PurchaseOrderUseCase
 	RoleUseCase() RoleUseCase
 	ShopOrderUseCase() ShopOrderUseCase
 	SupplierTypeUseCase() SupplierTypeUseCase
@@ -58,6 +59,7 @@ type useCaseManager struct {
 	productStockAdjustmentUseCase ProductStockAdjustmentUseCase
 	productStockUseCase           ProductStockUseCase
 	productUnitUseCase            ProductUnitUseCase
+	purchaseOrderUseCase          PurchaseOrderUseCase
 	roleUseCase                   RoleUseCase
 	shopOrderUseCase              ShopOrderUseCase
 	supplierTypeUseCase           SupplierTypeUseCase
@@ -141,6 +143,10 @@ func (u *useCaseManager) ProductStockUseCase() ProductStockUseCase {
 
 func (u *useCaseManager) ProductUnitUseCase() ProductUnitUseCase {
 	return u.productUnitUseCase
+}
+
+func (u *useCaseManager) PurchaseOrderUseCase() PurchaseOrderUseCase {
+	return u.purchaseOrderUseCase
 }
 
 func (u *useCaseManager) RoleUseCase() RoleUseCase {
@@ -263,6 +269,11 @@ func NewUseCaseManager(
 		),
 		productUnitUseCase: NewProductUnitUseCase(
 			repositoryManager,
+		),
+		purchaseOrderUseCase: NewPurchaseOrderUseCase(
+			repositoryManager,
+			filesystemManager.Main(),
+			filesystemManager.Tmp(),
 		),
 		roleUseCase: NewRoleUseCase(
 			repositoryManager,

@@ -68,7 +68,7 @@ type ProductReceiveReturnedRequest struct {
 	Description *string  `json:"description" validate:"omitempty,not_empty" extensions:"x-nullable"`
 
 	ProductReceiveId string `json:"-" swaggerignore:"true"`
-} // @name ProductReceiveMarkCompleteRequest
+} // @name ProductReceiveReturnedRequest
 
 type ProductReceiveDeleteRequest struct {
 	ProductReceiveId string `json:"-" swaggerignore:"true"`

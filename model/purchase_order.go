@@ -6,7 +6,6 @@ const PurchaseOrderTableName = "purchase_orders"
 
 type PurchaseOrder struct {
 	Id                  string                        `db:"id"`
-	PurchaseOrderId     string                        `db:"purchase_order_id"`
 	SupplierId          string                        `db:"supplier_id"`
 	UserId              string                        `db:"user_id"`
 	InvoiceNumber       string                        `db:"invoice_number"`
@@ -31,7 +30,6 @@ func (m *PurchaseOrder) TableIds() []string {
 func (m *PurchaseOrder) ToMap() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                    m.Id,
-		"purchase_order_id":     m.PurchaseOrderId,
 		"supplier_id":           m.SupplierId,
 		"user_id":               m.UserId,
 		"invoice_number":        m.InvoiceNumber,

@@ -144,6 +144,21 @@ const (
 	PermissionProductUnitOptionForProductReceiveItemForm // PRODUCT_UNIT_OPTION_FOR_PRODUCT_RECEIVE_ITEM_FORM
 	PermissionProductUnitOptionForDeliveryOrderItemForm  // PRODUCT_UNIT_OPTION_FOR_DELIVERY_ORDER_ITEM_FORM
 
+	// purchase order
+	PermissionPurchaseOrderCreate       // PURCHASE_ORDER_CREATE
+	PermissionPurchaseOrderUpload       // PURCHASE_ORDER_UPLOAD
+	PermissionPurchaseOrderAddItem      // PURCHASE_ORDER_ADD_ITEM
+	PermissionPurchaseOrderAddImage     // PURCHASE_ORDER_ADD_IMAGE
+	PermissionPurchaseOrderUpdate       // PURCHASE_ORDER_UPDATE
+	PermissionPurchaseOrderCancel       // PURCHASE_ORDER_CANCEL
+	PermissionPurchaseOrderOngoing      // PURCHASE_ORDER_ONGOING
+	PermissionPurchaseOrderMarkComplete // PURCHASE_ORDER_MARK_COMPLETE
+	PermissionPurchaseOrderFetch        // PURCHASE_ORDER_FETCH
+	PermissionPurchaseOrderGet          // PURCHASE_ORDER_GET
+	PermissionPurchaseOrderDelete       // PURCHASE_ORDER_DELETE
+	PermissionPurchaseOrderDeleteItem   // PURCHASE_ORDER_DELETE_ITEM
+	PermissionPurchaseOrderDeleteImage  // PURCHASE_ORDER_DELETE_IMAGE
+
 	// role
 	PermissionRoleOptionForUserForm // ROLE_OPTION_FOR_USER_FORM
 
