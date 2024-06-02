@@ -9,6 +9,8 @@ func init() {
 				partner_key varchar(255) NOT NULL,
 				access_token varchar(255) NULL,
 				refresh_token varchar(255) NULL,
+				created_at timestamp NOT NULL,
+				updated_at timestamp NOT NULL,
 				CONSTRAINT shopee_configs_pk PRIMARY KEY (partner_id)
 			);
 		`,
