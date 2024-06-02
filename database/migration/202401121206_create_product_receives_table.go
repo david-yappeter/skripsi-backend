@@ -6,6 +6,7 @@ func init() {
 		`
 			CREATE TABLE IF NOT EXISTS product_receives (
 				id char(36) NOT NULL,
+				purchase_order_id char(36) NOT NULL,
 				supplier_id char(36) NOT NULL,
 				user_id char(36) NOT NULL,
 				invoice_number varchar(255) NOT NULL,
@@ -15,6 +16,7 @@ func init() {
 				created_at timestamp NOT NULL,
 				updated_at timestamp NOT NULL,
 				CONSTRAINT product_receives_pk PRIMARY KEY (id),
+				CONSTRAINT product_receives_purchase_orders_fk FOREIGN KEY (purchase_order_id) REFERENCES purchase_orders (id),
 				CONSTRAINT product_receives_suppliers_fk FOREIGN KEY (supplier_id) REFERENCES suppliers (id),
 				CONSTRAINT product_receives_users_fk FOREIGN KEY (user_id) REFERENCES users (id)
 			);
