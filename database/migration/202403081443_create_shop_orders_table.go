@@ -14,6 +14,7 @@ func init() {
 				recipient_full_address text NOT NULL,
 				recipient_phone_number varchar(20) NOT NULL,
 				shipping_fee decimal(16,2) NOT NULL,
+				service_fee decimal(16,2) NOT NULL,
 				total_original_product_price decimal(16,2) NOT NULL,
 				subtotal decimal(16,2) NOT NULL,
 				tax decimal(16,2) NOT NULL,

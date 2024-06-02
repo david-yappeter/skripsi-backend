@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/squirrel v1.5.4
 	github.com/boombuler/barcode v1.0.1
 	github.com/david-yappeter/escpos v1.0.12
-	github.com/david-yappeter/go-tiktok v0.1.24
+	github.com/david-yappeter/go-tiktok v0.1.25
 	github.com/gabriel-vasile/mimetype v1.4.3
 	github.com/ghodss/yaml v1.0.0
 	github.com/gin-contrib/cors v1.4.0

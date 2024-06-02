@@ -94,6 +94,7 @@ func (u *webhookUseCase) OrderStatusChange(ctx context.Context, request dto_requ
 				RecipientFullAddress:      orderDetail.RecipientAddress.FullAddress,
 				RecipientPhoneNumber:      orderDetail.RecipientAddress.PhoneNumber,
 				ShippingFee:               util.MustParseFloat64(orderDetail.Payment.ShippingFee),
+				ServiceFee:                util.MustParseFloat64(orderDetail.Payment.BuyerServiceFee),
 				TotalOriginalProductPrice: util.MustParseFloat64(orderDetail.Payment.OriginalTotalProductPrice),
 				Subtotal:                  util.MustParseFloat64(orderDetail.Payment.SubTotal),
 				Tax:                       util.MustParseFloat64(orderDetail.Payment.Tax),
