@@ -5,13 +5,14 @@ import "myapp/data_type"
 const ProductReceiveTableName = "product_receives"
 
 type ProductReceive struct {
-	Id            string                         `db:"id"`
-	SupplierId    string                         `db:"supplier_id"`
-	UserId        string                         `db:"user_id"`
-	InvoiceNumber string                         `db:"invoice_number"`
-	Date          data_type.Date                 `db:"date"`
-	Status        data_type.ProductReceiveStatus `db:"status"`
-	TotalPrice    float64                        `db:"total_price"`
+	Id              string                         `db:"id"`
+	PurchaseOrderId string                         `db:"purchase_order_id"`
+	SupplierId      string                         `db:"supplier_id"`
+	UserId          string                         `db:"user_id"`
+	InvoiceNumber   string                         `db:"invoice_number"`
+	Date            data_type.Date                 `db:"date"`
+	Status          data_type.ProductReceiveStatus `db:"status"`
+	TotalPrice      float64                        `db:"total_price"`
 	Timestamp
 
 	Supplier             *Supplier             `db:"-"`
@@ -30,15 +31,16 @@ func (m *ProductReceive) TableIds() []string {
 
 func (m *ProductReceive) ToMap() map[string]interface{} {
 	return map[string]interface{}{
-		"id":             m.Id,
-		"supplier_id":    m.SupplierId,
-		"user_id":        m.UserId,
-		"invoice_number": m.InvoiceNumber,
-		"date":           m.Date,
-		"status":         m.Status,
-		"total_price":    m.TotalPrice,
-		"created_at":     m.CreatedAt,
-		"updated_at":     m.UpdatedAt,
+		"id":                m.Id,
+		"purchase_order_id": m.PurchaseOrderId,
+		"supplier_id":       m.SupplierId,
+		"user_id":           m.UserId,
+		"invoice_number":    m.InvoiceNumber,
+		"date":              m.Date,
+		"status":            m.Status,
+		"total_price":       m.TotalPrice,
+		"created_at":        m.CreatedAt,
+		"updated_at":        m.UpdatedAt,
 	}
 }
 
