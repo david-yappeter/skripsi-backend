@@ -21,7 +21,7 @@ func NewProductReceiveItemResponse(productReceiveItem model.ProductReceiveItem) 
 		Id:               productReceiveItem.Id,
 		ProductReceiveId: productReceiveItem.ProductReceiveId,
 		ProductUnitId:    productReceiveItem.ProductUnitId,
-		Qty:              productReceiveItem.Qty,
+		Qty:              productReceiveItem.QtyReceived,
 		PricePerUnit:     productReceiveItem.PricePerUnit,
 		Timestamp:        Timestamp(productReceiveItem.Timestamp),
 	}

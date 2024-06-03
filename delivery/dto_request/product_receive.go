@@ -5,21 +5,6 @@ import (
 	"myapp/data_type"
 )
 
-type ProductReceiveCreateRequest struct {
-	SupplierId    string         `json:"supplier_id" validate:"required,not_empty,uuid"`
-	InvoiceNumber string         `json:"invoice_number" validate:"required,not_empty"`
-	Date          data_type.Date `json:"date"`
-} // @name ProductReceiveCreateRequest
-
-type ProductReceiveAddItemRequest struct {
-	ProductId    string  `json:"product_id" validate:"required,not_empty,uuid"`
-	UnitId       string  `json:"unit_id" validate:"required,not_empty,uuid"`
-	Qty          float64 `json:"qty" validate:"required,gt=0"`
-	PricePerUnit float64 `json:"price_per_unit" validate:"required,gt=0"`
-
-	ProductReceiveId string `json:"-" swaggerignore:"true"`
-} // @name ProductReceiveAddItemRequest
-
 type ProductReceiveAddImageRequest struct {
 	FilePath    string  `json:"file_path" validate:"required,not_empty"`
 	Description *string `json:"description" validate:"omitempty,not_empty"`
@@ -74,12 +59,14 @@ type ProductReceiveDeleteRequest struct {
 	ProductReceiveId string `json:"-" swaggerignore:"true"`
 } // @name ProductReceiveDeleteRequest
 
+type ProductReceiveUpdateItemRequest struct {
+	QtyEligible float64 `json:"qty_eligible" validate:"required,gte=0"`
+
+	ProductReceiveId     string `json:"-" swaggerignore:"true"`
+	ProductReceiveItemId string `json:"-" swaggerignore:"true"`
+} // @name ProductReceiveUpdateItemRequest
+
 type ProductReceiveDeleteImageRequest struct {
 	ProductReceiveId      string `json:"-" swaggerignore:"true"`
 	ProductReceiveImageId string `json:"-" swaggerignore:"true"`
 } // @name ProductReceiveDeleteImageRequest
-
-type ProductReceiveDeleteItemRequest struct {
-	ProductReceiveId     string `json:"-" swaggerignore:"true"`
-	ProductReceiveItemId string `json:"-" swaggerignore:"true"`
-} // @name ProductReceiveDeleteItemRequest

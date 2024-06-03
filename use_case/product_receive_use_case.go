@@ -30,8 +30,6 @@ type productReceivesLoaderParams struct {
 
 type ProductReceiveUseCase interface {
 	// create
-	Create(ctx context.Context, request dto_request.ProductReceiveCreateRequest) model.ProductReceive
-	AddItem(ctx context.Context, request dto_request.ProductReceiveAddItemRequest) model.ProductReceive
 	AddImage(ctx context.Context, request dto_request.ProductReceiveAddImageRequest) model.ProductReceive
 	Upload(ctx context.Context, request dto_request.ProductReceiveUploadRequest) string
 
@@ -44,11 +42,11 @@ type ProductReceiveUseCase interface {
 	Cancel(ctx context.Context, request dto_request.ProductReceiveCancelRequest) model.ProductReceive
 	MarkComplete(ctx context.Context, request dto_request.ProductReceiveMarkCompleteRequest) model.ProductReceive
 	Returned(ctx context.Context, request dto_request.ProductReceiveReturnedRequest) model.ProductReceive
+	UpdateItem(ctx context.Context, request dto_request.ProductReceiveUpdateItemRequest) model.ProductReceive
 
 	// delete
 	Delete(ctx context.Context, request dto_request.ProductReceiveDeleteRequest)
 	DeleteImage(ctx context.Context, request dto_request.ProductReceiveDeleteImageRequest) model.ProductReceive
-	DeleteItem(ctx context.Context, request dto_request.ProductReceiveDeleteItemRequest) model.ProductReceive
 }
 
 type productReceiveUseCase struct {
@@ -185,87 +183,6 @@ func (u *productReceiveUseCase) mustLoadProductReceivesData(ctx context.Context,
 			}
 		}
 	}
-}
-
-func (u *productReceiveUseCase) Create(ctx context.Context, request dto_request.ProductReceiveCreateRequest) model.ProductReceive {
-	var (
-		authUser    = model.MustGetUserCtx(ctx)
-		currentDate = util.CurrentDate()
-	)
-
-	mustGetSupplier(ctx, u.repositoryManager, request.SupplierId, true)
-
-	productReceive := model.ProductReceive{
-		Id:            util.NewUuid(),
-		SupplierId:    request.SupplierId,
-		UserId:        authUser.Id,
-		InvoiceNumber: request.InvoiceNumber,
-		Date:          currentDate,
-		Status:        data_type.ProductReceiveStatusPending,
-		TotalPrice:    0,
-	}
-
-	panicIfErr(
-		u.repositoryManager.ProductReceiveRepository().Insert(ctx, &productReceive),
-	)
-
-	return productReceive
-}
-
-func (u *productReceiveUseCase) AddItem(ctx context.Context, request dto_request.ProductReceiveAddItemRequest) model.ProductReceive {
-	var (
-		authUser       = model.MustGetUserCtx(ctx)
-		productReceive = mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, false)
-		productUnit    = mustGetProductUnitByProductIdAndUnitId(ctx, u.repositoryManager, request.ProductId, request.UnitId, true)
-		product        = mustGetProduct(ctx, u.repositoryManager, request.ProductId, false)
-	)
-
-	if productReceive.Status != data_type.ProductReceiveStatusPending {
-		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.STATUS_MUST_BE_PENDING"))
-	}
-
-	if !product.IsActive {
-		panic(dto_response.NewBadRequestErrorResponse("PRODUCT.NOT_FOUND"))
-	}
-
-	// add total to product receive
-	productReceive.TotalPrice += request.Qty * request.PricePerUnit
-
-	// add product receive item
-	productReceiveItem := model.ProductReceiveItem{
-		Id:               util.NewUuid(),
-		ProductReceiveId: productReceive.Id,
-		ProductUnitId:    productUnit.Id,
-		UserId:           authUser.Id,
-		Qty:              request.Qty,
-		ScaleToBase:      productUnit.ScaleToBase,
-		PricePerUnit:     request.PricePerUnit,
-	}
-
-	panicIfErr(
-		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
-			productReceiveRepository := u.repositoryManager.ProductReceiveRepository()
-			productReceiveItemRepository := u.repositoryManager.ProductReceiveItemRepository()
-
-			if err := productReceiveRepository.Update(ctx, &productReceive); err != nil {
-				return err
-			}
-
-			if err := productReceiveItemRepository.Insert(ctx, &productReceiveItem); err != nil {
-				return err
-			}
-
-			return nil
-		}),
-	)
-
-	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
-		productReceiveItems:  true,
-		productReceiveImages: true,
-		supplier:             true,
-	})
-
-	return productReceive
 }
 
 func (u *productReceiveUseCase) AddImage(ctx context.Context, request dto_request.ProductReceiveAddImageRequest) model.ProductReceive {
@@ -434,7 +351,7 @@ func (u *productReceiveUseCase) Cancel(ctx context.Context, request dto_request.
 
 		for _, productReceiveItem := range productReceive.ProductReceiveItems {
 			productStockByProductId[productReceiveItem.ProductUnit.ProductId] = *productReceiveItem.ProductUnit.ProductStock
-			toBeRemovedStockByProductId[productReceiveItem.ProductUnit.ProductId] += productReceiveItem.Qty * productReceiveItem.ScaleToBase
+			toBeRemovedStockByProductId[productReceiveItem.ProductUnit.ProductId] += productReceiveItem.QtyReceived * productReceiveItem.ScaleToBase
 
 			if productReceiveItem.ProductStockMutation != nil {
 				productStockMutation := productReceiveItem.ProductStockMutation
@@ -520,16 +437,16 @@ func (u *productReceiveUseCase) MarkComplete(ctx context.Context, request dto_re
 
 	for _, productReceiveItem := range productReceive.ProductReceiveItems {
 		productStockByProductId[productReceiveItem.ProductUnit.ProductId] = *productReceiveItem.ProductUnit.ProductStock
-		toBeAddedStockByProductId[productReceiveItem.ProductUnit.ProductId] += productReceiveItem.BaseQty()
+		toBeAddedStockByProductId[productReceiveItem.ProductUnit.ProductId] += productReceiveItem.BaseEligibleQty()
 
 		productStockMutations = append(productStockMutations, model.ProductStockMutation{
 			Id:            util.NewUuid(),
 			ProductUnitId: productReceiveItem.ProductUnitId,
 			Type:          data_type.ProductStockMutationTypeProductReceiveItem,
 			IdentifierId:  productReceiveItem.Id,
-			Qty:           productReceiveItem.Qty,
+			Qty:           productReceiveItem.QtyEligible,
 			ScaleToBase:   productReceiveItem.ScaleToBase,
-			BaseQtyLeft:   productReceiveItem.Qty * productReceiveItem.ScaleToBase,
+			BaseQtyLeft:   productReceiveItem.BaseEligibleQty(),
 			BaseCostPrice: productReceiveItem.PricePerUnit / productReceiveItem.ScaleToBase,
 			MutatedAt:     currentDateTime,
 		})
@@ -591,6 +508,35 @@ func (u *productReceiveUseCase) MarkComplete(ctx context.Context, request dto_re
 			return nil
 		}),
 	)
+
+	return productReceive
+}
+
+func (u *productReceiveUseCase) UpdateItem(ctx context.Context, request dto_request.ProductReceiveUpdateItemRequest) model.ProductReceive {
+	productReceive := mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, true)
+
+	if productReceive.Status != data_type.ProductReceiveStatusPending {
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.STATUS_MUST_BE_PENDING"))
+	}
+
+	productReceiveItem := mustGetProductReceiveItem(ctx, u.repositoryManager, request.ProductReceiveItemId, true)
+
+	if request.QtyEligible > productReceiveItem.QtyReceived {
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE_ITEM.INVALID_AMOUNT_QTY_MUST_BE_SMALLER_THAN_OR_EQUAL_RECEIVED_QTY"))
+	}
+
+	productReceiveItem.QtyEligible = request.QtyEligible
+
+	panicIfErr(
+		u.repositoryManager.ProductReceiveItemRepository().Update(ctx, &productReceiveItem),
+	)
+
+	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
+		productReceiveItems:        true,
+		productReceiveProductStock: true,
+		productReceiveImages:       true,
+		supplier:                   true,
+	})
 
 	return productReceive
 }
@@ -677,7 +623,7 @@ func (u *productReceiveUseCase) Returned(ctx context.Context, request dto_reques
 	productStockMutations := []model.ProductStockMutation{}
 
 	for _, productReceiveItem := range productReceive.ProductReceiveItems {
-		productStockRemovedByProductId[productReceiveItem.ProductUnit.ProductId] += productReceiveItem.BaseQty()
+		productStockRemovedByProductId[productReceiveItem.ProductUnit.ProductId] += productReceiveItem.BaseEligibleQty()
 	}
 
 	// check sufficient amoun of stock to returned
@@ -737,7 +683,7 @@ func (u *productReceiveUseCase) Returned(ctx context.Context, request dto_reques
 			}
 
 			for _, productReceiveItem := range productReceive.ProductReceiveItems {
-				deductQtyLeft := productReceiveItem.Qty
+				deductQtyLeft := productReceiveItem.QtyReceived
 
 				for deductQtyLeft > 0 {
 					productStockMutation, err := u.repositoryManager.ProductStockMutationRepository().GetFIFOByProductIdAndBaseQtyLeftNotZero(ctx, productReceiveItem.ProductUnit.ProductId)
@@ -806,48 +752,6 @@ func (u *productReceiveUseCase) DeleteImage(ctx context.Context, request dto_req
 	)
 
 	u.mainFilesystem.Delete(file.Path)
-
-	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
-		productReceiveItems:  true,
-		productReceiveImages: true,
-		supplier:             true,
-	})
-
-	return productReceive
-}
-
-func (u *productReceiveUseCase) DeleteItem(ctx context.Context, request dto_request.ProductReceiveDeleteItemRequest) model.ProductReceive {
-	productReceive := mustGetProductReceive(ctx, u.repositoryManager, request.ProductReceiveId, true)
-
-	if productReceive.Status != data_type.ProductReceiveStatusPending {
-		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE.STATUS.MUST_BE_PENDING"))
-	}
-
-	productReceiveItem := mustGetProductReceiveItem(ctx, u.repositoryManager, request.ProductReceiveItemId, true)
-
-	if productReceiveItem.ProductReceiveId != productReceive.Id {
-		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE_ITEM.NOT_FOUND"))
-	}
-
-	// deduct total from product_receive
-	productReceive.TotalPrice -= productReceiveItem.Qty * productReceiveItem.PricePerUnit
-
-	panicIfErr(
-		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
-			productReceiveRepository := u.repositoryManager.ProductReceiveRepository()
-			productReceiveItemRepository := u.repositoryManager.ProductReceiveItemRepository()
-
-			if err := productReceiveRepository.Update(ctx, &productReceive); err != nil {
-				return err
-			}
-
-			if err := productReceiveItemRepository.Delete(ctx, &productReceiveItem); err != nil {
-				return err
-			}
-
-			return nil
-		}),
-	)
 
 	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
 		productReceiveItems:  true,

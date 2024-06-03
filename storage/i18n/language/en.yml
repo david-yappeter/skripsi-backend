@@ -59,6 +59,7 @@ PRODUCT_RECEIVE.PRODUCT_ALREADY_SOLD_CANNOT_BE_CANCELED: "Product already sold, 
 PRODUCT_RECEIVE_ITEM.NOT_FOUND: "Product receive item not found"
 PRODUCT_RECEIVE.STATUS.MUST_BE_COMPLETED: "Status must be completed"
 PRODUCT_RECEIVE.INSUFFICIENT_PRODUCT_STOCK: "Insufficient product stock"
+PRODUCT_RECEIVE_ITEM.INVALID_AMOUNT_QTY_MUST_BE_SMALLER_THAN_OR_EQUAL_RECEIVED_QTY: "Qty must be smaller than or equal received qty"
 
 # product_stock_use_case.go
 PRODUCT_STOCK.PRODUCT_MUST_BE_ACTIVE: "Product must be active"
@@ -73,6 +74,13 @@ PRODUCT.NAME.ALREADY_EXIST: "Name already exist"
 PRODUCT.ALREADY_HAVE_PRODUCT_RECEIVE: "Product already have product receive"
 ACTIVE_PRODUCT.MUST_HAVE_AN_UNIT: "Active product must have an unit"
 ACTIVE_PRODUCT.MUST_HAVE_PRICE: "Active product must have a price"
+
+# purchase_order_use_case.go
+PURCHASE_ORDER.STATUS_MUST_BE_PENDING: "Purchase order status must be pending"
+PURCHASE_ORDER.ALREADY_CANCELED: "Purchase order already canceled"
+PURCHASE_ORDER.ALREADY_COMPLETED: "Purchase order already completed"
+PURCHASE_ORDER.STATUS.MUST_BE_ONGOING: "Purchase order must be ongoing"
+PURCHASE_ORDER_ITEM.NOT_FOUND: "Purchase order item not found"
 
 # supplier_type_use_case.go
 SUPPLIER_TYPE.NAME.ALREADY_EXIST: "Name already exist"

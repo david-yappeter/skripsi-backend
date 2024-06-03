@@ -7,7 +7,8 @@ type ProductReceiveItem struct {
 	ProductReceiveId string  `db:"product_receive_id"`
 	ProductUnitId    string  `db:"product_unit_id"`
 	UserId           string  `db:"user_id"`
-	Qty              float64 `db:"qty"`
+	QtyEligible      float64 `db:"qty_eligible"`
+	QtyReceived      float64 `db:"qty_received"`
 	ScaleToBase      float64 `db:"scale_to_base"`
 	PricePerUnit     float64 `db:"price_per_unit"`
 	Timestamp
@@ -31,7 +32,8 @@ func (m *ProductReceiveItem) ToMap() map[string]interface{} {
 		"product_receive_id": m.ProductReceiveId,
 		"product_unit_id":    m.ProductUnitId,
 		"user_id":            m.UserId,
-		"qty":                m.Qty,
+		"qty_eligible":       m.QtyEligible,
+		"qty_received":       m.QtyReceived,
 		"scale_to_base":      m.ScaleToBase,
 		"price_per_unit":     m.PricePerUnit,
 		"created_at":         m.CreatedAt,
@@ -39,6 +41,6 @@ func (m *ProductReceiveItem) ToMap() map[string]interface{} {
 	}
 }
 
-func (m ProductReceiveItem) BaseQty() float64 {
-	return m.Qty * m.ScaleToBase
+func (m ProductReceiveItem) BaseEligibleQty() float64 {
+	return m.QtyEligible * m.ScaleToBase
 }

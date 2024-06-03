@@ -115,7 +115,6 @@ const (
 	// product receive
 	PermissionProductReceiveCreate       // PRODUCT_RECEIVE_CREATE
 	PermissionProductReceiveUpload       // PRODUCT_RECEIVE_UPLOAD
-	PermissionProductReceiveAddItem      // PRODUCT_RECEIVE_ADD_ITEM
 	PermissionProductReceiveAddImage     // PRODUCT_RECEIVE_ADD_IMAGE
 	PermissionProductReceiveUpdate       // PRODUCT_RECEIVE_UPDATE
 	PermissionProductReceiveCancel       // PRODUCT_RECEIVE_CANCEL
@@ -123,8 +122,8 @@ const (
 	PermissionProductReceiveReturned     // PRODUCT_RECEIVE_RETURNED
 	PermissionProductReceiveFetch        // PRODUCT_RECEIVE_FETCH
 	PermissionProductReceiveGet          // PRODUCT_RECEIVE_GET
+	PermissionProductReceiveUpdateItem   // PRODUCT_RECEIVE_UPDATE_ITEM
 	PermissionProductReceiveDelete       // PRODUCT_RECEIVE_DELETE
-	PermissionProductReceiveDeleteItem   // PRODUCT_RECEIVE_DELETE_ITEM
 	PermissionProductReceiveDeleteImage  // PRODUCT_RECEIVE_DELETE_IMAGE
 
 	// product stock adjustment

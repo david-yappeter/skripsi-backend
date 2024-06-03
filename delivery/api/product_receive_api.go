@@ -18,36 +18,6 @@ type ProductReceiveApi struct {
 
 // API:
 //
-//	@Router		/product-receives [post]
-//	@Summary	Create
-//	@tags		Product Receives
-//	@Accept		json
-//	@Param		dto_request.ProductReceiveCreateRequest	body	dto_request.ProductReceiveCreateRequest	true	"Body Request"
-//	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_receive=dto_response.ProductReceiveResponse}}
-func (a *ProductReceiveApi) Create() gin.HandlerFunc {
-	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionProductReceiveCreate),
-		func(ctx apiContext) {
-			var request dto_request.ProductReceiveCreateRequest
-			ctx.mustBind(&request)
-
-			productReceive := a.productReceiveUseCase.Create(ctx.context(), request)
-
-			ctx.json(
-				http.StatusOK,
-				dto_response.Response{
-					Data: dto_response.DataResponse{
-						"product_receive": dto_response.NewProductReceiveResponse(productReceive),
-					},
-				},
-			)
-		},
-	)
-}
-
-// API:
-//
 //	@Router		/product-receives/upload [post]
 //	@Summary	Upload
 //	@tags		Product Receives
@@ -69,39 +39,6 @@ func (a *ProductReceiveApi) Upload() gin.HandlerFunc {
 				dto_response.Response{
 					Data: dto_response.DataResponse{
 						"path": path,
-					},
-				},
-			)
-		},
-	)
-}
-
-// API:
-//
-//	@Router		/product-receives/{id}/items [post]
-//	@Summary	Add Item
-//	@tags		Product Receives
-//	@Accept		json
-//	@Param		id											path	string										true	"Id"
-//	@Param		dto_request.ProductReceiveAddItemRequest	body	dto_request.ProductReceiveAddItemRequest	true	"Body Request"
-//	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_receive=dto_response.ProductReceiveResponse}}
-func (a *ProductReceiveApi) AddItem() gin.HandlerFunc {
-	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionProductReceiveAddItem),
-		func(ctx apiContext) {
-			id := ctx.getUuidParam("id")
-			var request dto_request.ProductReceiveAddItemRequest
-			ctx.mustBind(&request)
-			request.ProductReceiveId = id
-
-			productReceive := a.productReceiveUseCase.AddItem(ctx.context(), request)
-
-			ctx.json(
-				http.StatusOK,
-				dto_response.Response{
-					Data: dto_response.DataResponse{
-						"product_receive": dto_response.NewProductReceiveResponse(productReceive),
 					},
 				},
 			)
@@ -373,27 +310,27 @@ func (a *ProductReceiveApi) Delete() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/product-receives/{id}/items/{product_receive_item_id} [delete]
-//	@Summary	Delete Item
+//	@Router		/product-receives/{id}/items/{product_receive_item_id} [post]
+//	@Summary	Update Item Eligible Qty
 //	@tags		Product Receives
 //	@Accept		json
-//	@Param		id											path	string										true	"Id"
-//	@Param		product_receive_item_id						path	string										true	"Product Receive Item Id"
-//	@Param		dto_request.ProductReceiveDeleteItemRequest	body	dto_request.ProductReceiveDeleteItemRequest	true	"Body Request"
+//	@Param		id												path	string											true	"Id"
+//	@Param		product_receive_item_id						path	string											true	"Product Receive Item Id"
+//	@Param		dto_request.ProductReceiveDeleteImageRequest	body	dto_request.ProductReceiveDeleteImageRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_receive=dto_response.ProductReceiveResponse}}
-func (a *ProductReceiveApi) DeleteItem() gin.HandlerFunc {
+func (a *ProductReceiveApi) UpdateItem() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionProductReceiveDeleteItem),
+		data_type.PermissionP(data_type.PermissionProductReceiveUpdateItem),
 		func(ctx apiContext) {
 			id := ctx.getUuidParam("id")
 			productReceiveItemId := ctx.getUuidParam("product_receive_item_id")
-			var request dto_request.ProductReceiveDeleteItemRequest
+			var request dto_request.ProductReceiveUpdateItemRequest
 			ctx.mustBind(&request)
 			request.ProductReceiveId = id
 			request.ProductReceiveItemId = productReceiveItemId
 
-			productReceive := a.productReceiveUseCase.DeleteItem(ctx.context(), request)
+			productReceive := a.productReceiveUseCase.UpdateItem(ctx.context(), request)
 
 			ctx.json(
 				http.StatusOK,
@@ -415,7 +352,7 @@ func (a *ProductReceiveApi) DeleteItem() gin.HandlerFunc {
 //	@Accept		json
 //	@Param		id												path	string											true	"Id"
 //	@Param		product_receive_image_id						path	string											true	"Product Receive Image Id"
-//	@Param		dto_request.ProductReceiveDeleteImageRequest	body	dto_request.ProductReceiveDeleteImageRequest	true	"Body Request"
+//	@Param		dto_request.ProductReceiveUpdateItemRequest	body	dto_request.ProductReceiveUpdateItemRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_receive=dto_response.ProductReceiveResponse}}
 func (a *ProductReceiveApi) DeleteImage() gin.HandlerFunc {
@@ -450,13 +387,11 @@ func RegisterProductReceiveApi(router gin.IRouter, useCaseManager use_case.UseCa
 	}
 
 	routerGroup := router.Group("/product-receives")
-	routerGroup.POST("", api.Create())
 	routerGroup.POST("/upload", api.Upload())
 	routerGroup.POST("/filter", api.Fetch())
 	routerGroup.GET("/:id", api.Get())
 	routerGroup.DELETE("/:id", api.Delete())
 
-	routerGroup.POST("/:id/items", api.AddItem())
 	routerGroup.POST("/:id/images", api.AddImage())
 
 	routerGroup.PUT("/:id", api.Update())
@@ -464,6 +399,7 @@ func RegisterProductReceiveApi(router gin.IRouter, useCaseManager use_case.UseCa
 	routerGroup.PATCH("/:id/completed", api.MarkComplete())
 	routerGroup.PATCH("/:id/returned", api.Returned())
 
-	routerGroup.DELETE("/:id/items/:product_receive_item_id", api.DeleteItem())
+	routerGroup.PATCH("/:id/items/:product_receive_item_id", api.UpdateItem())
+
 	routerGroup.DELETE("/:id/images/:product_receive_image_id", api.DeleteImage())
 }

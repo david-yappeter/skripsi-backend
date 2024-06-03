@@ -188,7 +188,6 @@ func GetRoleInventoryPermissions() []Permission {
 		// product receive
 		PermissionProductReceiveCreate,
 		PermissionProductReceiveUpload,
-		PermissionProductReceiveAddItem,
 		PermissionProductReceiveAddImage,
 		PermissionProductReceiveUpdate,
 		PermissionProductReceiveCancel,
@@ -196,8 +195,8 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionProductReceiveReturned,
 		PermissionProductReceiveFetch,
 		PermissionProductReceiveGet,
+		PermissionProductReceiveUpdateItem,
 		PermissionProductReceiveDelete,
-		PermissionProductReceiveDeleteItem,
 		PermissionProductReceiveDeleteImage,
 
 		// product stock adjustment

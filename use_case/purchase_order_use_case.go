@@ -381,49 +381,14 @@ func (u *purchaseOrderUseCase) Ongoing(ctx context.Context, request dto_request.
 }
 
 func (u *purchaseOrderUseCase) Cancel(ctx context.Context, request dto_request.PurchaseOrderCancelRequest) model.PurchaseOrder {
-	var (
-		toBeRemovedStockByProductId        map[string]float64            = nil
-		toBeDeletedProductStockMutationIds                               = []string{}
-		productStockByProductId            map[string]model.ProductStock = nil
-	)
-
 	purchaseOrder := mustGetPurchaseOrder(ctx, u.repositoryManager, request.PurchaseOrderId, true)
 
 	if purchaseOrder.Status == data_type.PurchaseOrderStatusCanceled {
 		panic(dto_response.NewBadRequestErrorResponse("PURCHASE_ORDER.ALREADY_CANCELED"))
 	}
 
-	u.mustLoadPurchaseOrdersData(ctx, []*model.PurchaseOrder{&purchaseOrder}, purchaseOrdersLoaderParams{
-		purchaseOrderItems: true,
-	})
-
-	switch purchaseOrder.Status {
-	case data_type.PurchaseOrderStatusCompleted:
-		u.mustLoadPurchaseOrdersData(ctx, []*model.PurchaseOrder{&purchaseOrder}, purchaseOrdersLoaderParams{})
-
-		if len(purchaseOrder.PurchaseOrderItems) > 0 {
-			toBeRemovedStockByProductId = make(map[string]float64)
-			productStockByProductId = make(map[string]model.ProductStock)
-		}
-
-		for _, purchaseOrderItem := range purchaseOrder.PurchaseOrderItems {
-			productStockByProductId[purchaseOrderItem.ProductUnit.ProductId] = *purchaseOrderItem.ProductUnit.ProductStock
-			toBeRemovedStockByProductId[purchaseOrderItem.ProductUnit.ProductId] += purchaseOrderItem.Qty * purchaseOrderItem.ScaleToBase
-
-		}
-
-		// remove stock and remove from tiktok
-		for productId, removedStock := range toBeRemovedStockByProductId {
-			productStock := productStockByProductId[productId]
-			productStock.Qty -= removedStock
-			productStockByProductId[productId] = productStock
-
-			tiktokProduct := shouldGetTiktokProductByProductId(ctx, u.repositoryManager, productId)
-
-			if tiktokProduct != nil {
-				mustUpdateTiktokProductInventory(ctx, u.repositoryManager, tiktokProduct.TiktokProductId, int(productStock.Qty))
-			}
-		}
+	if purchaseOrder.Status == data_type.PurchaseOrderStatusCompleted {
+		panic(dto_response.NewBadRequestErrorResponse("PURCHASE_ORDER.ALREADY_COMPLETED"))
 	}
 
 	purchaseOrder.Status = data_type.PurchaseOrderStatusCanceled
@@ -431,23 +396,9 @@ func (u *purchaseOrderUseCase) Cancel(ctx context.Context, request dto_request.P
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
 			purchaseOrderRepository := u.repositoryManager.PurchaseOrderRepository()
-			productStockRepository := u.repositoryManager.ProductStockRepository()
-			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
 
 			if err := purchaseOrderRepository.Update(ctx, &purchaseOrder); err != nil {
 				return err
-			}
-
-			for _, productStock := range productStockByProductId {
-				if err := productStockRepository.Update(ctx, &productStock); err != nil {
-					return err
-				}
-			}
-
-			if len(toBeDeletedProductStockMutationIds) > 0 {
-				if err := productStockMutationRepository.DeleteManyByIds(ctx, toBeDeletedProductStockMutationIds); err != nil {
-					return err
-				}
 			}
 
 			return nil
@@ -463,59 +414,60 @@ func (u *purchaseOrderUseCase) Cancel(ctx context.Context, request dto_request.P
 }
 
 func (u *purchaseOrderUseCase) MarkComplete(ctx context.Context, request dto_request.PurchaseOrderMarkCompleteRequest) model.PurchaseOrder {
-	var (
-		toBeAddedStockByProductId map[string]float64            = make(map[string]float64)
-		productStockMutations                                   = []model.ProductStockMutation{}
-		productStockByProductId   map[string]model.ProductStock = make(map[string]model.ProductStock)
-	)
-
 	purchaseOrder := mustGetPurchaseOrder(ctx, u.repositoryManager, request.PurchaseOrderId, true)
 
 	u.mustLoadPurchaseOrdersData(ctx, []*model.PurchaseOrder{&purchaseOrder}, purchaseOrdersLoaderParams{
-		purchaseOrderItems:  true,
-		purchaseOrderImages: true,
+		purchaseOrderItems: true,
 
 		supplier: true,
 	})
 
-	if purchaseOrder.Status != data_type.PurchaseOrderStatusPending {
-		panic(dto_response.NewBadRequestErrorResponse("PURCHASE_ORDER.STATUS.MUST_BE_PENDING"))
-	}
-
-	// add stock and sync tiktok stock
-	for productId, addedStock := range toBeAddedStockByProductId {
-		productStock := productStockByProductId[productId]
-		productStock.Qty += addedStock
-		productStockByProductId[productId] = productStock
-
-		tiktokProduct := shouldGetTiktokProductByProductId(ctx, u.repositoryManager, productId)
-
-		if tiktokProduct != nil {
-			mustUpdateTiktokProductInventory(ctx, u.repositoryManager, tiktokProduct.TiktokProductId, int(productStock.Qty))
-		}
-
+	if purchaseOrder.Status != data_type.PurchaseOrderStatusOngoing {
+		panic(dto_response.NewBadRequestErrorResponse("PURCHASE_ORDER.STATUS.MUST_BE_ONGOING"))
 	}
 
 	// change status
 	purchaseOrder.Status = data_type.PurchaseOrderStatusCompleted
 
+	productReceive := model.ProductReceive{
+		Id:              util.NewUuid(),
+		PurchaseOrderId: purchaseOrder.Id,
+		SupplierId:      purchaseOrder.SupplierId,
+		UserId:          purchaseOrder.UserId,
+		InvoiceNumber:   purchaseOrder.InvoiceNumber,
+		Date:            request.Date,
+		Status:          data_type.ProductReceiveStatusPending,
+		TotalPrice:      purchaseOrder.TotalEstimatedPrice,
+	}
+	productReceiveItems := []model.ProductReceiveItem{}
+	for _, purchaseOrderItem := range purchaseOrder.PurchaseOrderItems {
+		productReceiveItems = append(productReceiveItems, model.ProductReceiveItem{
+			Id:               util.NewUuid(),
+			ProductReceiveId: productReceive.Id,
+			ProductUnitId:    purchaseOrderItem.ProductUnitId,
+			UserId:           purchaseOrderItem.UserId,
+			QtyEligible:      purchaseOrderItem.Qty,
+			QtyReceived:      purchaseOrderItem.Qty,
+			ScaleToBase:      purchaseOrderItem.ScaleToBase,
+			PricePerUnit:     purchaseOrderItem.PricePerUnit,
+		})
+	}
+
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
 			purchaseOrderRepository := u.repositoryManager.PurchaseOrderRepository()
-			productStockRepository := u.repositoryManager.ProductStockRepository()
-			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
+			productReceiveRepository := u.repositoryManager.ProductReceiveRepository()
+			productReceiveItemRepository := u.repositoryManager.ProductReceiveItemRepository()
 
 			if err := purchaseOrderRepository.Update(ctx, &purchaseOrder); err != nil {
 				return err
 			}
 
-			for _, productStock := range productStockByProductId {
-				if err := productStockRepository.Update(ctx, &productStock); err != nil {
-					return err
-				}
+			if err := productReceiveRepository.Insert(ctx, &productReceive); err != nil {
+				return err
 			}
 
-			if err := productStockMutationRepository.InsertMany(ctx, productStockMutations); err != nil {
+			if err := productReceiveItemRepository.InsertMany(ctx, productReceiveItems); err != nil {
 				return err
 			}
 

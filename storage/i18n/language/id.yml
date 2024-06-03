@@ -59,6 +59,7 @@ PRODUCT_RECEIVE.PRODUCT_ALREADY_SOLD_CANNOT_BE_CANCELED: "Produk sudah terjual, 
 PRODUCT_RECEIVE_ITEM.NOT_FOUND: "Barang tidak ditemukan"
 PRODUCT_RECEIVE.STATUS.MUST_BE_COMPLETED: "Status harus 'selesai'"
 PRODUCT_RECEIVE.INSUFFICIENT_PRODUCT_STOCK: "Stok produk tidak memadai"
+PRODUCT_RECEIVE_ITEM.INVALID_AMOUNT_QTY_MUST_BE_SMALLER_THAN_OR_EQUAL_RECEIVED_QTY: "Jumlah yang diinput harus kurang dari atau sama dengan jumlah yang diterima"
 
 # product_stock_use_case.go
 PRODUCT_STOCK.PRODUCT_MUST_BE_ACTIVE: "Product harus aktif"
@@ -73,6 +74,13 @@ PRODUCT.NAME.ALREADY_EXIST: "Nama sudah digunakan"
 PRODUCT.ALREADY_HAVE_PRODUCT_RECEIVE: "Produk sudah punya penerimaan produk"
 ACTIVE_PRODUCT.MUST_HAVE_AN_UNIT: "Produk yang aktif harus punya unit"
 ACTIVE_PRODUCT.MUST_HAVE_PRICE: "Produk yang aktif harus punya harga"
+
+# purchase_order_use_case.go
+PURCHASE_ORDER.STATUS_MUST_BE_PENDING: "Status harus 'pending'"
+PURCHASE_ORDER.ALREADY_CANCELED: "Status sudah 'dibatalkan'"
+PURCHASE_ORDER.ALREADY_COMPLETED: "Status sudah 'selesai'"
+PURCHASE_ORDER.STATUS.MUST_BE_ONGOING: "Status harus 'diproses'"
+PURCHASE_ORDER_ITEM.NOT_FOUND: "Data tidak ditemukan"
 
 # supplier_type_use_case.go
 SUPPLIER_TYPE.NAME.ALREADY_EXIST: "Nama sudah ada"
