@@ -115,6 +115,19 @@ func (l *ProductUnitLoader) ShopOrderItemFn(shopOrderItem *model.ShopOrderItem) 
 	}
 }
 
+func (l *ProductUnitLoader) ProductReturnItemFn(productReturnItem *model.ProductReturnItem) func() error {
+	return func() error {
+		productUnit, err := l.load(productReturnItem.ProductUnitId)
+		if err != nil {
+			return err
+		}
+
+		productReturnItem.ProductUnit = productUnit
+
+		return nil
+	}
+}
+
 func NewProductUnitLoader(productUnitRepository repository.ProductUnitRepository) *ProductUnitLoader {
 	batchFn := func(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
 		ids := make([]string, len(keys))

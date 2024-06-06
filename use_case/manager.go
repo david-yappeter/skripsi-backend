@@ -23,6 +23,7 @@ type UseCaseManager interface {
 	ProductDiscountUseCase() ProductDiscountUseCase
 	ProductUseCase() ProductUseCase
 	ProductReceiveUseCase() ProductReceiveUseCase
+	ProductReturnUseCase() ProductReturnUseCase
 	ProductStockAdjustmentUseCase() ProductStockAdjustmentUseCase
 	ProductStockUseCase() ProductStockUseCase
 	ProductUnitUseCase() ProductUnitUseCase
@@ -56,6 +57,7 @@ type useCaseManager struct {
 	productDiscountUseCase        ProductDiscountUseCase
 	productUseCase                ProductUseCase
 	productReceiveUseCase         ProductReceiveUseCase
+	productReturnUseCase          ProductReturnUseCase
 	productStockAdjustmentUseCase ProductStockAdjustmentUseCase
 	productStockUseCase           ProductStockUseCase
 	productUnitUseCase            ProductUnitUseCase
@@ -131,6 +133,10 @@ func (u *useCaseManager) ProductUseCase() ProductUseCase {
 
 func (u *useCaseManager) ProductReceiveUseCase() ProductReceiveUseCase {
 	return u.productReceiveUseCase
+}
+
+func (u *useCaseManager) ProductReturnUseCase() ProductReturnUseCase {
+	return u.productReturnUseCase
 }
 
 func (u *useCaseManager) ProductStockAdjustmentUseCase() ProductStockAdjustmentUseCase {
@@ -257,6 +263,11 @@ func NewUseCaseManager(
 			filesystemManager.Tmp(),
 		),
 		productReceiveUseCase: NewProductReceiveUseCase(
+			repositoryManager,
+			filesystemManager.Main(),
+			filesystemManager.Tmp(),
+		),
+		productReturnUseCase: NewProductReturnUseCase(
 			repositoryManager,
 			filesystemManager.Main(),
 			filesystemManager.Tmp(),

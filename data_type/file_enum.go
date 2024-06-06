@@ -12,4 +12,5 @@ const (
 	FileTypeDebtPaymentImage                              // DEBT_PAYMENT_IMAGE
 	FileTypeDeliveryOrderReturnImage                      // DELIVERY_ORDER_RETURN_IMAGE
 	FileTypeProductReceiveReturnImage                     // PRODUCT_RECEIVE_RETURN_IMAGE
+	FileTypeProductReturnImage                            // PRODUCT_RETURN_IMAGE
 )

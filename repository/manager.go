@@ -45,6 +45,9 @@ type RepositoryManager interface {
 	ProductReceiveItemRepository() ProductReceiveItemRepository
 	ProductReceiveImageRepository() ProductReceiveImageRepository
 	ProductRepository() ProductRepository
+	ProductReturnRepository() ProductReturnRepository
+	ProductReturnItemRepository() ProductReturnItemRepository
+	ProductReturnImageRepository() ProductReturnImageRepository
 	ProductStockMutationRepository() ProductStockMutationRepository
 	ProductStockAdjustmentRepository() ProductStockAdjustmentRepository
 	ProductStockRepository() ProductStockRepository
@@ -105,6 +108,9 @@ type repositoryManager struct {
 	productReceiveItemRepository        ProductReceiveItemRepository
 	productReceiveImageRepository       ProductReceiveImageRepository
 	productRepository                   ProductRepository
+	productReturnRepository             ProductReturnRepository
+	productReturnItemRepository         ProductReturnItemRepository
+	productReturnImageRepository        ProductReturnImageRepository
 	productStockMutationRepository      ProductStockMutationRepository
 	productStockAdjustmentRepository    ProductStockAdjustmentRepository
 	productStockRepository              ProductStockRepository
@@ -277,6 +283,18 @@ func (r *repositoryManager) ProductReceiveImageRepository() ProductReceiveImageR
 
 func (r *repositoryManager) ProductRepository() ProductRepository {
 	return r.productRepository
+}
+
+func (r *repositoryManager) ProductReturnRepository() ProductReturnRepository {
+	return r.productReturnRepository
+}
+
+func (r *repositoryManager) ProductReturnItemRepository() ProductReturnItemRepository {
+	return r.productReturnItemRepository
+}
+
+func (r *repositoryManager) ProductReturnImageRepository() ProductReturnImageRepository {
+	return r.productReturnImageRepository
 }
 
 func (r *repositoryManager) ProductStockMutationRepository() ProductStockMutationRepository {
@@ -499,6 +517,18 @@ func NewRepositoryManager(infrastructureManager infrastructure.InfrastructureMan
 			loggerStack,
 		),
 		productRepository: NewProductRepository(
+			db,
+			loggerStack,
+		),
+		productReturnRepository: NewProductReturnRepository(
+			db,
+			loggerStack,
+		),
+		productReturnItemRepository: NewProductReturnItemRepository(
+			db,
+			loggerStack,
+		),
+		productReturnImageRepository: NewProductReturnImageRepository(
 			db,
 			loggerStack,
 		),

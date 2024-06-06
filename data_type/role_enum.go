@@ -186,18 +186,30 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionProductDiscountDelete,
 
 		// product receive
-		PermissionProductReceiveCreate,
 		PermissionProductReceiveUpload,
 		PermissionProductReceiveAddImage,
 		PermissionProductReceiveUpdate,
 		PermissionProductReceiveCancel,
 		PermissionProductReceiveMarkComplete,
-		PermissionProductReceiveReturned,
 		PermissionProductReceiveFetch,
 		PermissionProductReceiveGet,
 		PermissionProductReceiveUpdateItem,
 		PermissionProductReceiveDelete,
 		PermissionProductReceiveDeleteImage,
+
+		// product return
+		PermissionProductReturnCreate,
+		PermissionProductReturnUpload,
+		PermissionProductReturnAddItem,
+		PermissionProductReturnAddImage,
+		PermissionProductReturnUpdate,
+		PermissionProductReturnCancel,
+		PermissionProductReturnMarkComplete,
+		PermissionProductReturnFetch,
+		PermissionProductReturnGet,
+		PermissionProductReturnDelete,
+		PermissionProductReturnDeleteItem,
+		PermissionProductReturnDeleteImage,
 
 		// product stock adjustment
 		PermissionProductStockAdjustmentFetch,

@@ -61,6 +61,15 @@ PRODUCT_RECEIVE.STATUS.MUST_BE_COMPLETED: "Status harus 'selesai'"
 PRODUCT_RECEIVE.INSUFFICIENT_PRODUCT_STOCK: "Stok produk tidak memadai"
 PRODUCT_RECEIVE_ITEM.INVALID_AMOUNT_QTY_MUST_BE_SMALLER_THAN_OR_EQUAL_RECEIVED_QTY: "Jumlah yang diinput harus kurang dari atau sama dengan jumlah yang diterima"
 
+# product_return_use_case.go
+PRODUCT_RETURN.STATUS_MUST_BE_PENDING: "Status harus 'menunggu'"
+PRODUCT_RETURN.ALREADY_CANCELED: "sudah di batalkan"
+PRODUCT_RETURN.PRODUCT_ALREADY_SOLD_CANNOT_BE_CANCELED: "Produk sudah terjual tidak dapat di batalkan"
+PRODUCT_RETURN_ITEM.NOT_FOUND: "Item tidak ditemukan"
+PRODUCT_RETURN.STATUS.MUST_BE_COMPLETED: "Status harus 'selesai'"
+PRODUCT_RETURN.INSUFFICIENT_PRODUCT_STOCK: "Stok produk tidak memadai"
+PRODUCT_RETURN_ITEM.INVALID_AMOUNT_QTY_MUST_BE_SMALLER_THAN_OR_EQUAL_RECEIVED_QTY: "Kuantitas harus lebih kecil atau sama dengan kuantitas yang diterima"
+
 # product_stock_use_case.go
 PRODUCT_STOCK.PRODUCT_MUST_BE_ACTIVE: "Product harus aktif"
 PRODUCT_STOCK.COST_PRICE_IS_REQUIRED_WHEN_ADDING_STOCK: "Harga pembelian wajib diisi ketika menambah stok"

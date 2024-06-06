@@ -189,7 +189,7 @@ func (a *ProductReceiveApi) MarkComplete() gin.HandlerFunc {
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.ProductReceiveResponse}}
 func (a *ProductReceiveApi) Fetch() gin.HandlerFunc {
 	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionProductReceiveCreate),
+		data_type.PermissionP(data_type.PermissionProductReceiveFetch),
 		func(ctx apiContext) {
 			var request dto_request.ProductReceiveFetchRequest
 			ctx.mustBind(&request)

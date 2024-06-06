@@ -217,6 +217,12 @@ func mustGetProductUnitByProductIdAndUnitId(ctx context.Context, repositoryManag
 	return *productUnit
 }
 
+func mustGetBaseProductUnitByProductId(ctx context.Context, repositoryManager repository.RepositoryManager, productId string, isValidate bool) model.ProductUnit {
+	productUnit, err := repositoryManager.ProductUnitRepository().GetBaseProductUnitByProductId(ctx, productId)
+	panicIfRepositoryError(err, "PRODUCT_UNIT.NOT_FOUND", isValidate)
+	return *productUnit
+}
+
 func mustGetProductDiscount(ctx context.Context, repositoryManager repository.RepositoryManager, productDiscountId string, isValidate bool) model.ProductDiscount {
 	productDiscount, err := repositoryManager.ProductDiscountRepository().Get(ctx, productDiscountId)
 	panicIfRepositoryError(err, "PRODUCT_DISCOUNT.NOT_FOUND", isValidate)
@@ -257,6 +263,24 @@ func mustGetProductReceiveImage(ctx context.Context, repositoryManager repositor
 	productReceiveImage, err := repositoryManager.ProductReceiveImageRepository().Get(ctx, productReceiveImageId)
 	panicIfRepositoryError(err, "PRODUCT_RECEIVE_IMAGE.NOT_FOUND", isValidate)
 	return *productReceiveImage
+}
+
+func mustGetProductReturn(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.ProductReturn {
+	productReturn, err := repositoryManager.ProductReturnRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "PRODUCT_RETURN.NOT_FOUND", isValidate)
+	return *productReturn
+}
+
+func mustGetProductReturnItem(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.ProductReturnItem {
+	productReturnItem, err := repositoryManager.ProductReturnItemRepository().Get(ctx, id)
+	panicIfRepositoryError(err, "PRODUCT_RETURN_ITEM.NOT_FOUND", isValidate)
+	return *productReturnItem
+}
+
+func mustGetProductReturnImage(ctx context.Context, repositoryManager repository.RepositoryManager, ProductReturnImageId string, isValidate bool) model.ProductReturnImage {
+	productReturnImage, err := repositoryManager.ProductReturnImageRepository().Get(ctx, ProductReturnImageId)
+	panicIfRepositoryError(err, "PRODUCT_RETURN_IMAGE.NOT_FOUND", isValidate)
+	return *productReturnImage
 }
 
 func mustGetPurchaseOrder(ctx context.Context, repositoryManager repository.RepositoryManager, id string, isValidate bool) model.PurchaseOrder {

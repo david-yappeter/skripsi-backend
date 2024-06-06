@@ -113,18 +113,30 @@ const (
 	PermissionProductDiscountDelete // PRODUCT_DISCOUNT_DELETE
 
 	// product receive
-	PermissionProductReceiveCreate       // PRODUCT_RECEIVE_CREATE
 	PermissionProductReceiveUpload       // PRODUCT_RECEIVE_UPLOAD
 	PermissionProductReceiveAddImage     // PRODUCT_RECEIVE_ADD_IMAGE
 	PermissionProductReceiveUpdate       // PRODUCT_RECEIVE_UPDATE
 	PermissionProductReceiveCancel       // PRODUCT_RECEIVE_CANCEL
 	PermissionProductReceiveMarkComplete // PRODUCT_RECEIVE_MARK_COMPLETE
-	PermissionProductReceiveReturned     // PRODUCT_RECEIVE_RETURNED
 	PermissionProductReceiveFetch        // PRODUCT_RECEIVE_FETCH
 	PermissionProductReceiveGet          // PRODUCT_RECEIVE_GET
 	PermissionProductReceiveUpdateItem   // PRODUCT_RECEIVE_UPDATE_ITEM
 	PermissionProductReceiveDelete       // PRODUCT_RECEIVE_DELETE
 	PermissionProductReceiveDeleteImage  // PRODUCT_RECEIVE_DELETE_IMAGE
+
+	// product return
+	PermissionProductReturnCreate       // PRODUCT_RETURN_CREATE
+	PermissionProductReturnUpload       // PRODUCT_RETURN_UPLOAD
+	PermissionProductReturnAddItem      // PRODUCT_RETURN_ADD_ITEM
+	PermissionProductReturnAddImage     // PRODUCT_RETURN_ADD_IMAGE
+	PermissionProductReturnUpdate       // PRODUCT_RETURN_UPDATE
+	PermissionProductReturnCancel       // PRODUCT_RETURN_CANCEL
+	PermissionProductReturnMarkComplete // PRODUCT_RETURN_MARK_COMPLETE
+	PermissionProductReturnFetch        // PRODUCT_RETURN_FETCH
+	PermissionProductReturnGet          // PRODUCT_RETURN_GET
+	PermissionProductReturnDelete       // PRODUCT_RETURN_DELETE
+	PermissionProductReturnDeleteItem   // PRODUCT_RETURN_DELETE_ITEM
+	PermissionProductReturnDeleteImage  // PRODUCT_RETURN_DELETE_IMAGE
 
 	// product stock adjustment
 	PermissionProductStockAdjustmentFetch // PRODUCT_STOCK_ADJUSTMENT_FETCH

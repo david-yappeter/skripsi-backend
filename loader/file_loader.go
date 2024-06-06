@@ -128,6 +128,19 @@ func (l *FileLoader) ProductFn(product *model.Product) func() error {
 	}
 }
 
+func (l *FileLoader) ProductReturnImageFn(productReturnImage *model.ProductReturnImage) func() error {
+	return func() error {
+		file, err := l.load(productReturnImage.FileId)
+		if err != nil {
+			return err
+		}
+
+		productReturnImage.File = file
+
+		return nil
+	}
+}
+
 func NewFileLoader(fileRepository repository.FileRepository) *FileLoader {
 	batchFn := func(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
 		ids := make([]string, len(keys))
