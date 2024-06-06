@@ -49,7 +49,6 @@ func newSeedCommand() *cobra.Command {
 
 			syncPermissions(context.Background(), repositoryManager)
 			syncRolePermissions(context.Background(), repositoryManager)
-			syncClinicTypePermissions(context.Background(), repositoryManager)
 		},
 	}
 

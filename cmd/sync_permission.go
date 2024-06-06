@@ -43,7 +43,6 @@ func newSyncPermissionCommand() *cobra.Command {
 
 			syncPermissions(ctx, repositoryManager)
 			syncRolePermissions(ctx, repositoryManager)
-			syncClinicTypePermissions(ctx, repositoryManager)
 
 			fmt.Println("Sync permission successful")
 		},
@@ -199,95 +198,4 @@ func syncRolePermissions(ctx context.Context, repositoryManager repository.Repos
 			}
 		}
 	}
-}
-
-func syncClinicTypePermissions(ctx context.Context, repositoryManager repository.RepositoryManager) {
-	// permissionRepository := repositoryManager.PermissionRepository()
-	// clinicTypeRepository := repositoryManager.ClinicTypeRepository()
-	// clinicTypePermissionRepository := repositoryManager.ClinicTypePermissionRepository()
-
-	// clinicTypes, err := clinicTypeRepository.Fetch(ctx)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// clinicTypePermissionLoader := loader.NewClinicTypePermissionsLoader(clinicTypePermissionRepository)
-
-	// if err := util.Await(func(group *errgroup.Group) {
-	// 	for i := range clinicTypes {
-	// 		group.Go(clinicTypePermissionLoader.ClinicTypeFn(&clinicTypes[i]))
-	// 	}
-	// }); err != nil {
-	// 	panic(err)
-	// }
-
-	// permissionLoader := loader.NewPermissionLoader(permissionRepository)
-
-	// if err := util.Await(func(group *errgroup.Group) {
-	// for i := range clinicTypes {
-	// 	for j := range clinicTypes[i].ClinicTypePermissions {
-	// 		group.Go(permissionLoader.ClinicTypePermissionFn(&clinicTypes[i].ClinicTypePermissions[j]))
-	// 	}
-	// }
-	// }); err != nil {
-	// 	panic(err)
-	// }
-
-	// for _, clinicType := range clinicTypes {
-	// 	existingClinicTypePermissionMap := map[data_type.Permission]model.ClinicTypePermission{}
-	// 	for _, clinicTypePermission := range clinicType.ClinicTypePermissions {
-	// 		existingClinicTypePermissionMap[clinicTypePermission.Permission.Title] = clinicTypePermission
-	// 	}
-
-	// 	newPermissions := []data_type.Permission{}
-	// 	for _, permissionEnum := range clinicType.Name.Permissions() {
-	// 		if _, exist := existingClinicTypePermissionMap[permissionEnum]; exist {
-	// 			// keep existing permission by removing it from map
-	// 			delete(existingClinicTypePermissionMap, permissionEnum)
-	// 			continue
-	// 		}
-
-	// 		newPermissions = append(newPermissions, permissionEnum)
-	// 	}
-
-	// 	if len(existingClinicTypePermissionMap) > 0 {
-	// 		for _, clinicTypePermission := range existingClinicTypePermissionMap {
-	// 			if err := clinicTypePermissionRepository.Delete(
-	// 				ctx,
-	// 				&clinicTypePermission,
-	// 				data_type.RepositoryOptionDisableAuditLog,
-	// 			); err != nil {
-	// 				panic(err)
-	// 			}
-	// 		}
-	// 	}
-
-	// if len(newPermissions) > 0 {
-	// 	permissions, err := permissionRepository.FetchByTitle(ctx, newPermissions)
-	// 	if err != nil {
-	// 		panic(err)
-	// 	}
-
-	// 	clinicTypePermissions := []model.ClinicTypePermission{}
-	// 	for _, permission := range permissions {
-	// 		clinicTypePermissions = append(
-	// 			clinicTypePermissions,
-	// 			model.ClinicTypePermission{
-	// 				ClinicTypeId: clinicType.Id,
-	// 				PermissionId: permission.Id,
-	// 			},
-	// 		)
-	// 	}
-
-	// 	if len(clinicTypePermissions) > 0 {
-	// 		if err := clinicTypePermissionRepository.InsertMany(
-	// 			ctx,
-	// 			clinicTypePermissions,
-	// 			data_type.RepositoryOptionDisableAuditLog,
-	// 		); err != nil {
-	// 			panic(err)
-	// 		}
-	// 	}
-	// }
-	// }
 }
