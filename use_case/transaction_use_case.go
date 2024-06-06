@@ -228,8 +228,8 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 							Id:                util.NewUuid(),
 							TransactionItemId: transactionItem.Id,
 							Qty:               productStockMutation.BaseQtyLeft,
-							BaseCostPrice:     productStockMutation.BaseCostPrice,
-							TotalCostPrice:    productStockMutation.BaseCostPrice * productStockMutation.BaseQtyLeft * productStockMutation.ScaleToBase,
+							BaseCostPrice:     currentProductStock.BaseCostPrice,
+							TotalCostPrice:    currentProductStock.BaseCostPrice * productStockMutation.BaseQtyLeft * productStockMutation.ScaleToBase,
 						})
 
 						deductQtyLeft -= productStockMutation.BaseQtyLeft
@@ -239,8 +239,8 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 							Id:                util.NewUuid(),
 							TransactionItemId: transactionItem.Id,
 							Qty:               deductQtyLeft,
-							BaseCostPrice:     productStockMutation.BaseCostPrice,
-							TotalCostPrice:    productStockMutation.BaseCostPrice * deductQtyLeft * productStockMutation.ScaleToBase,
+							BaseCostPrice:     currentProductStock.BaseCostPrice,
+							TotalCostPrice:    currentProductStock.BaseCostPrice * deductQtyLeft * productStockMutation.ScaleToBase,
 						})
 
 						productStockMutation.BaseQtyLeft -= deductQtyLeft

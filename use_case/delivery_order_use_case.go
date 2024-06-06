@@ -58,7 +58,7 @@ type DeliveryOrderUseCase interface {
 	Delivering(ctx context.Context, request dto_request.DeliveryOrderDeliveringRequest) model.DeliveryOrder
 	Cancel(ctx context.Context, request dto_request.DeliveryOrderCancelRequest) model.DeliveryOrder
 	MarkCompleted(ctx context.Context, request dto_request.DeliveryOrderMarkCompletedRequest) model.DeliveryOrder
-	Returned(ctx context.Context, request dto_request.DeliveryOrderReturnedRequest) model.DeliveryOrder
+	// Returned(ctx context.Context, request dto_request.DeliveryOrderReturnedRequest) model.DeliveryOrder
 	DeliveryLocation(ctx context.Context, request dto_request.DeliveryOrderDeliveryLocationRequest)
 
 	// delete
@@ -623,47 +623,61 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 		deliveryOrderDrivers: true,
 	})
 
-	switch deliveryOrder.Status {
-	case data_type.DeliveryOrderStatusOngoing,
-		data_type.DeliveryOrderStatusDelivering:
-		// add canceled stock back
-		u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
-			deliveryOrderProductStock: true,
-			deliveryOrderItems:        true,
-			deliveryOrderItemCosts:    true,
-		})
-
-		for _, deliveryOrderItem := range deliveryOrder.DeliveryOrderItems {
-			for _, deliveryOrderItemCost := range deliveryOrderItem.DeliveryOrderItemCosts {
-				productStockMutations = append(productStockMutations, model.ProductStockMutation{
-					Id:            util.NewUuid(),
-					ProductUnitId: deliveryOrderItem.ProductUnitId,
-					Type:          data_type.ProductStockMutationTypeDeliveryOrderItemCostCancel,
-					IdentifierId:  deliveryOrderItemCost.Id,
-					Qty:           deliveryOrderItemCost.Qty,
-					ScaleToBase:   1,
-					BaseQtyLeft:   deliveryOrderItemCost.Qty,
-					BaseCostPrice: deliveryOrderItemCost.BaseCostPrice,
-					MutatedAt:     currentDateTime,
-				})
-			}
-		}
-
-		// cancel customer debt if already 'onGoing' status
-		toBeCanceledCustomerDebt, err = u.repositoryManager.CustomerDebtRepository().GetByDebtSourceAndDebtSourceId(ctx, data_type.CustomerDebtDebtSourceDeliveryOrder, deliveryOrder.Id)
-		panicIfErr(err)
-
-		toBeCanceledCustomerDebt.Status = data_type.CustomerDebtStatusCanceled
-	}
-
-	// change status
-	deliveryOrder.Status = data_type.DeliveryOrderStatusCanceled
-
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+			productStockByProductId := map[string]*model.ProductStock{}
+
+			switch deliveryOrder.Status {
+			case data_type.DeliveryOrderStatusOngoing,
+				data_type.DeliveryOrderStatusDelivering:
+				// add canceled stock back
+				u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+					deliveryOrderProductStock: true,
+					deliveryOrderItems:        true,
+					deliveryOrderItemCosts:    true,
+				})
+
+				for _, deliveryOrderItem := range deliveryOrder.DeliveryOrderItems {
+					// adjust base cost price
+					if productStockByProductId[deliveryOrderItem.ProductUnit.ProductId] == nil {
+						productStockByProductId[deliveryOrderItem.ProductUnit.ProductId] = new(model.ProductStock)
+						*productStockByProductId[deliveryOrderItem.ProductUnit.ProductId] = *deliveryOrderItem.ProductUnit.ProductStock
+					}
+
+					for _, deliveryOrderItemCost := range deliveryOrderItem.DeliveryOrderItemCosts {
+						productStockMutations = append(productStockMutations, model.ProductStockMutation{
+							Id:            util.NewUuid(),
+							ProductUnitId: deliveryOrderItem.ProductUnitId,
+							Type:          data_type.ProductStockMutationTypeDeliveryOrderItemCostCancel,
+							IdentifierId:  deliveryOrderItemCost.Id,
+							Qty:           deliveryOrderItemCost.Qty,
+							ScaleToBase:   1,
+							BaseQtyLeft:   deliveryOrderItemCost.Qty,
+							BaseCostPrice: deliveryOrderItemCost.BaseCostPrice,
+							MutatedAt:     currentDateTime,
+						})
+
+						productStockByProductId[deliveryOrderItem.ProductUnit.ProductId].BaseCostPrice = productStockByProductId[deliveryOrderItem.ProductUnit.ProductId].RecalculateBaseCostPrice(deliveryOrderItemCost.Qty, deliveryOrderItemCost.BaseCostPrice)
+					}
+
+					// add last because of RecalculateBaseCostPrice() function
+					productStockByProductId[deliveryOrderItem.ProductUnit.ProductId].Qty += deliveryOrderItem.Qty
+				}
+
+				// cancel customer debt if already 'onGoing' status
+				toBeCanceledCustomerDebt, err = u.repositoryManager.CustomerDebtRepository().GetByDebtSourceAndDebtSourceId(ctx, data_type.CustomerDebtDebtSourceDeliveryOrder, deliveryOrder.Id)
+				panicIfErr(err)
+
+				toBeCanceledCustomerDebt.Status = data_type.CustomerDebtStatusCanceled
+			}
+
+			// change status
+			deliveryOrder.Status = data_type.DeliveryOrderStatusCanceled
+
 			customerDebtRepository := u.repositoryManager.CustomerDebtRepository()
 			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
 			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
+			productStockRepository := u.repositoryManager.ProductStockRepository()
 
 			if err := deliveryOrderRepository.Update(ctx, &deliveryOrder); err != nil {
 				return err
@@ -675,6 +689,12 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 
 			if toBeCanceledCustomerDebt != nil {
 				if err := customerDebtRepository.Update(ctx, toBeCanceledCustomerDebt); err != nil {
+					return err
+				}
+			}
+
+			for _, productStock := range productStockByProductId {
+				if err := productStockRepository.Update(ctx, productStock); err != nil {
 					return err
 				}
 			}
@@ -762,6 +782,9 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 			for _, deliveryOrderItem := range deliveryOrder.DeliveryOrderItems {
 				deductQtyLeft := deliveryOrderItem.Qty
 
+				productUnit := mustGetProductUnit(ctx, u.repositoryManager, deliveryOrderItem.ProductUnitId, true)
+				productStock := mustGetProductStock(ctx, u.repositoryManager, productUnit.ProductId, true)
+
 				for deductQtyLeft > 0 {
 					productStockMutation, err := u.repositoryManager.ProductStockMutationRepository().GetFIFOByProductIdAndBaseQtyLeftNotZero(ctx, deliveryOrderItem.ProductUnit.ProductId)
 					if err != nil {
@@ -773,8 +796,8 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 							Id:                  util.NewUuid(),
 							DeliveryOrderItemId: deliveryOrderItem.Id,
 							Qty:                 deductQtyLeft,
-							BaseCostPrice:       productStockMutation.BaseCostPrice,
-							TotalCostPrice:      productStockMutation.BaseCostPrice * productStockMutation.BaseQtyLeft * productStockMutation.ScaleToBase,
+							BaseCostPrice:       productStock.BaseCostPrice,
+							TotalCostPrice:      productStock.BaseCostPrice * productStockMutation.BaseQtyLeft * productStockMutation.ScaleToBase,
 						})
 
 						deductQtyLeft -= productStockMutation.BaseQtyLeft
@@ -784,7 +807,7 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 							Id:                  util.NewUuid(),
 							DeliveryOrderItemId: deliveryOrderItem.Id,
 							Qty:                 deductQtyLeft,
-							BaseCostPrice:       productStockMutation.BaseCostPrice,
+							BaseCostPrice:       productStock.BaseCostPrice,
 							TotalCostPrice:      productStockMutation.BaseCostPrice * deductQtyLeft * productStockMutation.ScaleToBase,
 						})
 
@@ -977,142 +1000,143 @@ Salam hangat,
 	return deliveryOrder
 }
 
-func (u *deliveryOrderUseCase) Returned(ctx context.Context, request dto_request.DeliveryOrderReturnedRequest) model.DeliveryOrder {
-	currentUser := model.MustGetUserCtx(ctx)
-	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
+// func (u *deliveryOrderUseCase) Returned(ctx context.Context, request dto_request.DeliveryOrderReturnedRequest) model.DeliveryOrder {
+// 	currentUser := model.MustGetUserCtx(ctx)
+// 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
 
-	if deliveryOrder.Status != data_type.DeliveryOrderStatusCompleted {
-		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_COMPLETED"))
-	}
+// 	if deliveryOrder.Status != data_type.DeliveryOrderStatusCompleted {
+// 		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.STATUS.MUST_BE_COMPLETED"))
+// 	}
 
-	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
-		deliveryOrderItemCosts:    true,
-		deliveryOrderProductStock: true,
-	})
+// 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+// 		deliveryOrderItemCosts:    true,
+// 		deliveryOrderProductStock: true,
+// 	})
 
-	deliveryOrder.Status = data_type.DeliveryOrderStatusReturned
+// 	deliveryOrder.Status = data_type.DeliveryOrderStatusReturned
 
-	// initialize return
-	deliveryOrderReturn := model.DeliveryOrderReturn{
-		Id:              util.NewUuid(),
-		DeliveryOrderId: deliveryOrder.Id,
-		UserId:          currentUser.Id,
-		Description:     request.Description,
-	}
+// 	// initialize return
+// 	deliveryOrderReturn := model.DeliveryOrderReturn{
+// 		Id:              util.NewUuid(),
+// 		DeliveryOrderId: deliveryOrder.Id,
+// 		UserId:          currentUser.Id,
+// 		Description:     request.Description,
+// 	}
 
-	// initialize images
-	files := []model.File{}
-	deliveryOrderReturnImages := []model.DeliveryOrderReturnImage{}
+// 	// initialize images
+// 	files := []model.File{}
+// 	deliveryOrderReturnImages := []model.DeliveryOrderReturnImage{}
 
-	for _, filepath := range request.FilePaths {
-		imageFile := model.File{
-			Id:   util.NewUuid(),
-			Type: data_type.FileTypeDeliveryOrderReturnImage,
-		}
+// 	for _, filepath := range request.FilePaths {
+// 		imageFile := model.File{
+// 			Id:   util.NewUuid(),
+// 			Type: data_type.FileTypeDeliveryOrderReturnImage,
+// 		}
 
-		imageFile.Path, imageFile.Name = u.baseFileUseCase.mustUploadFileFromTemporaryToMain(
-			ctx,
-			constant.DeliveryOrderImageReturnPath,
-			deliveryOrderReturn.Id,
-			fmt.Sprintf("%s%s", imageFile.Id, path.Ext(filepath)),
-			filepath,
-			fileUploadTemporaryToMainParams{
-				deleteTmpOnSuccess: false,
-			},
-		)
+// 		imageFile.Path, imageFile.Name = u.baseFileUseCase.mustUploadFileFromTemporaryToMain(
+// 			ctx,
+// 			constant.DeliveryOrderImageReturnPath,
+// 			deliveryOrderReturn.Id,
+// 			fmt.Sprintf("%s%s", imageFile.Id, path.Ext(filepath)),
+// 			filepath,
+// 			fileUploadTemporaryToMainParams{
+// 				deleteTmpOnSuccess: false,
+// 			},
+// 		)
 
-		deliveryOrderReturnImages = append(deliveryOrderReturnImages, model.DeliveryOrderReturnImage{
-			Id:                    util.NewUuid(),
-			DeliveryOrderReturnId: deliveryOrderReturn.Id,
-			FileId:                imageFile.Id,
-		})
-		files = append(files, imageFile)
-	}
+// 		deliveryOrderReturnImages = append(deliveryOrderReturnImages, model.DeliveryOrderReturnImage{
+// 			Id:                    util.NewUuid(),
+// 			DeliveryOrderReturnId: deliveryOrderReturn.Id,
+// 			FileId:                imageFile.Id,
+// 		})
+// 		files = append(files, imageFile)
+// 	}
 
-	// add back stock data and stock mutation
-	productStockAddedByProductId := map[string]float64{}
-	productStockMutations := []model.ProductStockMutation{}
+// 	// add back stock data and stock mutation
+// 	productStockAddedByProductId := map[string]float64{}
+// 	productStockMutations := []model.ProductStockMutation{}
 
-	for _, deliveryOrderItem := range deliveryOrder.DeliveryOrderItems {
-		productStockAddedByProductId[deliveryOrderItem.ProductUnit.ProductId] += deliveryOrderItem.BaseQty()
+// 	for _, deliveryOrderItem := range deliveryOrder.DeliveryOrderItems {
+// 		productStockAddedByProductId[deliveryOrderItem.ProductUnit.ProductId] += deliveryOrderItem.BaseQty()
 
-		for _, cost := range deliveryOrderItem.DeliveryOrderItemCosts {
-			productStockMutations = append(productStockMutations, model.ProductStockMutation{
-				Id:            util.NewUuid(),
-				ProductUnitId: deliveryOrderItem.ProductUnitId,
-				Type:          data_type.ProductStockMutationTypeDeliveryOrderItemReturned,
-				IdentifierId:  deliveryOrderItem.Id,
-				Qty:           cost.Qty,
-				ScaleToBase:   deliveryOrderItem.ScaleToBase,
-				BaseQtyLeft:   cost.Qty * deliveryOrderItem.ScaleToBase,
-				BaseCostPrice: cost.BaseCostPrice,
-				MutatedAt:     data_type.DateTime{},
-				Timestamp:     model.Timestamp{},
-				ProductUnit:   &model.ProductUnit{},
-			})
-		}
-	}
+// 		for _, cost := range deliveryOrderItem.DeliveryOrderItemCosts {
+// 			productStockMutations = append(productStockMutations, model.ProductStockMutation{
+// 				Id:            util.NewUuid(),
+// 				ProductUnitId: deliveryOrderItem.ProductUnitId,
+// 				Type:          data_type.ProductStockMutationTypeDeliveryOrderItemReturned,
+// 				IdentifierId:  deliveryOrderItem.Id,
+// 				Qty:           cost.Qty,
+// 				ScaleToBase:   deliveryOrderItem.ScaleToBase,
+// 				BaseQtyLeft:   cost.Qty * deliveryOrderItem.ScaleToBase,
+// 				BaseCostPrice: cost.BaseCostPrice,
+// 				MutatedAt:     data_type.DateTime{},
+// 				Timestamp:     model.Timestamp{},
+// 				ProductUnit:   &model.ProductUnit{},
+// 			})
+// 			// TODO: ADJUST BASE_COST_PRICE
+// 		}
+// 	}
 
-	// change customer debt status to returned
-	customerDebt, err := u.repositoryManager.CustomerDebtRepository().GetByDebtSourceAndDebtSourceId(ctx, data_type.CustomerDebtDebtSourceDeliveryOrder, deliveryOrder.Id)
-	panicIfErr(err)
+// 	// change customer debt status to returned
+// 	customerDebt, err := u.repositoryManager.CustomerDebtRepository().GetByDebtSourceAndDebtSourceId(ctx, data_type.CustomerDebtDebtSourceDeliveryOrder, deliveryOrder.Id)
+// 	panicIfErr(err)
 
-	customerDebt.Status = data_type.CustomerDebtStatusReturned
+// 	customerDebt.Status = data_type.CustomerDebtStatusReturned
 
-	panicIfErr(
-		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
-			customerDebtRepository := u.repositoryManager.CustomerDebtRepository()
-			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
-			deliveryOrderReturnRepository := u.repositoryManager.DeliveryOrderReturnRepository()
-			deliveryOrderReturnImageRepository := u.repositoryManager.DeliveryOrderReturnImageRepository()
-			fileRepository := u.repositoryManager.FileRepository()
-			productStockRepository := u.repositoryManager.ProductStockRepository()
-			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
+// 	panicIfErr(
+// 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+// 			customerDebtRepository := u.repositoryManager.CustomerDebtRepository()
+// 			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
+// 			deliveryOrderReturnRepository := u.repositoryManager.DeliveryOrderReturnRepository()
+// 			deliveryOrderReturnImageRepository := u.repositoryManager.DeliveryOrderReturnImageRepository()
+// 			fileRepository := u.repositoryManager.FileRepository()
+// 			productStockRepository := u.repositoryManager.ProductStockRepository()
+// 			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
 
-			if err := fileRepository.InsertMany(ctx, files); err != nil {
-				return err
-			}
+// 			if err := fileRepository.InsertMany(ctx, files); err != nil {
+// 				return err
+// 			}
 
-			if err := customerDebtRepository.Update(ctx, customerDebt); err != nil {
-				return err
-			}
+// 			if err := customerDebtRepository.Update(ctx, customerDebt); err != nil {
+// 				return err
+// 			}
 
-			if err := deliveryOrderRepository.Update(ctx, &deliveryOrder); err != nil {
-				return err
-			}
+// 			if err := deliveryOrderRepository.Update(ctx, &deliveryOrder); err != nil {
+// 				return err
+// 			}
 
-			if err := deliveryOrderReturnRepository.Insert(ctx, &deliveryOrderReturn); err != nil {
-				return err
-			}
+// 			if err := deliveryOrderReturnRepository.Insert(ctx, &deliveryOrderReturn); err != nil {
+// 				return err
+// 			}
 
-			if err := deliveryOrderReturnImageRepository.InsertMany(ctx, deliveryOrderReturnImages); err != nil {
-				return err
-			}
+// 			if err := deliveryOrderReturnImageRepository.InsertMany(ctx, deliveryOrderReturnImages); err != nil {
+// 				return err
+// 			}
 
-			for productId, stockCount := range productStockAddedByProductId {
-				if err := productStockRepository.UpdateIncrementQtyByProductId(ctx, productId, stockCount); err != nil {
-					return err
-				}
-			}
+// 			for productId, stockCount := range productStockAddedByProductId {
+// 				if err := productStockRepository.UpdateIncrementQtyByProductId(ctx, productId, stockCount); err != nil {
+// 					return err
+// 				}
+// 			}
 
-			if err := productStockMutationRepository.InsertMany(ctx, productStockMutations); err != nil {
-				return err
-			}
+// 			if err := productStockMutationRepository.InsertMany(ctx, productStockMutations); err != nil {
+// 				return err
+// 			}
 
-			return nil
-		}),
-	)
+// 			return nil
+// 		}),
+// 	)
 
-	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
-		customer:             true,
-		deliveryOrderItems:   true,
-		deliveryOrderImages:  true,
-		deliveryOrderDrivers: true,
-		_return:              true,
-	})
+// 	u.mustLoadDeliveryOrdersData(ctx, []*model.DeliveryOrder{&deliveryOrder}, deliveryOrdersLoaderParams{
+// 		customer:             true,
+// 		deliveryOrderItems:   true,
+// 		deliveryOrderImages:  true,
+// 		deliveryOrderDrivers: true,
+// 		_return:              true,
+// 	})
 
-	return deliveryOrder
-}
+// 	return deliveryOrder
+// }
 
 func (u *deliveryOrderUseCase) DeliveryLocation(ctx context.Context, request dto_request.DeliveryOrderDeliveryLocationRequest) {
 	authUser := model.MustGetUserCtx(ctx)

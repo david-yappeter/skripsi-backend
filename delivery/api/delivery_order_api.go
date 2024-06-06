@@ -276,39 +276,6 @@ func (a *DeliveryOrderApi) Completed() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/delivery-orders/{id}/returned [patch]
-//	@Summary	Returned
-//	@tags		Delivery Orders
-//	@Accept		json
-//	@Param		id											path	string										true	"Id"
-//	@Param		dto_request.DeliveryOrderReturnedRequest	body	dto_request.DeliveryOrderReturnedRequest	true	"Body Request"
-//	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
-func (a *DeliveryOrderApi) Returned() gin.HandlerFunc {
-	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionDeliveryOrderReturned),
-		func(ctx apiContext) {
-			id := ctx.getUuidParam("id")
-			var request dto_request.DeliveryOrderReturnedRequest
-			ctx.mustBind(&request)
-			request.DeliveryOrderId = id
-
-			deliveryOrder := a.deliveryOrderUseCase.Returned(ctx.context(), request)
-
-			ctx.json(
-				http.StatusOK,
-				dto_response.Response{
-					Data: dto_response.DataResponse{
-						"delivery_order": dto_response.NewDeliveryOrderResponse(deliveryOrder),
-					},
-				},
-			)
-		},
-	)
-}
-
-// API:
-//
 //	@Router		/delivery-orders/delivery-location [patch]
 //	@Summary	Delivery Location
 //	@tags		Delivery Orders
@@ -729,7 +696,7 @@ func RegisterDeliveryOrderApi(router gin.IRouter, useCaseManager use_case.UseCas
 	routerGroup.PATCH("/:id/on-going", api.OnGoing())
 	routerGroup.PATCH("/:id/delivering", api.Delivering())
 	routerGroup.PATCH("/:id/completed", api.Completed())
-	routerGroup.PATCH("/:id/returned", api.Returned())
+	// routerGroup.PATCH("/:id/returned", api.Returned())
 	routerGroup.PATCH("delivery-location", api.DeliveryLocation())
 
 	routerGroup.DELETE("/:id/items/:delivery_order_item_id", api.DeleteItem())

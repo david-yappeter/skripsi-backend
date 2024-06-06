@@ -212,6 +212,11 @@ func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_reques
 		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_STOCK.COST_PRICE_IS_REQUIRED_WHEN_ADDING_STOCK"))
 	}
 
+	// adjust base cost price
+	if request.Qty > productStock.Qty {
+		productStock.BaseCostPrice = productStock.RecalculateBaseCostPrice(request.Qty-productStock.Qty, *request.CostPrice)
+	}
+
 	productStock.Qty = request.Qty
 
 	var toBeAddedProductStockMutation *model.ProductStockMutation
