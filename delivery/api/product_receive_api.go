@@ -282,7 +282,7 @@ func (a *ProductReceiveApi) Delete() gin.HandlerFunc {
 //	@tags		Product Receives
 //	@Accept		json
 //	@Param		id												path	string											true	"Id"
-//	@Param		product_receive_item_id						path	string											true	"Product Receive Item Id"
+//	@Param		product_receive_item_id							path	string											true	"Product Receive Item Id"
 //	@Param		dto_request.ProductReceiveDeleteImageRequest	body	dto_request.ProductReceiveDeleteImageRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_receive=dto_response.ProductReceiveResponse}}
@@ -317,8 +317,8 @@ func (a *ProductReceiveApi) UpdateItem() gin.HandlerFunc {
 //	@Summary	Delete File
 //	@tags		Product Receives
 //	@Accept		json
-//	@Param		id												path	string											true	"Id"
-//	@Param		product_receive_image_id						path	string											true	"Product Receive Image Id"
+//	@Param		id											path	string										true	"Id"
+//	@Param		product_receive_image_id					path	string										true	"Product Receive Image Id"
 //	@Param		dto_request.ProductReceiveUpdateItemRequest	body	dto_request.ProductReceiveUpdateItemRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_receive=dto_response.ProductReceiveResponse}}

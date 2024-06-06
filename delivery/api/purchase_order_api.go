@@ -82,7 +82,7 @@ func (a *PurchaseOrderApi) Upload() gin.HandlerFunc {
 //	@Summary	Add Item
 //	@tags		Purchase Orders
 //	@Accept		json
-//	@Param		id											path	string										true	"Id"
+//	@Param		id										path	string									true	"Id"
 //	@Param		dto_request.PurchaseOrderAddItemRequest	body	dto_request.PurchaseOrderAddItemRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{purchase_order=dto_response.PurchaseOrderResponse}}
@@ -413,8 +413,8 @@ func (a *PurchaseOrderApi) DeleteItem() gin.HandlerFunc {
 //	@Summary	Delete File
 //	@tags		Purchase Orders
 //	@Accept		json
-//	@Param		id												path	string											true	"Id"
-//	@Param		purchase_order_image_id						path	string											true	"Product Receive Image Id"
+//	@Param		id											path	string										true	"Id"
+//	@Param		purchase_order_image_id						path	string										true	"Product Receive Image Id"
 //	@Param		dto_request.PurchaseOrderDeleteImageRequest	body	dto_request.PurchaseOrderDeleteImageRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{purchase_order=dto_response.PurchaseOrderResponse}}

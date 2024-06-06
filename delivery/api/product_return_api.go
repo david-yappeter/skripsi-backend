@@ -82,7 +82,7 @@ func (a *ProductReturnApi) Upload() gin.HandlerFunc {
 //	@Summary	Add Item
 //	@tags		Product Return
 //	@Accept		json
-//	@Param		id											path	string										true	"Id"
+//	@Param		id										path	string									true	"Id"
 //	@Param		dto_request.ProductReturnAddItemRequest	body	dto_request.ProductReturnAddItemRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_return=dto_response.ProductReturnResponse}}
@@ -347,9 +347,9 @@ func (a *ProductReturnApi) DeleteItem() gin.HandlerFunc {
 //	@Summary	Delete File
 //	@tags		Product Return
 //	@Accept		json
-//	@Param		id												path	string											true	"Id"
-//	@Param		product_return_image_id						path	string											true	"Product Receive Image Id"
-//	@Param		dto_request.ProductReturnUpdateItemRequest	body	dto_request.ProductReturnUpdateItemRequest	true	"Body Request"
+//	@Param		id											path	string										true	"Id"
+//	@Param		product_return_image_id						path	string										true	"Product Receive Image Id"
+//	@Param		dto_request.ProductReturnDeleteImageRequest	body	dto_request.ProductReturnDeleteImageRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{product_return=dto_response.ProductReturnResponse}}
 func (a *ProductReturnApi) DeleteImage() gin.HandlerFunc {
