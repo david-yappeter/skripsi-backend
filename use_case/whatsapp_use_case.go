@@ -200,8 +200,8 @@ Halo %s,
 Kami ingin memberitahu Anda tentang perubahan harga pada salah satu barang yang Anda minati. Dalam rangka memastikan ketersediaan stok dan kualitas layanan kami, harga untuk barang berikut telah mengalami perubahan:
 
 📦 Nama Barang	: *%s*
-💰 Harga Lama	: Rp. %d
-💸 Harga Baru	: Rp. %d
+💰 Harga Lama	: ~Rp. %s~
+💸 Harga Baru	: *Rp. %s*
 
 Kami memahami bahwa perubahan harga mungkin dapat mempengaruhi keputusan Anda. Namun, kami berkomitmen untuk terus memberikan produk berkualitas dengan harga yang kompetitif.
 
