@@ -14,7 +14,7 @@ func init() {
 				created_at timestamp NOT NULL,
 				updated_at timestamp NOT NULL,
 				CONSTRAINT product_return_items_pk PRIMARY KEY (id),
-				CONSTRAINT product_return_items_product_returns_fk FOREIGN KEY (product_returns) REFERENCES product_returns (id),
+				CONSTRAINT product_return_items_product_returns_fk FOREIGN KEY (product_return_id) REFERENCES product_returns (id),
 				CONSTRAINT product_return_items_product_units_fk FOREIGN KEY (product_unit_id) REFERENCES product_units (id)
 			);
 		`,
