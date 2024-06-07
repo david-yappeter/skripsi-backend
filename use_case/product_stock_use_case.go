@@ -217,8 +217,6 @@ func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_reques
 		productStock.BaseCostPrice = productStock.RecalculateBaseCostPrice(request.Qty-productStock.Qty, *request.CostPrice)
 	}
 
-	productStock.Qty = request.Qty
-
 	var toBeAddedProductStockMutation *model.ProductStockMutation
 
 	panicIfErr(
@@ -228,6 +226,7 @@ func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_reques
 			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
 
 			if productStock.Qty < request.Qty {
+				productStock.Qty = request.Qty
 				baseProductUnit, err := u.repositoryManager.ProductUnitRepository().GetBaseProductUnitByProductId(ctx, productStock.ProductId)
 				if err != nil {
 					return err
@@ -245,6 +244,7 @@ func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_reques
 					MutatedAt:     currentDateTime,
 				}
 			} else if productStock.Qty > request.Qty {
+				productStock.Qty = request.Qty
 				deductQty := request.Qty - productStock.Qty
 
 				for deductQty > 0 {

@@ -148,6 +148,7 @@ func (u *tiktokProductUseCase) Create(ctx context.Context, request dto_request.T
 			SizeChart: sizeChart,
 		},
 	)
+	panicIfErr(err)
 
 	if listingResp.CheckResult == "FAILED" {
 		if len(listingResp.FailReasons) > 0 {
