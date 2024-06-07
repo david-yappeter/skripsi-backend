@@ -8,9 +8,10 @@ import (
 
 var (
 	ProductStockOne = model.ProductStock{
-		Id:        "6feb27eb-d326-4234-ae0b-db810680fa57",
-		ProductId: ProductKalengCatMerah.Id,
-		Qty:       0,
+		Id:            "6feb27eb-d326-4234-ae0b-db810680fa57",
+		ProductId:     ProductKalengCatMerah.Id,
+		Qty:           0,
+		BaseCostPrice: 0,
 	}
 )
 

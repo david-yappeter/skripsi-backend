@@ -64,8 +64,6 @@ type PurchaseOrderCancelRequest struct {
 } // @name PurchaseOrderCancelRequest
 
 type PurchaseOrderMarkCompleteRequest struct {
-	Date data_type.Date `json:"date"`
-
 	PurchaseOrderId string `json:"-" swaggerignore:"true"`
 } // @name PurchaseOrderMarkCompleteRequest
 

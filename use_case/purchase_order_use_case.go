@@ -435,7 +435,7 @@ func (u *purchaseOrderUseCase) MarkComplete(ctx context.Context, request dto_req
 		SupplierId:      purchaseOrder.SupplierId,
 		UserId:          purchaseOrder.UserId,
 		InvoiceNumber:   purchaseOrder.InvoiceNumber,
-		Date:            request.Date,
+		Date:            util.CurrentDate(),
 		Status:          data_type.ProductReceiveStatusPending,
 		TotalPrice:      purchaseOrder.TotalEstimatedPrice,
 	}
