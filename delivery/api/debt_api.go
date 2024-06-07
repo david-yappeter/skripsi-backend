@@ -88,7 +88,7 @@ func (a *DebtApi) Fetch() gin.HandlerFunc {
 //	@tags		Debts
 //	@Param		id	path	string	true	"Id"
 //	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{customer_debt=dto_response.DebtResponse}}
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{debt=dto_response.DebtResponse}}
 func (a *DebtApi) Get() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionDebtGet),
@@ -105,7 +105,7 @@ func (a *DebtApi) Get() gin.HandlerFunc {
 				http.StatusOK,
 				dto_response.Response{
 					Data: dto_response.DataResponse{
-						"customer_debt": dto_response.NewDebtResponse(debt),
+						"debt": dto_response.NewDebtResponse(debt),
 					},
 				},
 			)
@@ -122,7 +122,7 @@ func (a *DebtApi) Get() gin.HandlerFunc {
 //	@Param		id								path	string							true	"Id"
 //	@Param		dto_request.DebtPaymentRequest	body	dto_request.DebtPaymentRequest	true	"Body Request"
 //	@Produce	json
-//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{customer_debt=dto_response.DebtResponse}}
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{debt=dto_response.DebtResponse}}
 func (a *DebtApi) Payment() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionDebtPayment),
@@ -139,7 +139,7 @@ func (a *DebtApi) Payment() gin.HandlerFunc {
 				http.StatusOK,
 				dto_response.Response{
 					Data: dto_response.DataResponse{
-						"customer_debt": dto_response.NewDebtResponse(debt),
+						"debt": dto_response.NewDebtResponse(debt),
 					},
 				},
 			)

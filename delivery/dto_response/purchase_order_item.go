@@ -13,7 +13,6 @@ type PurchaseOrderItemResponse struct {
 	Timestamp
 
 	ProductUnit *ProductUnitResponse `json:"product_unit" extensions:"x-nullable"`
-	CreatedBy   *UserResponse        `json:"created_by" extensions:"x-nullable"`
 } // @name PurchaseOrderItemResponse
 
 func NewPurchaseOrderItemResponse(purchaseOrderItem model.PurchaseOrderItem) PurchaseOrderItemResponse {
@@ -24,10 +23,6 @@ func NewPurchaseOrderItemResponse(purchaseOrderItem model.PurchaseOrderItem) Pur
 		Qty:             purchaseOrderItem.Qty,
 		PricePerUnit:    purchaseOrderItem.PricePerUnit,
 		Timestamp:       Timestamp(purchaseOrderItem.Timestamp),
-	}
-
-	if purchaseOrderItem.User != nil {
-		r.CreatedBy = NewUserResponseP(*purchaseOrderItem.User)
 	}
 
 	if purchaseOrderItem.ProductUnit != nil {
