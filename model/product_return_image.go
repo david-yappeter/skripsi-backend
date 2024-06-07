@@ -1,6 +1,6 @@
 package model
 
-const ProductReturnImageTableName = "product_return_image"
+const ProductReturnImageTableName = "product_return_images"
 
 type ProductReturnImage struct {
 	Id              string  `db:"id"`
