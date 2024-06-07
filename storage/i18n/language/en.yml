@@ -68,6 +68,7 @@ PRODUCT_STOCK.COST_PRICE_IS_REQUIRED_WHEN_ADDING_STOCK: "Cost price is required 
 # product_return_use_case.go
 PRODUCT_RETURN.STATUS_MUST_BE_PENDING: "Status must be pending"
 PRODUCT_RETURN.ALREADY_CANCELED: "Already canceled"
+PRODUCT_RETURN.INSUFFICIENT_STOCK: "Insufficient Stock"
 PRODUCT_RETURN.PRODUCT_ALREADY_SOLD_CANNOT_BE_CANCELED: "Product already sold, can't be canceled"
 PRODUCT_RETURN_ITEM.NOT_FOUND: "Product return item not found"
 PRODUCT_RETURN.STATUS.MUST_BE_COMPLETED: "Status must be completed"

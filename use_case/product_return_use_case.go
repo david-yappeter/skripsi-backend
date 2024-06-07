@@ -206,7 +206,7 @@ func (u *productReturnUseCase) AddItem(ctx context.Context, request dto_request.
 	}
 
 	if productStock.Qty < totalSmallestQty {
-		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER.PRODUCT_OUT_OF_STOCK"))
+		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RETURN.INSUFFICIENT_STOCK"))
 	}
 
 	// deduct product stock
