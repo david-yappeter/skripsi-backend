@@ -237,6 +237,7 @@ func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_reques
 					Type:          data_type.ProductStockMutationTypeProductStockAdjustment,
 					IdentifierId:  productStock.Id,
 					Qty:           request.Qty - productStock.Qty,
+					
 					ScaleToBase:   1,
 					BaseQtyLeft:   request.Qty - productStock.Qty,
 					BaseCostPrice: *request.CostPrice,

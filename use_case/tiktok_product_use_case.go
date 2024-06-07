@@ -722,6 +722,80 @@ func (u *tiktokProductUseCase) Update(ctx context.Context, request dto_request.T
 		}
 	}
 
+	listingMainImages := []gotiktok.CreateProductRequestMainImage{}
+	for _, uri := range uriImages {
+		listingMainImages = append(listingMainImages, gotiktok.CreateProductRequestMainImage(uri))
+	}
+	var listingSizeChart *gotiktok.CreateProductRequestSizeChart
+	if sizeChart != nil {
+		listingSizeChart = util.Pointer(gotiktok.CreateProductRequestSizeChart{Image: (*gotiktok.CreateProductRequestSizeChartImage)(sizeChart.Image)})
+	}
+
+	var listingPackageDimension *gotiktok.PackageDimensions
+	if sizeChart != nil {
+		listingPackageDimension = (*gotiktok.PackageDimensions)(packageDimension)
+	}
+
+	var listingAttributes []gotiktok.CreateProductRequestProductAttribute
+	for _, attr := range request.Attributes {
+		val := []gotiktok.CreateProductRequestProductAttributeValue{}
+
+		for _, value := range attr.Values {
+			val = append(val, gotiktok.CreateProductRequestProductAttributeValue(value))
+		}
+
+		listingAttributes = append(listingAttributes, gotiktok.CreateProductRequestProductAttribute{
+			Id:     attr.Id,
+			Values: val,
+		})
+	}
+
+	listingResp, err := client.ListingCheckProduct(ctx,
+		gotiktok.CommonParam{
+			AccessToken: *tiktokConfig.AccessToken,
+			ShopCipher:  tiktokConfig.ShopCipher,
+			ShopId:      tiktokConfig.ShopId,
+		},
+		gotiktok.ListingCheckProductRequest{
+			Description: request.Description,
+			CategoryId:  request.CategoryId,
+			BrandId:     request.BrandId,
+			MainImages:  listingMainImages,
+			Skus: []gotiktok.CreateProductRequestSku{
+				{
+					Inventory: []gotiktok.CreateProductRequestSkuInventory{
+						{
+							WarehouseId: tiktokConfig.WarehouseId,
+							Quantity:    int(product.ProductStock.Qty),
+						},
+					},
+					SellerSku: &product.Id,
+					Price: gotiktok.CreateProductRequestSkuPrice{
+						Amount:   fmt.Sprintf("%+v", *product.Price),
+						Currency: "IDR",
+					},
+				},
+			},
+			Title:             request.Title,
+			IsCodAllowed:      false,
+			PackageDimensions: listingPackageDimension,
+			ProductAttributes: listingAttributes,
+			PackageWeight: gotiktok.PackageWeight{
+				Unit:  request.WeightUnit.String(),
+				Value: fmt.Sprintf("%+v", request.Weight),
+			},
+			Video:     nil,
+			SizeChart: listingSizeChart,
+		},
+	)
+	panicIfErr(err)
+
+	if listingResp.CheckResult == "FAILED" {
+		if len(listingResp.FailReasons) > 0 {
+			panic(dto_response.NewBadRequestErrorResponse(listingResp.FailReasons[0].Message))
+		}
+	}
+
 	_, err = client.UpdateProduct(
 		ctx,
 		gotiktok.CommonParam{
