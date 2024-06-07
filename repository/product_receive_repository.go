@@ -18,6 +18,7 @@ type ProductReceiveRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.ProductReceiveQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.ProductReceiveQueryOption) ([]model.ProductReceive, error)
+	FetchByIds(ctx context.Context, ids []string) ([]model.ProductReceive, error)
 	Get(ctx context.Context, id string) (*model.ProductReceive, error)
 	IsExistBySupplierId(ctx context.Context, supplierId string) (bool, error)
 
@@ -118,6 +119,14 @@ func (r *productReceiveRepository) Fetch(ctx context.Context, options ...model.P
 	}
 
 	stmt := r.prepareQuery(option)
+
+	return r.fetch(ctx, stmt)
+}
+
+func (r *productReceiveRepository) FetchByIds(ctx context.Context, ids []string) ([]model.ProductReceive, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.ProductReceiveTableName).
+		Where(squirrel.Eq{"id": ids})
 
 	return r.fetch(ctx, stmt)
 }

@@ -60,15 +60,22 @@ func NewDebtUseCase(
 
 func (u *debtUseCase) mustLoadDebtsData(ctx context.Context, debts []*model.Debt, option debtLoaderParams) {
 	debtPaymentsLoader := loader.NewDebtPaymentsLoader(u.repositoryManager.DebtPaymentRepository())
+	productReceiveLoader := loader.NewProductReceiveLoader(u.repositoryManager.ProductReceiveRepository())
 
 	panicIfErr(util.Await(func(group *errgroup.Group) {
 		for i := range debts {
 			if option.payments {
 				group.Go(debtPaymentsLoader.DebtFn(debts[i]))
 			}
+
+			switch debts[i].DebtSource {
+			case data_type.DebtSourceProductReceive:
+				group.Go(productReceiveLoader.DebtFn(debts[i]))
+			}
 		}
 	}))
 
+	supplierLoader := loader.NewSupplierLoader(u.repositoryManager.SupplierRepository())
 	fileLoader := loader.NewFileLoader(u.repositoryManager.FileRepository())
 
 	panicIfErr(util.Await(func(group *errgroup.Group) {
@@ -76,6 +83,10 @@ func (u *debtUseCase) mustLoadDebtsData(ctx context.Context, debts []*model.Debt
 			for i := range debts {
 				for j := range debts[i].DebtPayments {
 					group.Go(fileLoader.DebtPaymentFn(&debts[i].DebtPayments[j]))
+				}
+
+				if debts[i].ProductReceive != nil {
+					group.Go(supplierLoader.ProductReceiveFn(debts[i].ProductReceive))
 				}
 			}
 		}
