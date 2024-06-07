@@ -267,6 +267,10 @@ func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_reques
 				}
 			}
 
+			if request.Qty == 0 {
+				productStock.BaseCostPrice = 0
+			}
+
 			if err := productStockRepository.Update(ctx, &productStock); err != nil {
 				return err
 			}
