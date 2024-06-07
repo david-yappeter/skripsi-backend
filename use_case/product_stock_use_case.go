@@ -226,7 +226,6 @@ func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_reques
 			productStockMutationRepository := u.repositoryManager.ProductStockMutationRepository()
 
 			if productStock.Qty < request.Qty {
-				productStock.Qty = request.Qty
 				baseProductUnit, err := u.repositoryManager.ProductUnitRepository().GetBaseProductUnitByProductId(ctx, productStock.ProductId)
 				if err != nil {
 					return err
@@ -266,6 +265,9 @@ func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_reques
 					}
 				}
 			}
+
+			// change qty
+			productStock.Qty = request.Qty
 
 			if request.Qty == 0 {
 				productStock.BaseCostPrice = 0
