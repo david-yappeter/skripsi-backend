@@ -783,7 +783,7 @@ func (u *deliveryOrderUseCase) MarkOngoing(ctx context.Context, request dto_requ
 				deductQtyLeft := deliveryOrderItem.Qty
 
 				productUnit := mustGetProductUnit(ctx, u.repositoryManager, deliveryOrderItem.ProductUnitId, true)
-				productStock := mustGetProductStock(ctx, u.repositoryManager, productUnit.ProductId, true)
+				productStock := mustGetProductStockByProductId(ctx, u.repositoryManager, productUnit.ProductId, true)
 
 				for deductQtyLeft > 0 {
 					productStockMutation, err := u.repositoryManager.ProductStockMutationRepository().GetFIFOByProductIdAndBaseQtyLeftNotZero(ctx, deliveryOrderItem.ProductUnit.ProductId)
