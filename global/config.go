@@ -54,6 +54,7 @@ type YamlConfig struct {
 	Timezone           string            `yaml:"timezone"`
 	Port               uint              `yaml:"port"`
 	Uri                string            `yaml:"uri"`
+	FrontendUri        string            `yaml:"frontend_uri"`
 	Filesystem         string            `yaml:"filesystem"`
 	PdfGeneratorUrl    string            `yaml:"pdf_generator_url"`
 	CorsAllowedOrigins []string          `yaml:"cors_allowed_origins"`

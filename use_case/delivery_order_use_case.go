@@ -921,7 +921,7 @@ Salam hangat,
 				deliveryOrder.Customer.Name,
 				deliveryOrder.InvoiceNumber,
 				deliveryOrder.Customer.Address,
-				fmt.Sprintf("%s/p/review-order/%s", global.GetConfig().Uri, deliveryOrder.Id),
+				fmt.Sprintf("%s/p/track-order/%s", global.GetConfig().FrontendUri, deliveryOrder.Id),
 				"Toko Setia Abadi",
 			)),
 		})
@@ -986,7 +986,7 @@ Salam hangat,
 *%s*
 `,
 				deliveryOrder.Customer.Name,
-				fmt.Sprintf("%s/p/review-order/%s", global.GetConfig().Uri, deliveryOrder.Id),
+				fmt.Sprintf("%s/p/review-order/%s", global.GetConfig().FrontendUri, deliveryOrder.Id),
 				"Toko Setia Abadi",
 			)),
 		})
