@@ -129,12 +129,14 @@ func (u *cartUseCase) mustLoadCartDatas(ctx context.Context, carts []*model.Cart
 
 	fileLoader := loader.NewFileLoader(u.repositoryManager.FileRepository())
 	productDiscountLoader := loader.NewProductDiscountLoader(u.repositoryManager.ProductDiscountRepository())
+	productStockLoader := loader.NewProductStockLoader(u.repositoryManager.ProductStockRepository())
 
 	panicIfErr(util.Await(func(group *errgroup.Group) {
 		for i := range carts {
 			for j := range carts[i].CartItems {
 				group.Go(fileLoader.ProductFn(carts[i].CartItems[j].ProductUnit.Product))
 				group.Go(productDiscountLoader.ProductFnNotStrict(carts[i].CartItems[j].ProductUnit.Product))
+				group.Go(productStockLoader.ProductFnNotStrict(carts[i].CartItems[j].ProductUnit.Product))
 			}
 		}
 	}))
