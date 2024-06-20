@@ -134,6 +134,8 @@ func (u *debtUseCase) Fetch(ctx context.Context, request dto_request.DebtFetchRe
 	total, err := u.repositoryManager.DebtRepository().Count(ctx, queryOption)
 	panicIfErr(err)
 
+	u.mustLoadDebtsData(ctx, util.SliceValueToSlicePointer(debts), debtLoaderParams{})
+
 	return debts, total
 }
 
