@@ -50,7 +50,9 @@ type DeliveryOrderFetchRequest struct {
 
 type DeliveryOrderFetchDriverRequest struct {
 	PaginationRequest
-	Status *data_type.DeliveryOrderStatus `json:"status" validate:"omitempty,data_type_enum"`
+	Status    *data_type.DeliveryOrderStatus `json:"status" validate:"omitempty,data_type_enum"`
+	StartDate data_type.NullDate             `json:"start_date"`
+	EndDate   data_type.NullDate             `json:"end_date"`
 } // @name DeliveryOrderFetchDriverRequest
 
 type DeliveryOrderGetRequest struct {

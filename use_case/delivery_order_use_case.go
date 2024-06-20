@@ -537,6 +537,8 @@ func (u *deliveryOrderUseCase) FetchDriver(ctx context.Context, request dto_requ
 		SortStatusImportance: true,
 		Status:               request.Status,
 		DriverUserId:         &authUser.Id,
+		StartDate:            request.StartDate,
+		EndDate:              request.EndDate,
 	}
 
 	deliveryOrders, err := u.repositoryManager.DeliveryOrderRepository().Fetch(ctx, queryOption)

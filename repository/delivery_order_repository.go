@@ -116,6 +116,14 @@ END`,
 		stmt = stmt.Where(squirrel.NotEq{"dorder.status": option.ExcludeStatuses})
 	}
 
+	if option.StartDate.DateP() != nil {
+		stmt = stmt.Where(squirrel.GtOrEq{"dorder.date": option.StartDate})
+	}
+
+	if option.EndDate.DateP() != nil {
+		stmt = stmt.Where(squirrel.LtOrEq{"dorder.date": option.EndDate})
+	}
+
 	stmt = model.Prepare(stmt, &option)
 
 	return stmt
