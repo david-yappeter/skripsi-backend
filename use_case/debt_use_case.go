@@ -79,9 +79,9 @@ func (u *debtUseCase) mustLoadDebtsData(ctx context.Context, debts []*model.Debt
 	fileLoader := loader.NewFileLoader(u.repositoryManager.FileRepository())
 
 	panicIfErr(util.Await(func(group *errgroup.Group) {
-		if option.payments {
-			for i := range debts {
-				for j := range debts[i].DebtPayments {
+		for i := range debts {
+			for j := range debts[i].DebtPayments {
+				if option.payments {
 					group.Go(fileLoader.DebtPaymentFn(&debts[i].DebtPayments[j]))
 				}
 
