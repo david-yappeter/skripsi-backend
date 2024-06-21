@@ -80,14 +80,14 @@ func (u *debtUseCase) mustLoadDebtsData(ctx context.Context, debts []*model.Debt
 
 	panicIfErr(util.Await(func(group *errgroup.Group) {
 		for i := range debts {
-			for j := range debts[i].DebtPayments {
-				if option.payments {
+			if option.payments {
+				for j := range debts[i].DebtPayments {
 					group.Go(fileLoader.DebtPaymentFn(&debts[i].DebtPayments[j]))
 				}
+			}
 
-				if debts[i].ProductReceive != nil {
-					group.Go(supplierLoader.ProductReceiveFn(debts[i].ProductReceive))
-				}
+			if debts[i].ProductReceive != nil {
+				group.Go(supplierLoader.ProductReceiveFn(debts[i].ProductReceive))
 			}
 		}
 	}))
