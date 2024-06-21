@@ -33,7 +33,7 @@ type CartGetRequest struct {
 } // @name CartGetRequest
 
 type CartUpdateItemRequest struct {
-	Qty        float64 `json:"qty" validate:"required,gt=0"`
+	Qty        float64 `json:"qty"`
 	CartItemId string  `json:"-" swaggerignore:"true"`
 } // @name CartUpdateRequest
 

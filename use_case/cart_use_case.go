@@ -301,6 +301,10 @@ func (u *cartUseCase) GetCurrent(ctx context.Context) *model.Cart {
 }
 
 func (u *cartUseCase) UpdateItem(ctx context.Context, request dto_request.CartUpdateItemRequest) model.Cart {
+	if request.Qty <= 0 {
+		panic(dto_response.NewBadRequestErrorResponse("CART_ITEM.QTY_MUST_BE_GREATER_THAN_0"))
+	}
+
 	// check cashier session and active cart
 	cashierSession := u.mustGetCurrentUserActiveCashierSession(ctx)
 	cart := u.mustGetActiveCartByCashierSessionId(ctx, cashierSession.Id)
@@ -311,15 +315,21 @@ func (u *cartUseCase) UpdateItem(ctx context.Context, request dto_request.CartUp
 		panic(dto_response.NewBadRequestErrorResponse("CART_ITEM.NOT_FOUND"))
 	}
 
+	u.mustLoadCartDatas(ctx, []*model.Cart{&cart}, cartLoaderParams{
+		items: true,
+	})
+
+	// TODO DANGER: might cause bug because product stock not reserved
+	// check if qty doesn't exceeded product stock
+	if cartItem.ProductUnit.Product.ProductStock.Qty < request.Qty {
+		panic(dto_response.NewBadRequestErrorResponse("CART_ITEM.QTY_EXCEEDED_STOCK_AVAILABLE"))
+	}
+
 	cartItem.Qty = request.Qty
 
 	panicIfErr(
 		u.repositoryManager.CartItemRepository().Update(ctx, &cartItem),
 	)
-
-	u.mustLoadCartDatas(ctx, []*model.Cart{&cart}, cartLoaderParams{
-		items: true,
-	})
 
 	return cart
 }

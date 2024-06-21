@@ -3,6 +3,8 @@ AUTH.ACCOUNT_NOT_REGISTERED: "Akun tidak terdaftar"
 AUTH.WRONG_PASSWORD: "Username atau password salah"
 
 # cart_use_case.go
+CART_ITEM.QTY_EXCEEDED_STOCK_AVAILABLE: "Stok barang tidak cukup"
+CART_ITEM.QTY_MUST_BE_GREATER_THAN_0: "Jumlah barang harus lebih besar dari 0"
 CART.USER_MUST_HAVE_ACTIVE_CASHIER_SESSION: "Cart harus punya sesi kasir aktif"
 CART.ACTIVE_NOT_FOUND: "Keranjang yang aktif tidak ditemukan"
 CART.CART_ITEM_NOT_FOUND: "Barang keranjang tidak ditemukan"

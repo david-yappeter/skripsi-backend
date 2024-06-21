@@ -3,6 +3,8 @@ AUTH.ACCOUNT_NOT_REGISTERED: "Account Not Registered"
 AUTH.WRONG_PASSWORD: "Wrong username or password"
 
 # cart_use_case.go
+CART_ITEM.QTY_EXCEEDED_STOCK_AVAILABLE: "Invalid Qty, exceeded stock available"
+CART_ITEM.QTY_MUST_BE_GREATER_THAN_0: "Qty must be greater than 0"
 CART.USER_MUST_HAVE_ACTIVE_CASHIER_SESSION: "Cart must have an active cashier session"
 CART.ACTIVE_NOT_FOUND: "No active cart found"
 CART.CART_ITEM_NOT_FOUND: "Cart item not found"
