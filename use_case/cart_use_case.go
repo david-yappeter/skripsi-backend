@@ -321,8 +321,10 @@ func (u *cartUseCase) UpdateItem(ctx context.Context, request dto_request.CartUp
 
 	// TODO DANGER: might cause bug because product stock not reserved
 	// check if qty doesn't exceeded product stock
-	if cartItem.ProductUnit.Product.ProductStock.Qty < request.Qty {
-		panic(dto_response.NewBadRequestErrorResponse("CART_ITEM.QTY_EXCEEDED_STOCK_AVAILABLE"))
+	for _, loopCartItem := range cart.CartItems {
+		if loopCartItem.Id == cartItem.Id && loopCartItem.ProductUnit.Product.ProductStock.Qty < request.Qty {
+			panic(dto_response.NewBadRequestErrorResponse("CART_ITEM.QTY_EXCEEDED_STOCK_AVAILABLE"))
+		}
 	}
 
 	cartItem.Qty = request.Qty
