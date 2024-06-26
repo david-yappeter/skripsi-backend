@@ -39,6 +39,15 @@ func (m *Transaction) ToMap() map[string]interface{} {
 	}
 }
 
+func (m Transaction) TotalPayment() float64 {
+	totalPayment := 0.0
+	for _, transactionPayment := range m.TransactionPayments {
+		totalPayment += transactionPayment.TotalPaid
+	}
+
+	return totalPayment
+}
+
 type TransactionQueryOption struct {
 	QueryOption
 

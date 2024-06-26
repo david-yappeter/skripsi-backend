@@ -90,12 +90,6 @@ func EscposReceiptTemplate(attribute EscposReceiptTemplateAttribute) []uint8 {
 		template = append(template, generate.Cash()...)
 	}
 
-	// Page Mode
-	template = append(template, generate.SetPageMode()...)
-
-	// Print Page Mode Data
-	template = append(template, generate.PrintPageModeBufferData()...)
-
 	// Set to Standard Mode
 	template = append(template, generate.SetStandardMode()...)
 

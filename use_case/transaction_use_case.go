@@ -2,6 +2,7 @@ package use_case
 
 import (
 	"context"
+	"fmt"
 	"myapp/constant"
 	"myapp/data_type"
 	"myapp/delivery/dto_request"
@@ -206,6 +207,7 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 					Qty:             cartItem.Qty,
 					PricePerUnit:    *cartItem.ProductUnit.Product.Price,
 					DiscountPerUnit: discountPerUnit,
+					ProductUnit:     cartItem.ProductUnit,
 				}
 				transactionItems = append(transactionItems, transactionItem)
 
@@ -316,18 +318,28 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 
 	isCash := request.PaymentType == data_type.TransactionPaymentTypeCash
 
+	templateItems := []printer_template.EscposReceiptItem{}
+	for _, transactionItem := range transaction.TransactionItems {
+		templateItems = append(templateItems, printer_template.EscposReceiptItem{
+			Name:        transactionItem.ProductUnit.Product.Name,
+			PricePerQty: util.CurrencyFormat(int(transactionItem.PricePerUnitAfterDiscount()), language.Indonesian),
+			Qty:         fmt.Sprintf("%.2f", transactionItem.Qty),
+			TotalPrice:  util.CurrencyFormat(int(transactionItem.GrossTotal()), language.Indonesian),
+		})
+	}
+
 	templateAttribute := printer_template.EscposReceiptTemplateAttribute{
 		StoreName:      "Toko Setia Abadi",
 		Address:        "Jl. Marelan Raya No.88 A-B, Tanah Enam Ratus, Kec. Medan Marelan",
 		PhoneNumber:    "081362337116",
 		Date:           transaction.PaymentAt.DateTime().Format("02/01/2006 15:04:05"),
 		Cashier:        cashierUser.Name,
-		Items:          []printer_template.EscposReceiptItem{},
+		Items:          templateItems,
 		SubTotal:       nil,
 		DiscountAmount: nil,
 		GrandTotal:     util.CurrencyFormat(int(transaction.Total), language.Indonesian),
-		Paid:           util.CurrencyFormat(int(transaction.Total), language.Indonesian),
-		Change:         "0",
+		Paid:           util.CurrencyFormat(int(transaction.TotalPayment()), language.Indonesian),
+		Change:         util.CurrencyFormat(int(transaction.TotalPayment()-transaction.Total), language.Indonesian),
 		OpenDrawer:     true,
 		IsCash:         isCash,
 	}

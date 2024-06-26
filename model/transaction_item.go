@@ -38,6 +38,14 @@ func (m *TransactionItem) ToMap() map[string]interface{} {
 	}
 }
 
+func (m TransactionItem) PricePerUnitAfterDiscount() float64 {
+	if m.DiscountPerUnit != nil {
+		return math.Max(m.PricePerUnit-*m.DiscountPerUnit, 0)
+	} else {
+		return m.PricePerUnit
+	}
+}
+
 func (m TransactionItem) GrossTotal() float64 {
 	if m.DiscountPerUnit != nil {
 		return m.Qty * math.Max(m.PricePerUnit-*m.DiscountPerUnit, 0)
