@@ -435,8 +435,10 @@ func (u *productReceiveUseCase) MarkComplete(ctx context.Context, request dto_re
 
 	for _, productReceiveItem := range productReceive.ProductReceiveItems {
 		// adjust base cost price
-		productStockByProductId[productReceiveItem.ProductUnit.ProductId] = new(model.ProductStock)
-		*productStockByProductId[productReceiveItem.ProductUnit.ProductId] = *productReceiveItem.ProductUnit.ProductStock
+		if productStockByProductId[productReceiveItem.ProductUnit.ProductId] == nil {
+			productStockByProductId[productReceiveItem.ProductUnit.ProductId] = new(model.ProductStock)
+			*productStockByProductId[productReceiveItem.ProductUnit.ProductId] = *productReceiveItem.ProductUnit.ProductStock
+		}
 
 		productStockByProductId[productReceiveItem.ProductUnit.ProductId].BaseCostPrice = productStockByProductId[productReceiveItem.ProductUnit.ProductId].RecalculateBaseCostPrice(productReceiveItem.BaseEligibleQty(), productReceiveItem.PricePerUnit/productReceiveItem.ScaleToBase)
 		productStockByProductId[productReceiveItem.ProductUnit.ProductId].Qty += productReceiveItem.BaseEligibleQty()
