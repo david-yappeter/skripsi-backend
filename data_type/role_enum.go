@@ -293,6 +293,8 @@ func GetRoleInventoryPermissions() []Permission {
 
 		// user
 		PermissionUserOptionForProductStockAdjustmentFilter,
+		PermissionUserOptionForCashierSessionFilter,
+		PermissionUserOptionForDeliveryOrderDriverForm,
 
 		// whatsapp
 		PermissionWhatsappProductPriceChangeBroadcast,
