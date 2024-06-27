@@ -38,12 +38,12 @@ func (r Role) Permissions() []Permission {
 
 func GetRoleSuperPermissions() []Permission {
 	return []Permission{
-		// balance
-		PermissionBalanceCreate,
-		PermissionBalanceFetch,
-		PermissionBalanceGet,
-		PermissionBalanceUpdate,
-		PermissionBalanceDelete,
+		// // balance
+		// PermissionBalanceCreate,
+		// PermissionBalanceFetch,
+		// PermissionBalanceGet,
+		// PermissionBalanceUpdate,
+		// PermissionBalanceDelete,
 
 		// cashier session
 		PermissionCashierSessionFetch,
@@ -59,20 +59,20 @@ func GetRoleSuperPermissions() []Permission {
 		// ssr
 		PermissionSsrWhatsappLogin,
 
-		// supplier
-		PermissionSupplierCreate,
-		PermissionSupplierFetch,
-		PermissionSupplierGet,
-		PermissionSupplierUpdate,
-		PermissionSupplierDelete,
+		// // supplier
+		// PermissionSupplierCreate,
+		// PermissionSupplierFetch,
+		// PermissionSupplierGet,
+		// PermissionSupplierUpdate,
+		// PermissionSupplierDelete,
 
-		// supplier type
-		PermissionSupplierTypeCreate,
-		PermissionSupplierTypeFetch,
-		PermissionSupplierTypeGet,
-		PermissionSupplierTypeUpdate,
-		PermissionSupplierTypeDelete,
-		PermissionSupplierTypeOptionForSupplierForm,
+		// // supplier type
+		// PermissionSupplierTypeCreate,
+		// PermissionSupplierTypeFetch,
+		// PermissionSupplierTypeGet,
+		// PermissionSupplierTypeUpdate,
+		// PermissionSupplierTypeDelete,
+		// PermissionSupplierTypeOptionForSupplierForm,
 
 		// role
 		PermissionRoleOptionForUserForm,
@@ -90,14 +90,14 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionUserOptionForCashierSessionFilter,
 		PermissionUserOptionForDeliveryOrderDriverForm,
 
-		// unit
-		PermissionUnitCreate,
-		PermissionUnitFetch,
-		PermissionUnitGet,
-		PermissionUnitUpdate,
-		PermissionUnitDelete,
-		PermissionUnitOptionForProductUnitForm,
-		PermissionUnitOptionForProductUnitToUnitForm,
+		// // unit
+		// PermissionUnitCreate,
+		// PermissionUnitFetch,
+		// PermissionUnitGet,
+		// PermissionUnitUpdate,
+		// PermissionUnitDelete,
+		// PermissionUnitOptionForProductUnitForm,
+		// PermissionUnitOptionForProductUnitToUnitForm,
 
 		// whatsapp
 		PermissionWhatsappIsLoggedIn,
