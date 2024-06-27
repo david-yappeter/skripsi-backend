@@ -50,7 +50,7 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionCashierSessionGet,
 		PermissionCashierSessionFetchTransaction,
 		PermissionCashierSessionDownloadReport,
-		PermissionCashierSessionGetCurrent,
+		// PermissionCashierSessionGetCurrent,
 
 		// dashboard
 		PermissionDashboardSummarizeDebt,
