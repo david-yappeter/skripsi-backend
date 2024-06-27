@@ -320,6 +320,9 @@ func GetRoleCashier() []Permission {
 		PermissionCashierSessionGetCurrent,
 		PermissionCashierSessionEnd,
 
+		// product
+		PermissionProductOptionForCartAddItemForm,
+
 		// transaction
 		PermissionTransactionCheckoutCart,
 		PermissionTransactionGet,
