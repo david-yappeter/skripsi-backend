@@ -26,6 +26,7 @@ func (m *DeliveryOrderReview) ToMap() map[string]interface{} {
 		"id":                m.Id,
 		"delivery_order_id": m.DeliveryOrderId,
 		"star_rating":       m.StarRating,
+		"description":       m.Description,
 		"created_at":        m.CreatedAt,
 		"updated_at":        m.UpdatedAt,
 	}
