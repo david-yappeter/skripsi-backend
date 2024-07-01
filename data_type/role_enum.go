@@ -248,6 +248,42 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionPurchaseOrderDeleteItem,
 		PermissionPurchaseOrderDeleteImage,
 
+		// customer
+		PermissionCustomerCreate,
+		PermissionCustomerFetch,
+		PermissionCustomerGet,
+		PermissionCustomerUpdate,
+		PermissionCustomerDelete,
+		PermissionCustomerOptionForDeliveryOrderForm,
+		PermissionCustomerOptionForDeliveryOrderFilter,
+
+		// customer type
+		PermissionCustomerTypeCreate,
+		PermissionCustomerTypeFetch,
+		PermissionCustomerTypeGet,
+		PermissionCustomerTypeUpdate,
+		PermissionCustomerTypeDelete,
+		PermissionCustomerTypeAddDiscount,
+		PermissionCustomerTypeUpdateDiscount,
+		PermissionCustomerTypeDeleteDiscount,
+		PermissionCustomerTypeOptionForCustomerForm,
+		PermissionCustomerTypeOptionForWhatsappProductPriceChangeBroadcastForm,
+
+		// supplier
+		PermissionSupplierCreate,
+		PermissionSupplierFetch,
+		PermissionSupplierGet,
+		PermissionSupplierUpdate,
+		PermissionSupplierDelete,
+
+		// supplier type
+		PermissionSupplierTypeCreate,
+		PermissionSupplierTypeFetch,
+		PermissionSupplierTypeGet,
+		PermissionSupplierTypeUpdate,
+		PermissionSupplierTypeDelete,
+		PermissionSupplierTypeOptionForSupplierForm,
+
 		// shop order
 		PermissionShopOrderFetch,
 		PermissionShopOrderGet,
