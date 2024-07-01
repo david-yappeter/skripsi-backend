@@ -108,7 +108,7 @@ func (r *transactionPaymentRepository) GetByTransactionId(ctx context.Context, t
 }
 
 func (r *transactionPaymentRepository) GetTotalPaymentByCashierSessionIdAndPaymentType(ctx context.Context, cashierSessionId string, paymentType data_type.TransactionPaymentType) (*float64, error) {
-	stmt := stmtBuilder.Select("SUM(total) as total").
+	stmt := stmtBuilder.Select("COALESCE(SUM(total), 0) as total").
 		From(fmt.Sprintf("%s tp", model.TransactionPaymentTableName)).
 		Where(squirrel.Eq{"tp.payment_type": paymentType}).
 		Where(
