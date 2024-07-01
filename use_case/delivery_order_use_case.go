@@ -352,6 +352,13 @@ func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.
 			deliveryOrderItemRepository := u.repositoryManager.DeliveryOrderItemRepository()
 			productStockRepository := u.repositoryManager.ProductStockRepository()
 
+			// update tiktok product stock
+			tiktokProduct := shouldGetTiktokProductByProductId(ctx, u.repositoryManager, product.Id)
+
+			if tiktokProduct != nil {
+				mustUpdateTiktokProductInventory(ctx, u.repositoryManager, tiktokProduct.TiktokProductId, int(productStock.Qty))
+			}
+
 			if isProductStockExist {
 				if err := productStockRepository.Update(ctx, productStock); err != nil {
 					return err
@@ -696,6 +703,14 @@ func (u *deliveryOrderUseCase) Cancel(ctx context.Context, request dto_request.D
 			}
 
 			for _, productStock := range productStockByProductId {
+
+				// update tiktok product stock
+				tiktokProduct := shouldGetTiktokProductByProductId(ctx, u.repositoryManager, productStock.ProductId)
+
+				if tiktokProduct != nil {
+					mustUpdateTiktokProductInventory(ctx, u.repositoryManager, tiktokProduct.TiktokProductId, int(productStock.Qty))
+				}
+
 				if err := productStockRepository.Update(ctx, productStock); err != nil {
 					return err
 				}
@@ -1295,6 +1310,13 @@ func (u *deliveryOrderUseCase) DeleteItem(ctx context.Context, request dto_reque
 			deliveryOrderRepository := u.repositoryManager.DeliveryOrderRepository()
 			deliveryOrderItemRepository := u.repositoryManager.DeliveryOrderItemRepository()
 			productStockRepository := u.repositoryManager.ProductStockRepository()
+
+			// update tiktok product stock
+			tiktokProduct := shouldGetTiktokProductByProductId(ctx, u.repositoryManager, productStock.ProductId)
+
+			if tiktokProduct != nil {
+				mustUpdateTiktokProductInventory(ctx, u.repositoryManager, tiktokProduct.TiktokProductId, int(productStock.Qty))
+			}
 
 			if err := deliveryOrderRepository.Update(ctx, &deliveryOrder); err != nil {
 				return err

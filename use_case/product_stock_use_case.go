@@ -237,7 +237,7 @@ func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_reques
 					Type:          data_type.ProductStockMutationTypeProductStockAdjustment,
 					IdentifierId:  productStock.Id,
 					Qty:           request.Qty - productStock.Qty,
-					
+
 					ScaleToBase:   1,
 					BaseQtyLeft:   request.Qty - productStock.Qty,
 					BaseCostPrice: *request.CostPrice,
@@ -272,6 +272,13 @@ func (u *productStockUseCase) Adjustment(ctx context.Context, request dto_reques
 
 			if request.Qty == 0 {
 				productStock.BaseCostPrice = 0
+			}
+
+			// update tiktok product stock
+			tiktokProduct := shouldGetTiktokProductByProductId(ctx, u.repositoryManager, product.Id)
+
+			if tiktokProduct != nil {
+				mustUpdateTiktokProductInventory(ctx, u.repositoryManager, tiktokProduct.TiktokProductId, int(productStock.Qty))
 			}
 
 			if err := productStockRepository.Update(ctx, &productStock); err != nil {

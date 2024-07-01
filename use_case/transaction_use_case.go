@@ -304,6 +304,13 @@ func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_reque
 			}
 
 			for _, productStock := range productStockMapByProductUnitId {
+				// update tiktok product stock
+				tiktokProduct := shouldGetTiktokProductByProductId(ctx, u.repositoryManager, productStock.ProductId)
+
+				if tiktokProduct != nil {
+					mustUpdateTiktokProductInventory(ctx, u.repositoryManager, tiktokProduct.TiktokProductId, int(productStock.Qty))
+				}
+
 				if err := productStockRepository.Update(ctx, &productStock); err != nil {
 					return err
 				}

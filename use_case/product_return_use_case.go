@@ -235,6 +235,12 @@ func (u *productReturnUseCase) AddItem(ctx context.Context, request dto_request.
 			productReturnItemRepository := u.repositoryManager.ProductReturnItemRepository()
 			productStockRepository := u.repositoryManager.ProductStockRepository()
 
+			tiktokProduct := shouldGetTiktokProductByProductId(ctx, u.repositoryManager, product.Id)
+
+			if tiktokProduct != nil {
+				mustUpdateTiktokProductInventory(ctx, u.repositoryManager, tiktokProduct.TiktokProductId, int(productStock.Qty))
+			}
+
 			if err := productStockRepository.Update(ctx, productStock); err != nil {
 				return err
 			}
@@ -511,6 +517,12 @@ func (u *productReturnUseCase) DeleteItem(ctx context.Context, request dto_reque
 			productReturnRepository := u.repositoryManager.ProductReturnRepository()
 			productReturnItemRepository := u.repositoryManager.ProductReturnItemRepository()
 			productStockRepository := u.repositoryManager.ProductStockRepository()
+
+			tiktokProduct := shouldGetTiktokProductByProductId(ctx, u.repositoryManager, product.Id)
+
+			if tiktokProduct != nil {
+				mustUpdateTiktokProductInventory(ctx, u.repositoryManager, tiktokProduct.TiktokProductId, int(productStock.Qty))
+			}
 
 			if err := productReturnRepository.Update(ctx, &productReturn); err != nil {
 				return err
