@@ -216,17 +216,13 @@ func (a *CashierSessionApi) GetCurrent() gin.HandlerFunc {
 //	@Summary	End Cashier Session
 //	@tags		Cashier Sessions
 //	@Accept		json
-//	@Param		dto_request.CashierSessionEndRequest	body	dto_request.CashierSessionEndRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{cashier_session=dto_response.CashierSessionResponse}}
 func (a *CashierSessionApi) End() gin.HandlerFunc {
 	return a.Authorize(
 		data_type.PermissionP(data_type.PermissionCashierSessionEnd),
 		func(ctx apiContext) {
-			var request dto_request.CashierSessionEndRequest
-			ctx.mustBind(&request)
-
-			cashierSession := a.cashierSessionUseCase.End(ctx.context(), request)
+			cashierSession := a.cashierSessionUseCase.End(ctx.context())
 
 			ctx.json(
 				http.StatusOK,

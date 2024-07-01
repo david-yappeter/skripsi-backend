@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"myapp/data_type"
 	"myapp/infrastructure"
 	"myapp/model"
@@ -19,6 +20,7 @@ type TransactionPaymentRepository interface {
 	FetchByTransactionIds(ctx context.Context, transactionIds []string) ([]model.TransactionPayment, error)
 	Get(ctx context.Context, id string) (*model.TransactionPayment, error)
 	GetByTransactionId(ctx context.Context, transactionId string) (*model.TransactionPayment, error)
+	GetTotalPaymentByCashierSessionIdAndPaymentType(ctx context.Context, cashierSessionId string, paymentType data_type.TransactionPaymentType) (*float64, error)
 
 	// update
 	Update(ctx context.Context, transactionPayment *model.TransactionPayment) error
@@ -103,6 +105,26 @@ func (r *transactionPaymentRepository) GetByTransactionId(ctx context.Context, t
 		Where(squirrel.Eq{"transaction_id": transactionId})
 
 	return r.get(ctx, stmt)
+}
+
+func (r *transactionPaymentRepository) GetTotalPaymentByCashierSessionIdAndPaymentType(ctx context.Context, cashierSessionId string, paymentType data_type.TransactionPaymentType) (*float64, error) {
+	stmt := stmtBuilder.Select("SUM(total) as total").
+		From(fmt.Sprintf("%s tp", model.TransactionPaymentTableName)).
+		Where(squirrel.Eq{"tp.payment_type": paymentType}).
+		Where(
+			stmtBuilder.Select("1").
+				From(fmt.Sprintf("%s t", model.TransactionTableName)).
+				Where("t.id = tp.transaction_id").
+				Where(squirrel.Eq{"t.cashier_session_id": cashierSessionId}).
+				Prefix("EXISTS (").Suffix(")"),
+		)
+
+	var total float64
+	if err := get(r.db, ctx, &total, stmt); err != nil {
+		return nil, err
+	}
+
+	return &total, nil
 }
 
 func (r *transactionPaymentRepository) Update(ctx context.Context, transactionPayment *model.TransactionPayment) error {

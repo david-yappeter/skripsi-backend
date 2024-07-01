@@ -44,5 +44,4 @@ type CashierSessionDownloadReportRequest struct {
 } // @name CashierSessionDownloadReportRequest
 
 type CashierSessionEndRequest struct {
-	EndingCash float64 `json:"ending_cash" validate:"required,gte=0"`
 } // @name CashierSessionEndRequest

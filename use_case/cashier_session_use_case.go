@@ -31,7 +31,7 @@ type CashierSessionUseCase interface {
 	GetByCurrentUser(ctx context.Context) *model.CashierSession
 
 	//  update
-	End(ctx context.Context, request dto_request.CashierSessionEndRequest) model.CashierSession
+	End(ctx context.Context) model.CashierSession
 }
 
 type cashierSessionUseCase struct {
@@ -282,7 +282,7 @@ func (u *cashierSessionUseCase) GetByCurrentUser(ctx context.Context) *model.Cas
 	return cashierSession
 }
 
-func (u *cashierSessionUseCase) End(ctx context.Context, request dto_request.CashierSessionEndRequest) model.CashierSession {
+func (u *cashierSessionUseCase) End(ctx context.Context) model.CashierSession {
 	currentDateTime := util.CurrentDateTime()
 	authUser := model.MustGetUserCtx(ctx)
 	cashierSession, err := u.repositoryManager.CashierSessionRepository().GetByUserIdAndStatusActive(ctx, authUser.Id)
@@ -298,7 +298,10 @@ func (u *cashierSessionUseCase) End(ctx context.Context, request dto_request.Cas
 
 	u.mustValidateCashierSessionNoCart(ctx, cashierSession.Id)
 
-	cashierSession.EndingCash = &request.EndingCash
+	totalCashPayment, err := u.repositoryManager.TransactionPaymentRepository().GetTotalPaymentByCashierSessionIdAndPaymentType(ctx, cashierSession.Id, data_type.TransactionPaymentTypeCash)
+	panicIfErr(err)
+
+	cashierSession.EndingCash = util.Pointer(cashierSession.StartingCash + *totalCashPayment)
 	cashierSession.Status = data_type.CashierSessionStatusCompleted
 	cashierSession.EndedAt = currentDateTime.NullDateTime()
 
