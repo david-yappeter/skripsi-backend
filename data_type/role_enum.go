@@ -38,6 +38,27 @@ func (r Role) Permissions() []Permission {
 
 func GetRoleSuperPermissions() []Permission {
 	return []Permission{
+		// customer
+		PermissionCustomerCreate,
+		PermissionCustomerFetch,
+		PermissionCustomerGet,
+		PermissionCustomerUpdate,
+		PermissionCustomerDelete,
+		PermissionCustomerOptionForDeliveryOrderForm,
+		PermissionCustomerOptionForDeliveryOrderFilter,
+
+		// customer type
+		PermissionCustomerTypeCreate,
+		PermissionCustomerTypeFetch,
+		PermissionCustomerTypeGet,
+		PermissionCustomerTypeUpdate,
+		PermissionCustomerTypeDelete,
+		PermissionCustomerTypeAddDiscount,
+		PermissionCustomerTypeUpdateDiscount,
+		PermissionCustomerTypeDeleteDiscount,
+		PermissionCustomerTypeOptionForCustomerForm,
+		PermissionCustomerTypeOptionForWhatsappProductPriceChangeBroadcastForm,
+
 		// // balance
 		// PermissionBalanceCreate,
 		// PermissionBalanceFetch,
@@ -63,20 +84,20 @@ func GetRoleSuperPermissions() []Permission {
 		// ssr
 		PermissionSsrWhatsappLogin,
 
-		// // supplier
-		// PermissionSupplierCreate,
-		// PermissionSupplierFetch,
-		// PermissionSupplierGet,
-		// PermissionSupplierUpdate,
-		// PermissionSupplierDelete,
+		// supplier
+		PermissionSupplierCreate,
+		PermissionSupplierFetch,
+		PermissionSupplierGet,
+		PermissionSupplierUpdate,
+		PermissionSupplierDelete,
 
-		// // supplier type
-		// PermissionSupplierTypeCreate,
-		// PermissionSupplierTypeFetch,
-		// PermissionSupplierTypeGet,
-		// PermissionSupplierTypeUpdate,
-		// PermissionSupplierTypeDelete,
-		// PermissionSupplierTypeOptionForSupplierForm,
+		// supplier type
+		PermissionSupplierTypeCreate,
+		PermissionSupplierTypeFetch,
+		PermissionSupplierTypeGet,
+		PermissionSupplierTypeUpdate,
+		PermissionSupplierTypeDelete,
+		PermissionSupplierTypeOptionForSupplierForm,
 
 		// role
 		PermissionRoleOptionForUserForm,
@@ -111,27 +132,6 @@ func GetRoleSuperPermissions() []Permission {
 
 func GetRoleInventoryPermissions() []Permission {
 	return []Permission{
-		// customer
-		PermissionCustomerCreate,
-		PermissionCustomerFetch,
-		PermissionCustomerGet,
-		PermissionCustomerUpdate,
-		PermissionCustomerDelete,
-		PermissionCustomerOptionForDeliveryOrderForm,
-		PermissionCustomerOptionForDeliveryOrderFilter,
-
-		// customer type
-		PermissionCustomerTypeCreate,
-		PermissionCustomerTypeFetch,
-		PermissionCustomerTypeGet,
-		PermissionCustomerTypeUpdate,
-		PermissionCustomerTypeDelete,
-		PermissionCustomerTypeAddDiscount,
-		PermissionCustomerTypeUpdateDiscount,
-		PermissionCustomerTypeDeleteDiscount,
-		PermissionCustomerTypeOptionForCustomerForm,
-		PermissionCustomerTypeOptionForWhatsappProductPriceChangeBroadcastForm,
-
 		// dashboard
 		PermissionDashboardSummarizeDebt,
 		PermissionDashboardSummarizeTransaction,
@@ -248,26 +248,9 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionPurchaseOrderDeleteItem,
 		PermissionPurchaseOrderDeleteImage,
 
-		// supplier type
-		PermissionSupplierTypeCreate,
-		PermissionSupplierTypeFetch,
-		PermissionSupplierTypeGet,
-		PermissionSupplierTypeUpdate,
-		PermissionSupplierTypeDelete,
-		PermissionSupplierTypeOptionForSupplierForm,
-
 		// shop order
 		PermissionShopOrderFetch,
 		PermissionShopOrderGet,
-
-		// supplier
-		PermissionSupplierCreate,
-		PermissionSupplierFetch,
-		PermissionSupplierGet,
-		PermissionSupplierUpdate,
-		PermissionSupplierDelete,
-		PermissionSupplierOptionForProductReceiveForm,
-		PermissionSupplierOptionForProductReceiveFilter,
 
 		// tiktok product
 		PermissionTiktokProductCreate,
