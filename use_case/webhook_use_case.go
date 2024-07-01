@@ -107,9 +107,6 @@ func (u *webhookUseCase) OrderStatusChange(ctx context.Context, request dto_requ
 				if mapShopOrderItemByPlatformProductId[item.ProductId] == nil {
 					productUnit, err := u.repositoryManager.ProductUnitRepository().GetBaseProductUnitByProductId(ctx, item.SellerSku)
 					panicIfErr(err)
-					product := mustGetProduct(ctx, u.repositoryManager, item.SellerSku, true)
-
-					mapProductStockUsedByProductId[product.Id] += 1.0
 
 					mapShopOrderItemByPlatformProductId[item.ProductId] = &model.ShopOrderItem{
 						Id:                util.NewUuid(),
@@ -125,6 +122,10 @@ func (u *webhookUseCase) OrderStatusChange(ctx context.Context, request dto_requ
 				} else {
 					mapShopOrderItemByPlatformProductId[item.ProductId].Quantity += 1
 				}
+
+				// increment stock used
+				product := mustGetProduct(ctx, u.repositoryManager, item.SellerSku, true)
+				mapProductStockUsedByProductId[product.Id] += 1.0
 			}
 			for _, shopOrderItem := range mapShopOrderItemByPlatformProductId {
 				shopOrderItems = append(shopOrderItems, *shopOrderItem)
