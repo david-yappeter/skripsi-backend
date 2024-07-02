@@ -49,6 +49,12 @@ type CustomerOptionForDeliveryOrderFormSorts []struct {
 	Direction string `json:"direction" validate:"required,oneof=asc desc" example:"asc"`
 } // @name CustomerOptionForDeliveryOrderFormSorts
 
+type CustomerOptionForWhatsappCustomerDebtBroadcastForm struct {
+	PaginationRequest
+	Sorts  CustomerOptionForDeliveryOrderFormSorts `json:"sorts" validate:"unique=Field,dive"`
+	Phrase *string                                 `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+} // @name CustomerOptionForWhatsappCustomerDebtBroadcastForm
+
 type CustomerOptionForDeliveryOrderFormRequest struct {
 	PaginationRequest
 	Sorts  CustomerOptionForDeliveryOrderFormSorts `json:"sorts" validate:"unique=Field,dive"`

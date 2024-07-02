@@ -179,6 +179,41 @@ func (a *CustomerApi) Delete() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/customers/options/whatsapp-customer-debt-broadcast-form [post]
+//	@Summary	Option for Whatsapp Customer Debt Broadcast Form
+//	@tags		Customers
+//	@Accept		json
+//	@Param		dto_request.CustomerOptionForWhatsappCustomerDebtBroadcastForm	body	dto_request.CustomerOptionForWhatsappCustomerDebtBroadcastForm	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.CustomerResponse}}
+func (a *CustomerApi) OptionForWhatsappCustomerDebtBroadcastForm() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCustomerOptionForWhatsappCustomerDebtBroadcastForm),
+		func(ctx apiContext) {
+			var request dto_request.CustomerOptionForWhatsappCustomerDebtBroadcastForm
+			ctx.mustBind(&request)
+
+			customers, total := a.customerUseCase.OptionForWhatsappCustomerDebtBroadcastForm(ctx.context(), request)
+
+			nodes := util.ConvertArray(customers, dto_response.NewCustomerResponse)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Page:  request.Page,
+						Limit: request.Limit,
+						Total: total,
+						Nodes: nodes,
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/customers/options/delivery-order-form [post]
 //	@Summary	Option for Delivery Order Form
 //	@tags		Customers
@@ -261,6 +296,7 @@ func RegisterCustomerApi(router gin.IRouter, useCaseManager use_case.UseCaseMana
 	routerGroup.DELETE("/:id", api.Delete())
 
 	optionRouterGroup := routerGroup.Group("/options")
+	optionRouterGroup.POST("/whatsapp-customer-debt-broadcast-form", api.OptionForWhatsappCustomerDebtBroadcastForm())
 	optionRouterGroup.POST("/delivery-order-form", api.OptionForDeliveryOrderForm())
 	optionRouterGroup.POST("/delivery-order-filter", api.OptionForDeliveryOrderFilter())
 }

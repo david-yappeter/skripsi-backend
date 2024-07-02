@@ -31,6 +31,7 @@ type CustomerUseCase interface {
 	Delete(ctx context.Context, request dto_request.CustomerDeleteRequest)
 
 	// option
+	OptionForWhatsappCustomerDebtBroadcastForm(ctx context.Context, request dto_request.CustomerOptionForWhatsappCustomerDebtBroadcastForm) ([]model.Customer, int)
 	OptionForDeliveryOrderForm(ctx context.Context, request dto_request.CustomerOptionForDeliveryOrderFormRequest) ([]model.Customer, int)
 	OptionForDeliveryOrderFilter(ctx context.Context, request dto_request.CustomerOptionForDeliveryOrderFilterRequest) ([]model.Customer, int)
 }
@@ -165,6 +166,30 @@ func (u *customerUseCase) Delete(ctx context.Context, request dto_request.Custom
 	panicIfErr(
 		u.repositoryManager.CustomerRepository().Delete(ctx, &customer),
 	)
+}
+
+func (u *customerUseCase) OptionForWhatsappCustomerDebtBroadcastForm(ctx context.Context, request dto_request.CustomerOptionForWhatsappCustomerDebtBroadcastForm) ([]model.Customer, int) {
+	queryOption := model.CustomerQueryOption{
+		QueryOption: model.NewQueryOptionWithPagination(
+			request.Page,
+			request.Limit,
+			model.Sorts(request.Sorts),
+		),
+		IsActive: util.BoolP(true),
+		Phrase:   request.Phrase,
+	}
+
+	customers, err := u.repositoryManager.CustomerRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	total, err := u.repositoryManager.CustomerRepository().Count(ctx, queryOption)
+	panicIfErr(err)
+
+	u.mustLoadCustomersData(ctx, util.SliceValueToSlicePointer(customers), customerLoaderParams{
+		customerType: true,
+	})
+
+	return customers, total
 }
 
 func (u *customerUseCase) OptionForDeliveryOrderForm(ctx context.Context, request dto_request.CustomerOptionForDeliveryOrderFormRequest) ([]model.Customer, int) {
