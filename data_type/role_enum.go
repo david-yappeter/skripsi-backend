@@ -59,19 +59,11 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionCustomerTypeOptionForCustomerForm,
 		PermissionCustomerTypeOptionForWhatsappProductPriceChangeBroadcastForm,
 
-		// // balance
-		// PermissionBalanceCreate,
-		// PermissionBalanceFetch,
-		// PermissionBalanceGet,
-		// PermissionBalanceUpdate,
-		// PermissionBalanceDelete,
-
 		// cashier session
 		PermissionCashierSessionFetch,
 		PermissionCashierSessionGet,
 		PermissionCashierSessionFetchTransaction,
 		PermissionCashierSessionDownloadReport,
-		// PermissionCashierSessionGetCurrent,
 
 		// dashboard
 		PermissionDashboardSummarizeDebt,
@@ -114,15 +106,6 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionUserDeleteRole,
 		PermissionUserOptionForCashierSessionFilter,
 		PermissionUserOptionForDeliveryOrderDriverForm,
-
-		// // unit
-		// PermissionUnitCreate,
-		// PermissionUnitFetch,
-		// PermissionUnitGet,
-		// PermissionUnitUpdate,
-		// PermissionUnitDelete,
-		// PermissionUnitOptionForProductUnitForm,
-		// PermissionUnitOptionForProductUnitToUnitForm,
 
 		// whatsapp
 		PermissionWhatsappIsLoggedIn,
@@ -270,19 +253,8 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionCustomerTypeOptionForWhatsappProductPriceChangeBroadcastForm,
 
 		// supplier
-		PermissionSupplierCreate,
-		PermissionSupplierFetch,
-		PermissionSupplierGet,
-		PermissionSupplierUpdate,
-		PermissionSupplierDelete,
-
-		// supplier type
-		PermissionSupplierTypeCreate,
-		PermissionSupplierTypeFetch,
-		PermissionSupplierTypeGet,
-		PermissionSupplierTypeUpdate,
-		PermissionSupplierTypeDelete,
-		PermissionSupplierTypeOptionForSupplierForm,
+		PermissionSupplierOptionForProductReceiveForm,
+		PermissionSupplierOptionForProductReceiveFilter,
 
 		// shop order
 		PermissionShopOrderFetch,
