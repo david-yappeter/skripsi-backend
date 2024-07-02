@@ -15,8 +15,9 @@ type DebtResponse struct {
 	RemainingAmount float64              `json:"remaining_amount"`
 
 	Timestamp
-	Payments []DebtPaymentResponse `json:"payments" extensions:"x-nullable"`
-	Supplier *SupplierResponse     `json:"supplier" extensions:"x-nullable"`
+	Payments       []DebtPaymentResponse   `json:"payments" extensions:"x-nullable"`
+	ProductReceive *ProductReceiveResponse `json:"product_receive" extensions:"x-nullable"`
+	Supplier       *SupplierResponse       `json:"supplier" extensions:"x-nullable"`
 } // @name DebtResponse
 
 func NewDebtResponse(debt model.Debt) DebtResponse {
@@ -37,6 +38,10 @@ func NewDebtResponse(debt model.Debt) DebtResponse {
 
 	if debt.ProductReceive != nil && debt.ProductReceive.Supplier != nil {
 		r.Supplier = NewSupplierResponseP(*debt.ProductReceive.Supplier)
+	}
+
+	if debt.ProductReceive != nil {
+		r.ProductReceive = NewProductReceiveResponseP(*debt.ProductReceive)
 	}
 
 	return r
