@@ -20,6 +20,7 @@ import (
 type customerDebtLoaderParams struct {
 	customer         bool
 	customerPayments bool
+	deliveryOrder    bool
 }
 
 type CustomerDebtUseCase interface {
@@ -62,6 +63,7 @@ func NewCustomerDebtUseCase(
 func (u *customerDebtUseCase) mustLoadCustomerDebtsData(ctx context.Context, customerDebts []*model.CustomerDebt, option customerDebtLoaderParams) {
 	customerLoader := loader.NewCustomerLoader(u.repositoryManager.CustomerRepository())
 	customerPaymentsLoader := loader.NewCustomerPaymentsLoader(u.repositoryManager.CustomerPaymentRepository())
+	deliveryOrderLoader := loader.NewDeliveryOrderLoader(u.repositoryManager.DeliveryOrderRepository())
 
 	panicIfErr(util.Await(func(group *errgroup.Group) {
 		for i := range customerDebts {
@@ -71,6 +73,10 @@ func (u *customerDebtUseCase) mustLoadCustomerDebtsData(ctx context.Context, cus
 
 			if option.customer {
 				group.Go(customerLoader.CustomerDebtFn(customerDebts[i]))
+			}
+
+			if option.deliveryOrder {
+				group.Go(deliveryOrderLoader.CustomerDebtFn(customerDebts[i]))
 			}
 		}
 	}))
@@ -138,6 +144,7 @@ func (u *customerDebtUseCase) Fetch(ctx context.Context, request dto_request.Cus
 	u.mustLoadCustomerDebtsData(ctx, util.SliceValueToSlicePointer(customerDebts), customerDebtLoaderParams{
 		customerPayments: false,
 		customer:         true,
+		deliveryOrder:    true,
 	})
 
 	return customerDebts, total
@@ -149,6 +156,7 @@ func (u *customerDebtUseCase) Get(ctx context.Context, request dto_request.Custo
 	u.mustLoadCustomerDebtsData(ctx, []*model.CustomerDebt{&customerDebt}, customerDebtLoaderParams{
 		customerPayments: true,
 		customer:         true,
+		deliveryOrder:    true,
 	})
 
 	return customerDebt
@@ -236,6 +244,7 @@ func (u *customerDebtUseCase) Payment(ctx context.Context, request dto_request.C
 	u.mustLoadCustomerDebtsData(ctx, []*model.CustomerDebt{&customerDebt}, customerDebtLoaderParams{
 		customerPayments: true,
 		customer:         true,
+		deliveryOrder:    true,
 	})
 
 	return customerDebt

@@ -16,8 +16,9 @@ type CustomerDebtResponse struct {
 
 	Timestamp
 
-	Customer *CustomerResponse         `json:"customer" extensions:"x-nullable"`
-	Payments []CustomerPaymentResponse `json:"payments" extensions:"x-nullable"`
+	Customer      *CustomerResponse         `json:"customer" extensions:"x-nullable"`
+	Payments      []CustomerPaymentResponse `json:"payments" extensions:"x-nullable"`
+	DeliveryOrder *DeliveryOrderResponse    `json:"delivery_order" extensions:"x-nullable"`
 } // @name CustomerDebtResponse
 
 func NewCustomerDebtResponse(customerDebt model.CustomerDebt) CustomerDebtResponse {
@@ -34,6 +35,10 @@ func NewCustomerDebtResponse(customerDebt model.CustomerDebt) CustomerDebtRespon
 
 	if customerDebt.Customer != nil {
 		r.Customer = NewCustomerResponseP(*customerDebt.Customer)
+	}
+
+	if customerDebt.DeliveryOrder != nil {
+		r.DeliveryOrder = NewDeliveryOrderResponseP(*customerDebt.DeliveryOrder)
 	}
 
 	for _, customerPayment := range customerDebt.CustomerPayments {
