@@ -168,6 +168,8 @@ func (u *debtUseCase) Payment(ctx context.Context, request dto_request.DebtPayme
 	debt.RemainingAmount -= request.Amount
 	if debt.RemainingAmount == 0 {
 		debt.Status = data_type.DebtStatusPaid
+	} else {
+		debt.Status = data_type.DebtStatusHalfPaid
 	}
 
 	// initialize debt payment

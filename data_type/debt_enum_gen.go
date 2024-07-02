@@ -14,21 +14,24 @@ func _() {
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
 	_ = x[DebtStatusUnpaid-1]
-	_ = x[DebtStatusCanceled-2]
-	_ = x[DebtStatusPaid-3]
-	_ = x[DebtStatusReturned-4]
+	_ = x[DebtStatusHalfPaid-2]
+	_ = x[DebtStatusCanceled-3]
+	_ = x[DebtStatusPaid-4]
+	_ = x[DebtStatusReturned-5]
 }
 
-const _DebtStatus_nameReadable = "UNPAID, CANCELED, PAID, RETURNED"
+const _DebtStatus_nameReadable = "UNPAID, HALF_PAID, CANCELED, PAID, RETURNED"
 
-const _DebtStatus_name = "UNPAIDCANCELEDPAIDRETURNED"
+const _DebtStatus_name = "UNPAIDHALF_PAIDCANCELEDPAIDRETURNED"
 
-var _DebtStatus_index = [...]uint8{0, 6, 14, 18, 26}
+var _DebtStatus_index = [...]uint8{0, 6, 15, 23, 27, 35}
 
 func (i *DebtStatus) Determine(s string) {
 	switch s {
 	case "UNPAID":
 		*i = DebtStatusUnpaid
+	case "HALF_PAID":
+		*i = DebtStatusHalfPaid
 	case "CANCELED":
 		*i = DebtStatusCanceled
 	case "PAID":
@@ -104,6 +107,7 @@ func DebtStatusP(v DebtStatus) *DebtStatus {
 func ListDebtStatus() []DebtStatus {
 	return []DebtStatus{
 		DebtStatusUnpaid,
+		DebtStatusHalfPaid,
 		DebtStatusCanceled,
 		DebtStatusPaid,
 		DebtStatusReturned,
@@ -113,6 +117,7 @@ func ListDebtStatus() []DebtStatus {
 func ListDebtStatusString() []string {
 	return []string{
 		DebtStatusUnpaid.String(),
+		DebtStatusHalfPaid.String(),
 		DebtStatusCanceled.String(),
 		DebtStatusPaid.String(),
 		DebtStatusReturned.String(),
