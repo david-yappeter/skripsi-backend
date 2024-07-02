@@ -125,6 +125,9 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionCustomerDebtGet,
 		PermissionCustomerDebtPayment,
 
+		// customer
+		PermissionCustomerOptionForWhatsappCustomerDebtBroadcastForm,
+
 		// debt
 		PermissionDebtUploadImage,
 		PermissionDebtFetch,
