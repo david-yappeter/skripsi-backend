@@ -52,6 +52,39 @@ func (a *CashierSessionApi) Fetch() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/cashier-sessions/filter/current-user [post]
+//	@Summary	Fetch Cashier Sessions for Current User (Cashier)
+//	@tags		Cashier Sessions
+//	@Accept		json
+//	@Param		dto_request.CashierSessionFetchForCurrentUserRequest	body	dto_request.CashierSessionFetchForCurrentUserRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.CashierSessionResponse}}
+func (a *CashierSessionApi) FetchForCurrentUser() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCashierSessionFetchForCurrentUser),
+		func(ctx apiContext) {
+			var request dto_request.CashierSessionFetchForCurrentUserRequest
+			ctx.mustBind(&request)
+
+			cashierSessions, total := a.cashierSessionUseCase.FetchForCurrentUser(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.PaginationResponse{
+						Limit: request.Limit,
+						Page:  request.Page,
+						Total: total,
+						Nodes: util.ConvertArray(cashierSessions, dto_response.NewCashierSessionResponse),
+					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/cashier-sessions/start [post]
 //	@Summary	Start Cashier Session
 //	@tags		Cashier Sessions
@@ -244,6 +277,7 @@ func RegisterCashierSessionApi(router gin.IRouter, useCaseManager use_case.UseCa
 
 	routerGroup := router.Group("/cashier-sessions")
 	routerGroup.POST("/filter", api.Fetch())
+	routerGroup.POST("/filter/current-user", api.FetchForCurrentUser())
 	routerGroup.POST("/start", api.Start())
 	routerGroup.GET("/:id", api.Get())
 	routerGroup.POST("/:id/transactions", api.FetchTransaction())

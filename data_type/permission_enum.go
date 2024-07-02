@@ -21,13 +21,14 @@ const (
 	PermissionCartDelete      // CART_DELETE
 
 	// cashier session
-	PermissionCashierSessionFetch            // CASHIER_SESSION_FETCH
-	PermissionCashierSessionStart            // CASHIER_SESSION_START
-	PermissionCashierSessionGet              // CASHIER_SESSION_GET
-	PermissionCashierSessionFetchTransaction // CASHIER_SESSION_FETCH_TRANSACTION
-	PermissionCashierSessionDownloadReport   // CASHIER_SESSION_DOWNLOAD_REPORT
-	PermissionCashierSessionGetCurrent       // CASHIER_SESSION_GET_CURRENT
-	PermissionCashierSessionEnd              // CASHIER_SESSION_END
+	PermissionCashierSessionFetch               // CASHIER_SESSION_FETCH
+	PermissionCashierSessionFetchForCurrentUser // CASHIER_SESSION_FETCH_FOR_CURRENT_USER
+	PermissionCashierSessionStart               // CASHIER_SESSION_START
+	PermissionCashierSessionGet                 // CASHIER_SESSION_GET
+	PermissionCashierSessionFetchTransaction    // CASHIER_SESSION_FETCH_TRANSACTION
+	PermissionCashierSessionDownloadReport      // CASHIER_SESSION_DOWNLOAD_REPORT
+	PermissionCashierSessionGetCurrent          // CASHIER_SESSION_GET_CURRENT
+	PermissionCashierSessionEnd                 // CASHIER_SESSION_END
 
 	// customer
 	PermissionCustomerCreate                       // CUSTOMER_CREATE

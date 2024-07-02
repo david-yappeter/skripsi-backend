@@ -305,7 +305,7 @@ func GetRoleCashier() []Permission {
 		PermissionCartDelete,
 
 		// cashier session
-		PermissionCashierSessionFetch,
+		PermissionCashierSessionFetchForCurrentUser,
 		PermissionCashierSessionStart,
 		PermissionCashierSessionGet,
 		PermissionCashierSessionFetchTransaction,

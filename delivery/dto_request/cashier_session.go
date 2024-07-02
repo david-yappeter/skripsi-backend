@@ -22,6 +22,16 @@ type CashierSessionFetchRequest struct {
 	EndedAt   data_type.NullDateTime          `json:"ended_at"`
 } // @name CashierSessionFetchRequest
 
+type CashierSessionFetchForCurrentUserRequest struct {
+	PaginationRequest
+
+	Status    *data_type.CashierSessionStatus `json:"status" validate:"omitempty,data_type_enum"`
+	Sorts     CashierSessionFetchSorts        `json:"sorts" validate:"unique=Field,dive"`
+	Phrase    *string                         `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
+	StartedAt data_type.NullDateTime          `json:"started_at"`
+	EndedAt   data_type.NullDateTime          `json:"ended_at"`
+} // @name CashierSessionFetchForCurrentUserRequest
+
 type CashierSessionGetRequest struct {
 	CashierSessionId string `json:"-" swaggerignore:"true"`
 } // @name CashierSessionGetRequest
