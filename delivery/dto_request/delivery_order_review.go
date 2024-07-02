@@ -1,9 +1,9 @@
 package dto_request
 
 type DeliveryOrderReviewCreateGuestRequest struct {
-	DeliveryOrderId string  `json:"delivery_order_id" validate:"required,not_empty,uuid"`
-	StarRating      int     `json:"star_rating" validate:"min=1,max=5"`
-	Description     *string `json:"description" validate:"omitempty,not_empty"`
+	DeliveryOrderId string `json:"delivery_order_id" validate:"required,not_empty,uuid"`
+	StarRating      int    `json:"star_rating" validate:"min=0,max=5"`
+	Description     string `json:"description" validate:"required,not_empty"`
 } // @name DeliveryOrderReviewCreateGuestRequest
 
 type DeliveryOrderReviewFetchSorts []struct {

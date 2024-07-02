@@ -79,7 +79,7 @@ func (u *deliveryOrderReviewUseCase) CreateGuest(ctx context.Context, request dt
 		Id:              util.NewUuid(),
 		DeliveryOrderId: request.DeliveryOrderId,
 		StarRating:      request.StarRating,
-		Description:     request.Description,
+		Description:     &request.Description,
 	}
 
 	panicIfErr(
