@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"myapp/data_type"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
 	"myapp/infrastructure"
 	"myapp/internal/filesystem"
+	"myapp/loader"
 	"myapp/repository"
 	"myapp/util"
 	"net/http"
@@ -16,6 +18,7 @@ import (
 
 	"go.mau.fi/whatsmeow/binary/proto"
 	"go.mau.fi/whatsmeow/types"
+	"golang.org/x/sync/errgroup"
 	"golang.org/x/text/language"
 )
 
@@ -26,6 +29,7 @@ type WhatsappUseCase interface {
 	Logout(ctx context.Context)
 
 	// broadcast
+	CustomerDebtBroadcast(ctx context.Context, request dto_request.WhatsappCustomerDebtBroadcastRequest)
 	CustomerTypeDiscountBroadcast(ctx context.Context, request dto_request.WhatsappCustomerTypeDiscountBroadcastRequest)
 	ProductPriceChangeBroadcast(ctx context.Context, request dto_request.WhatsappProductPriceChangeBroadcastRequest)
 }
@@ -78,6 +82,75 @@ func (u *whatsappUseCase) Logout(ctx context.Context) {
 	panicIfErr(
 		(*u.whatsappManager).Logout(),
 	)
+}
+
+func (u *whatsappUseCase) CustomerDebtBroadcast(ctx context.Context, request dto_request.WhatsappCustomerDebtBroadcastRequest) {
+	if u.whatsappManager == nil {
+		return
+	}
+
+	customer := mustGetCustomer(ctx, u.repositoryManager, request.CustomerId, true)
+
+	customerDebts, err := u.repositoryManager.CustomerDebtRepository().FetchByCustomerIdAndStatuses(
+		ctx,
+		customer.Id,
+		[]data_type.CustomerDebtStatus{
+			data_type.CustomerDebtStatusUnpaid,
+			data_type.CustomerDebtStatusHalfPaid,
+		},
+	)
+	panicIfErr(err)
+
+	deliveryOrderLoader := loader.NewDeliveryOrderLoader(u.repositoryManager.DeliveryOrderRepository())
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		for i := range customerDebts {
+			group.Go(deliveryOrderLoader.CustomerDebtFn(&customerDebts[i]))
+		}
+	}))
+
+	totalRemainingDebts := 0.0
+	customerDebtListMessage := ``
+
+	for _, customerDebt := range customerDebts {
+		totalRemainingDebts += customerDebt.RemainingAmount
+
+		customerDebtListMessage += fmt.Sprintf(`- Pengiriman %s, Total yang belum dibayar: Rp. %s
+`, customerDebt.DeliveryOrder.InvoiceNumber, util.CurrencyFormat(int(customerDebt.RemainingAmount), language.Indonesian))
+	}
+
+	messageTemplate := `Halo %s,
+
+Kami berharap Anda dalam keadaan sehat dan baik.
+
+Kami ingin mengingatkan Anda bahwa terdapat beberapa tagihan yang masih belum diselesaikan. Berikut adalah rincian tagihan Anda:
+
+%s
+
+Total Jumlah yang Harus Dibayar: Rp. *%s*
+
+Jika Anda sudah melakukan pembayaran, silakan abaikan pesan ini atau hubungi kami untuk konfirmasi pembayaran. Jika ada pertanyaan atau membutuhkan bantuan lebih lanjut, jangan ragu untuk menghubungi kami di nomor ini.
+
+Terima kasih atas perhatian dan kerjasamanya.
+
+Hormat kami,
+*%s*`
+
+	go func() {
+		goCtx := context.Background()
+
+		customerJID, _ := types.ParseJID(fmt.Sprintf("%s@s.whatsapp.net", strings.Trim(customer.Phone, "+")))
+
+		(*u.whatsappManager).SendMessage(goCtx, customerJID, &proto.Message{
+			Conversation: util.Pointer(
+				fmt.Sprintf(messageTemplate,
+					customer.Name,
+					customerDebtListMessage,
+					util.CurrencyFormat(int(totalRemainingDebts), language.Indonesian),
+					"Toko Setia Abadi",
+				),
+			),
+		})
+	}()
 }
 
 func (u *whatsappUseCase) CustomerTypeDiscountBroadcast(ctx context.Context, request dto_request.WhatsappCustomerTypeDiscountBroadcastRequest) {

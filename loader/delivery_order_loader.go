@@ -3,6 +3,7 @@ package loader
 import (
 	"context"
 	"myapp/constant"
+	"myapp/data_type"
 	"myapp/model"
 	"myapp/repository"
 
@@ -32,6 +33,22 @@ func (l *DeliveryOrderLoader) DeliveryOrderReviewFn(deliveryOrderReview *model.D
 		}
 
 		deliveryOrderReview.DeliveryOrder = DeliveryOrder
+
+		return nil
+	}
+}
+
+func (l *DeliveryOrderLoader) CustomerDebtFn(customerDebt *model.CustomerDebt) func() error {
+	return func() error {
+		if customerDebt != nil && customerDebt.DebtSource == data_type.CustomerDebtDebtSourceDeliveryOrder {
+
+			DeliveryOrder, err := l.load(customerDebt.DebtSourceId)
+			if err != nil {
+				return err
+			}
+
+			customerDebt.DeliveryOrder = DeliveryOrder
+		}
 
 		return nil
 	}

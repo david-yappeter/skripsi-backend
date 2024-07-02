@@ -289,6 +289,7 @@ func GetRoleInventoryPermissions() []Permission {
 
 		// whatsapp
 		PermissionWhatsappProductPriceChangeBroadcast,
+		PermissionWhatsappCustomerDebtBroadcast,
 		PermissionWhatsappCustomerTypeDiscountBroadcast,
 	}
 }

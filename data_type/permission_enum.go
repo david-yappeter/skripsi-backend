@@ -241,6 +241,7 @@ const (
 	// whatsapp
 	PermissionWhatsappIsLoggedIn                    // WHATSAPP_IS_LOGGED_IN
 	PermissionWhatsappProductPriceChangeBroadcast   // WHATSAPP_PRODUCT_PRICE_CHANGE_BROADCAST
+	PermissionWhatsappCustomerDebtBroadcast                  // WHATSAPP_CUSTOMER_DEBT_BROADCAST
 	PermissionWhatsappCustomerTypeDiscountBroadcast // WHATSAPP_CUSTOMER_TYPE_DISCOUNT_BROADCAST
 	PermissionWhatsappLogout                        // WHATSAPP_LOGOUT
 )

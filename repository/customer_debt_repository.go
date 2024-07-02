@@ -18,6 +18,7 @@ type CustomerDebtRepository interface {
 	// read
 	Count(ctx context.Context, options ...model.CustomerDebtQueryOption) (int, error)
 	Fetch(ctx context.Context, options ...model.CustomerDebtQueryOption) ([]model.CustomerDebt, error)
+	FetchByCustomerIdAndStatuses(ctx context.Context, customerId string, statuses []data_type.CustomerDebtStatus) ([]model.CustomerDebt, error)
 	Get(ctx context.Context, id string) (*model.CustomerDebt, error)
 	GetByDebtSourceAndDebtSourceId(ctx context.Context, debtSource data_type.CustomerDebtDebtSource, debtSourceId string) (*model.CustomerDebt, error)
 
@@ -123,6 +124,15 @@ func (r *customerDebtRepository) Fetch(ctx context.Context, options ...model.Cus
 	}
 
 	stmt := r.prepareQuery(option)
+
+	return r.fetch(ctx, stmt)
+}
+
+func (r *customerDebtRepository) FetchByCustomerIdAndStatuses(ctx context.Context, customerId string, statuses []data_type.CustomerDebtStatus) ([]model.CustomerDebt, error) {
+	stmt := stmtBuilder.Select("*").
+		From(model.CustomerDebtTableName).
+		Where(squirrel.Eq{"customer_id": customerId}).
+		Where(squirrel.Eq{"status": statuses})
 
 	return r.fetch(ctx, stmt)
 }

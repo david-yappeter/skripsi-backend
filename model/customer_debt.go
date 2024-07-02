@@ -18,6 +18,7 @@ type CustomerDebt struct {
 
 	Customer         *Customer         `db:"-"`
 	CustomerPayments []CustomerPayment `db:"-"`
+	DeliveryOrder    *DeliveryOrder    `db:"-"`
 }
 
 func (m *CustomerDebt) TableName() string {

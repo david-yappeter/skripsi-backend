@@ -96,6 +96,34 @@ func (a *WhatsappApi) ProductPriceChangeBroadcast() gin.HandlerFunc {
 
 // API:
 //
+//	@Router		/whatsapp/broadcast/customer-debt [post]
+//	@Summary	Broadcast Customer Debt
+//	@tags		Whatsapps
+//	@Accept		json
+//	@Param		dto_request.WhatsappCustomerDebtBroadcastRequest	body	dto_request.WhatsappCustomerDebtBroadcastRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.SuccessResponse
+func (a *WhatsappApi) CustomerDebtBroadcast() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionWhatsappCustomerDebtBroadcast),
+		func(ctx apiContext) {
+			var request dto_request.WhatsappCustomerDebtBroadcastRequest
+			ctx.mustBind(&request)
+
+			a.whatsappUseCase.CustomerDebtBroadcast(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.SuccessResponse{
+					Message: "OK",
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
 //	@Router		/whatsapp/broadcast/customer-type-discount [post]
 //	@Summary	Broadcast Customer Type Discount
 //	@tags		Whatsapps
@@ -134,5 +162,6 @@ func RegisterWhatsappApi(router gin.IRouter, useCaseManager use_case.UseCaseMana
 
 	broadcastRouterGroup := routerGroup.Group("/broadcast")
 	broadcastRouterGroup.POST("/product-price-change", api.ProductPriceChangeBroadcast())
+	broadcastRouterGroup.POST("/customer-debt", api.CustomerDebtBroadcast())
 	broadcastRouterGroup.POST("/customer-type-discount", api.CustomerTypeDiscountBroadcast())
 }
