@@ -41,10 +41,11 @@ const (
 	PermissionCustomerOptionForDeliveryOrderFilter               // CUSTOMER_OPTION_FOR_DELIVERY_ORDER_FILTER
 
 	// customer debt
-	PermissionCustomerDebtUploadImage // CUSTOMER_DEBT_UPLOAD_IMAGE
-	PermissionCustomerDebtFetch       // CUSTOMER_DEBT_FETCH
-	PermissionCustomerDebtGet         // CUSTOMER_DEBT_GET
-	PermissionCustomerDebtPayment     // CUSTOMER_DEBT_PAYMENT
+	PermissionCustomerDebtUploadImage    // CUSTOMER_DEBT_UPLOAD_IMAGE
+	PermissionCustomerDebtDownloadReport // CUSTOMER_DEBT_DOWNLOAD_REPORT
+	PermissionCustomerDebtFetch          // CUSTOMER_DEBT_FETCH
+	PermissionCustomerDebtGet            // CUSTOMER_DEBT_GET
+	PermissionCustomerDebtPayment        // CUSTOMER_DEBT_PAYMENT
 
 	// customer type
 	PermissionCustomerTypeCreate                                           // CUSTOMER_TYPE_CREATE
@@ -65,7 +66,7 @@ const (
 	// debt
 	PermissionDebtUploadImage    // DEBT_UPLOAD_IMAGE
 	PermissionDebtFetch          // DEBT_FETCH
-	PermissionDebtDownloadReport // DOWNLOAD_REPORT
+	PermissionDebtDownloadReport // DEBT_DOWNLOAD_REPORT
 	PermissionDebtGet            // DEBT_GET
 	PermissionDebtPayment        // DEBT_PAYMENT
 

@@ -14,6 +14,12 @@ type CustomerDebtUploadImageRequest struct {
 	File *multipart.FileHeader `json:"file" validate:"required"`
 } // @name CustomerDebtUploadImageRequest
 
+type CustomerDebtDownloadReportRequest struct {
+	StartDate  data_type.Date `json:"start_date"`
+	EndDate    data_type.Date `json:"end_date"`
+	CustomerId *string        `json:"customer_id" validate:"omitempty,not_empty,uuid"`
+} // @name CustomerDebtDownloadReportRequest
+
 type CustomerDebtFetchRequest struct {
 	PaginationRequest
 	Sorts      CustomerDebtFetchSorts        `json:"sorts" validate:"unique=Field,dive"`

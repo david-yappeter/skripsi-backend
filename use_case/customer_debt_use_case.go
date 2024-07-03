@@ -3,6 +3,7 @@ package use_case
 import (
 	"context"
 	"fmt"
+	"io"
 	"myapp/constant"
 	"myapp/data_type"
 	"myapp/delivery/dto_request"
@@ -26,6 +27,7 @@ type customerDebtLoaderParams struct {
 type CustomerDebtUseCase interface {
 	// create
 	UploadImage(ctx context.Context, request dto_request.CustomerDebtUploadImageRequest) string
+	DownloadReport(ctx context.Context, request dto_request.CustomerDebtDownloadReportRequest) (io.ReadCloser, int64, string, string)
 
 	//  read
 	Fetch(ctx context.Context, request dto_request.CustomerDebtFetchRequest) ([]model.CustomerDebt, int)
@@ -121,6 +123,62 @@ func (u *customerDebtUseCase) UploadImage(ctx context.Context, request dto_reque
 			maxFileSizeInBytes: util.Pointer[int64](2 << 20),
 		},
 	)
+}
+
+func (u *customerDebtUseCase) DownloadReport(ctx context.Context, request dto_request.CustomerDebtDownloadReportRequest) (io.ReadCloser, int64, string, string) {
+	var customer *model.Customer
+	var err error
+	if request.CustomerId != nil {
+		customer, err = u.repositoryManager.CustomerRepository().Get(ctx, *request.CustomerId)
+		panicIfErr(err)
+	}
+
+	queryOption := model.CustomerDebtQueryOption{
+		QueryOption: model.QueryOption{
+			Sorts: model.Sorts{
+				{Field: "created_at", Direction: "DESC"},
+			},
+		},
+		StartDate:  request.StartDate.NullDate(),
+		EndDate:    request.EndDate.NullDate(),
+		CustomerId: request.CustomerId,
+	}
+
+	customerDebts, err := u.repositoryManager.CustomerDebtRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	u.mustLoadCustomerDebtsData(ctx, util.SliceValueToSlicePointer(customerDebts), customerDebtLoaderParams{
+		customerPayments: false,
+		customer:         true,
+		deliveryOrder:    true,
+	})
+
+	reportExcel, err := NewReportCustomerDebtExcel(
+		util.CurrentDateTime(),
+		request.StartDate,
+		request.EndDate,
+		customer,
+	)
+	panicIfErr(err)
+
+	for _, customerDebt := range customerDebts {
+		reportExcel.AddSheet1Data(ReportCustomerDebtExcelSheet1Data{
+			Id:                           customerDebt.Id,
+			CustomerDebtSource:           customerDebt.DebtSource.String(),
+			CustomerDebtSourceIdentifier: customerDebt.DebtSourceId,
+			Status:                       customerDebt.Status.String(),
+			Amount:                       customerDebt.Amount,
+			RemainingAmount:              customerDebt.RemainingAmount,
+			CustomerId:                   customerDebt.Customer.Id,
+			CustomerName:                 customerDebt.Customer.Name,
+			CreatedAt:                    customerDebt.CreatedAt.Time(),
+		})
+	}
+
+	readCloser, contentLength, err := reportExcel.ToReadSeekCloserWithContentLength()
+	panicIfErr(err)
+
+	return readCloser, contentLength, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "customer_debt.xlsx"
 }
 
 func (u *customerDebtUseCase) Fetch(ctx context.Context, request dto_request.CustomerDebtFetchRequest) ([]model.CustomerDebt, int) {

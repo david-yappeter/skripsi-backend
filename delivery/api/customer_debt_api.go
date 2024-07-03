@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"myapp/data_type"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
@@ -40,6 +41,37 @@ func (a *CustomerDebtApi) UploadImage() gin.HandlerFunc {
 					Data: dto_response.DataResponse{
 						"path": path,
 					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/customer-debts/report [get]
+//	@Summary	Download Report
+//	@tags		Customer Debts
+//	@Accept		json
+//	@Param		dto_request.CustomerDebtDownloadReportRequest	body	dto_request.CustomerDebtDownloadReportRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{path=string}}
+func (a *CustomerDebtApi) DownloadReport() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionCustomerDebtDownloadReport),
+		func(ctx apiContext) {
+			var request dto_request.CustomerDebtDownloadReportRequest
+			ctx.mustBind(&request)
+
+			ioReadCloser, contentLength, contentType, filename := a.customerDebtUseCase.DownloadReport(ctx.context(), request)
+
+			ctx.dataFromReader(
+				http.StatusOK,
+				contentLength,
+				contentType,
+				ioReadCloser,
+				map[string]string{
+					"Content-Disposition": fmt.Sprintf("attachment; filename=\"%s\"", filename),
 				},
 			)
 		},
@@ -155,6 +187,7 @@ func RegisterCustomerDebtApi(router gin.IRouter, useCaseManager use_case.UseCase
 
 	routerGroup := router.Group("/customer-debts")
 	routerGroup.POST("/upload", api.UploadImage())
+	routerGroup.GET("/report", api.DownloadReport())
 	routerGroup.POST("/filter", api.Fetch())
 	routerGroup.GET("/:id", api.Get())
 	routerGroup.PATCH("/:id/payment", api.Payment())

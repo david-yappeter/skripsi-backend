@@ -87,6 +87,14 @@ func (r *customerDebtRepository) prepareQuery(option model.CustomerDebtQueryOpti
 		})
 	}
 
+	if option.StartDate.DateP() != nil {
+		stmt = stmt.Where(squirrel.GtOrEq{"cd.created_at": option.StartDate})
+	}
+
+	if option.EndDate.DateP() != nil {
+		stmt = stmt.Where(squirrel.LtOrEq{"cd.created_at": option.EndDate})
+	}
+
 	stmt = model.Prepare(stmt, &option)
 
 	return stmt

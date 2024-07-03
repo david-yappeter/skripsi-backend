@@ -49,6 +49,8 @@ type CustomerDebtQueryOption struct {
 
 	CustomerId *string
 	Status     *data_type.CustomerDebtStatus
+	StartDate  data_type.NullDate
+	EndDate    data_type.NullDate
 	Phrase     *string
 }
 
