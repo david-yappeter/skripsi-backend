@@ -66,6 +66,18 @@ type ReportDebtExcel struct {
 	sheet1DataHeader2StyleId int
 
 	// Font:
+	// 	- Bold: true
+	// 	- Size: 9
+	//
+	// Aligment:
+	// 	- Horizontal : "right"
+	// 	- Vertical   : "center"
+	//
+	// CustomNumFmt:
+	// 	- Value: "D MMM YYYY H:MM:SS"
+	sheet1DataHeader3StyleId int
+
+	// Font:
 	// 	- Size: 9
 	//
 	// Aligment:
@@ -202,9 +214,9 @@ func (u *ReportDebtExcel) initSheet1(
 
 	if err = excelFile.SetCellStyle(
 		ReportDebtExcelSheet1Name,
+		"B2",
 		"B3",
-		"B4",
-		u.sheet1Data2StyleId,
+		u.sheet1DataHeader3StyleId,
 	); err != nil {
 		return
 	}
@@ -343,6 +355,23 @@ func (u *ReportDebtExcel) initSheet1Style() (err error) {
 		return
 	}
 
+	u.sheet1DataHeader3StyleId, err = u.excelFile.NewStyle(
+		&excelize.Style{
+			Font: &excelize.Font{
+				Bold: true,
+				Size: 9,
+			},
+			Alignment: &excelize.Alignment{
+				Horizontal: "right",
+				Vertical:   "center",
+			},
+			CustomNumFmt: util.StringP("D MMM YYYY H:MM:SS"),
+		},
+	)
+	if err != nil {
+		return
+	}
+
 	u.sheet1Data1StyleId, err = u.excelFile.NewStyle(
 		&excelize.Style{
 			Font: &excelize.Font{
@@ -469,7 +498,7 @@ func (u *ReportDebtExcel) AddSheet1Data(data ReportDebtExcelSheet1Data) error {
 		ReportDebtExcelSheet1Name,
 		fmt.Sprintf("J%d", newLatestDataPosY),
 		fmt.Sprintf("J%d", newLatestDataPosY),
-		u.sheet1Data3StyleId,
+		u.sheet1Data2StyleId,
 	); err != nil {
 		return err
 	}

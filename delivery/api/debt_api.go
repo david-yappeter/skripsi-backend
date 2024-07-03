@@ -84,7 +84,7 @@ func (a *DebtApi) Fetch() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/debts/report [post]
+//	@Router		/debts/report [get]
 //	@Summary	Download Excel Report
 //	@tags		Debts
 //	@Accept		json
@@ -92,8 +92,8 @@ func (a *DebtApi) Fetch() gin.HandlerFunc {
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.PaginationResponse{nodes=[]dto_response.DebtResponse}}
 func (a *DebtApi) DownloadReport() gin.HandlerFunc {
-	return a.Guest(
-		// data_type.PermissionP(data_type.PermissionDebtDownloadReport),
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionDebtDownloadReport),
 		func(ctx apiContext) {
 			var request dto_request.DebtDownloadReportRequest
 			ctx.mustBind(&request)
