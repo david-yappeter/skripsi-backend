@@ -115,10 +115,6 @@ func GetRoleSuperPermissions() []Permission {
 
 func GetRoleInventoryPermissions() []Permission {
 	return []Permission{
-		// dashboard
-		PermissionDashboardSummarizeDebt,
-		PermissionDashboardSummarizeTransaction,
-
 		// customer debt
 		PermissionCustomerDebtUploadImage,
 		PermissionCustomerDebtFetch,
@@ -126,7 +122,16 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionCustomerDebtPayment,
 
 		// customer
+		PermissionCustomerOptionForDeliveryOrderForm,
+		PermissionCustomerOptionForDeliveryOrderFilter,
 		PermissionCustomerOptionForWhatsappCustomerDebtBroadcastForm,
+
+		// customer type
+		PermissionCustomerTypeOptionForWhatsappProductPriceChangeBroadcastForm,
+
+		// dashboard
+		PermissionDashboardSummarizeDebt,
+		PermissionDashboardSummarizeTransaction,
 
 		// debt
 		PermissionDebtUploadImage,
@@ -233,27 +238,6 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionPurchaseOrderDelete,
 		PermissionPurchaseOrderDeleteItem,
 		PermissionPurchaseOrderDeleteImage,
-
-		// customer
-		PermissionCustomerCreate,
-		PermissionCustomerFetch,
-		PermissionCustomerGet,
-		PermissionCustomerUpdate,
-		PermissionCustomerDelete,
-		PermissionCustomerOptionForDeliveryOrderForm,
-		PermissionCustomerOptionForDeliveryOrderFilter,
-
-		// customer type
-		PermissionCustomerTypeCreate,
-		PermissionCustomerTypeFetch,
-		PermissionCustomerTypeGet,
-		PermissionCustomerTypeUpdate,
-		PermissionCustomerTypeDelete,
-		PermissionCustomerTypeAddDiscount,
-		PermissionCustomerTypeUpdateDiscount,
-		PermissionCustomerTypeDeleteDiscount,
-		PermissionCustomerTypeOptionForCustomerForm,
-		PermissionCustomerTypeOptionForWhatsappProductPriceChangeBroadcastForm,
 
 		// supplier
 		PermissionSupplierOptionForProductReceiveForm,
