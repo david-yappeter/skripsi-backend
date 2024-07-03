@@ -3,6 +3,7 @@ package use_case
 import (
 	"context"
 	"fmt"
+	"io"
 	"myapp/constant"
 	"myapp/data_type"
 	"myapp/delivery/dto_request"
@@ -26,6 +27,7 @@ type DebtUseCase interface {
 	UploadImage(ctx context.Context, request dto_request.DebtUploadImageRequest) string
 
 	//  read
+	DownloadReport(ctx context.Context, request dto_request.DebtDownloadReportRequest) (io.ReadCloser, int64, string, string)
 	Fetch(ctx context.Context, request dto_request.DebtFetchRequest) ([]model.Debt, int)
 	Get(ctx context.Context, request dto_request.DebtGetRequest) model.Debt
 
@@ -137,6 +139,49 @@ func (u *debtUseCase) Fetch(ctx context.Context, request dto_request.DebtFetchRe
 	u.mustLoadDebtsData(ctx, util.SliceValueToSlicePointer(debts), debtLoaderParams{})
 
 	return debts, total
+}
+
+func (u *debtUseCase) DownloadReport(ctx context.Context, request dto_request.DebtDownloadReportRequest) (io.ReadCloser, int64, string, string) {
+	queryOption := model.DebtQueryOption{
+		QueryOption: model.QueryOption{
+			Sorts: model.Sorts{
+				{Field: "created_at", Direction: "desc"},
+			},
+		},
+		StartDate: request.StartDate.NullDate(),
+		EndDate:   request.EndDate.NullDate(),
+	}
+
+	debts, err := u.repositoryManager.DebtRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	u.mustLoadDebtsData(ctx, util.SliceValueToSlicePointer(debts), debtLoaderParams{})
+
+	reportExcel, err := NewReportDebtExcel(
+		request.StartDate,
+		request.EndDate,
+	)
+	panicIfErr(err)
+
+	for _, debt := range debts {
+		reportExcel.AddSheet1Data(ReportDebtExcelSheet1Data{
+			Id:                   debt.Id,
+			DebtSource:           debt.DebtSource.String(),
+			DebtSourceIdentifier: debt.DebtSourceIdentifier,
+			Status:               debt.Status.String(),
+			Amount:               debt.Amount,
+			RemainingAmount:      debt.RemainingAmount,
+			SupplierId:           debt.Supplier.Id,
+			SupplierCode:         debt.Supplier.Code,
+			SupplierName:         debt.Supplier.Name,
+			CreatedAt:            debt.CreatedAt.Time(),
+		})
+	}
+
+	readCloser, contentLength, err := reportExcel.ToReadSeekCloserWithContentLength()
+	panicIfErr(err)
+
+	return readCloser, contentLength, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "debt.xlsx"
 }
 
 func (u *debtUseCase) Get(ctx context.Context, request dto_request.DebtGetRequest) model.Debt {

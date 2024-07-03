@@ -31,14 +31,14 @@ const (
 	PermissionCashierSessionEnd                 // CASHIER_SESSION_END
 
 	// customer
-	PermissionCustomerCreate                       // CUSTOMER_CREATE
-	PermissionCustomerFetch                        // CUSTOMER_FETCH
-	PermissionCustomerGet                          // CUSTOMER_GET
-	PermissionCustomerUpdate                       // CUSTOMER_UPDATE
-	PermissionCustomerDelete                       // CUSTOMER_DELETE
-	PermissionCustomerOptionForWhatsappCustomerDebtBroadcastForm   // CUSTOMER_OPTION_FOR_WHATSAPP_CUSTOMER_DEBT_BROADCAST_FORM
-	PermissionCustomerOptionForDeliveryOrderForm   // CUSTOMER_OPTION_FOR_DELIVERY_ORDER_FORM
-	PermissionCustomerOptionForDeliveryOrderFilter // CUSTOMER_OPTION_FOR_DELIVERY_ORDER_FILTER
+	PermissionCustomerCreate                                     // CUSTOMER_CREATE
+	PermissionCustomerFetch                                      // CUSTOMER_FETCH
+	PermissionCustomerGet                                        // CUSTOMER_GET
+	PermissionCustomerUpdate                                     // CUSTOMER_UPDATE
+	PermissionCustomerDelete                                     // CUSTOMER_DELETE
+	PermissionCustomerOptionForWhatsappCustomerDebtBroadcastForm // CUSTOMER_OPTION_FOR_WHATSAPP_CUSTOMER_DEBT_BROADCAST_FORM
+	PermissionCustomerOptionForDeliveryOrderForm                 // CUSTOMER_OPTION_FOR_DELIVERY_ORDER_FORM
+	PermissionCustomerOptionForDeliveryOrderFilter               // CUSTOMER_OPTION_FOR_DELIVERY_ORDER_FILTER
 
 	// customer debt
 	PermissionCustomerDebtUploadImage // CUSTOMER_DEBT_UPLOAD_IMAGE
@@ -63,10 +63,11 @@ const (
 	PermissionDashboardSummarizeTransaction // DASHBOARD_SUMMARIZE_TRANSACTION
 
 	// debt
-	PermissionDebtUploadImage // DEBT_UPLOAD_IMAGE
-	PermissionDebtFetch       // DEBT_FETCH
-	PermissionDebtGet         // DEBT_GET
-	PermissionDebtPayment     // DEBT_PAYMENT
+	PermissionDebtUploadImage    // DEBT_UPLOAD_IMAGE
+	PermissionDebtFetch          // DEBT_FETCH
+	PermissionDebtDownloadReport // DOWNLOAD_REPORT
+	PermissionDebtGet            // DEBT_GET
+	PermissionDebtPayment        // DEBT_PAYMENT
 
 	// delivery order
 	PermissionDeliveryOrderCreate           // DELIVERY_ORDER_CREATE
@@ -242,7 +243,7 @@ const (
 	// whatsapp
 	PermissionWhatsappIsLoggedIn                    // WHATSAPP_IS_LOGGED_IN
 	PermissionWhatsappProductPriceChangeBroadcast   // WHATSAPP_PRODUCT_PRICE_CHANGE_BROADCAST
-	PermissionWhatsappCustomerDebtBroadcast                  // WHATSAPP_CUSTOMER_DEBT_BROADCAST
+	PermissionWhatsappCustomerDebtBroadcast         // WHATSAPP_CUSTOMER_DEBT_BROADCAST
 	PermissionWhatsappCustomerTypeDiscountBroadcast // WHATSAPP_CUSTOMER_TYPE_DISCOUNT_BROADCAST
 	PermissionWhatsappLogout                        // WHATSAPP_LOGOUT
 )

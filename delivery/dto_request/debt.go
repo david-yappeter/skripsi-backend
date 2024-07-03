@@ -21,6 +21,11 @@ type DebtFetchRequest struct {
 	Phrase *string               `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name DebtFetchRequest
 
+type DebtDownloadReportRequest struct {
+	StartDate data_type.Date `json:"start_date"`
+	EndDate   data_type.Date `json:"end_date"`
+} // @name DebtDownloadReportRequest
+
 type DebtGetRequest struct {
 	DebtId string `json:"-" swaggerignore:"true"`
 } // @name DebtGetRequest

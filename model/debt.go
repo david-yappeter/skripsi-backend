@@ -44,9 +44,11 @@ func (m *Debt) ToMap() map[string]interface{} {
 type DebtQueryOption struct {
 	QueryOption
 
-	Id     *string
-	Status *data_type.DebtStatus
-	Phrase *string
+	Id        *string
+	Status    *data_type.DebtStatus
+	Phrase    *string
+	StartDate data_type.NullDate
+	EndDate   data_type.NullDate
 }
 
 var _ PrepareOption = &DebtQueryOption{}

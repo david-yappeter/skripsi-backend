@@ -136,6 +136,7 @@ func GetRoleInventoryPermissions() []Permission {
 		// debt
 		PermissionDebtUploadImage,
 		PermissionDebtFetch,
+		PermissionDebtDownloadReport,
 		PermissionDebtGet,
 		PermissionDebtPayment,
 
