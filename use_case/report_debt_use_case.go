@@ -150,6 +150,7 @@ type ReportDebtExcel struct {
 }
 
 func (u *ReportDebtExcel) initSheet1(
+	exportedDateTime data_type.DateTime,
 	startDate data_type.Date,
 	endDate data_type.Date,
 ) (err error) {
@@ -212,6 +213,17 @@ func (u *ReportDebtExcel) initSheet1(
 		ReportDebtExcelSheet1Name,
 		"A1",
 		&[]interface{}{
+			"Exported Date Time",
+			exportedDateTime.Time(),
+		},
+	); err != nil {
+		return
+	}
+
+	if err = excelFile.SetSheetRow(
+		ReportDebtExcelSheet1Name,
+		"A2",
+		&[]interface{}{
 			"Start Date",
 			startDate.Time(),
 		},
@@ -221,7 +233,7 @@ func (u *ReportDebtExcel) initSheet1(
 
 	if err = excelFile.SetSheetRow(
 		ReportDebtExcelSheet1Name,
-		"A2",
+		"A3",
 		&[]interface{}{
 			"End Date",
 			endDate.Time(),
@@ -382,10 +394,11 @@ func (u *ReportDebtExcel) initSheet1Style() (err error) {
 }
 
 func (u *ReportDebtExcel) Init(
+	exportedDateTime data_type.DateTime,
 	startDate data_type.Date,
 	endDate data_type.Date,
 ) (err error) {
-	if err = u.initSheet1(startDate, endDate); err != nil {
+	if err = u.initSheet1(exportedDateTime, startDate, endDate); err != nil {
 		return
 	}
 
@@ -494,6 +507,7 @@ func (u *ReportDebtExcel) Close() error {
 }
 
 func NewReportDebtExcel(
+	exportedDateTime data_type.DateTime,
 	startDate data_type.Date,
 	endDate data_type.Date,
 ) (reportExcel *ReportDebtExcel, err error) {
@@ -518,7 +532,7 @@ func NewReportDebtExcel(
 		return
 	}
 
-	if err = reportExcel.Init(startDate, endDate); err != nil {
+	if err = reportExcel.Init(exportedDateTime, startDate, endDate); err != nil {
 		return
 	}
 

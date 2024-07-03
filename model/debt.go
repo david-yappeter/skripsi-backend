@@ -15,7 +15,6 @@ type Debt struct {
 
 	Timestamp
 	DebtPayments   []DebtPayment   `db:"-"`
-	Supplier       *Supplier       `db:"-"`
 	ProductReceive *ProductReceive `db:"-"` // if DebtSource is DebtSourceProductReceive
 }
 

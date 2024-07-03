@@ -158,6 +158,7 @@ func (u *debtUseCase) DownloadReport(ctx context.Context, request dto_request.De
 	u.mustLoadDebtsData(ctx, util.SliceValueToSlicePointer(debts), debtLoaderParams{})
 
 	reportExcel, err := NewReportDebtExcel(
+		util.CurrentDateTime(),
 		request.StartDate,
 		request.EndDate,
 	)
@@ -171,9 +172,9 @@ func (u *debtUseCase) DownloadReport(ctx context.Context, request dto_request.De
 			Status:               debt.Status.String(),
 			Amount:               debt.Amount,
 			RemainingAmount:      debt.RemainingAmount,
-			SupplierId:           debt.Supplier.Id,
-			SupplierCode:         debt.Supplier.Code,
-			SupplierName:         debt.Supplier.Name,
+			SupplierId:           debt.ProductReceive.Supplier.Id,
+			SupplierCode:         debt.ProductReceive.Supplier.Code,
+			SupplierName:         debt.ProductReceive.Supplier.Name,
 			CreatedAt:            debt.CreatedAt.Time(),
 		})
 	}
