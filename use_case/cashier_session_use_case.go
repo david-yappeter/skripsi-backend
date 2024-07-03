@@ -130,12 +130,15 @@ func (u *cashierSessionUseCase) Fetch(ctx context.Context, request dto_request.C
 }
 
 func (u *cashierSessionUseCase) FetchForCurrentUser(ctx context.Context, request dto_request.CashierSessionFetchForCurrentUserRequest) ([]model.CashierSession, int) {
+	currentUser := model.MustGetUserCtx(ctx)
+
 	queryOption := model.CashierSessionQueryOption{
 		QueryOption: model.NewQueryOptionWithPagination(
 			request.Page,
 			request.Limit,
 			model.Sorts(request.Sorts),
 		),
+		UserId:       &currentUser.Id,
 		StartedAtGte: request.StartedAt,
 		EndedAtLte:   request.EndedAt,
 		Status:       request.Status,
