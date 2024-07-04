@@ -174,7 +174,7 @@ func (u *ReportCustomerDebtExcel) initSheet1(
 
 	excelFile := u.excelFile
 
-	if err = excelFile.SetSheetName("Sheet1", ReportCustomerDebtExcelSheet1Name); err != nil {
+	if err = excelFile.SetSheetName("Customer Debts", ReportCustomerDebtExcelSheet1Name); err != nil {
 		return
 	}
 
