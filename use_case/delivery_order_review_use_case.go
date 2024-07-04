@@ -64,10 +64,6 @@ func (u *deliveryOrderReviewUseCase) CreateGuest(ctx context.Context, request dt
 		panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER_REVIEW.DELIVERY_ORDER_MUST_BE_COMPLETED"))
 	}
 
-	// if deliveryOrder.UpdatedAt.Add(time.Hour * 24 * 2).IsLessThan(currentDateTime) {
-	// 	panic(dto_response.NewBadRequestErrorResponse("DELIVERY_ORDER_REVIEW.PASS_2_DAYS_CANNOT_REVIEW_ANYMORE"))
-	// }
-
 	isExist, err := u.repositoryManager.DeliveryOrderReviewRepository().IsExistByDeliveryOrderId(ctx, request.DeliveryOrderId)
 	panicIfErr(err)
 
@@ -78,7 +74,8 @@ func (u *deliveryOrderReviewUseCase) CreateGuest(ctx context.Context, request dt
 	deliveryOrderReview := model.DeliveryOrderReview{
 		Id:              util.NewUuid(),
 		DeliveryOrderId: request.DeliveryOrderId,
-		StarRating:      request.StarRating,
+		StarRating:      0,
+		Type:            request.Type,
 		Description:     &request.Description,
 	}
 
@@ -96,7 +93,7 @@ func (u *deliveryOrderReviewUseCase) Fetch(ctx context.Context, request dto_requ
 			request.Limit,
 			model.Sorts(request.Sorts),
 		),
-		StarRating: request.StarRating,
+		Type: request.Type,
 	}
 
 	deliveryOrderReviews, err := u.repositoryManager.DeliveryOrderReviewRepository().Fetch(ctx, queryOption)

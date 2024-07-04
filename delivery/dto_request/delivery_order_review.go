@@ -1,9 +1,11 @@
 package dto_request
 
+import "myapp/data_type"
+
 type DeliveryOrderReviewCreateGuestRequest struct {
-	DeliveryOrderId string `json:"delivery_order_id" validate:"required,not_empty,uuid"`
-	StarRating      int    `json:"star_rating" validate:"min=0,max=5"`
-	Description     string `json:"description" validate:"required,not_empty"`
+	DeliveryOrderId string                            `json:"delivery_order_id" validate:"required,not_empty,uuid"`
+	Type            data_type.DeliveryOrderReviewType `json:"type" validate:"required,data_type_enum"`
+	Description     string                            `json:"description" validate:"required,not_empty"`
 } // @name DeliveryOrderReviewCreateGuestRequest
 
 type DeliveryOrderReviewFetchSorts []struct {
@@ -15,7 +17,7 @@ type DeliveryOrderReviewFetchRequest struct {
 	PaginationRequest
 	Sorts DeliveryOrderReviewFetchSorts `json:"sorts" validate:"unique=Field,dive"`
 
-	StarRating *int `json:"star_rating" validate:"omitempty,min=1,max=5"`
+	Type *data_type.DeliveryOrderReviewType `json:"type" validate:"required,data_type_enum"`
 } // @name DeliveryOrderReviewFetchRequest
 
 type DeliveryOrderReviewGetRequest struct {

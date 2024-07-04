@@ -1,14 +1,15 @@
 package dto_response
 
 import (
+	"myapp/data_type"
 	"myapp/model"
 )
 
 type DeliveryOrderReviewResponse struct {
-	Id              string  `json:"id"`
-	DeliveryOrderId string  `json:"delivery_order_id"`
-	StarRating      int     `json:"star_rating"`
-	Description     *string `json:"description"`
+	Id              string                            `json:"id"`
+	DeliveryOrderId string                            `json:"delivery_order_id"`
+	Type            data_type.DeliveryOrderReviewType `json:"type"`
+	Description     *string                           `json:"description"`
 
 	Timestamp
 	DeliveryOrder *DeliveryOrderResponse `json:"delivery_order"`
@@ -18,7 +19,7 @@ func NewDeliveryOrderReviewResponse(deliveryOrderReview model.DeliveryOrderRevie
 	r := DeliveryOrderReviewResponse{
 		Id:              deliveryOrderReview.Id,
 		DeliveryOrderId: deliveryOrderReview.DeliveryOrderId,
-		StarRating:      deliveryOrderReview.StarRating,
+		Type:            deliveryOrderReview.Type,
 		Description:     deliveryOrderReview.Description,
 		Timestamp:       Timestamp(deliveryOrderReview.Timestamp),
 		DeliveryOrder:   &DeliveryOrderResponse{},

@@ -65,6 +65,10 @@ func (r *deliveryOrderReviewRepository) prepareQuery(option model.DeliveryOrderR
 		stmt = stmt.Where(squirrel.Eq{"dor.star_rating": option.StarRating})
 	}
 
+	if option.Type != nil {
+		stmt = stmt.Where(squirrel.Eq{"type": option.Type})
+	}
+
 	stmt = model.Prepare(stmt, &option)
 
 	return stmt

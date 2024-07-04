@@ -1,12 +1,15 @@
 package model
 
+import "myapp/data_type"
+
 const DeliveryOrderReviewTableName = "delivery_order_reviews"
 
 type DeliveryOrderReview struct {
-	Id              string  `db:"id"`
-	DeliveryOrderId string  `db:"delivery_order_id"`
-	StarRating      int     `db:"star_rating"`
-	Description     *string `db:"description"`
+	Id              string                            `db:"id"`
+	DeliveryOrderId string                            `db:"delivery_order_id"`
+	StarRating      int                               `db:"star_rating"`
+	Type            data_type.DeliveryOrderReviewType `db:"type"`
+	Description     *string                           `db:"description"`
 
 	Timestamp
 
@@ -26,6 +29,7 @@ func (m *DeliveryOrderReview) ToMap() map[string]interface{} {
 		"id":                m.Id,
 		"delivery_order_id": m.DeliveryOrderId,
 		"star_rating":       m.StarRating,
+		"type":              m.Type,
 		"description":       m.Description,
 		"created_at":        m.CreatedAt,
 		"updated_at":        m.UpdatedAt,
@@ -35,6 +39,7 @@ func (m *DeliveryOrderReview) ToMap() map[string]interface{} {
 type DeliveryOrderReviewQueryOption struct {
 	QueryOption
 
+	Type       *data_type.DeliveryOrderReviewType
 	StarRating *int
 }
 
