@@ -17,7 +17,7 @@ type DeliveryOrderReviewFetchRequest struct {
 	PaginationRequest
 	Sorts DeliveryOrderReviewFetchSorts `json:"sorts" validate:"unique=Field,dive"`
 
-	Type *data_type.DeliveryOrderReviewType `json:"type" validate:"required,data_type_enum"`
+	Type *data_type.DeliveryOrderReviewType `json:"type" validate:"omitempty,data_type_enum"`
 } // @name DeliveryOrderReviewFetchRequest
 
 type DeliveryOrderReviewGetRequest struct {

@@ -57,7 +57,6 @@ func (u *deliveryOrderReviewUseCase) mustLoadDeliveryOrderReviewsData(ctx contex
 }
 
 func (u *deliveryOrderReviewUseCase) CreateGuest(ctx context.Context, request dto_request.DeliveryOrderReviewCreateGuestRequest) model.DeliveryOrderReview {
-	// currentDateTime := util.CurrentDateTime()
 	deliveryOrder := mustGetDeliveryOrder(ctx, u.repositoryManager, request.DeliveryOrderId, true)
 
 	if deliveryOrder.Status != data_type.DeliveryOrderStatusCompleted {
@@ -101,6 +100,8 @@ func (u *deliveryOrderReviewUseCase) Fetch(ctx context.Context, request dto_requ
 
 	total, err := u.repositoryManager.DeliveryOrderReviewRepository().Count(ctx, queryOption)
 	panicIfErr(err)
+
+	u.mustLoadDeliveryOrderReviewsData(ctx, util.SliceValueToSlicePointer(deliveryOrderReviews), deliveryOrderReviewLoaderParams{})
 
 	return deliveryOrderReviews, total
 }
