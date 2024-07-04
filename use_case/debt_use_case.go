@@ -148,8 +148,8 @@ func (u *debtUseCase) DownloadReport(ctx context.Context, request dto_request.De
 				{Field: "created_at", Direction: "desc"},
 			},
 		},
-		StartDate: request.StartDate.NullDate(),
-		EndDate:   request.EndDate.NullDate(),
+		StartDateTime: request.StartDate.DateTimeStartOfDay().NullDateTime(),
+		EndDateTime:   request.EndDate.DateTimeEndOfDay().NullDateTime(),
 	}
 
 	debts, err := u.repositoryManager.DebtRepository().Fetch(ctx, queryOption)
