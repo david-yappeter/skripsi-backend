@@ -144,6 +144,7 @@ func GetRoleInventoryPermissions() []Permission {
 
 		// delivery order
 		PermissionDeliveryOrderCreate,
+		PermissionDeliveryOrderDownloadReport,
 		PermissionDeliveryOrderUpload,
 		PermissionDeliveryOrderAddItem,
 		PermissionDeliveryOrderAddImage,

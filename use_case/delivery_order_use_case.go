@@ -3,6 +3,7 @@ package use_case
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"math"
 	"myapp/constant"
@@ -40,6 +41,7 @@ type deliveryOrdersLoaderParams struct {
 type DeliveryOrderUseCase interface {
 	// create
 	Create(ctx context.Context, request dto_request.DeliveryOrderCreateRequest) model.DeliveryOrder
+	DownloadReport(ctx context.Context, request dto_request.DeliveryOrderDownloadReportRequest) (io.ReadCloser, int64, string, string)
 	AddItem(ctx context.Context, request dto_request.DeliveryOrderAddItemRequest) model.DeliveryOrder
 	AddImage(ctx context.Context, request dto_request.DeliveryOrderAddImageRequest) model.DeliveryOrder
 	AddDriver(ctx context.Context, request dto_request.DeliveryOrderAddDriverRequest) model.DeliveryOrder
@@ -272,6 +274,63 @@ func (u *deliveryOrderUseCase) Create(ctx context.Context, request dto_request.D
 	)
 
 	return deliveryOrder
+}
+
+func (u *deliveryOrderUseCase) DownloadReport(ctx context.Context, request dto_request.DeliveryOrderDownloadReportRequest) (io.ReadCloser, int64, string, string) {
+	queryOption := model.DeliveryOrderQueryOption{
+		QueryOption: model.QueryOption{
+			Sorts: model.Sorts{
+				{Field: "created_at", Direction: "desc"},
+			},
+		},
+		StartDateTime: request.StartDate.DateTimeStartOfDay().NullDateTime(),
+		EndDateTime:   request.EndDate.DateTimeEndOfDay().NullDateTime(),
+	}
+
+	deliveryOrders, err := u.repositoryManager.DeliveryOrderRepository().Fetch(ctx, queryOption)
+	panicIfErr(err)
+
+	u.mustLoadDeliveryOrdersData(ctx, util.SliceValueToSlicePointer(deliveryOrders), deliveryOrdersLoaderParams{
+		customer:               true,
+		deliveryOrderItems:     true,
+		deliveryOrderImages:    true,
+		deliveryOrderDrivers:   true,
+		deliveryOrderItemCosts: true,
+	})
+
+	reportExcel, err := NewReportDeliveryOrderExcel(
+		util.CurrentDateTime(),
+		request.StartDate,
+		request.EndDate,
+	)
+	panicIfErr(err)
+
+	for _, deliveryOrder := range deliveryOrders {
+		for _, deliveryOrderItem := range deliveryOrder.DeliveryOrderItems {
+			for _, cost := range deliveryOrderItem.DeliveryOrderItemCosts {
+				reportExcel.AddSheet1Data(ReportDeliveryOrderExcelSheet1Data{
+					Id:              deliveryOrder.Id,
+					Status:          deliveryOrder.Status.String(),
+					ProductId:       deliveryOrderItem.ProductUnit.ProductId,
+					UnitId:          deliveryOrderItem.ProductUnit.UnitId,
+					ProductName:     deliveryOrderItem.ProductUnit.Product.Name,
+					UnitName:        deliveryOrderItem.ProductUnit.Unit.Name,
+					Qty:             cost.Qty,
+					PricePerUnit:    deliveryOrderItem.PricePerUnit,
+					DiscountPerUnit: deliveryOrderItem.DiscountPerUnit,
+					Total:           deliveryOrderItem.Total(),
+					CostPerUnit:     cost.BaseCostPrice,
+					Revenue:         deliveryOrderItem.Total() - cost.TotalCostPrice,
+				})
+
+			}
+		}
+	}
+
+	readCloser, contentLength, err := reportExcel.ToReadSeekCloserWithContentLength()
+	panicIfErr(err)
+
+	return readCloser, contentLength, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "debt.xlsx"
 }
 
 func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.DeliveryOrderAddItemRequest) model.DeliveryOrder {
@@ -544,8 +603,8 @@ func (u *deliveryOrderUseCase) FetchDriver(ctx context.Context, request dto_requ
 		SortStatusImportance: true,
 		Status:               request.Status,
 		DriverUserId:         &authUser.Id,
-		StartDate:            request.StartDate,
-		EndDate:              request.EndDate,
+		StartDateTime:        request.StartDate.NullDateTimeStartOfDay(),
+		EndDateTime:          request.EndDate.NullDateTimeEndOfDay(),
 	}
 
 	deliveryOrders, err := u.repositoryManager.DeliveryOrderRepository().Fetch(ctx, queryOption)

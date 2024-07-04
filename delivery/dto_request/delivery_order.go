@@ -10,6 +10,11 @@ type DeliveryOrderCreateRequest struct {
 	Date       data_type.Date `json:"date"`
 } // @name DeliveryOrderCreateRequest
 
+type DeliveryOrderDownloadReportRequest struct {
+	StartDate data_type.Date `json:"start_date"`
+	EndDate   data_type.Date `json:"end_date"`
+} // @name DeliveryOrderDownloadReportRequest
+
 type DeliveryOrderAddItemRequest struct {
 	ProductId string  `json:"product_id" validate:"required,not_empty,uuid"`
 	UnitId    string  `json:"unit_id" validate:"required,not_empty,uuid"`

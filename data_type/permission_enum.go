@@ -73,6 +73,7 @@ const (
 
 	// delivery order
 	PermissionDeliveryOrderCreate           // DELIVERY_ORDER_CREATE
+	PermissionDeliveryOrderDownloadReport   // DELIVERY_ORDER_DOWNLOAD_REPORT
 	PermissionDeliveryOrderUpload           // DELIVERY_ORDER_UPLOAD
 	PermissionDeliveryOrderAddItem          // DELIVERY_ORDER_ADD_ITEM
 	PermissionDeliveryOrderAddImage         // DELIVERY_ORDER_ADD_IMAGE

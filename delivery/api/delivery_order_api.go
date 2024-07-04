@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"myapp/data_type"
 	"myapp/delivery/dto_request"
 	"myapp/delivery/dto_response"
@@ -40,6 +41,37 @@ func (a *DeliveryOrderApi) Create() gin.HandlerFunc {
 					Data: dto_response.DataResponse{
 						"delivery_order": dto_response.NewDeliveryOrderResponse(deliveryOrder),
 					},
+				},
+			)
+		},
+	)
+}
+
+// API:
+//
+//	@Router		/delivery-orders/report [get]
+//	@Summary	Download Excel Report
+//	@tags		Delivery Orders
+//	@Accept		json
+//	@Param		dto_request.DeliveryOrderDownloadReportRequest	body	dto_request.DeliveryOrderDownloadReportRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{delivery_order=dto_response.DeliveryOrderResponse}}
+func (a *DeliveryOrderApi) DownloadReport() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionDeliveryOrderDownloadReport),
+		func(ctx apiContext) {
+			var request dto_request.DeliveryOrderDownloadReportRequest
+			ctx.mustBind(&request)
+
+			ioReadCloser, contentLength, contentType, filename := a.deliveryOrderUseCase.DownloadReport(ctx.context(), request)
+
+			ctx.dataFromReader(
+				http.StatusOK,
+				contentLength,
+				contentType,
+				ioReadCloser,
+				map[string]string{
+					"Content-Disposition": fmt.Sprintf("attachment; filename=\"%s\"", filename),
 				},
 			)
 		},
@@ -679,6 +711,7 @@ func RegisterDeliveryOrderApi(router gin.IRouter, useCaseManager use_case.UseCas
 
 	routerGroup := router.Group("/delivery-orders")
 	routerGroup.POST("", api.Create())
+	routerGroup.GET("/report", api.DownloadReport())
 	routerGroup.POST("/upload", api.Upload())
 	routerGroup.POST("/filter", api.Fetch())
 	routerGroup.POST("/filter-driver", api.FetchDriver())

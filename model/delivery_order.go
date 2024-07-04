@@ -54,8 +54,8 @@ type DeliveryOrderQueryOption struct {
 	CustomerId      *string
 	DriverUserId    *string
 	Phrase          *string
-	StartDate       data_type.NullDate
-	EndDate         data_type.NullDate
+	StartDateTime   data_type.NullDateTime
+	EndDateTime     data_type.NullDateTime
 }
 
 var _ PrepareOption = &DeliveryOrderQueryOption{}

@@ -1,5 +1,7 @@
 package model
 
+import "math"
+
 const DeliveryOrderItemTableName = "delivery_order_items"
 
 type DeliveryOrderItem struct {
@@ -40,4 +42,8 @@ func (m *DeliveryOrderItem) ToMap() map[string]interface{} {
 
 func (m DeliveryOrderItem) BaseQty() float64 {
 	return m.Qty * m.ScaleToBase
+}
+
+func (m DeliveryOrderItem) Total() float64 {
+	return m.BaseQty() * math.Max(m.PricePerUnit-m.DiscountPerUnit, 0)
 }
