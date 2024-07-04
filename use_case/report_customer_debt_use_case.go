@@ -255,6 +255,40 @@ func (u *ReportCustomerDebtExcel) initSheet1(
 		return
 	}
 
+	if customer != nil {
+		if err = excelFile.SetSheetRow(
+			ReportCustomerDebtExcelSheet1Name,
+			"A4",
+			&[]interface{}{
+				"Customer Id",
+				customer.Id,
+			},
+		); err != nil {
+			return
+		}
+
+		if err = excelFile.SetSheetRow(
+			ReportCustomerDebtExcelSheet1Name,
+			"A5",
+			&[]interface{}{
+				"Customer Name",
+				customer.Name,
+			},
+		); err != nil {
+			return
+		}
+	}
+
+	if err = excelFile.SetSheetRow(
+		ReportCustomerDebtExcelSheet1Name,
+		"A6",
+		&[]interface{}{
+			"Customer Debts",
+		},
+	); err != nil {
+		return
+	}
+
 	if err = SetHeaderSeparator(u.excelFile, ReportCustomerDebtExcelSheet1Name, "A6", 15); err != nil {
 		return
 	}
