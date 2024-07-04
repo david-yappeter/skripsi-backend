@@ -234,7 +234,7 @@ func (u *ReportDeliveryOrderExcel) initSheet1(
 
 	if err = excelFile.SetSheetRow(
 		ReportDeliveryOrderExcelSheet1Name,
-		"A2",
+		"A3",
 		&[]interface{}{
 			"End Date",
 			endDate.String(),
@@ -267,7 +267,6 @@ func (u *ReportDeliveryOrderExcel) initSheet1(
 		&[]interface{}{
 			"Transaction Id",
 			"Status",
-			"Payment Method",
 			"Product Id",
 			"Unit Id",
 			"Product Name",
@@ -278,7 +277,6 @@ func (u *ReportDeliveryOrderExcel) initSheet1(
 			"Total",
 			"Cost Per Unit",
 			"Revenue",
-			"Payment At",
 		},
 	); err != nil {
 		return
@@ -456,7 +454,7 @@ func (u *ReportDeliveryOrderExcel) AddSheet1Data(data ReportDeliveryOrderExcelSh
 	if err := u.excelFile.SetCellStyle(
 		ReportDeliveryOrderExcelSheet1Name,
 		fmt.Sprintf("A%d", newLatestDataPosY),
-		fmt.Sprintf("M%d", newLatestDataPosY),
+		fmt.Sprintf("H%d", newLatestDataPosY),
 		u.sheet1Data1StyleId,
 	); err != nil {
 		return err
@@ -464,9 +462,9 @@ func (u *ReportDeliveryOrderExcel) AddSheet1Data(data ReportDeliveryOrderExcelSh
 
 	if err := u.excelFile.SetCellStyle(
 		ReportDeliveryOrderExcelSheet1Name,
-		fmt.Sprintf("N%d", newLatestDataPosY),
-		fmt.Sprintf("N%d", newLatestDataPosY),
-		u.sheet1Data2StyleId,
+		fmt.Sprintf("I%d", newLatestDataPosY),
+		fmt.Sprintf("M%d", newLatestDataPosY),
+		u.sheet1Data3StyleId,
 	); err != nil {
 		return err
 	}

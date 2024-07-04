@@ -330,7 +330,7 @@ func (u *deliveryOrderUseCase) DownloadReport(ctx context.Context, request dto_r
 	readCloser, contentLength, err := reportExcel.ToReadSeekCloserWithContentLength()
 	panicIfErr(err)
 
-	return readCloser, contentLength, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "debt.xlsx"
+	return readCloser, contentLength, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "delivery_orders.xlsx"
 }
 
 func (u *deliveryOrderUseCase) AddItem(ctx context.Context, request dto_request.DeliveryOrderAddItemRequest) model.DeliveryOrder {
