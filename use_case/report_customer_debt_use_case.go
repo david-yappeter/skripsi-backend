@@ -274,7 +274,7 @@ func (u *ReportCustomerDebtExcel) initSheet1(
 			"Amount",
 			"Remaining Amount",
 			"Customer Id",
-			"Customer Code",
+			"Customer Name",
 			"Created At",
 		},
 	); err != nil {
