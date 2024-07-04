@@ -125,6 +125,7 @@ func GetRoleInventoryPermissions() []Permission {
 		// customer
 		PermissionCustomerOptionForDeliveryOrderForm,
 		PermissionCustomerOptionForDeliveryOrderFilter,
+		PermissionCustomerOptionForCustomerDebtReportForm,
 		PermissionCustomerOptionForWhatsappCustomerDebtBroadcastForm,
 
 		// customer type

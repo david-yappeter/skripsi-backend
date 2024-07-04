@@ -36,6 +36,7 @@ const (
 	PermissionCustomerGet                                        // CUSTOMER_GET
 	PermissionCustomerUpdate                                     // CUSTOMER_UPDATE
 	PermissionCustomerDelete                                     // CUSTOMER_DELETE
+	PermissionCustomerOptionForCustomerDebtReportForm            // CUSTOMER_OPTION_FOR_CUSTOMER_DEBT_REPORT_FORM
 	PermissionCustomerOptionForWhatsappCustomerDebtBroadcastForm // CUSTOMER_OPTION_FOR_WHATSAPP_CUSTOMER_DEBT_BROADCAST_FORM
 	PermissionCustomerOptionForDeliveryOrderForm                 // CUSTOMER_OPTION_FOR_DELIVERY_ORDER_FORM
 	PermissionCustomerOptionForDeliveryOrderFilter               // CUSTOMER_OPTION_FOR_DELIVERY_ORDER_FILTER
