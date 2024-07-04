@@ -7,6 +7,7 @@ func init() {
 			CREATE TABLE IF NOT EXISTS delivery_order_reviews (
 				id char(36) NOT NULL,
 				delivery_order_id char(36) NOT NULL,
+				type varchar(255) NOT NULL,
 				star_rating int NOT NULL,
 				description text NULL,
 				created_at timestamp NOT NULL,
