@@ -29,7 +29,7 @@ func JWTHandler(router gin.IRouter, authUseCase use_case.AuthUseCase) {
 			if err != constant.ErrNotAuthenticated {
 				panic(err)
 			}
-z
+
 			ctx.Next()
 			return
 		}
