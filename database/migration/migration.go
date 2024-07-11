@@ -26,7 +26,7 @@ func (drv *inmemDriver) append(version uint, rawUp, rawDown string) bool {
 			Version:   version,
 			Direction: source.Up,
 			Raw:       rawUp,
-		}
+		}	
 		migrationDown = &source.Migration{
 			Version:   version,
 			Direction: source.Down,

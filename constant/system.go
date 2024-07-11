@@ -2,7 +2,7 @@ package constant
 
 import "time"
 
-const NilAsString = `<nil>`
+	const NilAsString = `<nil>`
 
 const SystemTreeSeparator = "|" // example: model.Clinic (IdTree), model.Icd10 (CodeTree, IdTree)
 

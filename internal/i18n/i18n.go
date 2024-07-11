@@ -40,7 +40,6 @@ func (l *Localizer) Translate(message string) (string, error) {
 		if __, ok := err.(*i18n.MessageNotFoundErr); ok {
 			_ = __
 			return message, nil
-			// return localization, ErrMessageNotRegistered
 		}
 	}
 
