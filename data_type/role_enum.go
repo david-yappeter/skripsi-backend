@@ -46,6 +46,8 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionCustomerDelete,
 		PermissionCustomerOptionForDeliveryOrderForm,
 		PermissionCustomerOptionForDeliveryOrderFilter,
+		PermissionCustomerOptionForCustomerDebtReportForm,
+		PermissionCustomerOptionForWhatsappCustomerDebtBroadcastForm,
 
 		// customer type
 		PermissionCustomerTypeCreate,
@@ -82,6 +84,8 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionSupplierGet,
 		PermissionSupplierUpdate,
 		PermissionSupplierDelete,
+		PermissionSupplierOptionForProductReceiveForm,
+		PermissionSupplierOptionForProductReceiveFilter,
 
 		// supplier type
 		PermissionSupplierTypeCreate,
@@ -90,6 +94,13 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionSupplierTypeUpdate,
 		PermissionSupplierTypeDelete,
 		PermissionSupplierTypeOptionForSupplierForm,
+
+		// product
+		PermissionProductOptionForProductReceiveItemForm,
+		PermissionProductOptionForDeliveryOrderItemForm,
+		PermissionProductOptionForCustomerTypeDiscountForm,
+		PermissionProductOptionForCartAddItemForm,
+		PermissionProductOptionForProductDiscountForm,
 
 		// role
 		PermissionRoleOptionForUserForm,
@@ -104,6 +115,7 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionUserUpdateInActive,
 		PermissionUserAddRole,
 		PermissionUserDeleteRole,
+		PermissionUserOptionForProductStockAdjustmentFilter,
 		PermissionUserOptionForCashierSessionFilter,
 		PermissionUserOptionForDeliveryOrderDriverForm,
 
