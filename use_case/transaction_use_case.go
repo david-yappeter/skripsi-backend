@@ -77,6 +77,35 @@ func (u *transactionUseCase) mustLoadTransactionDatas(ctx context.Context, trans
 			}
 		}
 	}))
+
+	productUnitLoader := loader.NewProductUnitLoader(u.repositoryManager.ProductUnitRepository())
+
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		for i := range transactions {
+			if option.items {
+				for j := range transactions[i].TransactionItems {
+					group.Go(productUnitLoader.TransactionItemFn(&transactions[i].TransactionItems[j]))
+				}
+			}
+		}
+	}))
+
+	productLoader := loader.NewProductLoader(u.repositoryManager.ProductRepository())
+	unitLoader := loader.NewProductLoader(u.repositoryManager.ProductRepository())
+
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		for i := range transactions {
+			if option.items {
+				for j := range transactions[i].TransactionItems {
+					if transactions[i].TransactionItems[j].ProductUnit != nil {
+						group.Go(productLoader.ProductUnitFn(transactions[i].TransactionItems[j].ProductUnit))
+						group.Go(unitLoader.ProductUnitFn(transactions[i].TransactionItems[j].ProductUnit))
+					}
+				}
+			}
+		}
+	}))
+
 }
 
 func (u *transactionUseCase) CheckoutCart(ctx context.Context, request dto_request.TransactionCheckoutCartRequest) (model.Transaction, []int16) {
