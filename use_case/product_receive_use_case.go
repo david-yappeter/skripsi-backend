@@ -525,11 +525,24 @@ func (u *productReceiveUseCase) UpdateItem(ctx context.Context, request dto_requ
 		panic(dto_response.NewBadRequestErrorResponse("PRODUCT_RECEIVE_ITEM.INVALID_AMOUNT_QTY_MUST_BE_SMALLER_THAN_OR_EQUAL_RECEIVED_QTY"))
 	}
 
+	productReceive.TotalPrice += (request.QtyEligible - productReceiveItem.QtyEligible) * productReceiveItem.PricePerUnit
+
 	productReceiveItem.QtyEligible = request.QtyEligible
 
-	panicIfErr(
-		u.repositoryManager.ProductReceiveItemRepository().Update(ctx, &productReceiveItem),
-	)
+	panicIfErr(u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
+		productReceiveRepository := u.repositoryManager.ProductReceiveRepository()
+		productReceiveItemRepository := u.repositoryManager.ProductReceiveItemRepository()
+
+		if err := productReceiveItemRepository.Update(ctx, &productReceiveItem); err != nil {
+			return err
+		}
+
+		if err := productReceiveRepository.Update(ctx, &productReceive); err != nil {
+			return err
+		}
+
+		return nil
+	}))
 
 	u.mustLoadProductReceivesData(ctx, []*model.ProductReceive{&productReceive}, productReceivesLoaderParams{
 		productReceiveItems:        true,
