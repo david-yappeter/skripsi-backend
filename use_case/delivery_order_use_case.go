@@ -591,6 +591,16 @@ func (u *deliveryOrderUseCase) Fetch(ctx context.Context, request dto_request.De
 func (u *deliveryOrderUseCase) FetchDriver(ctx context.Context, request dto_request.DeliveryOrderFetchDriverRequest) ([]model.DeliveryOrder, int) {
 	authUser := model.MustGetUserCtx(ctx)
 
+	var startDate, endDate data_type.NullDateTime
+
+	if request.StartDate.DateP() != nil {
+		startDate = request.StartDate.NullDateTimeStartOfDay()
+	}
+
+	if request.EndDate.DateP() != nil {
+		endDate = request.EndDate.NullDateTimeEndOfDay()
+	}
+
 	queryOption := model.DeliveryOrderQueryOption{
 		QueryOption: model.NewQueryOptionWithPagination(
 			request.Page,
@@ -603,8 +613,8 @@ func (u *deliveryOrderUseCase) FetchDriver(ctx context.Context, request dto_requ
 		SortStatusImportance: true,
 		Status:               request.Status,
 		DriverUserId:         &authUser.Id,
-		StartDateTime:        request.StartDate.NullDateTimeStartOfDay(),
-		EndDateTime:          request.EndDate.NullDateTimeEndOfDay(),
+		StartDateTime:        startDate,
+		EndDateTime:          endDate,
 	}
 
 	deliveryOrders, err := u.repositoryManager.DeliveryOrderRepository().Fetch(ctx, queryOption)
