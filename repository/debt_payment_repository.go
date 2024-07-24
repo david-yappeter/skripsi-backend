@@ -117,7 +117,7 @@ func (r *debtPaymentRepository) Fetch(ctx context.Context, options ...model.Debt
 func (r *debtPaymentRepository) FetchByDebtIds(ctx context.Context, debtIds []string) ([]model.DebtPayment, error) {
 	stmt := stmtBuilder.Select("*").
 		From(model.DebtPaymentTableName).
-		Where(squirrel.Eq{"id": debtIds})
+		Where(squirrel.Eq{"debt_id": debtIds})
 
 	return r.fetch(ctx, stmt)
 }
