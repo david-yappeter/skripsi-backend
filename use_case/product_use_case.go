@@ -400,12 +400,18 @@ func (u *productUseCase) Delete(ctx context.Context, request dto_request.Product
 
 	u.mustValidateAllowDeleteProduct(ctx, request.ProductId)
 
+	productStock := mustGetProductStockByProductId(ctx, u.repositoryManager, request.ProductId, true)
 	imageFile := mustGetFile(ctx, u.repositoryManager, product.ImageFileId, true)
 
 	panicIfErr(
 		u.repositoryManager.Transaction(ctx, func(ctx context.Context) error {
-			productRepository := u.repositoryManager.ProductRepository()
 			fileRepository := u.repositoryManager.FileRepository()
+			productRepository := u.repositoryManager.ProductRepository()
+			productStockRepository := u.repositoryManager.ProductStockRepository()
+
+			if err := productStockRepository.Delete(ctx, &productStock); err != nil {
+				return err
+			}
 
 			if err := productRepository.Delete(ctx, &product); err != nil {
 				return err

@@ -179,36 +179,6 @@ func (a *ProductApi) Update() gin.HandlerFunc {
 
 // API:
 //
-//	@Router		/products/{id} [delete]
-//	@Summary	Delete
-//	@tags		Products
-//	@Accept		json
-//	@Param		id	path	string	true	"Id"
-//	@Produce	json
-//	@Success	200	{object}	dto_response.SuccessResponse
-func (a *ProductApi) Delete() gin.HandlerFunc {
-	return a.Authorize(
-		data_type.PermissionP(data_type.PermissionProductDelete),
-		func(ctx apiContext) {
-			id := ctx.getUuidParam("id")
-			var request dto_request.ProductDeleteRequest
-			ctx.mustBind(&request)
-			request.ProductId = id
-
-			a.productUseCase.Delete(ctx.context(), request)
-
-			ctx.json(
-				http.StatusOK,
-				dto_response.SuccessResponse{
-					Message: "OK",
-				},
-			)
-		},
-	)
-}
-
-// API:
-//
 //	@Router		/products/options/product-receive-item-form [post]
 //	@Summary	Option for Product Receive Item Form
 //	@tags		Products
@@ -394,7 +364,6 @@ func RegisterProductApi(router gin.IRouter, useCaseManager use_case.UseCaseManag
 	routerGroup.POST("/filter", api.Fetch())
 	routerGroup.GET("/:id", api.Get())
 	routerGroup.PUT("/:id", api.Update())
-	routerGroup.DELETE("/:id", api.Delete())
 
 	optionRouterGroup := routerGroup.Group("/options")
 	optionRouterGroup.POST("/product-receive-item-form", api.OptionForProductReceiveItemForm())
