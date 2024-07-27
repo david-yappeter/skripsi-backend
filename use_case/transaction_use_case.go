@@ -28,6 +28,7 @@ type TransactionUseCase interface {
 
 	// read
 	Get(ctx context.Context, request dto_request.TransactionGetRequest) model.Transaction
+	Reprint(ctx context.Context, request dto_request.TransactionReprintRequest) []int16
 }
 
 type transactionUseCase struct {
@@ -394,4 +395,47 @@ func (u *transactionUseCase) Get(ctx context.Context, request dto_request.Transa
 	})
 
 	return transaction
+}
+
+func (u *transactionUseCase) Reprint(ctx context.Context, request dto_request.TransactionReprintRequest) []int16 {
+	transaction := mustGetTransaction(ctx, u.repositoryManager, request.TransactionId, true)
+	cashierSession := mustGetCashierSession(ctx, u.repositoryManager, transaction.CashierSessionId, true)
+	cashierUser := mustGetUser(ctx, u.repositoryManager, cashierSession.UserId, true)
+
+	u.mustLoadTransactionDatas(ctx, []*model.Transaction{&transaction}, transactionLoaderParams{
+		items:   true,
+		payment: true,
+	})
+
+	isCash := transaction.TransactionPayments[0].PaymentType == data_type.TransactionPaymentTypeCash
+
+	templateItems := []printer_template.EscposReceiptItem{}
+	for _, transactionItem := range transaction.TransactionItems {
+		templateItems = append(templateItems, printer_template.EscposReceiptItem{
+			Name:        transactionItem.ProductUnit.Product.Name,
+			PricePerQty: util.CurrencyFormat(int(transactionItem.PricePerUnitAfterDiscount()), language.Indonesian),
+			Qty:         fmt.Sprintf("%.2f", transactionItem.Qty),
+			TotalPrice:  util.CurrencyFormat(int(transactionItem.GrossTotal()), language.Indonesian),
+		})
+	}
+
+	templateAttribute := printer_template.EscposReceiptTemplateAttribute{
+		StoreName:      "Toko Setia Abadi",
+		Address:        "Jl. Marelan Raya No.88 A-B, Tanah Enam Ratus, Kec. Medan Marelan",
+		PhoneNumber:    "081362337116",
+		Date:           transaction.PaymentAt.DateTime().Format("02/01/2006 15:04:05"),
+		Cashier:        cashierUser.Name,
+		Items:          templateItems,
+		SubTotal:       nil,
+		DiscountAmount: nil,
+		GrandTotal:     util.CurrencyFormat(int(transaction.Total), language.Indonesian),
+		Paid:           util.CurrencyFormat(int(transaction.TotalPayment()), language.Indonesian),
+		Change:         util.CurrencyFormat(int(transaction.TotalPayment()-transaction.Total), language.Indonesian),
+		OpenDrawer:     true,
+		IsCash:         isCash,
+	}
+
+	printerDataContent := printer_template.EscposReceiptTemplate(templateAttribute)
+
+	return util.ArrayUint8ToArrayInt16(printerDataContent)
 }

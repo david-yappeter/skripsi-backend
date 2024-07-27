@@ -219,6 +219,7 @@ const (
 	// transaction
 	PermissionTransactionCheckoutCart // TRANSACTION_CHECKOUT_CART
 	PermissionTransactionGet          // TRANSACTION_GET
+	PermissionTransactionReprint      // TRANSACTION_REPRINT
 
 	// user
 	PermissionUserCreate                                // USER_CREATE

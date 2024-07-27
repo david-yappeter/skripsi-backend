@@ -323,6 +323,7 @@ func GetRoleCashier() []Permission {
 		// transaction
 		PermissionTransactionCheckoutCart,
 		PermissionTransactionGet,
+		PermissionTransactionReprint,
 	}
 }
 

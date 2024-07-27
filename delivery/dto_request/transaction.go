@@ -11,3 +11,7 @@ type TransactionCheckoutCartRequest struct {
 type TransactionGetRequest struct {
 	TransactionId string `json:"-" swaggerignore:"true"`
 } // @name TransactionGetRequest
+
+type TransactionReprintRequest struct {
+	TransactionId string `json:"-" swaggerignore:"true"`
+} // @name TransactionReprintRequest

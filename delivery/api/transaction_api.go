@@ -52,8 +52,8 @@ func (a *TransactionApi) Checkout() gin.HandlerFunc {
 //	@Summary	Get Transaction
 //	@tags		Transactions
 //	@Accept		json
-//	@Param		id											path	string										true	"Transaction Id"
-//	@Param		dto_request.TransactionCheckoutCartRequest	body	dto_request.TransactionCheckoutCartRequest	true	"Body Request"
+//	@Param		id									path	string								true	"Transaction Id"
+//	@Param		dto_request.TransactionGetRequest	body	dto_request.TransactionGetRequest	true	"Body Request"
 //	@Produce	json
 //	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{transaction=dto_response.TransactionResponse}}
 func (a *TransactionApi) Get() gin.HandlerFunc {
@@ -79,6 +79,39 @@ func (a *TransactionApi) Get() gin.HandlerFunc {
 	)
 }
 
+// API:
+//
+//	@Router		/transactions/{id}/reprint [get]
+//	@Summary	Reprint Transaction
+//	@tags		Transactions
+//	@Accept		json
+//	@Param		id										path	string									true	"Transaction Id"
+//	@Param		dto_request.TransactionReprintRequest	body	dto_request.TransactionReprintRequest	true	"Body Request"
+//	@Produce	json
+//	@Success	200	{object}	dto_response.Response{data=dto_response.DataResponse{printer_data=[]int16}}
+func (a *TransactionApi) Reprint() gin.HandlerFunc {
+	return a.Authorize(
+		data_type.PermissionP(data_type.PermissionTransactionReprint),
+		func(ctx apiContext) {
+			id := ctx.getUuidParam("id")
+			var request dto_request.TransactionReprintRequest
+			ctx.mustBind(&request)
+			request.TransactionId = id
+
+			printerData := a.transactionUseCase.Reprint(ctx.context(), request)
+
+			ctx.json(
+				http.StatusOK,
+				dto_response.Response{
+					Data: dto_response.DataResponse{
+						"printer_data": printerData,
+					},
+				},
+			)
+		},
+	)
+}
+
 func RegisterTransactionApi(router gin.IRouter, useCaseManager use_case.UseCaseManager) {
 	api := TransactionApi{
 		api:                newApi(useCaseManager),
@@ -88,4 +121,5 @@ func RegisterTransactionApi(router gin.IRouter, useCaseManager use_case.UseCaseM
 	routerGroup := router.Group("/transactions")
 	routerGroup.POST("/checkout", api.Checkout())
 	routerGroup.GET("/:id", api.Get())
+	routerGroup.GET("/:id/reprint", api.Reprint())
 }
