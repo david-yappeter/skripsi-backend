@@ -71,6 +71,10 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionDashboardSummarizeDebt,
 		PermissionDashboardSummarizeTransaction,
 
+		// delivery order review
+		PermissionDeliveryOrderReviewFetch,
+		PermissionDeliveryOrderReviewGet,
+
 		// shop order
 		PermissionShopOrderFetch,
 		PermissionShopOrderGet,
