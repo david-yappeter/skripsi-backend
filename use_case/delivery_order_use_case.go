@@ -1054,7 +1054,7 @@ func (u *deliveryOrderUseCase) MarkCompleted(ctx context.Context, request dto_re
 
 		err = (*u.whatsappManager).SendMessage(context.Background(), customerJID, &proto.Message{
 			Conversation: util.Pointer(fmt.Sprintf(
-				`🚚 Pengiriman Selesai - Berikan Ulasan Anda!
+				`🚚 Pengiriman Selesai!
 
 Halo %s,
 
@@ -1062,7 +1062,7 @@ Kami senang memberitahu Anda bahwa pesanan Anda telah sukses dikirim! 🎉 Kami 
 
 Jika Anda memiliki waktu, kami sangat menghargai ulasan dan masukan Anda tentang pengalaman berbelanja bersama kami. Ini akan membantu kami terus meningkatkan layanan kami kepada pelanggan.
 
-🌟 Berikan Ulasan Anda: %s
+🌟 Jika ada kendala atau ketidakpuasan dalam pengiriman barang: %s
 
 Namun, jika Anda tidak memiliki waktu saat ini atau memiliki pertanyaan lebih lanjut, jangan ragu untuk menghubungi kami di nomor ini.
 
