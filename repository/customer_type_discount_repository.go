@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"myapp/data_type"
 	"myapp/infrastructure"
 	"myapp/model"
@@ -15,6 +16,8 @@ type CustomerTypeDiscountRepository interface {
 	InsertMany(ctx context.Context, customerTypeDiscounts []model.CustomerTypeDiscount, options ...data_type.RepositoryOption) error
 
 	// read
+	Count(ctx context.Context, options ...model.CustomerTypeDiscountQueryOption) (int, error)
+	Fetch(ctx context.Context, options ...model.CustomerTypeDiscountQueryOption) ([]model.CustomerTypeDiscount, error)
 	FetchByIds(ctx context.Context, ids []string) ([]model.CustomerTypeDiscount, error)
 	FetchByCustomerTypeIds(ctx context.Context, customerTypeIds []string) ([]model.CustomerTypeDiscount, error)
 	Get(ctx context.Context, id string) (*model.CustomerTypeDiscount, error)
@@ -62,6 +65,27 @@ func (r *customerTypeDiscountRepository) get(ctx context.Context, stmt squirrel.
 	return &customerTypeDiscount, nil
 }
 
+func (r *customerTypeDiscountRepository) prepareQuery(option model.CustomerTypeDiscountQueryOption) squirrel.SelectBuilder {
+	stmt := stmtBuilder.Select().
+		From(fmt.Sprintf("%s ctd", model.CustomerTypeDiscountTableName)).
+		InnerJoin(fmt.Sprintf("%s p ON ctc.product_id = p.id", model.ProductTableName))
+
+	if option.Phrase != nil {
+		phrase := "%" + *option.Phrase + "%"
+		stmt = stmt.Where(squirrel.Or{
+			squirrel.ILike{"p.name": phrase},
+		})
+	}
+
+	if option.CustomerTypeId != nil {
+		stmt = stmt.Where(squirrel.Eq{"ctd.customer_type_id": option.CustomerTypeId})
+	}
+
+	stmt = model.Prepare(stmt, &option)
+
+	return stmt
+}
+
 func (r *customerTypeDiscountRepository) Insert(ctx context.Context, customerTypeDiscount *model.CustomerTypeDiscount) error {
 	return defaultInsert(r.db, ctx, customerTypeDiscount, "*")
 }
@@ -73,6 +97,29 @@ func (r *customerTypeDiscountRepository) InsertMany(ctx context.Context, custome
 	}
 
 	return defaultInsertMany(r.db, ctx, arr, "*")
+}
+
+func (r *customerTypeDiscountRepository) Count(ctx context.Context, options ...model.CustomerTypeDiscountQueryOption) (int, error) {
+	option := model.CustomerTypeDiscountQueryOption{}
+	if len(options) > 0 {
+		option = options[0]
+	}
+	option.IsCount = true
+
+	stmt := r.prepareQuery(option)
+
+	return count(r.db, ctx, stmt)
+}
+
+func (r *customerTypeDiscountRepository) Fetch(ctx context.Context, options ...model.CustomerTypeDiscountQueryOption) ([]model.CustomerTypeDiscount, error) {
+	option := model.CustomerTypeDiscountQueryOption{}
+	if len(options) > 0 {
+		option = options[0]
+	}
+
+	stmt := r.prepareQuery(option)
+
+	return r.fetch(ctx, stmt)
 }
 
 func (r *customerTypeDiscountRepository) FetchByIds(ctx context.Context, ids []string) ([]model.CustomerTypeDiscount, error) {

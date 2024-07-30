@@ -8,6 +8,10 @@ type WhatsappCustomerTypeDiscountBroadcastRequest struct {
 	CustomerTypeDiscountId string `json:"customer_type_discount_id" validate:"required,not_empty,uuid"`
 } // @name WhatsappCustomerTypeDiscountBroadcastRequest
 
+type WhatsappCustomerTypeDiscountManyProductBroadcastRequest struct {
+	CustomerTypeDiscountIds []string `json:"customer_type_discount_ids" validate:"required,dive,not_empty,uuid"`
+} // @name WhatsappCustomerTypeDiscountManyProductBroadcastRequest
+
 type WhatsappProductPriceChangeBroadcastRequest struct {
 	ProductId      string  `json:"product_id" validate:"required,not_empty,uuid"`
 	CustomerTypeId string  `json:"customer_type_id" validate:"required,not_empty,uuid"`

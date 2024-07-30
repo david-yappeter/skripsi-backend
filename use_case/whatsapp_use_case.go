@@ -31,6 +31,7 @@ type WhatsappUseCase interface {
 	// broadcast
 	CustomerDebtBroadcast(ctx context.Context, request dto_request.WhatsappCustomerDebtBroadcastRequest)
 	CustomerTypeDiscountBroadcast(ctx context.Context, request dto_request.WhatsappCustomerTypeDiscountBroadcastRequest)
+	CustomerTypeManyProductDiscountBroadcast(ctx context.Context, request dto_request.WhatsappCustomerTypeDiscountManyProductBroadcastRequest)
 	ProductPriceChangeBroadcast(ctx context.Context, request dto_request.WhatsappProductPriceChangeBroadcastRequest)
 }
 
@@ -181,7 +182,7 @@ func (u *whatsappUseCase) CustomerTypeDiscountBroadcast(ctx context.Context, req
 	// guess mimetypes
 	mimeType := http.DetectContentType(data)
 
-	customers, err := u.repositoryManager.CustomerRepository().FetchByCustomerTypeId(ctx, &customerTypeDiscount.CustomerTypeId)
+	customers, err := u.repositoryManager.CustomerRepository().FetchByCustomerTypeId(ctx, customerTypeDiscount.CustomerTypeId)
 	panicIfErr(err)
 
 	messageTemplate := `🌟 Diskon Khusus untuk Anda, Pelanggan Istimewa!
@@ -243,6 +244,88 @@ Salam hangat,
 	}
 }
 
+func (u *whatsappUseCase) CustomerTypeManyProductDiscountBroadcast(ctx context.Context, request dto_request.WhatsappCustomerTypeDiscountManyProductBroadcastRequest) {
+	if u.whatsappManager == nil {
+		return
+	}
+
+	customerTypeDiscounts, err := u.repositoryManager.CustomerTypeDiscountRepository().FetchByIds(ctx, request.CustomerTypeDiscountIds)
+	panicIfErr(err)
+
+	if len(customerTypeDiscounts) == 0 {
+		return
+	}
+
+	productLoader := loader.NewProductLoader(u.repositoryManager.ProductRepository())
+
+	panicIfErr(util.Await(func(group *errgroup.Group) {
+		for i := range customerTypeDiscounts {
+			group.Go(productLoader.CustomerTypeDiscountFn(&customerTypeDiscounts[i]))
+		}
+	}))
+
+	productMessages := ``
+
+	for _, customerTypeDiscount := range customerTypeDiscounts {
+		if customerTypeDiscount.Product.Price == nil {
+			panic(dto_response.NewBadRequestErrorResponse("WHATSAPP.PRODUCT_MUST_HAVE_PRICE"))
+		}
+
+		discountAmount := 0.0
+		if customerTypeDiscount.DiscountAmount != nil {
+			discountAmount = *customerTypeDiscount.DiscountAmount
+		} else {
+			discountAmount = *customerTypeDiscount.DiscountPercentage * *customerTypeDiscount.Product.Price / 100.0
+		}
+
+		productMessages += fmt.Sprintf(`
+🎁 Diskon Khusus untuk Produk *%s*!
+💰Harga Lama			: ~Rp. %s~
+💸Harga Setelah Diskon	: *Rp. %s*`,
+			customerTypeDiscount.Product.Name,
+			util.CurrencyFormat(int(*customerTypeDiscount.Product.Price), language.Indonesian),
+			util.CurrencyFormat(int(math.Max(0, *customerTypeDiscount.Product.Price-discountAmount)), language.Indonesian),
+		)
+	}
+
+	customers, err := u.repositoryManager.CustomerRepository().FetchByCustomerTypeId(ctx, customerTypeDiscounts[0].CustomerTypeId)
+	panicIfErr(err)
+
+	messageTemplate := `🌟 Diskon Khusus untuk Anda, Pelanggan Istimewa!
+
+Halo %s,
+
+Kami ingin mengucapkan terima kasih atas dukungan Anda sebagai pelanggan istimewa kami! Sebagai bentuk apresiasi, kami ingin menawarkan penawaran eksklusif berikut kepada Anda:
+
+Sekarang adalah kesempatan Anda untuk mendapatkan produk favorit Anda dengan harga istimewa. Jangan lewatkan kesempatan ini!
+%s
+
+Jika ada pertanyaan atau butuh bantuan, jangan ragu untuk menghubungi kami. Kami siap membantu Anda dengan senang hati.
+
+Terima kasih atas kesetiaan dan dukungan Anda kepada kami!
+
+Salam hangat,
+*%s*`
+
+	if len(customers) > 0 {
+		go func() {
+			goCtx := context.Background()
+
+			// send message
+			for _, customer := range customers {
+				customerJID, _ := types.ParseJID(fmt.Sprintf("%s@s.whatsapp.net", strings.Trim(customer.Phone, "+")))
+				(*u.whatsappManager).SendMessage(goCtx, customerJID, &proto.Message{
+					Conversation: util.StringP(fmt.Sprintf(messageTemplate,
+						customer.Name,
+						productMessages,
+						"Toko Setia Abadi",
+					)),
+				})
+			}
+		}()
+	}
+}
+
 func (u *whatsappUseCase) ProductPriceChangeBroadcast(ctx context.Context, request dto_request.WhatsappProductPriceChangeBroadcastRequest) {
 	if u.whatsappManager == nil {
 		return
@@ -263,7 +346,7 @@ func (u *whatsappUseCase) ProductPriceChangeBroadcast(ctx context.Context, reque
 	// guess mimetypes
 	mimeType := http.DetectContentType(data)
 
-	customers, err := u.repositoryManager.CustomerRepository().FetchByCustomerTypeId(ctx, &request.CustomerTypeId)
+	customers, err := u.repositoryManager.CustomerRepository().FetchByCustomerTypeId(ctx, request.CustomerTypeId)
 	panicIfErr(err)
 
 	messageTemplate := `🛍️ Pemberitahuan Pergantian Harga Barang

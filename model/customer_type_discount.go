@@ -39,7 +39,8 @@ func (m *CustomerTypeDiscount) ToMap() map[string]interface{} {
 type CustomerTypeDiscountQueryOption struct {
 	QueryOption
 
-	Phrase *string
+	CustomerTypeId *string
+	Phrase         *string
 }
 
 var _ PrepareOption = &CustomerTypeDiscountQueryOption{}

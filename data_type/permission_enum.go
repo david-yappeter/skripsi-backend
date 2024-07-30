@@ -60,6 +60,9 @@ const (
 	PermissionCustomerTypeOptionForCustomerForm                            // CUSTOMER_TYPE_OPTION_FOR_CUSTOMER_FORM
 	PermissionCustomerTypeOptionForWhatsappProductPriceChangeBroadcastForm // CUSTOMER_TYPE_OPTION_FOR_WHATSAPP_PRODUCT_PRICE_CHANGE_BROADCAST_FORM
 
+	// customer type discount
+	PermissionCustomerTypeDiscountOptionForWhatsappCustomerTypeDiscountChangeBroadcastForm // CUSTOMER_TYPE_DISCOUNT_OPTION_FOR_WHATSAPP_CUSTOMER_TYPE_DISCOUNT_CHANGE_BROADCAST_FORM
+
 	// dashboard
 	PermissionDashboardSummarizeDebt        // DASHBOARD_SUMMARIZE_DEBT
 	PermissionDashboardSummarizeTransaction // DASHBOARD_SUMMARIZE_TRANSACTION
@@ -245,9 +248,10 @@ const (
 	PermissionUnitOptionForProductUnitToUnitForm // UNIT_OPTION_FOR_PRODUCT_UNIT_TO_UNIT_FORM
 
 	// whatsapp
-	PermissionWhatsappIsLoggedIn                    // WHATSAPP_IS_LOGGED_IN
-	PermissionWhatsappProductPriceChangeBroadcast   // WHATSAPP_PRODUCT_PRICE_CHANGE_BROADCAST
-	PermissionWhatsappCustomerDebtBroadcast         // WHATSAPP_CUSTOMER_DEBT_BROADCAST
-	PermissionWhatsappCustomerTypeDiscountBroadcast // WHATSAPP_CUSTOMER_TYPE_DISCOUNT_BROADCAST
-	PermissionWhatsappLogout                        // WHATSAPP_LOGOUT
+	PermissionWhatsappIsLoggedIn                               // WHATSAPP_IS_LOGGED_IN
+	PermissionWhatsappProductPriceChangeBroadcast              // WHATSAPP_PRODUCT_PRICE_CHANGE_BROADCAST
+	PermissionWhatsappCustomerDebtBroadcast                    // WHATSAPP_CUSTOMER_DEBT_BROADCAST
+	PermissionWhatsappCustomerTypeDiscountBroadcast            // WHATSAPP_CUSTOMER_TYPE_DISCOUNT_BROADCAST
+	PermissionWhatsappCustomerTypeDiscountManyProductBroadcast // WHATSAPP_CUSTOMER_TYPE_DISCOUNT_MANY_PRODUCT_BROADCAST
+	PermissionWhatsappLogout                                   // WHATSAPP_LOGOUT
 )

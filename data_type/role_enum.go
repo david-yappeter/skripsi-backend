@@ -61,6 +61,9 @@ func GetRoleSuperPermissions() []Permission {
 		PermissionCustomerTypeOptionForCustomerForm,
 		PermissionCustomerTypeOptionForWhatsappProductPriceChangeBroadcastForm,
 
+		// customer type discount
+		PermissionCustomerTypeDiscountOptionForWhatsappCustomerTypeDiscountChangeBroadcastForm,
+
 		// cashier session
 		PermissionCashierSessionFetch,
 		PermissionCashierSessionGet,
@@ -126,6 +129,10 @@ func GetRoleSuperPermissions() []Permission {
 		// whatsapp
 		PermissionWhatsappIsLoggedIn,
 		PermissionWhatsappLogout,
+		PermissionWhatsappProductPriceChangeBroadcast,
+		PermissionWhatsappCustomerDebtBroadcast,
+		PermissionWhatsappCustomerTypeDiscountBroadcast,
+		PermissionWhatsappCustomerTypeDiscountManyProductBroadcast,
 	}
 }
 
@@ -298,6 +305,7 @@ func GetRoleInventoryPermissions() []Permission {
 		PermissionWhatsappProductPriceChangeBroadcast,
 		PermissionWhatsappCustomerDebtBroadcast,
 		PermissionWhatsappCustomerTypeDiscountBroadcast,
+		PermissionWhatsappCustomerTypeDiscountManyProductBroadcast,
 	}
 }
 
