@@ -86,6 +86,16 @@ func (r *productRepository) prepareQuery(option model.ProductQueryOption) squirr
 		})
 	}
 
+	if option.IsLoss != nil && *option.IsLoss {
+		stmt = stmt.Where(stmtBuilder.Select("1").
+			From(fmt.Sprintf("%s ps", model.ProductStockTableName)).
+			Where(squirrel.Expr("ps.product_id = p.id")).
+			Where(squirrel.Expr("ps.base_cost_price > p.price")).
+			Where(squirrel.NotEq{"p.price": nil}).
+			Prefix("EXISTS (").Suffix(")"),
+		)
+	}
+
 	stmt = model.Prepare(stmt, &option)
 
 	return stmt

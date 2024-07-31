@@ -18,6 +18,8 @@ type ProductResponse struct {
 	Stock         *ProductStockResponse    `json:"stock" extensions:"x-nullable"`
 	ImageFile     *FileResponse            `json:"image_file" extensions:"x-nullable"`
 	TiktokProduct *TiktokProductResponse   `json:"tiktok_product" extensions:"x-nullable"`
+
+	IsLoss *bool `json:"is_loss" extensions:"x-nullable"`
 } // @name ProductResponse
 
 func NewProductResponse(product model.Product) ProductResponse {
@@ -28,6 +30,7 @@ func NewProductResponse(product model.Product) ProductResponse {
 		Price:       product.Price,
 		IsActive:    product.IsActive,
 		Timestamp:   Timestamp(product.Timestamp),
+		IsLoss:      product.IsLoss(),
 	}
 
 	for _, productUnit := range product.ProductUnits {

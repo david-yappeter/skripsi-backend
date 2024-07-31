@@ -21,6 +21,7 @@ type ProductFetchRequest struct {
 	PaginationRequest
 	Sorts    ProductFetchSorts `json:"sorts" validate:"unique=Field,dive"`
 	IsActive *bool             `json:"is_active" extensions:"x-nullable"`
+	IsLoss   *bool             `json:"is_loss" extensions:"x-nullable"`
 	Phrase   *string           `json:"phrase" validate:"omitempty,not_empty" extensions:"x-nullable"`
 } // @name ProductFetchRequest
 

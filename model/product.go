@@ -1,5 +1,7 @@
 package model
 
+import "myapp/util"
+
 const ProductTableName = "products"
 
 type Product struct {
@@ -40,10 +42,19 @@ func (m *Product) ToMap() map[string]interface{} {
 	}
 }
 
+func (m Product) IsLoss() *bool {
+	if m.ProductStock == nil || m.Price == nil {
+		return nil
+	}
+
+	return util.BoolP(m.ProductStock.BaseCostPrice > *m.Price)
+}
+
 type ProductQueryOption struct {
 	QueryOption
 
 	ExcludeIds []string
+	IsLoss     *bool
 	IsActive   *bool
 	Phrase     *string
 }

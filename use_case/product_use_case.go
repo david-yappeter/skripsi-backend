@@ -222,6 +222,7 @@ func (u *productUseCase) Fetch(ctx context.Context, request dto_request.ProductF
 			request.Limit,
 			model.Sorts(request.Sorts),
 		),
+		IsLoss:   request.IsLoss,
 		IsActive: request.IsActive,
 		Phrase:   request.Phrase,
 	}
